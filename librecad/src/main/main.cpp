@@ -34,6 +34,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QFileInfo>
+#include <memory>
 
 #include "rs_fontlist.h"
 #include "rs_patternlist.h"
@@ -232,7 +233,7 @@ int main(int argc, char** argv)
         RS_DEBUG->print("main: show initial config dialog: OK");
     }
 
-    auto splash = new QSplashScreen;
+    auto splash = std::make_unique<QSplashScreen>();
 
     bool show_splash = settings.value("Startup/ShowSplash", 1).toBool();
 
@@ -240,7 +241,7 @@ int main(int argc, char** argv)
     {
         QPixmap pixmap(":/main/splash_librecad.png");
         splash->setPixmap(pixmap);
-        splash->setAttribute(Qt::WA_DeleteOnClose);
+        //splash->setAttribute(Qt::WA_DeleteOnClose);
         splash->show();
         splash->showMessage(QObject::tr("Loading.."),
                             Qt::AlignRight|Qt::AlignBottom, Qt::black);
@@ -352,8 +353,8 @@ int main(int argc, char** argv)
 
     if (show_splash)
         splash->finish(&appWin);
-    else
-        delete splash;
+//    else
+//        delete splash;
 
     if (first_load)
         settings.setValue("Startup/FirstLoad", 0);

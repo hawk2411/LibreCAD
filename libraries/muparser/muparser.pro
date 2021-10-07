@@ -7,7 +7,7 @@
 QT       -= core gui
 TEMPLATE = lib
 
-CONFIG += c++11 static warn_on
+CONFIG += c++17 static warn_on
 
 DESTDIR = ../../generated/lib
 
@@ -17,8 +17,8 @@ TARGET = $$DLL_NAME
 GENERATED_DIR = ../../generated/lib/muparser
 # Use common project definitions.
 include(../../common.pri)
-QMAKE_CXXFLAGS_DEBUG += -std=c++11
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS_DEBUG += -std=c++17
+QMAKE_CXXFLAGS += -std=c++17
 
 # svg support
 QT -= svg
