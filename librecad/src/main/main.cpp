@@ -195,9 +195,6 @@ int main(int argc, char** argv)
                 break;
 
             case '0' + RS_Debug::D_DEBUGGING :
-                RS_DEBUG->setLevel( RS_Debug::D_DEBUGGING);
-                break;
-
             default :
                 RS_DEBUG->setLevel(RS_Debug::D_DEBUGGING);
                 break;
