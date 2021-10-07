@@ -205,8 +205,8 @@ int main(int argc, char** argv)
 
     QFileInfo prgInfo( QFile::decodeName(argv[0]) );
     QString prgDir(prgInfo.absolutePath());
-    RS_SETTINGS->init(app.organizationName(), app.applicationName());
-    RS_SYSTEM->init(app.applicationName(), app.applicationVersion(), XSTR(QC_APPDIR), prgDir);
+    RS_SETTINGS->init(LC_Application::organizationName(), LC_Application::applicationName());
+    RS_SYSTEM->init(LC_Application::applicationName(), LC_Application::applicationVersion(), XSTR(QC_APPDIR), prgDir);
 
     // parse command line arguments that might not need a launched program:
     QStringList fileList = handleArgs(argc, argv, argClean);
@@ -241,7 +241,7 @@ int main(int argc, char** argv)
         splash->show();
         splash->showMessage(QObject::tr("Loading.."),
                             Qt::AlignRight|Qt::AlignBottom, Qt::black);
-        app.processEvents();
+        LC_Application::processEvents();
         RS_DEBUG->print("main: splashscreen: OK");
     }
 
@@ -269,7 +269,7 @@ int main(int argc, char** argv)
     app.installEventFilter(&appWin);
 #endif
     RS_DEBUG->print("main: setting caption");
-    appWin.setWindowTitle(app.applicationName());
+    appWin.setWindowTitle(LC_Application::applicationName());
 
     RS_DEBUG->print("main: show main window");
 
@@ -315,7 +315,7 @@ int main(int argc, char** argv)
         splash->showMessage(QObject::tr("Loading..."),
                 Qt::AlignRight|Qt::AlignBottom, Qt::black);
         RS_DEBUG->print("main: processing events");
-        qApp->processEvents();
+        LC_Application::processEvents();
         RS_DEBUG->print("main: updating splash: OK");
     }
 
@@ -335,7 +335,7 @@ int main(int argc, char** argv)
             splash->showMessage(QObject::tr("Loading File %1..")
                     .arg(QDir::toNativeSeparators(*it)),
             Qt::AlignRight|Qt::AlignBottom, Qt::black);
-            qApp->processEvents();
+            LC_Application::processEvents();
         }
         appWin.slotFileOpen(*it);
         files_loaded = true;
@@ -357,7 +357,7 @@ int main(int argc, char** argv)
 
     RS_DEBUG->print("main: entering Qt event loop");
 
-    int return_code = app.exec();
+    int return_code = LC_Application::exec();
 
     RS_DEBUG->print("main: exited Qt event loop");
 
