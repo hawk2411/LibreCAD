@@ -58,8 +58,8 @@
 //
 //     dxf2pdf [options] ...
 //
-void runConsoleDxf2Pdf(int argc, char** argv){
-    for (int i = 0; i < qMin(argc, 2); i++) {
+void runConsoleDxf2Pdf(int argc, char **argv) {
+    for (int i = 0; i < std::min(argc, 2); i++) {
         QString arg(argv[i]);
         if (i == 0) {
             arg = QFileInfo(QFile::decodeName(argv[i])).baseName();
