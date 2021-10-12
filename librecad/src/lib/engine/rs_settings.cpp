@@ -31,11 +31,6 @@
 RS_Settings* RS_Settings::uniqueInstance = nullptr;
 bool RS_Settings::save_is_allowed = true;
 
-RS_Settings::RS_Settings():
-	initialized(false)
-{
-}
-
 RS_Settings* RS_Settings::instance() {
 	if (!uniqueInstance) {
 		uniqueInstance = new RS_Settings();
@@ -51,34 +46,21 @@ RS_Settings* RS_Settings::instance() {
  * @param appKey String that identifies the application. Must start
  *        with a "/". E.g. "/LibreCAD"
  */
-void RS_Settings::init(const QString& companyKey,
-                       const QString& appKey) {
+void RS_Settings::init(const QString& company_key,
+                       const QString& app_key) {
 
-    group = "";
+    _group = "";
 	
-    this->companyKey = companyKey;
-    this->appKey = appKey;
-
-    //insertSearchPath(QSettings::Windows, companyKey + appKey);
-    //insertSearchPath(QSettings::Unix, "/usr/share/");
-    initialized = true;
+    this->_companyKey = company_key;
+    this->_appKey = app_key;
 }
-
-
-/**
- * Destructor
- */
-RS_Settings::~RS_Settings() {
-}
-
-
 
 void RS_Settings::beginGroup(const QString& group) {
-    this->group = group;
+    this->_group = group;
 }
 
 void RS_Settings::endGroup() {
-    this->group = "";
+    this->_group = "";
 }
 
 bool RS_Settings::writeEntry(const QString& key, int value) {
@@ -102,10 +84,10 @@ bool RS_Settings::writeEntry(const QString& key, const QVariant& value) {
         return true;
     }
 
-	QSettings s(companyKey, appKey);
+	QSettings s(_companyKey, _appKey);
     // RVT_PORT not supported anymore s.insertSearchPath(QSettings::Windows, companyKey);
 
-    s.setValue(QString("%1%2").arg(group).arg(key), value);
+    s.setValue(QString("%1%2").arg(_group).arg(key), value);
 	cache[key]=value;
 
     return true;
@@ -119,14 +101,14 @@ QString RS_Settings::readEntry(const QString& key,
     QVariant ret = readEntryCache(key);
     if (!ret.isValid()) {
 				
-        QSettings s(companyKey, appKey);
+        QSettings s(_companyKey, _appKey);
     	// RVT_PORT not supported anymore s.insertSearchPath(QSettings::Windows, companyKey);
 		
 		if (ok) {
-			*ok=s.contains(QString("%1%2").arg(group).arg(key));
+			*ok=s.contains(QString("%1%2").arg(_group).arg(key));
 		}
 		
-        ret = s.value(QString("%1%2").arg(group).arg(key), QVariant(def));
+        ret = s.value(QString("%1%2").arg(_group).arg(key), QVariant(def));
 		cache[key]=ret;
     }
 
@@ -140,14 +122,14 @@ QByteArray RS_Settings::readByteArrayEntry(const QString& key,
     QVariant ret = readEntryCache(key);
     if (!ret.isValid()) {
 
-        QSettings s(companyKey, appKey);
+        QSettings s(_companyKey, _appKey);
         // RVT_PORT not supported anymore s.insertSearchPath(QSettings::Windows, companyKey);
 
                 if (ok) {
-                        *ok=s.contains(QString("%1%2").arg(group).arg(key));
+                        *ok=s.contains(QString("%1%2").arg(_group).arg(key));
                 }
 
-        ret = s.value(QString("%1%2").arg(group).arg(key), QVariant(def));
+        ret = s.value(QString("%1%2").arg(_group).arg(key), QVariant(def));
 		cache[key]=ret;
     }
 
@@ -160,8 +142,8 @@ int RS_Settings::readNumEntry(const QString& key, int def)
 	QVariant value = readEntryCache(key);
 	if (!value.isValid())
 	{
-		QSettings s(companyKey, appKey);
-		QString str = QString("%1%2").arg(group).arg(key);
+		QSettings s(_companyKey, _appKey);
+		QString str = QString("%1%2").arg(_group).arg(key);
 		// qDebug() << str;
 		value = s.value(str, QVariant(def));
 		cache[key] = value;
@@ -182,14 +164,14 @@ void RS_Settings::addToCache(const QString& key, const QVariant& value) {
 
 void RS_Settings::clear_all()
 {
-    QSettings s(companyKey, appKey);
+    QSettings s(_companyKey, _appKey);
     s.clear();
     save_is_allowed = false;
 }
 
 void RS_Settings::clear_geometry()
 {
-    QSettings s(companyKey, appKey);
+    QSettings s(_companyKey, _appKey);
     s.remove("/Geometry");
     save_is_allowed = false;
 }
