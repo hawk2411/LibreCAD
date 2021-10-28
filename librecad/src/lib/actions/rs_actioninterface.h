@@ -49,7 +49,6 @@ class QAction;
  * @author Andrew Mustun
  */
 class RS_ActionInterface : public QObject, public RS_Snapper {
-    Q_OBJECT
 public:
     RS_ActionInterface(const char* name,
                        RS_EntityContainer& container,
