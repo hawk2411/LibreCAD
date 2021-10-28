@@ -93,3 +93,9 @@ core.*
 *.vcxproj
 *.vcxproj.filters
 *.sln
+
+#CMake generated files
+cmake-build-debug/
+
+#JetBrain's IDE files
+.idea/
