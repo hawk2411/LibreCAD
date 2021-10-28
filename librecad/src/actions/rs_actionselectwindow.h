@@ -36,7 +36,6 @@
  * @author Andrew Mustun
  */
 class RS_ActionSelectWindow : public RS_PreviewActionInterface {
-	Q_OBJECT
 public:
     /**
      * Action States.
