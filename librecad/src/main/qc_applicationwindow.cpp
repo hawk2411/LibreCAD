@@ -1771,7 +1771,6 @@ void QC_ApplicationWindow::
         // Create new document window:
 		QMdiSubWindow* old=activedMdiSubWindow;
         QRect geo;
-        bool maximized=false;
 
         QC_MDIWindow* w = slotFileNew(nullptr);
         // RVT_PORT qApp->processEvents(1000);
@@ -1791,7 +1790,6 @@ void QC_ApplicationWindow::
 
         if(old != nullptr) {//save old geometry
             geo=old->geometry();
-            maximized=old->isMaximized();
         }
 
         // open the file in the new view:
