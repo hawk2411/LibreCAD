@@ -333,7 +333,7 @@ private:
 
     //Plugin support
     void loadPlugins();
-    QMenu *findMenu(const QString &searchMenu, const QObjectList thisMenuList, const QString& currentEntry);
+    QMenu *findMenu(const QString &searchMenu, const QObjectList &thisMenuList, const QString& currentEntry);
 
     #ifdef LC_DEBUGGING
         LC_SimpleTests* m_pSimpleTest {nullptr};

@@ -37,7 +37,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
-#include <QSplitter>
 #include <QMdiArea>
 #include <QPluginLoader>
 #include <QImageWriter>
@@ -117,17 +116,6 @@ QC_ApplicationWindow* QC_ApplicationWindow::appWindow = nullptr;
 #ifndef QC_ABOUT_ICON
 # define QC_ABOUT_ICON ":/main/intro_librecad.png"
 #endif
-
-/*	- Window Title Bar Extra (character) Size.
- *	- Notes: Extra characters appearing in the windows title bar
- *	  are " - [", ... "]" (5), and sometimes "Print preview of " (17).
- *	*/
-#define WTB_EXTRA_SIZE        (5 + 17)
-
-/*	Window Title Bar Maximum Size.
- *	Notes: On Windows XP, this is 79.
- *	*/
-#define WTB_MAX_SIZE        79
 
 /**
  * Constructor. Initializes the app.
@@ -383,21 +371,21 @@ QC_ApplicationWindow::QC_ApplicationWindow()
   * currentEntry only used internally during recursion
   * returns 0 when no menu was found
   */
-QMenu *QC_ApplicationWindow::findMenu(const QString &searchMenu, const QObjectList thisMenuList, const QString& currentEntry) {
+QMenu *QC_ApplicationWindow::findMenu(const QString &searchMenu, const QObjectList &thisMenuList, const QString& currentEntry) {
     if (searchMenu==currentEntry)
         return ( QMenu *)thisMenuList.at(0)->parent();
 
     QList<QObject*>::const_iterator i=thisMenuList.begin();
     while (i != thisMenuList.end()) {
         if ((*i)->inherits ("QMenu")) {
-            QMenu *ii=(QMenu*)*i;
+            auto *ii=(QMenu*)*i;
             if (QMenu *foundMenu=findMenu(searchMenu, ii->children(), currentEntry+"/"+ii->objectName().replace("&", ""))) {
                 return foundMenu;
             }
         }
         ++i;
     }
-    return 0;
+    return nullptr;
 }
 
 /**
@@ -411,24 +399,28 @@ void QC_ApplicationWindow::doArrangeWindows(RS2::SubWindowMode m, bool actuallyD
 	RS_SETTINGS->beginGroup("/WindowOptions");
 	int mode = m != RS2::CurrentMode ? m : RS_SETTINGS->readNumEntry("/SubWindowMode", RS2::Maximized);
 	RS_SETTINGS->endGroup();
-	if (!actuallyDont) switch (mode) {
-	case RS2::Maximized:
-		if (mdiAreaCAD->currentSubWindow())
-			mdiAreaCAD->currentSubWindow()->showMaximized();
-		break;
-	case RS2::Cascade:
-		slotCascade();
-		break;
-	case RS2::Tile:
-		slotTile();
-		break;
-	case RS2::TileHorizontal:
-		slotTileHorizontal();
-		break;
-	case RS2::TileVertical:
-		slotTileVertical();
-		break;
-	}
+	if (!actuallyDont) {
+        switch (mode) {
+            case RS2::Maximized:
+                if (mdiAreaCAD->currentSubWindow())
+                    mdiAreaCAD->currentSubWindow()->showMaximized();
+                break;
+            case RS2::Cascade:
+                slotCascade();
+                break;
+            case RS2::Tile:
+                slotTile();
+                break;
+            case RS2::TileHorizontal:
+                slotTileHorizontal();
+                break;
+            case RS2::TileVertical:
+                slotTileVertical();
+                break;
+            default:
+                break;
+        }
+    }
 	
 	RS_SETTINGS->beginGroup("/WindowOptions");
 	RS_SETTINGS->writeEntry("/SubWindowMode", mode);
@@ -590,10 +582,10 @@ int QC_ApplicationWindow::showCloseDialog(QC_MDIWindow * w, bool showSaveAll)
 	dlg.setTitle(tr("Closing Drawing"));
 	if (w && w->getDocument()->isModified()) {
 		QString fn = w->getDocument()->getFilename();
-		if (fn.isEmpty())
-			fn = w->windowTitle();
-		else if (fn.length() > 50)
-			fn = QString("%1...%2").arg(fn.left(24)).arg(fn.right(24));
+		if (fn.isEmpty()) {
+            fn = w->windowTitle(); }
+		else if (fn.length() > 50) {
+            fn = QString("%1...%2").arg(fn.left(24), fn.right(24)); }
 
 		dlg.setText(tr("Save changes to the following item?\n%1").arg(fn));
 		return dlg.exec();
@@ -663,7 +655,7 @@ void QC_ApplicationWindow::loadPlugins() {
                     loadedPluginFileNames.push_back(fileName);
                     PluginCapabilities pluginCapabilities=pluginInterface->getCapabilities();
                     for(const PluginMenuLocation& loc: pluginCapabilities.menuEntryPoints) {
-                        QAction *actpl = new QAction(loc.menuEntryActionName, plugin);
+                        auto *actpl = new QAction(loc.menuEntryActionName, plugin);
                         actpl->setData(loc.menuEntryActionName);
                         connect(actpl, SIGNAL(triggered()), this, SLOT(execPlug()));
                         connect(this, SIGNAL(windowsChanged(bool)), actpl, SLOT(setEnabled(bool)));
@@ -673,20 +665,20 @@ void QC_ApplicationWindow::loadPlugins() {
                         } else {
                             QStringList treemenu = loc.menuEntryPoint.split('/', QString::SkipEmptyParts);
                             QString currentLevel="";
-                            QMenu *parentMenu=0;
+                            QMenu *parentMenu=nullptr;
                             do {
                                 QString menuName=treemenu.at(0); treemenu.removeFirst();
                                 currentLevel=currentLevel+"/"+menuName;
                                 atMenu = findMenu(currentLevel, menuBar()->children(), "");
-                                if (atMenu==0) {
-                                    if (parentMenu==0) {
+                                if (atMenu==nullptr) {
+                                    if (parentMenu==nullptr) {
                                         parentMenu=menuBar()->addMenu(menuName);
                                     } else {
                                         parentMenu=parentMenu->addMenu(menuName);
                                     }
                                     parentMenu->setObjectName(menuName);
                                 }
-                            } while(treemenu.size()>0);
+                            } while(!treemenu.empty());
 							if (parentMenu) parentMenu->addAction(actpl);
                         }
                     }
@@ -703,7 +695,7 @@ void QC_ApplicationWindow::loadPlugins() {
  * Execute the plugin.
  */
 void QC_ApplicationWindow::execPlug() {
-    QAction *action = qobject_cast<QAction *>(sender());
+    auto *action = qobject_cast<QAction *>(sender());
     QC_PluginInterface *plugin = qobject_cast<QC_PluginInterface *>(action->parent());
 //get actual drawing
     QC_MDIWindow* w = getMDIWindow();
@@ -758,7 +750,7 @@ void QC_ApplicationWindow::dropEvent(QDropEvent* event)
     unsigned counts=0;
     for(QUrl const& url: event->mimeData()->urls()) {
         const QString &fileName = url.toLocalFile();
-        if(QFileInfo(fileName).exists() && fileName.endsWith(R"(.dxf)", Qt::CaseInsensitive)){
+        if(QFileInfo::exists(fileName) && fileName.endsWith(R"(.dxf)", Qt::CaseInsensitive)){
             slotFileOpen(fileName);
             if(++counts>32) return;
         }
@@ -770,7 +762,7 @@ void 	QC_ApplicationWindow::dragEnterEvent(QDragEnterEvent * event)
     if (event->mimeData()->hasUrls()){
         for(QUrl const& url: event->mimeData()->urls()) {
             const QString &fileName = url.toLocalFile();
-            if(QFileInfo(fileName).exists() && fileName.endsWith(R"(.dxf)", Qt::CaseInsensitive)){
+            if(QFileInfo::exists(fileName) && fileName.endsWith(R"(.dxf)", Qt::CaseInsensitive)){
                 event->acceptProposedAction();
                 return;
             }
@@ -992,7 +984,7 @@ void QC_ApplicationWindow::slotWindowActivated(QMdiSubWindow* w) {
     if(w==activedMdiSubWindow) return;
     activedMdiSubWindow=w;
 
-    QC_MDIWindow* m = qobject_cast<QC_MDIWindow*>(w);
+    auto* m = qobject_cast<QC_MDIWindow*>(w);
     enableFileActions(m);
 
     if (m && m->getDocument()) {
@@ -1044,7 +1036,7 @@ void QC_ApplicationWindow::slotWindowActivated(QMdiSubWindow* w) {
 
     // show action options for active window only
     foreach (QMdiSubWindow* sw, mdiAreaCAD->subWindowList()) {
-        QC_MDIWindow* sm = qobject_cast<QC_MDIWindow*>(sw);
+        auto* sm = qobject_cast<QC_MDIWindow*>(sw);
         RS_ActionInterface* ai = sm->getGraphicView()->getCurrentAction();
         if (ai) {
             ai->hideOptions();
@@ -1181,8 +1173,7 @@ void QC_ApplicationWindow::slotTile() {
 //auto zoom the graphicView of sub-windows
 void QC_ApplicationWindow::slotZoomAuto() {
     QList<QMdiSubWindow *> windows = mdiAreaCAD->subWindowList();
-    for(int i=0;i<windows.size();i++){
-        QMdiSubWindow *window = windows.at(i);
+    for(auto window : windows){
         qobject_cast<QC_MDIWindow*>(window)->slotZoomAuto();
     }
 }
@@ -1191,20 +1182,17 @@ void QC_ApplicationWindow::slotZoomAuto() {
  * Cascade MDI windows
  */
 void QC_ApplicationWindow::slotCascade() {
-//    mdiAreaCAD->cascadeSubWindows();
-//return;
 	doArrangeWindows(RS2::Cascade, true);
 	QList<QMdiSubWindow *> windows = mdiAreaCAD->subWindowList();
     switch(windows.size()){
     case 1:
-        //mdiAreaCAD->tileSubWindows();
 		slotTile();
     case 0:
         return;
     default: {
         QMdiSubWindow* active=mdiAreaCAD->activeSubWindow();
-        for (int i=0; i<windows.size(); ++i) {
-            windows.at(i)->showNormal();
+        for (auto window : windows) {
+            window->showNormal();
         }
         mdiAreaCAD->cascadeSubWindows();
         //find displacement by linear-regression
@@ -1231,13 +1219,13 @@ void QC_ApplicationWindow::slotCascade() {
         QRect geo=window->geometry();
         QRect frame=window->frameGeometry();
 //        std::cout<<"Frame=:"<<( frame.height() - geo.height())<<std::endl;
-        int width= mdiAreaCAD->width() -( frame.width() - geo.width())- disX*(windows.size()-1);
+        int width=  mdiAreaCAD->width() -( frame.width() - geo.width())- disX*(windows.size()-1);
         int height= mdiAreaCAD->height() -( frame.width() - geo.width())- disY*(windows.size()-1);
         if(width<=0 || height<=0) {
             return;
         }
-        for (int i=0; i<windows.size(); ++i) {
-            window = windows.at(i);
+        for (auto i : windows) {
+            window = i;
 //            std::cout<<"window:("<<i<<"): pos()="<<(window->pos().x())<<" "<<(window->pos().y())<<std::endl;
             geo=window->geometry();
 //            if(i==active) {
