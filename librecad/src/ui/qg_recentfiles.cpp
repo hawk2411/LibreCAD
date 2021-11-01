@@ -27,6 +27,7 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QMenu>
+#include <qc_applicationwindow.h>
 #include "qg_recentfiles.h"
 
 #include "rs_debug.h"
@@ -114,9 +115,9 @@ void QG_RecentFiles::addFiles(QMenu* file_menu)
     }
     RS_SETTINGS->endGroup();
 
-    QActionGroup* a_group = new QActionGroup(this);
-    connect(a_group, SIGNAL(triggered(QAction*)),
-            parent(), SLOT(slotFileOpenRecent(QAction*)));
+    auto* a_group = new QActionGroup(this);
+    connect(a_group, &QActionGroup::triggered, dynamic_cast<QC_ApplicationWindow *>(parent()),
+            &QC_ApplicationWindow::slotFileOpenRecent);
 
     for (int i = 0; i < number; ++i)
     {

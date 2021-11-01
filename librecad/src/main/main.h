@@ -33,12 +33,12 @@
 #define XSTR(x)  STR(x)
 
 /**
- * @brief handleArgs
+ * @brief handleFileArguments
  * @param argc cli argument counter from main()
  * @param argv cli arguments from main()
  * @param argClean a list of indices to be ignored
  * @return
  */
-QStringList handleArgs(int argc, char** argv, const QList<int>& argClean);
+QStringList handleFileArguments(int argc, char** argv, const QStringList& arguments);
 
 #endif

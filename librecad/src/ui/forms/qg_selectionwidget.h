@@ -37,7 +37,7 @@ public:
     ~QG_SelectionWidget();
 
 public slots:
-    virtual void setNumber( int n );
+    virtual void setNumber(unsigned int n );
     virtual void setTotalLength(double l );
 
 protected slots:

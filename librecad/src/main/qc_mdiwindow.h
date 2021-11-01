@@ -56,31 +56,31 @@ public:
     QC_MDIWindow(RS_Document* doc,
                  QWidget* parent,
                  Qt::WindowFlags wflags=0);
-    ~QC_MDIWindow();
+    ~QC_MDIWindow() override;
 
+    bool fileNewTemplate(const QString& fileName, RS2::FormatType type);
+    bool fileSave(bool &cancelled, bool isAutoSave=false);
+    bool fileSaveAs(bool &cancelled);
 public slots:
 
 	void slotPenChanged(const RS_Pen& p);
     void slotFileNew();
-    bool slotFileNewTemplate(const QString& fileName, RS2::FormatType type);
-    bool slotFileOpen(const QString& fileName, RS2::FormatType type);
-    bool slotFileSave(bool &cancelled, bool isAutoSave=false);
-    bool slotFileSaveAs(bool &cancelled);
-    void slotFilePrint();
+
+    bool fileOpen(const QString& fileName, RS2::FormatType type);
     void slotZoomAuto();
 
 public:
     /** @return Pointer to graphic view */
-	QG_GraphicView* getGraphicView() const;
+	[[nodiscard]] QG_GraphicView* getGraphicView() const;
 
     /** @return Pointer to document */
-	RS_Document* getDocument() const;
+	[[nodiscard]] RS_Document* getDocument() const;
 	
     /** @return Pointer to graphic or NULL */
-	RS_Graphic* getGraphic() const;
+	[[nodiscard]] RS_Graphic* getGraphic() const;
 
 	/** @return Pointer to current event handler */
-	RS_EventHandler* getEventHandler() const;
+	[[nodiscard]] RS_EventHandler* getEventHandler() const;
 
     void addChildWindow(QC_MDIWindow* w);
     void removeChildWindow(QC_MDIWindow* w);

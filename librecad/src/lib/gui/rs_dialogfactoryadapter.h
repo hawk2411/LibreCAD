@@ -73,7 +73,7 @@ public:
 	QString requestFileSaveAsDialog(const QString&, const QString&, const QString&, QString*) override {return {};}
 	void updateCoordinateWidget(const RS_Vector& , const RS_Vector& , bool =false) override {}
 	void updateMouseWidget(const QString&, const QString&) override{}
-	void updateSelectionWidget(int, double) override {}
+	void updateSelectionWidget(unsigned int, double) override {}
 	void updateArcTangentialOptions(const double& , bool) override{}
 	void commandMessage(const QString&) override {}
 	void setMouseWidget(QG_MouseWidget*) override {}

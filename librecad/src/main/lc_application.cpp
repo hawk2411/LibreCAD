@@ -47,7 +47,7 @@ bool LC_Application::event(QEvent *event)
     return QApplication::event(event);
 }
 
-QStringList const& LC_Application::fileList(void) const
+QStringList const& LC_Application::fileList() const
 {
     return files;
 }

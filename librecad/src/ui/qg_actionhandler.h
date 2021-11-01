@@ -40,20 +40,15 @@ class QG_ActionHandler : public QObject {
 	Q_OBJECT
 
 public:
-	QG_ActionHandler(QObject* parent);
-	virtual ~QG_ActionHandler() = default;
+	explicit QG_ActionHandler(QObject* parent);
+	~QG_ActionHandler() override = default;
 
 	RS_ActionInterface* getCurrentAction();
 	RS_ActionInterface* setCurrentAction(RS2::ActionType id);
 
-	/**
-	 * Kills all running selection actions. Called when a selection action
-	  * is launched to reduce confusion.
-	   */
-	void killSelectActions();
-	/**
-		 * @brief killAllActions kill all actions
-		 */
+    /**
+         * @brief killAllActions kill all actions
+         */
 	void killAllActions();
 
 	bool keycode(const QString& code);
@@ -63,26 +58,14 @@ public:
 	bool command(const QString& cmd);
 	QStringList getAvailableCommands();
 	RS_SnapMode getSnaps();
-	RS2::SnapRestriction getSnapRestriction();
+
     void set_view(RS_GraphicView* graphic_view);
     void set_document(RS_Document* document);
     void set_snap_toolbar(QG_SnapToolBar* snap_toolbar);
 
 public slots:
-	/*void slotFileNew();*/
-	void slotFileNewTemplate();
-	void slotFileOpen();
-	/*
-		  void slotFileOpen(const QString& fileName);
-		  void slotFileSave();
-	 */
-	void slotFileSaveAs();
-	void slotFileExportMakerCam();
-	/*
-		 void slotFileClose();
-		 void slotFilePrint();
-	  */
 
+    void slotFileExportMakerCam();
 	void slotZoomIn();
 	void slotZoomOut();
 	void slotZoomAuto();
@@ -91,9 +74,7 @@ public slots:
 	void slotZoomPrevious();
 	void slotZoomRedraw();
 
-	void slotToolRegenerateDimensions();
-
-	void slotEditKillAllActions();
+    void slotEditKillAllActions();
 	void slotEditUndo();
 	void slotEditRedo();
 	void slotEditCut();
@@ -121,8 +102,8 @@ public slots:
 	void slotDrawLineHorizontal();
 	void slotDrawLineVertical();
 	void slotDrawLineFree();
-	void slotDrawLineHorVert();
-	void slotDrawLineParallel();
+
+    void slotDrawLineParallel();
 	void slotDrawLineParallelThrough();
 	void slotDrawLineRectangle();
 	void slotDrawLineBisector();
@@ -217,10 +198,7 @@ public slots:
 	void slotRestrictHorizontal();
 	void slotRestrictVertical();
 
-	void disableSnaps();
-	void disableRestrictions();
-
-	void slotSetRelativeZero();
+    void slotSetRelativeZero();
 	void slotLockRelativeZero(bool on);
 
 	void slotInfoInside();

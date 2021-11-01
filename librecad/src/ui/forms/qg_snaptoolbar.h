@@ -44,12 +44,11 @@ public:
     QG_SnapToolBar(QWidget* parent
                  , QG_ActionHandler* ah
                  , LC_ActionGroupManager* agm);
-	~QG_SnapToolBar() = default;
+	~QG_SnapToolBar() override = default;
 
-	RS_SnapMode getSnaps ( void ) const;
-    void saveSnapMode(void );
-    virtual void setActionHandler(QG_ActionHandler* ah);
-	bool lockedRelativeZero() const;
+	[[nodiscard]] RS_SnapMode getSnaps () const;
+    void saveSnapMode() const;
+
     void setLockedRelativeZero(bool on);
 
 public slots:

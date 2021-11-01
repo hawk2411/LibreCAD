@@ -39,25 +39,25 @@ class QG_CommandEdit: public QLineEdit {
     Q_OBJECT
 
 public:
-    QG_CommandEdit(QWidget* parent=0);
-    virtual ~QG_CommandEdit()=default;
+    explicit QG_CommandEdit(QWidget* parent=nullptr);
+    ~QG_CommandEdit() override =default;
 
     void readCommandFile(const QString& path);
 
     bool keycode_mode;
 
 protected:
-	virtual bool event(QEvent* e);
-	virtual void keyPressEvent(QKeyEvent* e);
-	virtual void focusInEvent(QFocusEvent *e);
-	virtual void focusOutEvent(QFocusEvent *e);
+	bool event(QEvent* e) override;
+	void keyPressEvent(QKeyEvent* e) override;
+	void focusInEvent(QFocusEvent *e) override;
+	void focusOutEvent(QFocusEvent *e) override;
     void evaluateExpression(QString input);
 
     QString relative_ray;
     QMap<QString, QString> variables;
 
     void processInput(QString input);
-    bool isForeignCommand(QString input);
+    bool isForeignCommand(const QString& input);
     void processVariable(QString input);
 
 signals:
@@ -73,7 +73,6 @@ signals:
 private:
 	QStringList historyList;
 	QStringList::Iterator it;
-	bool acceptCoordinates;
     bool calculator_mode;
 
 public slots:

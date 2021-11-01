@@ -34,17 +34,17 @@ class QG_CommandWidget : public QWidget, public Ui::QG_CommandWidget
     Q_OBJECT
 
 public:
-    QG_CommandWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
-    ~QG_CommandWidget();
+    explicit QG_CommandWidget(QWidget* parent = nullptr, const char* name = nullptr, Qt::WindowFlags fl = nullptr);
+    ~QG_CommandWidget() override;
 
-    virtual bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 public slots:
-    virtual void setFocus();
+    virtual void changeFocus();
     virtual void setCommand( const QString & cmd );
     virtual void appendHistory( const QString & msg );
     virtual void handleCommand(QString cmd);
-    virtual void handleKeycode(QString code);
+    virtual void handleKeycode(const QString &code);
     virtual void tabPressed();
     virtual void escape();
     virtual void setActionHandler( QG_ActionHandler * ah );

@@ -38,7 +38,7 @@ class LC_Application : public QApplication
 public:
     explicit LC_Application(int &argc, char **argv);
 
-    QStringList const& fileList(void) const;
+    [[nodiscard]] QStringList const& fileList() const;
 
 protected:
     bool event(QEvent *event) Q_DECL_OVERRIDE;

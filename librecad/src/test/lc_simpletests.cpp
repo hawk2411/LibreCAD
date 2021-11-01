@@ -847,82 +847,6 @@ void LC_SimpleTests::slotTestInsertText() {
 							RS2::Width01,
 							RS2::SolidLine));
 		graphic->addEntity(text);
-
-		/*
-			  double x, y;
-			  for (y=-250.0; y<=250.0; y+=50.0) {
-				  for (x=-250.0; x<=250.0; x+=50.0) {
-					  RS_Vector v(x, y);
-
-					  textData = RS_TextData(v,
-											 10.0, 100.0,
-											 RS2::VAlignTop,
-											 RS2::HAlignLeft,
-											 RS2::LeftToRight,
-											 RS2::Exact,
-											 1.0,
-											 "Andrew",
-											 "normal",
-											 0.0);
-
-					  text = new RS_Text(graphic, textData);
-
-					  text->setLayerToActive();
-					  text->setPen(RS_Pen(RS_Color(255, 0, 0),
-										  RS2::Width01,
-										  RS2::SolidLine));
-					  graphic->addEntity(text);
-				  }
-			  }
-
-			  RS_Line* line;
-			  for (x=0.0; x<M_PI*2.0; x+=0.2) {
-				  RS_Vector v(600.0+cos(x)*50.0, 0.0+sin(x)*50.0);
-
-				  line = new RS_Line(graphic,
-									 RS_LineData(RS_Vector(600.0,0.0),
-												 v));
-				  line->setLayerToActive();
-				  line->setPenToActive();
-				  graphic->addEntity(line);
-
-				  textData = RS_TextData(v,
-										 5.0, 50.0,
-										 RS2::VAlignTop,
-										 RS2::HAlignLeft,
-										 RS2::LeftToRight,
-										 RS2::Exact,
-										 1.0,
-										 "Andrew",
-										 "normal",
-										 x);
-
-				  text = new RS_Text(graphic, textData);
-
-				  text->setLayerToActive();
-				  text->setPen(RS_Pen(RS_Color(255, 0, 0),
-									  RS2::Width01,
-									  RS2::SolidLine));
-				  graphic->addEntity(text);
-			  }
-
-			  RS_SolidData solidData = RS_SolidData(RS_Vector(5.0, 10.0),
-													RS_Vector(25.0, 15.0),
-													RS_Vector(15.0, 30.0));
-
-			  RS_Solid* s = new RS_Solid(graphic, solidData);
-
-			  s->setLayerToActive();
-			  s->setPen(RS_Pen(RS_Color(255, 255, 0),
-							   RS2::Width01,
-							   RS2::SolidLine));
-			  graphic->addEntity(s);
-
-			  RS_GraphicView* v = getGraphicView();
-			  if (v) {
-				  v->redraw();
-			  }
-		*/
 	}
 	RS_DEBUG->print("%s\n: end\n", __func__);
 }
@@ -967,7 +891,7 @@ void LC_SimpleTests::slotTestUnicode() {
 	RS_DEBUG->print("%s\n: begin\n", __func__);
 	auto appWin= QC_ApplicationWindow::getAppWindow();
 
-	appWin->slotFileOpen("./fonts/unicode.cxf", RS2::FormatCXF);
+    appWin->fileOpen("./fonts/unicode.cxf", RS2::FormatCXF);
 	RS_Document* d =appWin->getDocument();
 	if (d) {
 		RS_Graphic* graphic = (RS_Graphic*)d;

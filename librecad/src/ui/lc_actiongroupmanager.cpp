@@ -27,6 +27,7 @@
 #include "lc_actiongroupmanager.h"
 
 #include <QActionGroup>
+#include <qc_applicationwindow.h>
 
 namespace Sorting
 {
@@ -92,8 +93,8 @@ LC_ActionGroupManager::LC_ActionGroupManager(QObject* parent)
 
     foreach (auto ag, toolGroups())
     {
-        connect(ag, SIGNAL(triggered(QAction*)),
-                parent, SLOT(relayAction(QAction*)));
+        connect(ag, &QActionGroup::triggered, dynamic_cast<QC_ApplicationWindow *>(parent),
+                &QC_ApplicationWindow::relayAction);
     }
 }
 

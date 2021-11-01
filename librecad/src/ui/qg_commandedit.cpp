@@ -41,13 +41,8 @@
  * Default Constructor. You must call init manually if you choose
  * to use this constructor.
  */
-QG_CommandEdit::QG_CommandEdit(QWidget* parent)
-        : QLineEdit(parent)
-        , keycode_mode(false)
-        , relative_ray("none")
-        , calculator_mode(false)
-
-{
+QG_CommandEdit::QG_CommandEdit(QWidget *parent)
+        : QLineEdit(parent), keycode_mode(false), relative_ray("none"), calculator_mode(false) {
     setStyleSheet("selection-color: white; selection-background-color: green;");
     setFrame(false);
     setFocusPolicy(Qt::StrongFocus);
@@ -56,25 +51,23 @@ QG_CommandEdit::QG_CommandEdit(QWidget* parent)
 /**
  * Bypass for key press events from the tab key.
  */
-bool QG_CommandEdit::event(QEvent* e) {
-	if (e->type()==QEvent::KeyPress) {
-		QKeyEvent* k = (QKeyEvent*)e;
-		if (k->key()==Qt::Key_Tab) {
-			emit tabPressed();
-			return true;
+bool QG_CommandEdit::event(QEvent *e) {
+    if (e->type() == QEvent::KeyPress) {
+        auto *k = dynamic_cast<QKeyEvent *>(e);
+        if (k->key() == Qt::Key_Tab) {
+            emit tabPressed();
+            return true;
         }
-	}
-	
-	return QLineEdit::event(e);
+    }
+
+    return QLineEdit::event(e);
 }
 
 /**
  * History (arrow key up/down) support, tab.
  */
-void QG_CommandEdit::keyPressEvent(QKeyEvent* e)
-{
-    if (e->modifiers() & Qt::ControlModifier)
-    {
+void QG_CommandEdit::keyPressEvent(QKeyEvent *e) {
+    if (e->modifiers() & Qt::ControlModifier) {
         auto value = text();
 
         if (value.isEmpty())
@@ -82,8 +75,7 @@ void QG_CommandEdit::keyPressEvent(QKeyEvent* e)
 
         QString r_string;
 
-        switch (e->key())
-        {
+        switch (e->key()) {
             case Qt::Key_Up:
                 r_string = "0," + value;
                 break;
@@ -102,41 +94,33 @@ void QG_CommandEdit::keyPressEvent(QKeyEvent* e)
         }
 
         // r_string is empty when Ctrl is pressed
-        if (!r_string.isEmpty())
-        {
-            if (value == "none")
-            {
+        if (!r_string.isEmpty()) {
+            if (value == "none") {
                 emit message(
-                QObject::tr("You must input a distance first.")
+                        QObject::tr("You must input a distance first.")
                 );
-            }
-            else
-            {
+            } else {
                 relative_ray = value;
-                emit command("@"+r_string);
+                emit command("@" + r_string);
             }
         }
         return;
     }
 
-    switch (e->key())
-    {
+    switch (e->key()) {
         case Qt::Key_Up:
-            if (!historyList.isEmpty() && it>historyList.begin())
-            {
+            if (!historyList.isEmpty() && it > historyList.begin()) {
                 it--;
                 setText(*it);
             }
             break;
 
         case Qt::Key_Down:
-            if (!historyList.isEmpty() && it<historyList.end() )
-            {
+            if (!historyList.isEmpty() && it < historyList.end()) {
                 it++;
-                if (it<historyList.end()) {
+                if (it < historyList.end()) {
                     setText(*it);
-                }
-                else {
+                } else {
                     setText("");
                 }
             }
@@ -146,18 +130,18 @@ void QG_CommandEdit::keyPressEvent(QKeyEvent* e)
         case Qt::Key_Return:
             processInput(text());
             break;
-		case Qt::Key_Space:
-			if (RS_SETTINGS->readNumEntry("/Keyboard/EvaluateCommandOnSpace", true) ||
-				(text().isEmpty() && RS_SETTINGS->readNumEntry("/Keyboard/ToggleFreeSnapOnSpace", true)))
-				processInput(text());
-            else if (!text().isEmpty())
+        case Qt::Key_Space:
+            if (RS_SETTINGS->readNumEntry("/Keyboard/EvaluateCommandOnSpace", true) ||
+                (text().isEmpty() && RS_SETTINGS->readNumEntry("/Keyboard/ToggleFreeSnapOnSpace", true))) {
+                processInput(text());
+            } else if (!text().isEmpty()) {
                 QLineEdit::keyPressEvent(e);
-			break;
+            }
+            break;
         case Qt::Key_Escape:
             if (text().isEmpty()) {
                 emit escape();
-            }
-            else {
+            } else {
                 setText("");
             }
             break;
@@ -165,66 +149,57 @@ void QG_CommandEdit::keyPressEvent(QKeyEvent* e)
         default:
             QLineEdit::keyPressEvent(e);
             break;
-	}
+    }
 
-    if (keycode_mode)
-    {
+    if (keycode_mode) {
         auto input = text();
-        if (input.size() == 2)
-        {
+        if (input.size() == 2) {
             emit keycode(input);
         }
     }
 }
 
-void QG_CommandEdit::evaluateExpression(QString input)
-{
+void QG_CommandEdit::evaluateExpression(QString input) {
     QRegularExpression regex(R"~(([\d\.]+)deg|d)~");
     input.replace(regex, R"~(\1*pi/180)~");
     bool ok = true;
     double result = RS_Math::eval(input, &ok);
     if (ok)
-        emit message(input + " = " + QString::number(result, 'g', 12));
+            emit message(input + " = " + QString::number(result, 'g', 12));
     else
-        emit message(QObject::tr("Calculator error for input: ") + input);
+            emit message(QObject::tr("Calculator error for input: ") + input);
 }
 
 void QG_CommandEdit::focusInEvent(QFocusEvent *e) {
-	emit focusIn();
-	QLineEdit::focusInEvent(e);
+    emit focusIn();
+    QLineEdit::focusInEvent(e);
 }
 
 void QG_CommandEdit::focusOutEvent(QFocusEvent *e) {
-	emit focusOut();
-	QLineEdit::focusOutEvent(e);
+    emit focusOut();
+    QLineEdit::focusOutEvent(e);
 }
 
-void QG_CommandEdit::processInput(QString input)
-{
+void QG_CommandEdit::processInput(QString input) {
     // author: ravas
 
     // convert 10..0 to @10,0
     QRegularExpression regex(R"~(([-\w\.\\]+)\.\.)~");
     input.replace(regex, "@\\1,");
 
-    if (isForeignCommand(input))
-    {
-        if (input.contains(";"))
-        {
-            foreach (auto str, input.split(";"))
-            {
-                if (str.contains("\\"))
-                    processVariable(str);
-                else
-                    emit command(str);
-            }
-        }
-        else
-        {
+    if (isForeignCommand(input)) {
+        if (input.contains(";")) {
+                    foreach (auto str, input.split(";")) {
+                    if (str.contains("\\"))
+                        processVariable(str);
+                    else
+                            emit command(str);
+                }
+        } else {
             if (input.contains("\\"))
                 processVariable(input);
             else
-                emit command(input);
+                    emit command(input);
         }
 
         historyList.append(input);
@@ -233,33 +208,25 @@ void QG_CommandEdit::processInput(QString input)
     clear();
 }
 
-bool QG_CommandEdit::isForeignCommand(QString input)
-{
+bool QG_CommandEdit::isForeignCommand(const QString &input) {
     // author: ravas
 
     bool r_value = true;
 
-    if (input == tr("clear"))
-    {
+    if (input == tr("clear")) {
         emit clearCommandsHistory();
         r_value = false;
-    }
-    else if (input == QObject::tr("cal"))
-    {
+    } else if (input == QObject::tr("cal")) {
         calculator_mode = !calculator_mode;
-        if(calculator_mode)
-            emit message(QObject::tr("Calculator mode: On"));
+        if (calculator_mode)
+                emit message(QObject::tr("Calculator mode: On"));
         else
-            emit message(QObject::tr("Calculator mode: Off"));
+                emit message(QObject::tr("Calculator mode: Off"));
         r_value = false;
-    }
-    else if (calculator_mode)
-    {
+    } else if (calculator_mode) {
         evaluateExpression(input);
         r_value = false;
-    }
-    else if (input.contains("="))
-    {
+    } else if (input.contains("=")) {
         auto var_value = input.split("=");
         variables[var_value[0]] = var_value[1];
         r_value = false;
@@ -267,29 +234,24 @@ bool QG_CommandEdit::isForeignCommand(QString input)
     return r_value;
 }
 
-void QG_CommandEdit::processVariable(QString input)
-{
+void QG_CommandEdit::processVariable(QString input) {
     // author: ravas
 
-    if (input.contains(","))
-    {
+    if (input.contains(",")) {
         QString rel = "";
 
-        if (input.contains("@"))
-        {
+        if (input.contains("@")) {
             rel = "@";
             input.remove("@");
         }
 
         auto x_y = input.split(",");
-        if (x_y[0].contains("\\"))
-        {
+        if (x_y[0].contains("\\")) {
             x_y[0].remove("\\");
             if (variables.contains(x_y[0]))
                 x_y[0] = variables[x_y[0]];
         }
-        if (x_y[1].contains("\\"))
-        {
+        if (x_y[1].contains("\\")) {
             x_y[1].remove("\\");
             if (variables.contains(x_y[1]))
                 x_y[1] = variables[x_y[1]];
@@ -299,25 +261,20 @@ void QG_CommandEdit::processVariable(QString input)
     }
 
     input.remove("\\");
-    if (variables.contains(input))
-    {
+    if (variables.contains(input)) {
         input = variables[input];
-        if (input.contains(";"))
-        {
-            foreach (auto str, input.split(";"))
-            {
-                if (str.contains("\\"))
-                    processVariable(str);
-                else
-                    emit command(str);
-            }
-        }
-        else emit command(input);
+        if (input.contains(";")) {
+                    foreach (auto str, input.split(";")) {
+                    if (str.contains("\\"))
+                        processVariable(str);
+                    else
+                            emit command(str);
+                }
+        } else emit command(input);
     }
 }
 
-void QG_CommandEdit::readCommandFile(const QString& path)
-{
+void QG_CommandEdit::readCommandFile(const QString &path) {
     // author: ravas
 
     QFile file(path);
@@ -326,8 +283,7 @@ void QG_CommandEdit::readCommandFile(const QString& path)
 
     QTextStream txt_stream(&file);
     QString line;
-    while (!txt_stream.atEnd())
-    {
+    while (!txt_stream.atEnd()) {
         line = txt_stream.readLine();
         line.remove(" ");
         if (!line.startsWith("#"))
@@ -335,8 +291,7 @@ void QG_CommandEdit::readCommandFile(const QString& path)
     }
 }
 
-void QG_CommandEdit::modifiedPaste()
-{
+void QG_CommandEdit::modifiedPaste() {
     auto txt = qApp->clipboard()->text();
     txt.replace("\n", ";");
     setText(txt);

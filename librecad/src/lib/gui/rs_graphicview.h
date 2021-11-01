@@ -463,6 +463,7 @@ private:
     bool panning;
 
 	bool scaleLineWidth;
+public:
 
 signals:
     void relative_zero_changed(const RS_Vector&);

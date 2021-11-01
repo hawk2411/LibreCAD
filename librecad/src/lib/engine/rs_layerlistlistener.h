@@ -37,8 +37,8 @@
  */
 class RS_LayerListListener {
 public:
-    RS_LayerListListener() {}
-    virtual ~RS_LayerListListener() {}
+    RS_LayerListListener() = default;
+    virtual ~RS_LayerListListener() = default;
 
     /**
      * Called when the active layer changes.

@@ -35,9 +35,6 @@ namespace Sorting
     }
 }
 
-MainWindowX::MainWindowX(QWidget* parent)
-    : QMainWindow(parent) {}
-
 void MainWindowX::sortWidgetsByTitle(QList<QDockWidget*>& list)
 {
     std::sort(list.begin(), list.end(), Sorting::byWindowTitle);

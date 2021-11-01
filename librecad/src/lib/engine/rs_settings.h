@@ -65,6 +65,7 @@ namespace Colors
 class RS_Settings {
 
 public:
+    RS_Settings(RS_Settings const&) = delete;
 	~RS_Settings();
 	/**
      * @return Instance to the unique settings object.
@@ -74,35 +75,32 @@ public:
     /**
      * Initialize the system.
      *
-     * @param companyKey Company Key
-     * @param appKey Application key
+     * @param company_key Company Key
+     * @param app_key Application key
      */
-    void init(const QString& companyKey, const QString& appKey);
+    void init(const QString& company_key, const QString& app_key);
 
-    void beginGroup(const QString& group);
+    void beginGroup(const QString& group_name);
     void endGroup();
 
-    bool writeEntry(const QString& key, int value);
-    bool writeEntry(const QString& key, double value);
-    bool writeEntry(const QString& key, const QVariant& value);
-    bool writeEntry(const QString& key, const QString& value);
+    void writeEntry(const QString& key, int value);
+    void writeEntry(const QString& key, double value);
+    void writeEntry(const QString& key, const QVariant& value);
+    void writeEntry(const QString& key, const QString& value);
     QString readEntry(const QString& key,
                         const QString& def = QString(),
                         bool* ok = 0);
-    QByteArray readByteArrayEntry(const QString& key,
-                        const QString& def = QString(),
-                        bool* ok = 0);
-	int readNumEntry(const QString& key, int def=0);
+
+    int readNumEntry(const QString& key, int def=0);
     void clear_all();
     void clear_geometry();
     static bool save_is_allowed;
 
 private:
     RS_Settings();
-	RS_Settings(RS_Settings const&) = delete;
+
 	RS_Settings& operator = (RS_Settings const&) = delete;
 	QVariant readEntryCache(const QString& key);
-	void addToCache(const QString& key, const QVariant& value);
 
 protected:
     static RS_Settings* uniqueInstance;

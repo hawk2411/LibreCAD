@@ -17,10 +17,10 @@ class QG_LayerWidget;
 class QG_BlockWidget;
 class QG_ActionHandler;
 class QG_LibraryWidget;
-class QG_CommandWidget;
 class LC_CustomToolbar;
 class QC_ApplicationWindow;
 class LC_ActionGroupManager;
+
 
 /**
  * creates the widgets and adds them to the main window;

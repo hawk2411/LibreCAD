@@ -1976,7 +1976,7 @@ void QG_DialogFactory::updateMouseWidget(const QString& left,
 /**
  * Called whenever the selection changed.
  */
-void QG_DialogFactory::updateSelectionWidget(int num, double length) {
+void QG_DialogFactory::updateSelectionWidget(unsigned int num, double length) {
 	if (selectionWidget) {
         selectionWidget->setNumber(num);
         selectionWidget->setTotalLength(length);

@@ -44,14 +44,14 @@ class QG_PenToolBar: public QToolBar,
     Q_OBJECT
 
 public:
-	QG_PenToolBar( const QString & title, QWidget * parent = 0 );
-    virtual ~QG_PenToolBar();
+	explicit QG_PenToolBar( const QString & title, QWidget * parent = nullptr );
+    ~QG_PenToolBar() override;
 
-	RS_Pen getPen() const;
+	[[nodiscard]] RS_Pen getPen() const;
 
     // Methods from RS_LayerListListener Interface:
-    virtual void layerActivated(RS_Layer*);
-    virtual void layerEdited(RS_Layer*);
+    void layerActivated(RS_Layer*) override;
+    void layerEdited(RS_Layer*) override;
 
 public slots:
     void slotColorChanged(const RS_Color& color);
@@ -59,7 +59,7 @@ public slots:
     void slotLineTypeChanged(RS2::LineType w);
 
 signals:
-    void penChanged(RS_Pen);
+    void penChanged(const RS_Pen&);
 
 private:
 	std::unique_ptr<RS_Pen> currentPen;

@@ -57,7 +57,7 @@ void QG_SelectionWidget::languageChange()
     retranslateUi(this);
 }
 
-void QG_SelectionWidget::setNumber(int n) {
+void QG_SelectionWidget::setNumber(unsigned int n) {
     QString str;
     str.setNum(n);
     lEntities->setText(str);

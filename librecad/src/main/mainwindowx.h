@@ -13,10 +13,9 @@ class MainWindowX : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindowX(QWidget* parent = 0);
 
-    void sortWidgetsByTitle(QList<QDockWidget*>& list);
-    void sortWidgetsByTitle(QList<QToolBar*>& list);
+    static void sortWidgetsByTitle(QList<QDockWidget*>& list);
+    static void sortWidgetsByTitle(QList<QToolBar*>& list);
 
 public slots:
     void toggleRightDockArea(bool state);
