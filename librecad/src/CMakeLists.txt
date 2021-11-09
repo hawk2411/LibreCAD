@@ -21,50 +21,19 @@ find_package(Qt5Widgets REQUIRED)
 find_package(Qt5PrintSupport REQUIRED)
 find_package(Qt5Svg REQUIRED)
 
+if(NOT TRANSLATOR)
+    message(FATAL_ERROR "Qt translator 'lrelease' not found")
+endif()
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 
-if (MSVC)
-    # Force to always compile with W4
-    if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    else ()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-    endif ()
-elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    # Update if necessary
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
-endif ()
-
-include_directories(
-        ../../libraries/libdxfrw/src
-        ../../libraries/jwwlib/src
-        cmd
-        lib/actions
-        lib/creation
-        lib/debug
-        lib/engine
-        lib/fileio
-        lib/filters
-        lib/generators
-        lib/gui
-        lib/information
-        lib/math
-        lib/modification
-        lib/printing
-        actions
-        main
-        main/console_dxf2pdf
-        test
-        plugins
-        ui
-        ui/forms
-        ui/generic
-        ../res
-        #        ${CMAKE_BINARY_DIR}/librecad/src/librecad_autogen/include
-)
+#if( ${build_muparser} )
+#    message("build_muparser is on")
+#    include_directories()
+#endif()
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS ui ui/forms)
 
@@ -242,10 +211,10 @@ set(SOURCES
         ui/forms/lc_dlgsplinepoints.ui
         ui/forms/lc_widgetoptionsdialog.ui
         ui/lc_deviceoptions.ui
-        #    ui/generic/comboboxoption.ui
-        #    ui/generic/widgetcreator.ui
-        #    ui/generic/colorwizard.ui
-        #    ui/generic/textfileviewer.ui
+        ui/generic/comboboxoption.ui
+        ui/generic/widgetcreator.ui
+        ui/generic/colorwizard.ui
+        ui/generic/textfileviewer.ui
         lib/actions/rs_actioninterface.cpp
         lib/actions/rs_preview.cpp
         lib/actions/rs_previewactioninterface.cpp
@@ -482,6 +451,66 @@ set(SOURCES
         plugins/intern/qc_actiongetselect.cpp
         plugins/intern/qc_actiongetent.cpp
         )
+set(TRANSLATION_DIR ${CMAKE_SOURCE_DIR}/librecad/ts)
+set( TRANSLATIONS ${TRANSLATION_DIR}/librecad_ar.ts
+    ${TRANSLATION_DIR}/librecad_ca.ts 
+    ${TRANSLATION_DIR}/librecad_cs.ts 
+    ${TRANSLATION_DIR}/librecad_en.ts 
+    ${TRANSLATION_DIR}/librecad_en_au.ts 
+    ${TRANSLATION_DIR}/librecad_da.ts 
+    ${TRANSLATION_DIR}/librecad_de.ts 
+    ${TRANSLATION_DIR}/librecad_el.ts 
+    ${TRANSLATION_DIR}/librecad_es.ts 
+    ${TRANSLATION_DIR}/librecad_es_ar.ts 
+    ${TRANSLATION_DIR}/librecad_es_bo.ts 
+    ${TRANSLATION_DIR}/librecad_es_cl.ts 
+    ${TRANSLATION_DIR}/librecad_es_co.ts 
+    ${TRANSLATION_DIR}/librecad_es_cr.ts 
+    ${TRANSLATION_DIR}/librecad_es_do.ts 
+    ${TRANSLATION_DIR}/librecad_es_ec.ts 
+    ${TRANSLATION_DIR}/librecad_es_gt.ts 
+    ${TRANSLATION_DIR}/librecad_es_hn.ts 
+    ${TRANSLATION_DIR}/librecad_es_mx.ts 
+    ${TRANSLATION_DIR}/librecad_es_ni.ts 
+    ${TRANSLATION_DIR}/librecad_es_pa.ts 
+    ${TRANSLATION_DIR}/librecad_es_pe.ts 
+    ${TRANSLATION_DIR}/librecad_es_pr.ts 
+    ${TRANSLATION_DIR}/librecad_es_py.ts 
+    ${TRANSLATION_DIR}/librecad_es_sv.ts 
+    ${TRANSLATION_DIR}/librecad_es_us.ts 
+    ${TRANSLATION_DIR}/librecad_es_uy.ts 
+    ${TRANSLATION_DIR}/librecad_es_ve.ts 
+    ${TRANSLATION_DIR}/librecad_et.ts 
+    ${TRANSLATION_DIR}/librecad_eu.ts 
+    ${TRANSLATION_DIR}/librecad_fi.ts 
+    ${TRANSLATION_DIR}/librecad_fr.ts 
+    ${TRANSLATION_DIR}/librecad_gl.ts 
+    ${TRANSLATION_DIR}/librecad_hi.ts 
+    ${TRANSLATION_DIR}/librecad_hu.ts 
+    ${TRANSLATION_DIR}/librecad_id_ID.ts 
+    ${TRANSLATION_DIR}/librecad_it.ts 
+    ${TRANSLATION_DIR}/librecad_ja.ts 
+    ${TRANSLATION_DIR}/librecad_ko.ts 
+    ${TRANSLATION_DIR}/librecad_lv.ts 
+    ${TRANSLATION_DIR}/librecad_mk.ts 
+    ${TRANSLATION_DIR}/librecad_nl.ts 
+    ${TRANSLATION_DIR}/librecad_no.ts 
+    ${TRANSLATION_DIR}/librecad_pa.ts 
+    ${TRANSLATION_DIR}/librecad_pl.ts 
+    ${TRANSLATION_DIR}/librecad_pt_br.ts 
+    ${TRANSLATION_DIR}/librecad_pt_pt.ts 
+    ${TRANSLATION_DIR}/librecad_ro_ro.ts 
+    ${TRANSLATION_DIR}/librecad_ru.ts 
+    ${TRANSLATION_DIR}/librecad_sk.ts 
+    ${TRANSLATION_DIR}/librecad_sl.ts 
+    ${TRANSLATION_DIR}/librecad_sq_al.ts 
+    ${TRANSLATION_DIR}/librecad_sv.ts 
+    ${TRANSLATION_DIR}/librecad_ta.ts 
+    ${TRANSLATION_DIR}/librecad_tr.ts 
+    ${TRANSLATION_DIR}/librecad_uk.ts 
+    ${TRANSLATION_DIR}/librecad_zh_cn.ts 
+    ${TRANSLATION_DIR}/librecad_zh_tw.ts
+        )
 
 if (${EMU_C99})
     set(SOURCES ${SOURCES} main/emu_c99.cpp)
@@ -502,6 +531,7 @@ add_executable(librecad ${SOURCES} ${resources})
 #include(./muparser.pri)
 
 target_link_libraries(librecad
+        PUBLIC
         Qt5::Core
         Qt5::Gui
         Qt5::PrintSupport
@@ -511,5 +541,54 @@ target_link_libraries(librecad
         jwwlib
         muparser)
 
+target_include_directories(librecad
+        PRIVATE
+        ../../libraries/libdxfrw/src
+        ../../libraries/jwwlib/src
+        ../../libraries/muparser/include
+        cmd
+        lib/actions
+        lib/creation
+        lib/debug
+        lib/engine
+        lib/fileio
+        lib/filters
+        lib/generators
+        lib/gui
+        lib/information
+        lib/math
+        lib/modification
+        lib/printing
+        actions
+        main
+        main/console_dxf2pdf
+        test
+        plugins
+        ui
+        ui/forms
+        ui/generic
+        ../res
+)
 
+set(SUPPORT_DIR ${CMAKE_SOURCE_DIR}/librecad/support)
+add_custom_command(
+        TARGET librecad POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${SUPPORT_DIR}/patterns
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/patterns
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${SUPPORT_DIR}/fonts
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/fonts
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${SUPPORT_DIR}/library
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/library
+        COMMAND ${TRANSLATOR} ${TRANSLATIONS}
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
+        COMMAND ${CMAKE_COMMAND} -E copy
+            ${TRANSLATION_DIR}/*.qm
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
+        COMMAND ${CMAKE_COMMAND} -E remove
+            ${TRANSLATION_DIR}/*.qm
+)
 

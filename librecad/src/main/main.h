@@ -34,11 +34,9 @@
 
 /**
  * @brief handleFileArguments
- * @param argc cli argument counter from main()
- * @param argv cli arguments from main()
  * @param argClean a list of indices to be ignored
  * @return
  */
-QStringList handleFileArguments(int argc, char** argv, const QStringList& arguments);
+QStringList handleFileArguments(const QStringList& arguments);
 
 #endif

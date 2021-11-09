@@ -245,7 +245,7 @@ int main(int argc, char** argv)
                     QFileInfo(QFile::decodeName(argv[0]) ).absolutePath());
 
     // parse command line arguments that might not need a launched program:
-    QStringList fileList = handleFileArguments(argc, argv, not_handled_arguments);
+    QStringList fileList = handleFileArguments(not_handled_arguments);
 
 
     if(first_load) {
@@ -300,7 +300,7 @@ int main(int argc, char** argv)
  *
  * @return list of files to load on startup.
  */
-QStringList handleFileArguments(int argc, char** argv, const QStringList& arguments)
+QStringList handleFileArguments(const QStringList& arguments)
 {
     RS_DEBUG->print("main: handling args..");
     QStringList ret;
