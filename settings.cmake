@@ -3,6 +3,7 @@ if(NOT TRANSLATOR)
     message(FATAL_ERROR "Qt translator 'lrelease' not found")
 endif()
 
+# TODO is APPLE really among to UNIX
 if(UNIX)
     if(APPLE)
         message("This ins apple")
