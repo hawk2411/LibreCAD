@@ -571,6 +571,17 @@ target_include_directories(librecad
         ../res
 )
 
+foreach(source_translations ${TRANSLATIONS})
+    if(EXISTS ${source_translations})
+        cmake_path(GET source_translations STEM LAST_ONLY result)
+        cmake_path(GET source_translations PARENT_PATH source_path)
+
+        set(qm_file "${source_path}/${result}.qm")
+        set(qm_files ${qm_files} ${qm_file})
+    endif()
+endforeach()
+message(${qm_files})
+
 set(SUPPORT_DIR ${CMAKE_SOURCE_DIR}/librecad/support)
 add_custom_command(
         TARGET librecad POST_BUILD
@@ -587,9 +598,9 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E make_directory
             ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
         COMMAND ${CMAKE_COMMAND} -E copy
-            ${TRANSLATION_DIR}/*.qm
+            ${qm_files}
             ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
         COMMAND ${CMAKE_COMMAND} -E remove
-            ${TRANSLATION_DIR}/*.qm
+            ${qm_files}
 )
 
