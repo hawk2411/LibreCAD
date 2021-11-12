@@ -1,10 +1,11 @@
 # LibreCAD project file
 # (c) Ries van Twisk (librecad@rvt.dds.nl)
+include(boost.cmake)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(DISABLE_POSTSCRIPT "" false)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fext-numeric-literals")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fext-numeric-literals")
 
 #uncomment to enable a Debugging menu entry for basic unit testing
 add_compile_definitions(LC_DEBUGGING)
@@ -599,7 +600,7 @@ add_custom_command(
             ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
         COMMAND ${CMAKE_COMMAND} -E copy
             ${qm_files}
-            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
+            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm/
         COMMAND ${CMAKE_COMMAND} -E remove
             ${qm_files}
 )

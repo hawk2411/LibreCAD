@@ -1,0 +1,8 @@
+if(WIN32)
+    if(DEFINED ENV{BOOST_DIR})
+        message(STATUS "found boost")
+        include_directories($ENV{BOOST_DIR})
+    else()
+        message( FATAL_ERROR "cannot find boost")
+    endif()
+endif()
