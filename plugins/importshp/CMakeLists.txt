@@ -23,3 +23,10 @@ target_link_libraries(importshp
         Qt5::Gui
         Qt5::Widgets
         )
+
+set_target_properties(
+        importshp
+        PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${output_directory}
+        RUNTIME_OUTPUT_DIRECTORY ${output_directory}
+)

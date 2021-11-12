@@ -20,3 +20,9 @@ target_link_libraries(align
         Qt5::Gui
         Qt5::Widgets
         )
+set_target_properties(
+        align
+        PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${output_directory}
+        RUNTIME_OUTPUT_DIRECTORY ${output_directory}
+)

@@ -22,4 +22,9 @@ target_link_libraries(plotequation
         muparser
         )
 
-
+set_target_properties(
+        plotequation
+        PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${output_directory}
+        RUNTIME_OUTPUT_DIRECTORY ${output_directory}
+)

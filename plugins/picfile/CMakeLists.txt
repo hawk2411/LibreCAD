@@ -20,3 +20,10 @@ target_link_libraries(picfile
         Qt5::Gui
         Qt5::Widgets
         )
+
+set_target_properties(
+        picfile
+        PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${output_directory}
+        RUNTIME_OUTPUT_DIRECTORY ${output_directory}
+)

@@ -20,3 +20,10 @@ target_link_libraries(gear
         Qt5::Gui
         Qt5::Widgets
         )
+
+set_target_properties(
+        gear
+        PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${output_directory}
+        RUNTIME_OUTPUT_DIRECTORY ${output_directory}
+)

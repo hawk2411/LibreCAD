@@ -1,5 +1,4 @@
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/plugins)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/plugins)
+set(output_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/plugins)
 
 
 add_subdirectory(asciifile)
