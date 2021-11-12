@@ -3,11 +3,12 @@ set(CMAKE_CXX_STANDARD 17)
 message(STATUS "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
 
 set(DLL_NAME "dxfrw")
-include_directories(src)
+
 
 add_library(${DLL_NAME} STATIC
     src/libdxfrw.cpp 
-    src/libdwgr.cpp 
+    src/libdwgr.cpp
+    src/drw_base.cpp
     src/drw_header.cpp 
     src/drw_classes.cpp 
     src/drw_entities.cpp 
@@ -26,3 +27,4 @@ add_library(${DLL_NAME} STATIC
     src/intern/dwgreader27.cpp 
     src/intern/dwgreader24.cpp
 )
+target_include_directories(${DLL_NAME} PRIVATE src)
