@@ -90,14 +90,25 @@ set(TRANSLATIONS ${TRANSLATION_DIR}/plugins_ar.ts
 
 find_program(TRANSLATOR NAMES lrelease)
 
+foreach(source_translations ${TRANSLATIONS})
+    if(EXISTS ${source_translations})
+        cmake_path(GET source_translations STEM LAST_ONLY result)
+        cmake_path(GET source_translations PARENT_PATH source_path)
+
+        set(qm_file "${source_path}/${result}.qm")
+        set(qm_files ${qm_files} ${qm_file})
+    endif()
+endforeach()
+
+
 add_custom_command(
         TARGET plugins POST_BUILD
         COMMAND ${TRANSLATOR} ${TRANSLATIONS}
         COMMAND ${CMAKE_COMMAND} -E make_directory
             ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
         COMMAND ${CMAKE_COMMAND} -E copy
-            ${TRANSLATION_DIR}/*.qm
+            ${qm_files}
             ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
         COMMAND ${CMAKE_COMMAND} -E remove
-            ${TRANSLATION_DIR}/*.qm
+            ${qm_files}
 )
