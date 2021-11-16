@@ -27,7 +27,7 @@ class dxfWriter;
 
 class dxfRW {
 public:
-    dxfRW(const char* name);
+    explicit dxfRW(const char* name);
     ~dxfRW();
     void setDebug(DRW::DebugLevel lvl);
     /// reads the file specified in constructor
@@ -39,120 +39,117 @@ public:
      * @return true for success
      */
     bool read(DRW_Interface *interface_, bool ext);
-    void setBinary(bool b) {binFile = b;}
-
     bool write(DRW_Interface *interface_, DRW::Version ver, bool bin);
-    bool writeLineType(DRW_LType *ent);
-    bool writeLayer(DRW_Layer *ent);
-    bool writeDimstyle(DRW_Dimstyle *ent);
-    bool writeTextstyle(DRW_Textstyle *ent);
-    bool writeVport(DRW_Vport *ent);
-    bool writeAppId(DRW_AppId *ent);
-    bool writePoint(DRW_Point *ent);
-    bool writeLine(DRW_Line *ent);
-    bool writeRay(DRW_Ray *ent);
-    bool writeXline(DRW_Xline *ent);
-    bool writeCircle(DRW_Circle *ent);
-    bool writeArc(DRW_Arc *ent);
-    bool writeEllipse(DRW_Ellipse *ent);
-    bool writeTrace(DRW_Trace *ent);
-    bool writeSolid(DRW_Solid *ent);
-    bool write3dface(DRW_3Dface *ent);
-    bool writeLWPolyline(DRW_LWPolyline *ent);
-    bool writePolyline(DRW_Polyline *ent);
-    bool writeSpline(DRW_Spline *ent);
-    bool writeBlockRecord(std::string name);
-    bool writeBlock(DRW_Block *ent);
-    bool writeInsert(DRW_Insert *ent);
-    bool writeMText(DRW_MText *ent);
-    bool writeText(DRW_Text *ent);
-    bool writeHatch(DRW_Hatch *ent);
-    bool writeViewport(DRW_Viewport *ent);
-    DRW_ImageDef *writeImage(DRW_Image *ent, std::string name);
-    bool writeLeader(DRW_Leader *ent);
-    bool writeDimension(DRW_Dimension *ent);
+    bool writeLineType(DRW_LType *ent, dxfWriter* writer);
+    bool writeLayer(const DRW_Layer *ent, dxfWriter* writer);
+    bool writeDimstyle(const DRW_Dimstyle *ent, dxfWriter* writer);
+    bool writeTextstyle(const DRW_Textstyle *ent, dxfWriter* writer);
+    bool writeVport(DRW_Vport *ent, dxfWriter* writer);
+    bool writeAppId(DRW_AppId *ent, dxfWriter* writer);
+    bool writePoint(DRW_Point *ent, dxfWriter* writer);
+    bool writeLine(DRW_Line *ent, dxfWriter* writer);
+    bool writeRay(DRW_Ray *ent, dxfWriter* writer);
+    bool writeXline(DRW_Xline *ent, dxfWriter* writer);
+    bool writeCircle(DRW_Circle *ent, dxfWriter* writer);
+    bool writeArc(DRW_Arc *ent, dxfWriter* writer);
+    bool writeEllipse(DRW_Ellipse *ent, dxfWriter* writer);
+    bool writeTrace(DRW_Trace *ent, dxfWriter* writer);
+    bool writeSolid(DRW_Solid *ent, dxfWriter* writer);
+    bool write3dface(DRW_3Dface *ent, dxfWriter* writer);
+    bool writeLWPolyline(DRW_LWPolyline *ent, dxfWriter* writer);
+    bool writePolyline(DRW_Polyline *ent, dxfWriter* writer);
+    bool writeSpline(DRW_Spline *ent, dxfWriter* writer);
+    bool writeBlockRecord(std::string name, dxfWriter* writer);
+    bool writeBlock(DRW_Block *ent, dxfWriter* writer);
+    bool writeInsert(DRW_Insert *ent, dxfWriter* writer);
+    bool writeMText(DRW_MText *ent, dxfWriter* writer);
+    bool writeText(DRW_Text *ent, dxfWriter* writer);
+    bool writeHatch(DRW_Hatch *ent, dxfWriter* writer);
+    bool writeViewport(DRW_Viewport *ent, dxfWriter* writer);
+    DRW_ImageDef *writeImage(DRW_Image *ent, const std::string& name, dxfWriter* writer);
+    bool writeLeader(DRW_Leader *ent, dxfWriter* writer);
+    bool writeDimension(DRW_Dimension *ent, dxfWriter* writer);
     void setEllipseParts(int parts){elParts = parts;} /*!< set parts number when convert ellipse to polyline */
-    bool writePlotSettings(DRW_PlotSettings *ent);
+    bool writePlotSettings(DRW_PlotSettings *ent, dxfWriter* writer);
 
     DRW::Version getVersion() const;
     DRW::error getError() const;
 
 private:
     /// used by read() to parse the content of the file
-    bool processDxf();
-    bool processHeader();
-    bool processTables();
-    bool processBlocks();
-    bool processBlock();
-    bool processEntities(bool isblock);
-    bool processObjects();
+    bool processDxf(dxfReader *reader);
+    bool processHeader(dxfReader *reader);
+    bool processTables(dxfReader *reader);
+    bool processBlocks(dxfReader *reader);
+    bool processBlock(dxfReader *reader);
+    bool processEntities(bool isblock, dxfReader *reader);
+    bool processObjects(dxfReader *reader);
 
-    bool processLType();
-    bool processLayer();
-    bool processDimStyle();
-    bool processTextStyle();
-    bool processVports();
-    bool processAppId();
+    bool processLType(dxfReader *reader);
+    bool processLayer(dxfReader *reader);
+    bool processDimStyle(dxfReader *reader);
+    bool processTextStyle(dxfReader *reader);
+    bool processVports(dxfReader *reader);
+    bool processAppId(dxfReader *reader);
 
-    bool processPoint();
-    bool processLine();
-    bool processRay();
-    bool processXline();
-    bool processCircle();
-    bool processArc();
-    bool processEllipse();
-    bool processTrace();
-    bool processSolid();
-    bool processInsert();
-    bool processLWPolyline();
-    bool processPolyline();
-    bool processVertex(DRW_Polyline* pl);
-    bool processText();
-    bool processMText();
-    bool processHatch();
-    bool processSpline();
-    bool process3dface();
-    bool processViewport();
-    bool processImage();
-    bool processImageDef();
-    bool processDimension();
-    bool processLeader();
-    bool processPlotSettings();
+    bool processPoint(dxfReader *reader);
+    bool processLine(dxfReader *reader);
+    bool processRay(dxfReader *reader);
+    bool processXline(dxfReader *reader);
+    bool processCircle(dxfReader *reader);
+    bool processArc(dxfReader *reader);
+    bool processEllipse(dxfReader *reader);
+    bool processTrace(dxfReader *reader);
+    bool processSolid(dxfReader *reader);
+    bool processInsert(dxfReader *reader);
+    bool processLWPolyline(dxfReader *reader);
+    bool processPolyline(dxfReader *reader);
+    bool processVertex(DRW_Polyline* pl, dxfReader *reader);
+    bool processText(dxfReader *reader);
+    bool processMText(dxfReader *reader);
+    bool processHatch(dxfReader *reader);
+    bool processSpline(dxfReader *reader);
+    bool process3dface(dxfReader *reader);
+    bool processViewport(dxfReader *reader);
+    bool processImage(dxfReader *reader);
+    bool processImageDef(dxfReader *reader);
+    bool processDimension(dxfReader *reader);
+    bool processLeader(dxfReader *reader);
+    bool processPlotSettings(dxfReader *reader);
 
 //    bool writeHeader();
-    bool writeEntity(DRW_Entity *ent);
-    bool writeTables();
-    bool writeBlocks();
-    bool writeObjects();
-    bool writeExtData(const std::vector<DRW_Variant*> &ed);
+    bool writeEntity(DRW_Entity *ent, dxfWriter* writer);
+    bool writeTables(dxfWriter *writer);
+    bool writeBlocks(dxfWriter *writer);
+    bool writeObjects(dxfWriter *writer);
+    bool writeExtData(const std::vector<DRW_Variant*> &ed, dxfWriter* writer);
     /*use version from dwgutil.h*/
     std::string toHexStr(int n);//RLZ removeme
-    bool writeAppData(const std::list<std::list<DRW_Variant>> &appData);
+    bool writeAppData(const std::list<std::list<DRW_Variant>> &appData, dxfWriter* writer);
 
-    bool setError(const DRW::error lastError);
+    bool setError(DRW::error lastError);
 
 private:
-    DRW::Version version;
-    DRW::error error {DRW::BAD_NONE};
+    DRW::Version version{DRW::UNKNOWNV};
+    DRW::error error{DRW::BAD_NONE};
     std::string fileName;
     std::string codePage;
-    bool binFile;
-    dxfReader *reader;
-    dxfWriter *writer;
-    DRW_Interface *iface;
+    //dxfReader *reader{nullptr};
+    //dxfWriter *writer{nullptr};
+    DRW_Interface *iface{nullptr};
     DRW_Header header;
 //    int section;
     std::string nextentity;
-    int entCount;
-    bool wlayer0;
-    bool dimstyleStd;
-    bool applyExt;
-    bool writingBlock;
-    int elParts;  /*!< parts number when convert ellipse to polyline */
-    std::unordered_map<std::string,int> blockMap;
-    std::vector<DRW_ImageDef*> imageDef;  /*!< imageDef list */
+    int entCount{0};
+    bool wlayer0{false};
+    bool dimstyleStd{false};
+    bool applyExt{false};
+    bool writingBlock{false};
+    int elParts{128};  /*!< parts number when convert ellipse to polyline */
+    std::unordered_map<std::string, int> blockMap;
+    std::vector<DRW_ImageDef *> imageDef;  /*!< imageDef list */
 
-    int currHandle;
+    int currHandle{0};
 
 };
 

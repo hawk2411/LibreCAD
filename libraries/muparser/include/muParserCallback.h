@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-use-nodiscard"
 /*
                  __________                                      
     _____   __ __\______   \_____  _______  ______  ____ _______ 
@@ -81,7 +83,11 @@ public:
     ParserCallback(strfun_type3 a_pFun, bool a_bAllowOpti);
     ParserCallback();
     ParserCallback(const ParserCallback &a_Fun);
-    
+    //!
+    //! Assignment operator.
+    //! @param [in] other Other instance to copy.
+    //!
+    ParserCallback& operator=(const ParserCallback& other) = default;
     ParserCallback* Clone() const;
 
     bool  IsOptimizable() const;
@@ -116,3 +122,5 @@ typedef std::map<string_type, ParserCallback> funmap_type;
 
 #endif
 
+
+#pragma clang diagnostic pop

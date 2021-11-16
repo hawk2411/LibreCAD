@@ -76,19 +76,17 @@ bool dwgR::getPreview(){
 }
 
 bool dwgR::testReader(){
-    bool isOk = false;
-
     std::ifstream filestr;
     filestr.open (fileName.c_str(), std::ios_base::in | std::ios::binary);
     if (!filestr.is_open() || !filestr.good() ){
         error = DRW::BAD_OPEN;
-        return isOk;
+        return false;
     }
 
     dwgBuffer fileBuf(&filestr);
-    duint8 *tmpStrData = new duint8[fileBuf.size()];
-    fileBuf.getBytes(tmpStrData, fileBuf.size());
-    dwgBuffer dataBuf(tmpStrData, fileBuf.size());
+    auto tmpStrData = std::unique_ptr<duint8>(new duint8[fileBuf.size()]);
+    fileBuf.getBytes(tmpStrData.get(), fileBuf.size());
+    dwgBuffer dataBuf(tmpStrData.get(), fileBuf.size());
     fileBuf.setPosition(0);
     DRW_DBG("\ndwgR::testReader filebuf size: ");DRW_DBG(fileBuf.size());
     DRW_DBG("\ndwgR::testReader dataBuf size: ");DRW_DBG(dataBuf.size());
@@ -123,10 +121,9 @@ bool dwgR::testReader(){
     DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
     DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
 
-    delete[]tmpStrData;
     filestr.close();
     DRW_DBG("\n\n");
-    return isOk;
+    return true;
 }
 
 /*start reading dwg file header and, if can read it, continue reading all*/

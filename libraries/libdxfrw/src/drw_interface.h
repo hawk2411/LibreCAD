@@ -28,10 +28,8 @@
  */
 class DRW_Interface {
 public:
-    DRW_Interface() {
-    }
-    virtual ~DRW_Interface() {
-    }
+    DRW_Interface() = default;
+    virtual ~DRW_Interface() = default;
 
     /** Called when header is parsed.  */
     virtual void addHeader(const DRW_Header* data) = 0;
@@ -64,7 +62,7 @@ public:
      *
      * int handle are the value of DRW_Block::handleBlock added with addBlock()
      */
-    virtual void setBlock(const int handle) = 0;
+    virtual void setBlock(int handle) = 0;
 
     /** Called to end the current block */
     virtual void endBlock() = 0;
@@ -190,17 +188,17 @@ public:
      */
     virtual void addPlotSettings(const DRW_PlotSettings *data) = 0;
 
-    virtual void writeHeader(DRW_Header& data) = 0;
-    virtual void writeBlocks() = 0;
-    virtual void writeBlockRecords() = 0;
-    virtual void writeEntities() = 0;
-    virtual void writeLTypes() = 0;
-    virtual void writeLayers() = 0;
-    virtual void writeTextstyles() = 0;
-    virtual void writeVports() = 0;
-    virtual void writeDimstyles() = 0;
-    virtual void writeObjects() = 0;
-    virtual void writeAppId() = 0;
+    virtual void writeHeader(DRW_Header& data, dxfWriter* writer) = 0;
+    virtual void writeBlocks(dxfWriter* writer) = 0;
+    virtual void writeBlockRecords(dxfWriter* writer) = 0;
+    virtual void writeEntities(dxfWriter* writer) = 0;
+    virtual void writeLTypes(dxfWriter* writer) = 0;
+    virtual void writeLayers(dxfWriter* writer) = 0;
+    virtual void writeTextstyles(dxfWriter* writer) = 0;
+    virtual void writeVports(dxfWriter* writer) = 0;
+    virtual void writeDimstyles(dxfWriter* writer) = 0;
+    virtual void writeObjects(dxfWriter* writer) = 0;
+    virtual void writeAppId(dxfWriter* writer) = 0;
 };
 
 #endif

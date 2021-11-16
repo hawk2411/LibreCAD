@@ -371,19 +371,22 @@ namespace mu
   */
   void ParserBase::CheckOprt(const string_type &a_sName,
                              const ParserCallback &a_Callback,
-                             const string_type &a_szCharSet) const
-  {
-    if ( !a_sName.length() ||
-        (a_sName.find_first_not_of(a_szCharSet)!=string_type::npos) ||
-        (a_sName[0]>='0' && a_sName[0]<='9'))
-    {
-      switch(a_Callback.GetCode())
-      {
-      case cmOPRT_POSTFIX: Error(ecINVALID_POSTFIX_IDENT, -1, a_sName);
-      case cmOPRT_INFIX:   Error(ecINVALID_INFIX_IDENT, -1, a_sName);
-      default:             Error(ecINVALID_NAME, -1, a_sName);
+                             const string_type &a_szCharSet) const {
+      if (!a_sName.length() ||
+          (a_sName.find_first_not_of(a_szCharSet) != string_type::npos) ||
+          (a_sName[0] >= '0' && a_sName[0] <= '9')) {
+          switch (a_Callback.GetCode()) {
+              case cmOPRT_POSTFIX:
+                  Error(ecINVALID_POSTFIX_IDENT, -1, a_sName);
+                  break;
+              case cmOPRT_INFIX:
+                  Error(ecINVALID_INFIX_IDENT, -1, a_sName);
+                  break;
+              default:
+                  Error(ecINVALID_NAME, -1, a_sName);
+                  break;
+          }
       }
-    }
   }
 
   //---------------------------------------------------------------------------

@@ -1497,12 +1497,12 @@ void RS_FilterDXFRW::prepareBlocks() {
 /**
  * Writes block records (just the name, not the entities in it).
  */
-void RS_FilterDXFRW::writeBlockRecords(){
+void RS_FilterDXFRW::writeBlockRecords(dxfWriter* writer){
     //first prepare and send unnamed blocks, the while loop can be omitted for R12
     prepareBlocks();
     QHash<RS_Entity*, QString>::const_iterator it = noNameBlock.constBegin();
     while (it != noNameBlock.constEnd()) {
-        dxfW->writeBlockRecord(it.value().toStdString());
+        dxfW->writeBlockRecord(it.value().toStdString(), writer);
         ++it;
     }
 
@@ -1512,7 +1512,7 @@ void RS_FilterDXFRW::writeBlockRecords(){
         blk = graphic->blockAt(i);
         if (!blk->isUndone()){
             RS_DEBUG->print("writing block record: %s", (const char*)blk->getName().toLocal8Bit());
-            dxfW->writeBlockRecord(blk->getName().toUtf8().data());
+            dxfW->writeBlockRecord(blk->getName().toUtf8().data(), writer);
         }
     }
 }
@@ -1520,7 +1520,7 @@ void RS_FilterDXFRW::writeBlockRecords(){
 /**
  * Writes blocks.
  */
-void RS_FilterDXFRW::writeBlocks() {
+void RS_FilterDXFRW::writeBlocks(dxfWriter* writer) {
     RS_Block *blk;
 
     //write unnamed blocks
@@ -1532,12 +1532,12 @@ void RS_FilterDXFRW::writeBlocks() {
         block.basePoint.y = 0.0;
         block.basePoint.z = 0.0;
         block.flags = 1;//flag for unnamed block
-        dxfW->writeBlock(&block);
+        dxfW->writeBlock(&block, writer);
         RS_EntityContainer *ct = (RS_EntityContainer *)it.key();
         for (RS_Entity* e=ct->firstEntity(RS2::ResolveNone);
              e; e=ct->nextEntity(RS2::ResolveNone)) {
             if ( !(e->getFlag(RS2::FlagUndone)) ) {
-                writeEntity(e);
+                writeEntity(e, writer);
             }
         }
         ++it;
@@ -1554,11 +1554,11 @@ void RS_FilterDXFRW::writeBlocks() {
             block.basePoint.x = blk->getBasePoint().x;
             block.basePoint.y = blk->getBasePoint().y;
             block.basePoint.z = blk->getBasePoint().z;
-            dxfW->writeBlock(&block);
+            dxfW->writeBlock(&block, writer);
             for (RS_Entity* e=blk->firstEntity(RS2::ResolveNone);
                  e; e=blk->nextEntity(RS2::ResolveNone)) {
                 if ( !(e->getFlag(RS2::FlagUndone)) ) {
-                    writeEntity(e);
+                    writeEntity(e, writer);
                 }
             }
         }
@@ -1566,7 +1566,8 @@ void RS_FilterDXFRW::writeBlocks() {
 }
 
 
-void RS_FilterDXFRW::writeHeader(DRW_Header& data){
+void RS_FilterDXFRW::writeHeader(DRW_Header& data, dxfWriter* writer){
+    (void)writer;
     RS_Vector v;
 /*TODO $ISOMETRICGRID == $SNAPSTYLE and "GRID on/off" not handled because is part of
  active vport to save is required read/write VPORT table */
@@ -1609,16 +1610,16 @@ void RS_FilterDXFRW::writeHeader(DRW_Header& data){
     data.addStr("$CLAYER", (graphic->getActiveLayer()->getName()).toUtf8().data(), 8);
 }
 
-void RS_FilterDXFRW::writeLTypes(){
+void RS_FilterDXFRW::writeLTypes(dxfWriter* writer){
     DRW_LType ltype;
     // Standard linetypes for LibreCAD / AutoCAD
     ltype.name = "CONTINUOUS";
     ltype.desc = "Solid line";
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
     ltype.name = "ByLayer";
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
     ltype.name = "ByBlock";
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.name = "DOT";
     ltype.desc = "Dot . . . . . . . . . . . . . . . . . . . . . .";
@@ -1626,7 +1627,7 @@ void RS_FilterDXFRW::writeLTypes(){
 	ltype.length = 6.35;
     ltype.path.push_back(0.0);
     ltype.path.push_back(-6.35);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DOTTINY";
@@ -1635,7 +1636,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.length = 0.9525;
     ltype.path.push_back(0.0);
     ltype.path.push_back(-0.9525);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DOT2";
@@ -1644,7 +1645,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.length = 3.175;
     ltype.path.push_back(0.0);
     ltype.path.push_back(-3.175);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DOTX2";
@@ -1653,7 +1654,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.length = 12.7;
     ltype.path.push_back(0.0);
     ltype.path.push_back(-12.7);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DASHED";
@@ -1662,7 +1663,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.length = 19.05;
     ltype.path.push_back(12.7);
     ltype.path.push_back(-6.35);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DASHEDTINY";
@@ -1671,7 +1672,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.length = 2.8575;
     ltype.path.push_back(1.905);
     ltype.path.push_back(-0.9525);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DASHED2";
@@ -1680,7 +1681,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.length = 9.525;
     ltype.path.push_back(6.35);
     ltype.path.push_back(-3.175);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DASHEDX2";
@@ -1689,7 +1690,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.length = 38.1;
     ltype.path.push_back(25.4);
     ltype.path.push_back(-12.7);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DASHDOT";
@@ -1700,7 +1701,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-6.35);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-6.35);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DASHDOTTINY";
@@ -1711,7 +1712,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-0.9525);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-0.9525);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DASHDOT2";
@@ -1722,7 +1723,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-3.175);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-3.175);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DASHDOTX2";
@@ -1733,7 +1734,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-12.7);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-12.7);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DIVIDE";
@@ -1746,7 +1747,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-6.35);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-6.35);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DIVIDETINY";
@@ -1759,7 +1760,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-0.9525);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-0.9525);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DIVIDE2";
@@ -1772,7 +1773,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-3.175);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-3.175);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "DIVIDEX2";
@@ -1785,7 +1786,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-12.7);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-12.7);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "BORDER";
@@ -1798,7 +1799,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-6.35);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-6.35);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "BORDERTINY";
@@ -1811,7 +1812,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-0.9525);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-0.9525);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "BORDER2";
@@ -1824,7 +1825,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-3.175);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-3.175);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "BORDERX2";
@@ -1837,7 +1838,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-12.7);
     ltype.path.push_back(0.0);
     ltype.path.push_back(-12.7);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "CENTER";
@@ -1848,7 +1849,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-6.35);
     ltype.path.push_back(6.35);
     ltype.path.push_back(-6.35);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "CENTERTINY";
@@ -1859,7 +1860,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-0.9525);
     ltype.path.push_back(0.9525);
     ltype.path.push_back(-0.9525);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "CENTER2";
@@ -1870,7 +1871,7 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-3.175);
     ltype.path.push_back(3.175);
     ltype.path.push_back(-3.175);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 
     ltype.path.clear();
     ltype.name = "CENTERX2";
@@ -1881,10 +1882,10 @@ void RS_FilterDXFRW::writeLTypes(){
     ltype.path.push_back(-12.7);
     ltype.path.push_back(12.7);
     ltype.path.push_back(-12.7);
-    dxfW->writeLineType(&ltype);
+    dxfW->writeLineType(&ltype, writer);
 }
 
-void RS_FilterDXFRW::writeLayers(){
+void RS_FilterDXFRW::writeLayers(dxfWriter* writer){
     DRW_Layer lay;
     RS_LayerList* ll = graphic->getLayerList();
     int exact_rgb;
@@ -1905,11 +1906,11 @@ void RS_FilterDXFRW::writeLayers(){
             lay.extData.push_back(new DRW_Variant(1070, 1));
             RS_DEBUG->print(RS_Debug::D_WARNING, "RS_FilterDXF::writeLayers: layer %s saved as construction layer", lay.name.c_str());
         }
-        dxfW->writeLayer(&lay);
+        dxfW->writeLayer(&lay, writer);
     }
 }
 
-void RS_FilterDXFRW::writeTextstyles(){
+void RS_FilterDXFRW::writeTextstyles(dxfWriter* writer){
     QHash<QString, QString> styles;
     QString sty;
     //Find fonts used by text entities in drawing
@@ -1960,12 +1961,12 @@ void RS_FilterDXFRW::writeTextstyles(){
          ts.name = (it.key()).toStdString();
          ts.font = it.value().toStdString();
 //         ts.flags;
-         dxfW->writeTextstyle( &ts );
+         dxfW->writeTextstyle( &ts, writer );
          ++it;
      }
 }
 
-void RS_FilterDXFRW::writeVports(){
+void RS_FilterDXFRW::writeVports(dxfWriter* writer){
     DRW_Vport vp;
     vp.name = "*Active";
     graphic->isGridOn()? vp.grid = 1 : vp.grid = 0;
@@ -1994,11 +1995,11 @@ void RS_FilterDXFRW::writeVports(){
         vp.center.x = ( gv->getWidth() - gv->getOffsetX() )/ (fac.x * 2.0);
         vp.center.y = ( gv->getHeight() - gv->getOffsetY() )/ (fac.y * 2.0);
     }
-    dxfW->writeVport(&vp);
+    dxfW->writeVport(&vp, writer);
 }
 
 
-void RS_FilterDXFRW::writeDimstyles(){
+void RS_FilterDXFRW::writeDimstyles(dxfWriter* writer){
     DRW_Dimstyle dsty;
     dsty.name = "Standard";
     dsty.dimscale = graphic->getVariableDouble("$DIMSCALE", 1.0);
@@ -2025,10 +2026,10 @@ void RS_FilterDXFRW::writeDimstyles(){
     dsty.dimtxsty = graphic->getVariableString("$DIMTXSTY", "standard").toStdString();
     dsty.dimlwd = graphic->getVariableInt("$DIMLWD", -2);
     dsty.dimlwe = graphic->getVariableInt("$DIMLWE", -2);
-    dxfW->writeDimstyle(&dsty);
+    dxfW->writeDimstyle(&dsty, writer);
 }
 
-void RS_FilterDXFRW::writeObjects() {
+void RS_FilterDXFRW::writeObjects(dxfWriter* writer) {
     /* PLOTSETTINGS */
     DRW_PlotSettings ps;
     QString horizXvert = QString("%1x%2").arg(graphic->getPagesNumHoriz())
@@ -2038,79 +2039,79 @@ void RS_FilterDXFRW::writeObjects() {
     ps.marginTop = graphic->getMarginTop();
     ps.marginRight = graphic->getMarginRight();
     ps.marginBottom = graphic->getMarginBottom();
-    dxfW->writePlotSettings(&ps);
+    dxfW->writePlotSettings(&ps, writer);
 }
 
-void RS_FilterDXFRW::writeAppId(){
+void RS_FilterDXFRW::writeAppId(dxfWriter* writer){
     DRW_AppId ai;
     ai.name ="LibreCad";
-    dxfW->writeAppId(&ai);
+    dxfW->writeAppId(&ai, writer);
 }
 
-void RS_FilterDXFRW::writeEntities(){
+void RS_FilterDXFRW::writeEntities(dxfWriter* writer){
     for (RS_Entity *e = graphic->firstEntity(RS2::ResolveNone);
 		 e ; e = graphic->nextEntity(RS2::ResolveNone)) {
         if ( !(e->getFlag(RS2::FlagUndone)) ) {
-            writeEntity(e);
+            writeEntity(e, writer);
         }
     }
 }
 
-void RS_FilterDXFRW::writeEntity(RS_Entity* e){
+void RS_FilterDXFRW::writeEntity(RS_Entity* e, dxfWriter* writer){
     switch (e->rtti()) {
     case RS2::EntityPoint:
-        writePoint((RS_Point*)e);
+        writePoint((RS_Point*)e, writer);
         break;
     case RS2::EntityLine:
-        writeLine((RS_Line*)e);
+        writeLine((RS_Line*)e, writer);
         break;
     case RS2::EntityCircle:
-        writeCircle((RS_Circle*)e);
+        writeCircle((RS_Circle*)e, writer);
         break;
     case RS2::EntityArc:
-        writeArc((RS_Arc*)e);
+        writeArc((RS_Arc*)e, writer);
         break;
     case RS2::EntitySolid:
-        writeSolid((RS_Solid*)e);
+        writeSolid((RS_Solid*)e, writer);
         break;
     case RS2::EntityEllipse:
-        writeEllipse((RS_Ellipse*)e);
+        writeEllipse((RS_Ellipse*)e, writer);
         break;
     case RS2::EntityPolyline:
-        writeLWPolyline((RS_Polyline*)e);
+        writeLWPolyline((RS_Polyline*)e, writer);
         break;
     case RS2::EntitySpline:
-        writeSpline((RS_Spline*)e);
+        writeSpline((RS_Spline*)e, writer);
         break;
     case RS2::EntitySplinePoints:
-        writeSplinePoints((LC_SplinePoints*)e);
+        writeSplinePoints((LC_SplinePoints*)e, writer);
         break;
 //    case RS2::EntityVertex:
 //        break;
     case RS2::EntityInsert:
-        writeInsert((RS_Insert*)e);
+        writeInsert((RS_Insert*)e, writer);
         break;
     case RS2::EntityMText:
-        writeMText((RS_MText*)e);
+        writeMText((RS_MText*)e, writer);
         break;
     case RS2::EntityText:
-        writeText((RS_Text*)e);
+        writeText((RS_Text*)e, writer);
         break;
     case RS2::EntityDimLinear:
     case RS2::EntityDimAligned:
     case RS2::EntityDimAngular:
     case RS2::EntityDimRadial:
     case RS2::EntityDimDiametric:
-        writeDimension((RS_Dimension*)e);
+        writeDimension((RS_Dimension*)e, writer);
         break;
     case RS2::EntityDimLeader:
-        writeLeader((RS_Leader*)e);
+        writeLeader((RS_Leader*)e, writer);
         break;
     case RS2::EntityHatch:
-        writeHatch((RS_Hatch*)e);
+        writeHatch((RS_Hatch*)e, writer);
         break;
     case RS2::EntityImage:
-        writeImage((RS_Image*)e);
+        writeImage((RS_Image*)e, writer);
         break;
     default:
         break;
@@ -2121,46 +2122,46 @@ void RS_FilterDXFRW::writeEntity(RS_Entity* e){
 /**
  * Writes the given Point entity to the file.
  */
-void RS_FilterDXFRW::writePoint(RS_Point* p) {
+void RS_FilterDXFRW::writePoint(RS_Point* p, dxfWriter* writer) {
     DRW_Point point;
     getEntityAttributes(&point, p);
     point.basePoint.x = p->getStartpoint().x;
     point.basePoint.y = p->getStartpoint().y;
-    dxfW->writePoint(&point);
+    dxfW->writePoint(&point, writer);
 }
 
 
 /**
  * Writes the given Line( entity to the file.
  */
-void RS_FilterDXFRW::writeLine(RS_Line* l) {
+void RS_FilterDXFRW::writeLine(RS_Line* l, dxfWriter* writer) {
     DRW_Line line;
     getEntityAttributes(&line, l);
     line.basePoint.x = l->getStartpoint().x;
     line.basePoint.y = l->getStartpoint().y;
     line.secPoint.x = l->getEndpoint().x;
     line.secPoint.y = l->getEndpoint().y;
-    dxfW->writeLine(&line);
+    dxfW->writeLine(&line, writer);
 }
 
 
 /**
  * Writes the given circle entity to the file.
  */
-void RS_FilterDXFRW::writeCircle(RS_Circle* c) {
+void RS_FilterDXFRW::writeCircle(RS_Circle* c, dxfWriter* writer) {
     DRW_Circle circle;
     getEntityAttributes(&circle, c);
     circle.basePoint.x = c->getCenter().x;
     circle.basePoint.y = c->getCenter().y;
     circle.radious = c->getRadius();
-    dxfW->writeCircle(&circle);
+    dxfW->writeCircle(&circle, writer);
 }
 
 
 /**
  * Writes the given arc entity to the file.
  */
-void RS_FilterDXFRW::writeArc(RS_Arc* a) {
+void RS_FilterDXFRW::writeArc(RS_Arc* a, dxfWriter* writer) {
     DRW_Arc arc;
     getEntityAttributes(&arc, a);
     arc.basePoint.x = a->getCenter().x;
@@ -2173,20 +2174,20 @@ void RS_FilterDXFRW::writeArc(RS_Arc* a) {
         arc.staangle = a->getAngle1();
         arc.endangle = a->getAngle2();
     }
-    dxfW->writeArc(&arc);
+    dxfW->writeArc(&arc, writer);
 }
 
 
 /**
  * Writes the given polyline entity to the file as lwpolyline.
  */
-void RS_FilterDXFRW::writeLWPolyline(RS_Polyline* l) {
+void RS_FilterDXFRW::writeLWPolyline(RS_Polyline* l, dxfWriter* writer) {
     //skip if are empty polyline
     if (l->isEmpty())
             return;
     // version 12 are old style polyline
     if (version==1009) {
-        writePolyline(l);
+        writePolyline(l, writer);
         return;
     }
     DRW_LWPolyline pol;
@@ -2195,8 +2196,7 @@ void RS_FilterDXFRW::writeLWPolyline(RS_Polyline* l) {
 	RS_AtomicEntity* ae = nullptr;
     double bulge=0.0;
 
-    for (RS_Entity* e=l->firstEntity(RS2::ResolveNone);
-         e; e=nextEntity) {
+    for (RS_Entity* e = l->firstEntity(RS2::ResolveNone); e; e = nextEntity) {
 
         currEntity = e;
         nextEntity = l->nextEntity(RS2::ResolveNone);
@@ -2226,21 +2226,20 @@ void RS_FilterDXFRW::writeLWPolyline(RS_Polyline* l) {
     }
     pol.vertexnum = pol.vertlist.size();
     getEntityAttributes(&pol, l);
-    dxfW->writeLWPolyline(&pol);
+    dxfW->writeLWPolyline(&pol, writer);
 }
 
 /**
  * Writes the given polyline entity to the file (old style).
  */
-void RS_FilterDXFRW::writePolyline(RS_Polyline* p) {
+void RS_FilterDXFRW::writePolyline(RS_Polyline* p, dxfWriter* writer) {
     DRW_Polyline pol;
     RS_Entity* currEntity = 0;
     RS_Entity* nextEntity = 0;
 	RS_AtomicEntity* ae = nullptr;
     double bulge=0.0;
 
-    for (RS_Entity* e=p->firstEntity(RS2::ResolveNone);
-         e; e=nextEntity) {
+    for (RS_Entity* e=p->firstEntity(RS2::ResolveNone); e; e=nextEntity) {
 
         currEntity = e;
         nextEntity = p->nextEntity(RS2::ResolveNone);
@@ -2269,7 +2268,7 @@ void RS_FilterDXFRW::writePolyline(RS_Polyline* p) {
                                   ae->getEndpoint().y, 0.0, bulge));
     }
     getEntityAttributes(&pol, p);
-    dxfW->writePolyline(&pol);
+    dxfW->writePolyline(&pol, writer);
 }
 
 
@@ -2277,7 +2276,7 @@ void RS_FilterDXFRW::writePolyline(RS_Polyline* p) {
 /**
  * Writes the given spline entity to the file.
  */
-void RS_FilterDXFRW::writeSpline(RS_Spline *s) {
+void RS_FilterDXFRW::writeSpline(RS_Spline *s, dxfWriter* writer) {
 
     if (s->getNumberOfControlPoints() < s->getDegree()+1) {
         RS_DEBUG->print(RS_Debug::D_ERROR, "RS_FilterDXF::writeSpline: "
@@ -2301,7 +2300,7 @@ void RS_FilterDXFRW::writeSpline(RS_Spline *s) {
                                       s->getEndpoint().y, 0.0, 0.0));
         }
         getEntityAttributes(&pol, s);
-        dxfW->writePolyline(&pol);
+        dxfW->writePolyline(&pol, writer);
         return;
     }
 
@@ -2337,7 +2336,7 @@ void RS_FilterDXFRW::writeSpline(RS_Spline *s) {
 		sp.controllist.push_back(std::make_shared<DRW_Coord>(v.x, v.y, 0.));
 
     getEntityAttributes(&sp, s);
-    dxfW->writeSpline(&sp);
+    dxfW->writeSpline(&sp, writer);
 
 }
 
@@ -2345,7 +2344,7 @@ void RS_FilterDXFRW::writeSpline(RS_Spline *s) {
 /**
  * Writes the given spline entity to the file.
  */
-void RS_FilterDXFRW::writeSplinePoints(LC_SplinePoints *s)
+void RS_FilterDXFRW::writeSplinePoints(LC_SplinePoints *s, dxfWriter* writer)
 {
 	int nCtrls = s->getNumberOfControlPoints();
 	auto const& cp = s->getControlPoints();
@@ -2360,7 +2359,7 @@ void RS_FilterDXFRW::writeSplinePoints(LC_SplinePoints *s)
 			line.secPoint.x = cp.at(1).x;
 			line.secPoint.y = cp.at(1).y;
 			getEntityAttributes(&line, s);
-			dxfW->writeLine(&line);
+			dxfW->writeLine(&line, writer);
 		}
 		return;
 	}
@@ -2379,7 +2378,7 @@ void RS_FilterDXFRW::writeSplinePoints(LC_SplinePoints *s)
 		if(s->isClosed()) pol.flags = 1;
 
 		getEntityAttributes(&pol, s);
-		dxfW->writePolyline(&pol);
+		dxfW->writePolyline(&pol, writer);
 		return;
 	}
 
@@ -2414,14 +2413,14 @@ void RS_FilterDXFRW::writeSplinePoints(LC_SplinePoints *s)
 		sp.controllist.push_back(std::make_shared<DRW_Coord>(v.x, v.y, 0.));
 
 	getEntityAttributes(&sp, s);
-	dxfW->writeSpline(&sp);
+	dxfW->writeSpline(&sp, writer);
 }
 
 
 /**
  * Writes the given Ellipse entity to the file.
  */
-void RS_FilterDXFRW::writeEllipse(RS_Ellipse* s) {
+void RS_FilterDXFRW::writeEllipse(RS_Ellipse* s, dxfWriter* writer) {
 // version 12 do not support Ellipse but are
 // converted in polyline by library
     DRW_Ellipse el;
@@ -2438,13 +2437,13 @@ void RS_FilterDXFRW::writeEllipse(RS_Ellipse* s) {
         el.staparam = s->getAngle1();
         el.endparam = s->getAngle2();
     }
-    dxfW->writeEllipse(&el);
+    dxfW->writeEllipse(&el, writer);
 }
 
 /**
  * Writes the given block insert entity to the file.
  */
-void RS_FilterDXFRW::writeInsert(RS_Insert* i) {
+void RS_FilterDXFRW::writeInsert(RS_Insert* i, dxfWriter* writer) {
     DRW_Insert in;
     getEntityAttributes(&in, i);
     in.basePoint.x = i->getInsertionPoint().x;
@@ -2459,19 +2458,19 @@ void RS_FilterDXFRW::writeInsert(RS_Insert* i) {
     in.rowcount = i->getRows();
     in.colspace = i->getSpacing().x;
     in.rowspace =i->getSpacing().y;
-    dxfW->writeInsert(&in);
+    dxfW->writeInsert(&in, writer);
 }
 
 
 /**
  * Writes the given mText entity to the file.
  */
-void RS_FilterDXFRW::writeMText(RS_MText* t) {
+void RS_FilterDXFRW::writeMText(RS_MText *t, dxfWriter *writer) {
     DRW_Text *text;
     DRW_Text txt1;
     DRW_MText txt2;
 
-    if (version==1009)
+    if (version == 1009)
         text = &txt1;
     else
         text = &txt2;
@@ -2480,26 +2479,26 @@ void RS_FilterDXFRW::writeMText(RS_MText* t) {
     text->basePoint.x = t->getInsertionPoint().x;
     text->basePoint.y = t->getInsertionPoint().y;
     text->height = t->getHeight();
-    text->angle = t->getAngle()*180/M_PI;
+    text->angle = t->getAngle() * 180 / M_PI;
     text->style = t->getStyle().toStdString();
 
-    if (version==1009) {
-        if (t->getHAlign()==RS_MTextData::HALeft) {
-            text->alignH =DRW_Text::HLeft;
-        } else if (t->getHAlign()==RS_MTextData::HACenter) {
-            text->alignH =DRW_Text::HCenter;
-        } else if (t->getHAlign()==RS_MTextData::HARight) {
+    if (version == 1009) {
+        if (t->getHAlign() == RS_MTextData::HALeft) {
+            text->alignH = DRW_Text::HLeft;
+        } else if (t->getHAlign() == RS_MTextData::HACenter) {
+            text->alignH = DRW_Text::HCenter;
+        } else if (t->getHAlign() == RS_MTextData::HARight) {
             text->alignH = DRW_Text::HRight;
         }
-        if (t->getVAlign()==RS_MTextData::VATop) {
+        if (t->getVAlign() == RS_MTextData::VATop) {
             text->alignV = DRW_Text::VTop;
-        } else if (t->getVAlign()==RS_MTextData::VAMiddle) {
+        } else if (t->getVAlign() == RS_MTextData::VAMiddle) {
             text->alignV = DRW_Text::VMiddle;
-        } else if (t->getVAlign()==RS_MTextData::VABottom) {
+        } else if (t->getVAlign() == RS_MTextData::VABottom) {
             text->alignV = DRW_Text::VBaseLine;
         }
-        QStringList txtList = t->getText().split('\n',QString::KeepEmptyParts);
-        double dist = t->getLineSpacingFactor()*5*t->getHeight()/3;
+        QStringList txtList = t->getText().split('\n', QString::KeepEmptyParts);
+        double dist = t->getLineSpacingFactor() * 5 * t->getHeight() / 3;
         bool setSec = false;
         if (text->alignH != DRW_Text::HLeft || text->alignV != DRW_Text::VBaseLine) {
             text->secPoint.x = t->getInsertionPoint().x;
@@ -2508,10 +2507,10 @@ void RS_FilterDXFRW::writeMText(RS_MText* t) {
         }
         if (text->alignV == DRW_Text::VTop)
             dist = dist * -1;
-        for (int i=0; i<txtList.size();++i){
+        for (int i = 0; i < txtList.size(); ++i) {
             if (!txtList.at(i).isEmpty()) {
                 text->text = toDxfString(txtList.at(i)).toUtf8().data();
-				RS_Vector inc  = RS_Vector::polar(dist*i, t->getAngle()+M_PI_2);
+                RS_Vector inc = RS_Vector::polar(dist * i, t->getAngle() + M_PI_2);
                 if (setSec) {
                     text->secPoint.x += inc.x;
                     text->secPoint.y += inc.y;
@@ -2519,44 +2518,41 @@ void RS_FilterDXFRW::writeMText(RS_MText* t) {
                     text->basePoint.x += inc.x;
                     text->basePoint.y += inc.y;
                 }
-                dxfW->writeText(text);
+                dxfW->writeText(text, writer);
             }
         }
     } else {
-        if (t->getHAlign()==RS_MTextData::HALeft) {
-            text->textgen =1;
-        } else if (t->getHAlign()==RS_MTextData::HACenter) {
-            text->textgen =2;
-        } else if (t->getHAlign()==RS_MTextData::HARight) {
+        if (t->getHAlign() == RS_MTextData::HALeft) {
+            text->textgen = 1;
+        } else if (t->getHAlign() == RS_MTextData::HACenter) {
+            text->textgen = 2;
+        } else if (t->getHAlign() == RS_MTextData::HARight) {
             text->textgen = 3;
         }
-        if (t->getVAlign()==RS_MTextData::VAMiddle) {
+        if (t->getVAlign() == RS_MTextData::VAMiddle) {
             text->textgen += 3;
-        } else if (t->getVAlign()==RS_MTextData::VABottom) {
+        } else if (t->getVAlign() == RS_MTextData::VABottom) {
             text->textgen += 6;
         }
-        if (t->getDrawingDirection() == RS_MTextData::LeftToRight)
-            text->alignH = (DRW_Text::HAlign)1;
-        else if (t->getDrawingDirection() == RS_MTextData::TopToBottom)
-            text->alignH = (DRW_Text::HAlign)3;
-        else text->alignH = (DRW_Text::HAlign)5;
-		if (t->getLineSpacingStyle() == RS_MTextData::AtLeast)
-            text->alignV = (DRW_Text::VAlign)1;
-        else text->alignV = (DRW_Text::VAlign)2;
+        if (t->getDrawingDirection() == RS_MTextData::LeftToRight) { text->alignH = (DRW_Text::HAlign) 1; }
+        else if (t->getDrawingDirection() == RS_MTextData::TopToBottom) { text->alignH = (DRW_Text::HAlign) 3; }
+        else text->alignH = (DRW_Text::HAlign) 5;
+        if (t->getLineSpacingStyle() == RS_MTextData::AtLeast) { text->alignV = (DRW_Text::VAlign) 1; }
+        else { text->alignV = (DRW_Text::VAlign) 2; }
 
         text->text = toDxfString(t->getText()).toUtf8().data();
         //        text->widthscale =t->getWidth();
-        text->widthscale =t->getUsedTextWidth(); //getSize().x;
-		txt2.interlin = t->getLineSpacingFactor();
+        text->widthscale = t->getUsedTextWidth(); //getSize().x;
+        txt2.interlin = t->getLineSpacingFactor();
 
-        dxfW->writeMText((DRW_MText*)text);
+        dxfW->writeMText((DRW_MText *) text, writer);
     }
 }
 
 /**
  * Writes the given Text entity to the file.
  */
-void RS_FilterDXFRW::writeText(RS_Text* t){
+void RS_FilterDXFRW::writeText(RS_Text* t, dxfWriter* writer){
     DRW_Text text;
 
     getEntityAttributes(&text, t);
@@ -2588,14 +2584,14 @@ void RS_FilterDXFRW::writeText(RS_Text* t){
 
     if (!t->getText().isEmpty()) {
         text.text = toDxfString(t->getText()).toUtf8().data();
-        dxfW->writeText(&text);
+        dxfW->writeText(&text, writer);
     }
 }
 
 /**
  * Writes the given dimension entity to the file.
  */
-void RS_FilterDXFRW::writeDimension(RS_Dimension* d) {
+void RS_FilterDXFRW::writeDimension(RS_Dimension* d, dxfWriter* writer) {
     QString blkName;
     if (noNameBlock.contains(d)) {
         blkName = noNameBlock.take(d);
@@ -2614,7 +2610,7 @@ void RS_FilterDXFRW::writeDimension(RS_Dimension* d) {
             in.angle = 0.0;
             in.colcount = in.rowcount = 1;
             in.colspace = in.rowspace = 0.0;
-            dxfW->writeInsert(&in);
+            dxfW->writeInsert(&in, writer);
         }
         return;
     }
@@ -2704,7 +2700,7 @@ void RS_FilterDXFRW::writeDimension(RS_Dimension* d) {
         dim->setName(blkName.toStdString());
     }
 
-    dxfW->writeDimension(dim);
+    dxfW->writeDimension(dim, writer);
     delete dim;
 }
 
@@ -2712,7 +2708,7 @@ void RS_FilterDXFRW::writeDimension(RS_Dimension* d) {
 /**
  * Writes the given leader entity to the file.
  */
-void RS_FilterDXFRW::writeLeader(RS_Leader* l) {
+void RS_FilterDXFRW::writeLeader(RS_Leader* l, dxfWriter* writer) {
     if (l->count()<=0)
         RS_DEBUG->print(RS_Debug::D_WARNING, "dropping leader with no vertices");
 
@@ -2738,14 +2734,14 @@ void RS_FilterDXFRW::writeLeader(RS_Leader* l) {
 	if (li )
 		leader.vertexlist.push_back(std::make_shared<DRW_Coord>(li->getEndpoint().x, li->getEndpoint().y, 0.0));
 
-    dxfW->writeLeader(&leader);
+    dxfW->writeLeader(&leader, writer);
 }
 
 
 /**
  * Writes the given hatch entity to the file.
  */
-void RS_FilterDXFRW::writeHatch(RS_Hatch * h) {
+void RS_FilterDXFRW::writeHatch(RS_Hatch * h, dxfWriter* writer) {
     // version 12 are inserts of *U blocks
     if (version==1009) {
         if (noNameBlock.contains(h)) {
@@ -2759,7 +2755,7 @@ void RS_FilterDXFRW::writeHatch(RS_Hatch * h) {
             in.angle = 0.0;
             in.colcount = in.rowcount = 1;
             in.colspace = in.rowspace = 0.0;
-            dxfW->writeInsert(&in);
+            dxfW->writeInsert(&in, writer);
         }
         return;
     }
@@ -2869,14 +2865,14 @@ void RS_FilterDXFRW::writeHatch(RS_Hatch * h) {
             ha.appendLoop(lData);
         }
     }
-    dxfW->writeHatch(&ha);
+    dxfW->writeHatch(&ha, writer);
 }
 
 
 /**
  * Writes the given Solid entity to the file.
  */
-void RS_FilterDXFRW::writeSolid(RS_Solid* s) {
+void RS_FilterDXFRW::writeSolid(RS_Solid* s, dxfWriter* writer) {
     RS_SolidData data;
     DRW_Solid solid;
     RS_Vector corner;
@@ -2898,11 +2894,11 @@ void RS_FilterDXFRW::writeSolid(RS_Solid* s) {
         solid.fourPoint.x = corner.x;
         solid.fourPoint.y = corner.y;
     }
-    dxfW->writeSolid(&solid);
+    dxfW->writeSolid(&solid, writer);
 }
 
 
-void RS_FilterDXFRW::writeImage(RS_Image * i) {
+void RS_FilterDXFRW::writeImage(RS_Image * i, dxfWriter* writer) {
     DRW_Image image;
     getEntityAttributes(&image, i);
 
@@ -2918,7 +2914,7 @@ void RS_FilterDXFRW::writeImage(RS_Image * i) {
     image.contrast = i->getContrast();
     image.fade = i->getFade();
 
-    DRW_ImageDef *imgDef = dxfW->writeImage(&image, i->getFile().toUtf8().data());
+    DRW_ImageDef *imgDef = dxfW->writeImage(&image, i->getFile().toUtf8().data(), writer);
 	if (imgDef ) {
         imgDef->loaded = 1;
         imgDef->u = i->getData().size.x;
