@@ -102,12 +102,10 @@ public:
 */
 class DRW_ObjControl : public DRW_TableEntry {
 public:
-    DRW_ObjControl() { reset();}
+    DRW_ObjControl() = default;
 
-    // hmm-- is DRW_TableEntry::reset() intended to be virtual??
-    void reset(){
-    }
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0) override;
+    void reset() override{}
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
     std::list<duint32>handlesList;
 };
 
