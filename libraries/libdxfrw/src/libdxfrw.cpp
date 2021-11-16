@@ -111,11 +111,11 @@ bool dxfRW::write(DRW_Interface *interface_, DRW::Version ver, bool bin){
         std::string comm = std::string("dxfrw ") + std::string(DRW_VERSION);
         writer->writeString(999, comm);
     }
-    DRW_Header header;
-    iface->writeHeader(header, writer.get());
+    DRW_Header header_local;
+    iface->writeHeader(header_local, writer.get());
     writer->writeString(0, "SECTION");
     entCount =FIRSTHANDLE;
-    header.write(writer.get(), version);
+    header_local.write(writer.get(), version);
     writer->writeString(0, "ENDSEC");
     if (ver > DRW::AC1009) {
         writer->writeString(0, "SECTION");
