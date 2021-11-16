@@ -1,6 +1,6 @@
 find_package(freetype REQUIRED)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 add_executable(ttf2lff main.cpp)
