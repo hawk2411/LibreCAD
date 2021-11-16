@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "modernize-use-nodiscard"
 /*
                  __________                                      
     _____   __ __\______   \_____  _______  ______  ____ _______ 
