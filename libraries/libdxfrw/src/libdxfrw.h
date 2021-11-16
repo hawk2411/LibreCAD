@@ -29,7 +29,7 @@ class dxfRW {
 public:
     explicit dxfRW(const char* name);
     ~dxfRW();
-    void setDebug(DRW::DebugLevel lvl);
+    static void setDebug(DRW::DebugLevel lvl);
     /// reads the file specified in constructor
     /*!
      * An interface must be provided. It is used by the class to signal various
@@ -124,7 +124,7 @@ private:
     bool writeObjects(dxfWriter *writer);
     bool writeExtData(const std::vector<DRW_Variant*> &ed, dxfWriter* writer);
     /*use version from dwgutil.h*/
-    std::string toHexStr(int n);//RLZ removeme
+    static std::string toHexStr(int n);//RLZ removeme
     bool writeAppData(const std::list<std::list<DRW_Variant>> &appData, dxfWriter* writer);
 
     bool setError(DRW::error lastError);
