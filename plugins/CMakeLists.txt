@@ -105,9 +105,9 @@ add_custom_command(
         COMMAND ${TRANSLATOR} ${TRANSLATIONS}
         COMMAND ${CMAKE_COMMAND} -E make_directory
             ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
-        COMMAND ${CMAKE_COMMAND} -E copy
-            ${qm_files}
-            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
-        COMMAND ${CMAKE_COMMAND} -E remove
-            ${qm_files}
+#        COMMAND ${CMAKE_COMMAND} -E copy
+#            ${qm_files}
+#            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
+#        COMMAND ${CMAKE_COMMAND} -E remove
+#            ${qm_files}
 )

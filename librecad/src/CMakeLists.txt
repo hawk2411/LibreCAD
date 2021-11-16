@@ -533,7 +533,7 @@ add_executable(librecad ${SOURCES} ${resources})
 #include(./muparser.pri)
 
 target_link_libraries(librecad
-        PUBLIC
+        PRIVATE
         Qt5::Core
         Qt5::Gui
         Qt5::PrintSupport
@@ -598,10 +598,10 @@ add_custom_command(
         COMMAND ${TRANSLATOR} ${TRANSLATIONS}
         COMMAND ${CMAKE_COMMAND} -E make_directory
             ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm
-        COMMAND ${CMAKE_COMMAND} -E copy
-            ${qm_files}
-            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm/
-        COMMAND ${CMAKE_COMMAND} -E remove
-            ${qm_files}
+#        COMMAND ${CMAKE_COMMAND} -E copy
+#            ${qm_files}
+#            ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources/qm/
+#        COMMAND ${CMAKE_COMMAND} -E remove
+#            ${qm_files}
 )
 

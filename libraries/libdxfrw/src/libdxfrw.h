@@ -123,8 +123,6 @@ private:
     bool writeBlocks(dxfWriter *writer);
     bool writeObjects(dxfWriter *writer);
     bool writeExtData(const std::vector<DRW_Variant*> &ed, dxfWriter* writer);
-    /*use version from dwgutil.h*/
-    static std::string toHexStr(int n);//RLZ removeme
     bool writeAppData(const std::list<std::list<DRW_Variant>> &appData, dxfWriter* writer);
 
     bool setError(DRW::error lastError);

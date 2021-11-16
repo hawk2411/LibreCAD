@@ -10,14 +10,12 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
-#include <iostream>
 #include <cmath>
 #include "drw_objects.h"
+#include "intern/dwgutil.h"
 #include "intern/dxfreader.h"
-#include "intern/dxfwriter.h"
 #include "intern/dwgbuffer.h"
 #include "intern/drw_dbg.h"
-#include "intern/dwgutil.h"
 
 //! Base class for tables entries
 /*!
@@ -626,7 +624,7 @@ bool DRW_Layer::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     if (!ret)
         return ret;
     name = sBuf->getVariableText(version, false);
-    DRW_DBG("layer name: "); DRW_DBG(name.c_str());
+    DRW_DBG("layer name: "); DRW_DBG(name);
 
     flags |= buf->getBit()<< 6;//layer have entity
     if (version < DRW::AC1021) {//2004-

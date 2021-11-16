@@ -15,8 +15,8 @@
 #include "libdxfrw.h"
 #include <fstream>
 #include <algorithm>
-#include <sstream>
 #include <cassert>
+#include <intern/dwgutil.h>
 #include "intern/drw_textcodec.h"
 #include "intern/dxfreader.h"
 #include "intern/dxfwriter.h"
@@ -151,7 +151,7 @@ bool dxfRW::write(DRW_Interface *interface_, DRW::Version ver, bool bin){
 
 bool dxfRW::writeEntity(DRW_Entity *ent, dxfWriter* writer) {
     ent->handle = ++entCount;
-    writer->writeString(5, toHexStr(ent->handle));
+    writer->writeString(5, DRW::toHexStr(ent->handle));
     if (version > DRW::AC1009) {
         writer->writeString(100, "AcDbEntity");
     }
@@ -230,7 +230,7 @@ bool dxfRW::writeLineType(DRW_LType *ent, dxfWriter* writer){
     }
     writer->writeString(0, "LTYPE");
     if (version > DRW::AC1009) {
-        writer->writeString(5, toHexStr(++entCount));
+        writer->writeString(5, DRW::toHexStr<int>(++entCount));
         if (version > DRW::AC1012) {
             writer->writeString(330, "5");
         }
@@ -264,7 +264,7 @@ bool dxfRW::writeLayer(const DRW_Layer *ent, dxfWriter* writer){
         }
     } else {
         if (version > DRW::AC1009) {
-            writer->writeString(5, toHexStr(++entCount));
+            writer->writeString(5, DRW::toHexStr(++entCount));
         }
     }
     if (version > DRW::AC1012) {
@@ -307,7 +307,7 @@ bool dxfRW::writeTextstyle(const DRW_Textstyle *ent, dxfWriter* writer){
             dimstyleStd = true;
     }
     if (version > DRW::AC1009) {
-        writer->writeString(5, toHexStr(++entCount));
+        writer->writeString(5, DRW::toHexStr(++entCount));
     }
 
     if (version > DRW::AC1012) {
@@ -345,7 +345,7 @@ bool dxfRW::writeVport(DRW_Vport *ent, dxfWriter* writer){
     }
     writer->writeString(0, "VPORT");
     if (version > DRW::AC1009) {
-        writer->writeString(5, toHexStr(++entCount));
+        writer->writeString(5, DRW::toHexStr(++entCount));
         if (version > DRW::AC1012)
             writer->writeString(330, "2");
         writer->writeString(100, "AcDbSymbolTableRecord");
@@ -425,7 +425,7 @@ bool dxfRW::writeDimstyle(const DRW_Dimstyle *ent, dxfWriter* writer){
             dimstyleStd = true;
     }
     if (version > DRW::AC1009) {
-        writer->writeString(105, toHexStr(++entCount));
+        writer->writeString(105, DRW::toHexStr(++entCount));
     }
 
     if (version > DRW::AC1012) {
@@ -544,7 +544,7 @@ bool dxfRW::writeAppId(DRW_AppId *ent, dxfWriter* writer) {
         return true;
     writer->writeString(0, "APPID");
     if (version > DRW::AC1009) {
-        writer->writeString(5, toHexStr(++entCount));
+        writer->writeString(5, DRW::toHexStr(++entCount));
         if (version > DRW::AC1014) {
             writer->writeString(330, "9");
         }
@@ -1290,7 +1290,7 @@ DRW_ImageDef* dxfRW::writeImage(DRW_Image *ent, const std::string& name, dxfWrit
             id->handle = ++entCount;
         }
         id->name = name;
-        std::string idReactor = toHexStr(++entCount);
+        std::string idReactor = DRW::toHexStr(++entCount);
 
         writer->writeString(0, "IMAGE");
         writeEntity(ent, writer);
@@ -1306,14 +1306,14 @@ DRW_ImageDef* dxfRW::writeImage(DRW_Image *ent, const std::string& name, dxfWrit
         writer->writeDouble(32, ent->vVector.z);
         writer->writeDouble(13, ent->sizeu);
         writer->writeDouble(23, ent->sizev);
-        writer->writeString(340, toHexStr(id->handle));
+        writer->writeString(340, DRW::toHexStr(id->handle));
         writer->writeInt16(70, 1);
         writer->writeInt16(280, ent->clip);
         writer->writeInt16(281, ent->brightness);
         writer->writeInt16(282, ent->contrast);
         writer->writeInt16(283, ent->fade);
         writer->writeString(360, idReactor);
-        id->reactors[idReactor] = toHexStr(ent->handle);
+        id->reactors[idReactor] = DRW::toHexStr(ent->handle);
         return id;
     }
     return NULL; //not exist in acad 12
@@ -1322,7 +1322,7 @@ DRW_ImageDef* dxfRW::writeImage(DRW_Image *ent, const std::string& name, dxfWrit
 bool dxfRW::writeBlockRecord(std::string name, dxfWriter* writer){
     if (version > DRW::AC1009) {
         writer->writeString(0, "BLOCK_RECORD");
-        writer->writeString(5, toHexStr(++entCount));
+        writer->writeString(5, DRW::toHexStr(++entCount));
 
         blockMap[name] = entCount;
         entCount = 2+entCount;//reserve 2 for BLOCK & ENDBLOCK
@@ -1346,9 +1346,9 @@ bool dxfRW::writeBlock(DRW_Block *bk, dxfWriter* writer){
     if (writingBlock) {
         writer->writeString(0, "ENDBLK");
         if (version > DRW::AC1009) {
-            writer->writeString(5, toHexStr(currHandle+2));
+            writer->writeString(5, DRW::toHexStr(currHandle+2));
             if (version > DRW::AC1014) {
-                writer->writeString(330, toHexStr(currHandle));
+                writer->writeString(330, DRW::toHexStr(currHandle));
             }
             writer->writeString(100, "AcDbEntity");
         }
@@ -1361,9 +1361,9 @@ bool dxfRW::writeBlock(DRW_Block *bk, dxfWriter* writer){
     writer->writeString(0, "BLOCK");
     if (version > DRW::AC1009) {
         currHandle = (*(blockMap.find(bk->name))).second;
-        writer->writeString(5, toHexStr(currHandle+1));
+        writer->writeString(5, DRW::toHexStr(currHandle+1));
         if (version > DRW::AC1014) {
-            writer->writeString(330, toHexStr(currHandle));
+            writer->writeString(330, DRW::toHexStr(currHandle));
         }
         writer->writeString(100, "AcDbEntity");
     }
@@ -1715,10 +1715,10 @@ bool dxfRW::writeBlocks(dxfWriter *writer) {
         writingBlock = false;
         writer->writeString(0, "ENDBLK");
         if (version > DRW::AC1009) {
-            writer->writeString(5, toHexStr(currHandle+2));
+            writer->writeString(5, DRW::toHexStr(currHandle+2));
 //            writer->writeString(5, "1D");
             if (version > DRW::AC1014) {
-                writer->writeString(330, toHexStr(currHandle));
+                writer->writeString(330, DRW::toHexStr(currHandle));
             }
             writer->writeString(100, "AcDbEntity");
         }
@@ -1743,7 +1743,7 @@ bool dxfRW::writeObjects(dxfWriter *writer) {
     writer->writeString(350, "D");
     if (imageDef.size() != 0) {
         writer->writeString(3, "ACAD_IMAGE_DICT");
-        imgDictH = toHexStr(++entCount);
+        imgDictH = DRW::toHexStr(++entCount);
         writer->writeString(350, imgDictH);
     }
     writer->writeString(0, "DICTIONARY");
@@ -1775,13 +1775,13 @@ bool dxfRW::writeObjects(dxfWriter *writer) {
             f2 =imageDef.at(i)->name.find_last_of('.');
             ++f1;
             writer->writeString(3, imageDef.at(i)->name.substr(f1,f2-f1));
-            writer->writeString(350, toHexStr(imageDef.at(i)->handle) );
+            writer->writeString(350, DRW::toHexStr(imageDef.at(i)->handle) );
         }
     }
     for (unsigned int i=0; i<imageDef.size(); i++) {
         DRW_ImageDef *id = imageDef.at(i);
         writer->writeString(0, "IMAGEDEF");
-        writer->writeString(5, toHexStr(id->handle) );
+        writer->writeString(5, DRW::toHexStr(id->handle) );
         if (version > DRW::AC1014) {
 //            writer->writeString(330, "0"); handle to DICTIONARY
         }
@@ -2932,7 +2932,7 @@ bool dxfRW::processPlotSettings(dxfReader* reader) {
 
 bool dxfRW::writePlotSettings(DRW_PlotSettings *ent, dxfWriter* writer) {
     writer->writeString(0, "PLOTSETTINGS");
-    writer->writeString(5, toHexStr(++entCount));
+    writer->writeString(5, DRW::toHexStr(++entCount));
     writer->writeString(100, "AcDbPlotSettings");
     writer->writeUtf8String(6, ent->plotViewName);
     writer->writeDouble(40, ent->marginLeft);
@@ -2940,21 +2940,6 @@ bool dxfRW::writePlotSettings(DRW_PlotSettings *ent, dxfWriter* writer) {
     writer->writeDouble(42, ent->marginRight);
     writer->writeDouble(43, ent->marginTop);
     return true;
-}
-
-/** utility function
- * convert a int to string in hex
- **/
-std::string dxfRW::toHexStr(int n){
-#if defined(__APPLE__)
-    char buffer[9]= {'\0'};
-    snprintf(buffer,9, "%X", n);
-    return std::string(buffer);
-#else
-    std::ostringstream Convert;
-    Convert << std::uppercase << std::hex << n;
-    return Convert.str();
-#endif
 }
 
 DRW::Version dxfRW::getVersion() const {

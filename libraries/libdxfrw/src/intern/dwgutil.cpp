@@ -10,28 +10,11 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
-#include <sstream>
 #include "drw_dbg.h"
 #include "dwgutil.h"
 #include "rscodec.h"
 #include "../libdwgr.h"
 
-/** utility function
- * convert a int to string in hex
- **/
-namespace DRW {
-std::string toHexStr(int n){
-#if defined(__APPLE__)
-    char buffer[9]= {'\0'};
-    snprintf(buffer,9, "%X", n);
-    return std::string(buffer);
-#else
-    std::ostringstream Convert;
-    Convert << std::uppercase << std::hex << n;
-    return Convert.str();
-#endif
-}
-}
 
 /**
  * @brief dwgRSCodec::decode239I
