@@ -19,11 +19,14 @@
 #include <string>
 #include <cmath>
 #include <unordered_map>
+#include <cassert>
+
+//#define DRW_ASSERTS
 
 #ifdef DRW_ASSERTS
 # define drw_assert(a) assert(a)
 #else
-# define drw_assert(a)
+# define drw_assert(a) ((void)0)
 #endif
 
 #define UTF8STRING std::string
