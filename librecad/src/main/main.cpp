@@ -253,7 +253,7 @@ int main(int argc, char** argv)
     }
 
     auto splash = (settings.value("Startup/ShowSplash", 1).toBool())
-            ?std::make_unique<QSplashScreen>()
+            ?std::unique_ptr<QSplashScreen>()
                     :std::unique_ptr<QSplashScreen>(nullptr);
 
     QC_ApplicationWindow::initSplashWindow(splash.get());
