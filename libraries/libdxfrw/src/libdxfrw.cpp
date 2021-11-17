@@ -14,7 +14,7 @@
 
 #include "libdxfrw.h"
 #include <fstream>
-#include <algorithm>
+//#include <algorithm>
 #include <cassert>
 #include <intern/dwgutil.h>
 #include "intern/drw_textcodec.h"
@@ -221,9 +221,8 @@ bool dxfRW::writeAppData(const std::list<std::list<DRW_Variant>>& appData, dxfWr
 }
 
 bool dxfRW::writeLineType(DRW_LType *ent, dxfWriter* writer){
-    std::string strname = ent->name;
+    std::string strname = dxfRW::toupper(ent->name);
 
-    transform(strname.begin(), strname.end(), strname.begin(),::toupper);
 //do not write linetypes handled by library
     if (strname == "BYLAYER" || strname == "BYBLOCK" || strname == "CONTINUOUS") {
         return true;
@@ -301,8 +300,7 @@ bool dxfRW::writeTextstyle(const DRW_Textstyle *ent, dxfWriter* writer){
     writer->writeString(0, "STYLE");
     if (!dimstyleStd) {
         //stringstream cause crash in OS/X, bug#3597944
-        std::string name=ent->name;
-        transform(name.begin(), name.end(), name.begin(), toupper);
+        std::string name = dxfRW::toupper(ent->name);
         if (name == "STANDARD")
             dimstyleStd = true;
     }
@@ -419,8 +417,7 @@ bool dxfRW::writeVport(DRW_Vport *ent, dxfWriter* writer){
 bool dxfRW::writeDimstyle(const DRW_Dimstyle *ent, dxfWriter* writer){
     writer->writeString(0, "DIMSTYLE");
     if (!dimstyleStd) {
-        std::string name = ent->name;
-        std::transform(name.begin(), name.end(), name.begin(),::toupper);
+        std::string name = dxfRW::toupper(ent->name);
         if (name == "STANDARD")
             dimstyleStd = true;
     }
@@ -537,8 +534,7 @@ bool dxfRW::writeDimstyle(const DRW_Dimstyle *ent, dxfWriter* writer){
 }
 
 bool dxfRW::writeAppId(DRW_AppId *ent, dxfWriter* writer) {
-    std::string strname = ent->name;
-    transform(strname.begin(), strname.end(), strname.begin(), ::toupper);
+    std::string strname = dxfRW::toupper(ent->name);
 //do not write mandatory ACAD appId, handled by library
     if (strname == "ACAD")
         return true;
@@ -770,7 +766,7 @@ bool dxfRW::writeLWPolyline(DRW_LWPolyline *ent, dxfWriter* writer){
             writer->writeString(100, "AcDbPolyline");
         }
         ent->vertexnum = ent->vertlist.size();
-        writer->writeInt32(90, ent->vertexnum);
+        writer->writeInt32(90, static_cast<int>(ent->vertexnum));
         writer->writeInt16(70, ent->flags);
         writer->writeDouble(43, ent->width);
         if (ent->elevation != 0)
@@ -837,8 +833,8 @@ bool dxfRW::writePolyline(DRW_Polyline *ent, dxfWriter* writer) {
         writer->writeDouble(230, crd.z);
     }
 
-    int vertexnum = ent->vertlist.size();
-    for (int i = 0;  i< vertexnum; i++){
+    auto vertexnum = ent->vertlist.size();
+    for (size_t i = 0;  i< vertexnum; i++){
         DRW_Vertex *v = ent->vertlist.at(i).get();
         writer->writeString(0, "VERTEX");
         writeEntity(ent, writer);
@@ -939,7 +935,7 @@ bool dxfRW::writeHatch(DRW_Hatch *ent, dxfWriter* writer){
         writer->writeInt16(70, ent->solid);
         writer->writeInt16(71, ent->associative);
         ent->loopsnum = ent->looplist.size();
-        writer->writeInt16(91, ent->loopsnum);
+        writer->writeInt16(91, static_cast<int>(ent->loopsnum));
         //write paths data
         for (int i = 0;  i< ent->loopsnum; i++){
             DRW_HatchLoop *loop = ent->looplist.at(i).get();
@@ -949,8 +945,8 @@ bool dxfRW::writeHatch(DRW_Hatch *ent, dxfWriter* writer){
             } else {
                 //boundary path
                 loop->update();
-                writer->writeInt16(93, loop->numedges);
-                for (int j = 0; j<loop->numedges; ++j) {
+                writer->writeInt16(93, static_cast<int>(loop->numedges));
+                for (size_t j = 0; j<loop->numedges; ++j) {
                     switch ( (loop->objlist.at(j))->eType) {
                     case DRW::LINE: {
                         writer->writeInt16(72, 1);
@@ -1025,10 +1021,9 @@ bool dxfRW::writeLeader(DRW_Leader *ent, dxfWriter* writer){
         writer->writeInt16(75, ent->hookflag);
         writer->writeDouble(40, ent->textheight);
         writer->writeDouble(41, ent->textwidth);
-        writer->writeDouble(76, ent->vertnum);
-        writer->writeDouble(76, ent->vertexlist.size());
-        for (unsigned int i=0; i<ent->vertexlist.size(); i++) {
-            auto vert = ent->vertexlist.at(i);
+        writer->writeInt16(76, ent->vertnum);
+        writer->writeInt16(76, static_cast<int>(ent->vertexlist.size()));
+        for (auto &vert : ent->vertexlist) {
             writer->writeDouble(10, vert->x);
             writer->writeDouble(20, vert->y);
             writer->writeDouble(30, vert->z);

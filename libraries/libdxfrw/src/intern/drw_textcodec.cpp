@@ -133,7 +133,7 @@ std::string DRW_TextCodec::toUtf8(const std::string &s) {
     return conv->toUtf8(s);
 }
 
-std::string DRW_TextCodec::fromUtf8(const std::string &s) {
+std::string DRW_TextCodec::fromUtf8(const std::string &s) const {
     return conv->fromUtf8(s);
 }
 
@@ -163,7 +163,7 @@ std::string DRW_Converter::toUtf8(const std::string &s) {
     return result;
 }
 
-std::string DRW_ConvTable::fromUtf8(const std::string &s) {
+std::string DRW_ConvTable::fromUtf8(const std::string &s) const {
     std::string result;
     bool notFound;
     int code;
@@ -298,7 +298,7 @@ int DRW_Converter::decodeNum(const std::string &s, int *b){
 }
 
 
-std::string DRW_ConvDBCSTable::fromUtf8(const std::string &s) {
+std::string DRW_ConvDBCSTable::fromUtf8(const std::string &s) const {
     std::string result;
     bool notFound;
     int code;
@@ -379,7 +379,7 @@ DRW_Conv932Table::DRW_Conv932Table()
     :DRW_Converter(DRW_Table932, CPLENGTH932) {
 }
 
-std::string DRW_Conv932Table::fromUtf8(const std::string &s) {
+std::string DRW_Conv932Table::fromUtf8(const std::string &s)const {
     std::string result;
     bool notFound;
     int code;
@@ -473,7 +473,7 @@ std::string DRW_Conv932Table::toUtf8(const std::string &s) {
     return res;
 }
 
-std::string DRW_ConvUTF16::fromUtf8(const std::string &s){
+std::string DRW_ConvUTF16::fromUtf8(const std::string &s) const{
     DRW_UNUSED(s);
     //RLZ: to be written (only needed for write dwg 2007+)
     return std::string();

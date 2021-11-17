@@ -10,7 +10,6 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
-#include <cstdlib>
 #include <fstream>
 #include <string>
 #include <algorithm>
@@ -91,107 +90,53 @@
     return (filestr->good());
 }*/
 
-bool dxfWriter::writeUtf8String(int code, std::string text) {
+bool dxfWriter::writeUtf8String(int code, const std::string &text) {
     std::string t = encoder.fromUtf8(text);
     return writeString(code, t);
 }
 
-bool dxfWriter::writeUtf8Caps(int code, std::string text) {
+bool dxfWriter::writeUtf8Caps(int code, const std::string &text) {
     std::string strname = text;
-    std::transform(strname.begin(), strname.end(), strname.begin(),::toupper);
+    std::transform(strname.begin(), strname.end(), strname.begin(), std::toupper);
     std::string t = encoder.fromUtf8(strname);
     return writeString(code, t);
 }
 
-bool dxfWriterBinary::writeString(int code, std::string text) {
-    char bufcode[2];
-    bufcode[0] =code & 0xFF;
-    bufcode[1] =code  >> 8;
-    filestr->write(bufcode, 2);
+bool dxfWriterBinary::writeString(int code, const std::string &text) {
+    if(! this->writeBytes(2, code) ) {
+        return false;
+    }
     *filestr << text << '\0';
     return (filestr->good());
 }
 
-/*bool dxfWriterBinary::readCode(int *code) {
-    unsigned short *int16p;
-    char buffer[2];
-    filestr->read(buffer,2);
-    int16p = (unsigned short *) buffer;
-//exist a 32bits int (code 90) with 2 bytes???
-    if ((*code == 90) && (*int16p>2000)){
-        DBG(*code); DBG(" de 16bits\n");
-        filestr->seekg(-4, std::ios_base::cur);
-        filestr->read(buffer,2);
-        int16p = (unsigned short *) buffer;
-    }
-    *code = *int16p;
-    DBG(*code); DBG("\n");
-
-    return (filestr->good());
-}*/
-
-/*bool dxfWriterBinary::readString() {
-    std::getline(*filestr, strData, '\0');
-    DBG(strData); DBG("\n");
-    return (filestr->good());
-}*/
-
-/*bool dxfWriterBinary::readString(std::string *text) {
-    std::getline(*filestr, *text, '\0');
-    DBG(*text); DBG("\n");
-    return (filestr->good());
-}*/
-
 bool dxfWriterBinary::writeInt16(int code, int data) {
-    char bufcode[2];
-    char buffer[2];
-    bufcode[0] =code & 0xFF;
-    bufcode[1] =code  >> 8;
-    buffer[0] =data & 0xFF;
-    buffer[1] =data  >> 8;
-    filestr->write(bufcode, 2);
-    filestr->write(buffer, 2);
-    return (filestr->good());
+    if( writeBytes(2, code) && writeBytes(2, data) ) {
+        return true;
+    }
+    return false;
 }
 
 bool dxfWriterBinary::writeInt32(int code, int data) {
-    char buffer[4];
-    buffer[0] =code & 0xFF;
-    buffer[1] =code  >> 8;
-    filestr->write(buffer, 2);
-
-    buffer[0] =data & 0xFF;
-    buffer[1] =data  >> 8;
-    buffer[2] =data  >> 16;
-    buffer[3] =data  >> 24;
-    filestr->write(buffer, 4);
-    return (filestr->good());
+    if( writeBytes(2, code) && writeBytes(4, data) ) {
+        return true;
+    }
+    return false;
 }
 
 bool dxfWriterBinary::writeInt64(int code, unsigned long long int data) {
-    char buffer[8];
-    buffer[0] =code & 0xFF;
-    buffer[1] =code  >> 8;
-    filestr->write(buffer, 2);
-
-    buffer[0] =data & 0xFF;
-    buffer[1] =data  >> 8;
-    buffer[2] =data  >> 16;
-    buffer[3] =data  >> 24;
-    buffer[4] =data  >> 32;
-    buffer[5] =data  >> 40;
-    buffer[6] =data  >> 48;
-    buffer[7] =data  >> 56;
-    filestr->write(buffer, 8);
-    return (filestr->good());
+    if( writeBytes(2, code) && writeBytes(8, data) ) {
+        return true;
+    }
+    return false;
 }
 
 bool dxfWriterBinary::writeDouble(int code, double data) {
-    char bufcode[2];
+    if(!writeBytes(2, code)) {
+        return false;
+    }
+
     char buffer[8];
-    bufcode[0] =code & 0xFF;
-    bufcode[1] =code  >> 8;
-    filestr->write(bufcode, 2);
 
     unsigned char *val;
     val = (unsigned char *) &data;
@@ -204,21 +149,17 @@ bool dxfWriterBinary::writeDouble(int code, double data) {
 
 //saved as int or add a bool member??
 bool dxfWriterBinary::writeBool(int code, bool data) {
-    char buffer[1];
-    char bufcode[2];
-    bufcode[0] =code & 0xFF;
-    bufcode[1] =code  >> 8;
-    filestr->write(bufcode, 2);
-    buffer[0] = data;
-    filestr->write(buffer, 1);
-    return (filestr->good());
+    if( writeBytes(2, code) && writeBytes(1, data) ) {
+        return true;
+    }
+    return false;
 }
 
 dxfWriterAscii::dxfWriterAscii(std::ofstream *stream):dxfWriter(stream){
     filestr->precision(16);
 }
 
-bool dxfWriterAscii::writeString(int code, std::string text) {
+bool dxfWriterAscii::writeString(int code, const std::string &text) {
 //    *filestr << code << std::endl << text << std::endl ;
     filestr->width(3);
     *filestr << std::right << code << std::endl;
@@ -267,4 +208,6 @@ bool dxfWriterAscii::writeBool(int code, bool data) {
     *filestr << code << std::endl << data << std::endl;
     return (filestr->good());
 }
+
+
 

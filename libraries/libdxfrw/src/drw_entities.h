@@ -578,7 +578,7 @@ protected:
      bool parseDwg(DRW::Version v, dwgBuffer *buf, duint32 bs=0);
 
 public:
-    int vertexnum;            /*!< number of vertex, code 90 */
+    size_t vertexnum;            /*!< number of vertex, code 90 */
     int flags;                /*!< polyline flag, code 70, default 0 */
     double width;             /*!< constant width, code 43 */
     double elevation;         /*!< elevation, code 38 */
@@ -840,10 +840,7 @@ private:
 */
 class DRW_HatchLoop {
 public:
-    DRW_HatchLoop(int t) {
-        type = t;
-        numedges = 0;
-    }
+    explicit DRW_HatchLoop(int t) :type(t) {}
 
     void update() {
         numedges = objlist.size();
@@ -851,7 +848,7 @@ public:
 
 public:
     int type;               /*!< boundary path type, code 92, polyline=2, default=0 */
-    int numedges;           /*!< number of edges (if not a polyline), code 93 */
+    size_t numedges{0};           /*!< number of edges (if not a polyline), code 93 */
 //TODO: store lwpolylines as entities
 //    std::vector<DRW_LWPolyline *> pollist;  /*!< polyline list */
     std::vector<std::shared_ptr<DRW_Entity>> objlist;      /*!< entities list */
@@ -893,7 +890,7 @@ public:
     int hstyle;                /*!< hatch style, code 75 */
     int hpattern;              /*!< hatch pattern type, code 76 */
     int doubleflag;            /*!< hatch pattern double flag, code 77, double=1, single=0 */
-    int loopsnum;              /*!< namber of boundary paths (loops), code 91 */
+    size_t loopsnum;              /*!< namber of boundary paths (loops), code 91 */
     double angle;              /*!< hatch pattern angle, code 52 */
     double scale;              /*!< hatch pattern scale, code 41 */
     int deflines;              /*!< number of pattern definition lines, code 78 */

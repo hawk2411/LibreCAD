@@ -17,12 +17,12 @@
 
 class dxfWriter {
 public:
-    dxfWriter(std::ofstream *stream){filestr = stream; /*count =0;*/}
-    virtual ~dxfWriter(){}
-    virtual bool writeString(int code, std::string text) = 0;
-    bool writeUtf8String(int code, std::string text);
-    bool writeUtf8Caps(int code, std::string text);
-    std::string fromUtf8String(std::string t) {return encoder.fromUtf8(t);}
+    explicit dxfWriter(std::ofstream *stream){filestr = stream; /*count =0;*/}
+    virtual ~dxfWriter()= default;
+    virtual bool writeString(int code, const std::string &text) = 0;
+    bool writeUtf8String(int code, const std::string &text);
+    bool writeUtf8Caps(int code, const std::string &text);
+    std::string fromUtf8String(const std::string& t)const {return encoder.fromUtf8(t);}
     virtual bool writeInt16(int code, int data) = 0;
     virtual bool writeInt32(int code, int data) = 0;
     virtual bool writeInt64(int code, unsigned long long int data) = 0;
@@ -39,26 +39,38 @@ private:
 
 class dxfWriterBinary : public dxfWriter {
 public:
-    dxfWriterBinary(std::ofstream *stream):dxfWriter(stream){}
-    virtual ~dxfWriterBinary() {}
-    virtual bool writeString(int code, std::string text);
-    virtual bool writeInt16(int code, int data);
-    virtual bool writeInt32(int code, int data);
-    virtual bool writeInt64(int code, unsigned long long int data);
-    virtual bool writeDouble(int code, double data);
-    virtual bool writeBool(int code, bool data);
+    explicit dxfWriterBinary(std::ofstream *stream):dxfWriter(stream){}
+    ~dxfWriterBinary() override = default;
+    bool writeString(int code, const std::string &text) override;
+    bool writeInt16(int code, int data) override;
+    bool writeInt32(int code, int data) override;
+    bool writeInt64(int code, unsigned long long int data) override;
+    bool writeDouble(int code, double data) override;
+    bool writeBool(int code, bool data) override;
+protected:
+    template<typename T>
+    bool writeBytes(std::streamsize count, T bytes) {
+        static_assert(std::numeric_limits<T>::is_integer, "Should be an integer type.");
+
+        std::unique_ptr<char> buffer = std::unique_ptr<char>(new char[count]);
+        for(std::streamsize i = 0; i < count; i++) {
+            buffer.get()[i] = (bytes >> (i*8)) & 0XFF;
+        }
+        filestr->write(buffer.get(), count);
+        return (filestr->good());
+    }
 };
 
 class dxfWriterAscii : public dxfWriter {
 public:
-    dxfWriterAscii(std::ofstream *stream);
-    virtual ~dxfWriterAscii(){}
-    virtual bool writeString(int code, std::string text);
-    virtual bool writeInt16(int code, int data);
-    virtual bool writeInt32(int code, int data);
-    virtual bool writeInt64(int code, unsigned long long int data);
-    virtual bool writeDouble(int code, double data);
-    virtual bool writeBool(int code, bool data);
+    explicit dxfWriterAscii(std::ofstream *stream);
+    ~dxfWriterAscii() override= default;
+    bool writeString(int code, const std::string &text) override;
+    bool writeInt16(int code, int data) override;
+    bool writeInt32(int code, int data) override;
+    bool writeInt64(int code, unsigned long long int data) override;
+    bool writeDouble(int code, double data) override;
+    bool writeBool(int code, bool data) override;
 };
 
 #endif // DXFWRITER_H
