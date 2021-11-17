@@ -90,7 +90,7 @@ void RScodec::RSgenerate_gf(unsigned int pp) {
 void RScodec::RSgen_poly() {
     int i,j ;
     int tmp;
-    int bb = nn-kk;; //nn-kk length of parity data
+    int bb = nn-kk; //nn-kk length of parity data
 
     gg[0] = 2 ;    /* primitive element alpha = 2  for GF(2**mm)  */
     gg[1] = 1 ;    /* g(x) = (X+alpha) initially */
@@ -322,7 +322,7 @@ bool RScodec::encode(unsigned char *data, unsigned char *parity) {
     int feedback ;
     unsigned char *idata = data;
     unsigned char *bd = parity;
-    int bb = nn-kk;; //nn-kk length of parity data
+    int bb = nn-kk; //nn-kk length of parity data
 
     for (i=0; i<bb; i++)   bd[i] = 0 ;
     for (i=kk-1; i>=0; i--) {
@@ -365,7 +365,7 @@ bool RScodec::encode(unsigned char *data, unsigned char *parity) {
 /** return value: number of corrected errors or -1 if can't correct it */
 int RScodec::decode(unsigned char *data) {
     if (!isOk) return -1;
-    int bb = nn-kk;; //nn-kk length of parity data
+    int bb = nn-kk; //nn-kk length of parity data
 
     int *recd = new (std::nothrow) int[nn];
     int **elp = new int*[bb + 2];
