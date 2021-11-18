@@ -12,7 +12,7 @@
 
 #ifndef DXFWRITER_H
 #define DXFWRITER_H
-
+#include <fstream>
 #include "drw_textcodec.h"
 
 class dxfWriter {

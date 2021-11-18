@@ -1228,7 +1228,7 @@ bool DRW_LWPolyline::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
         vertex->y = buf->getRawDouble();
         vertlist.push_back(vertex);
 		auto pv = vertex;
-        for (int i = 1; i< vertexnum; i++){
+        for (size_t i = 1; i< vertexnum; i++){
 			vertex = std::make_shared<DRW_Vertex2D>();
 			if (version < DRW::AC1015) {//14-
                 vertex->x = buf->getRawDouble();
@@ -1870,7 +1870,7 @@ bool DRW_Hatch::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     loopsnum = buf->getBitLong();
 
     //read loops
-    for (dint32 i = 0 ; i < loopsnum; ++i){
+    for (size_t i = 0 ; i < loopsnum; ++i){
         loop = std::make_shared<DRW_HatchLoop>(buf->getBitLong());
         havePixelSize |= loop->type & 4;
         if (!(loop->type & 2)){ //Not polyline

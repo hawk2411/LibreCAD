@@ -15,21 +15,6 @@
 #include <sstream>
 #include "../drw_base.h"
 
-namespace DRW {
-/** utility function
- * convert a int to string in hex
- **/
-// here was a special __APPLE__ implementation. I've removed it. In my opinion the
-// reason for this particular APPLE implementation was a bug in GCC 4.2 from 2009.
-
-    template<typename T>
-    std::string toHexStr(T digit) {
-        static_assert(std::numeric_limits<T>::is_integer, "Require an integral type");
-        std::ostringstream Convert;
-        Convert << std::uppercase << std::hex << digit;
-        return Convert.str();
-    }
-}
 
 namespace dwgRSCodec {
     void decode239I(duint8 *in, duint8 *out, duint32 blk);

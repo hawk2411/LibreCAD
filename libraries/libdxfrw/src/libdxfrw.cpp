@@ -221,7 +221,7 @@ bool dxfRW::writeAppData(const std::list<std::list<DRW_Variant>>& appData, dxfWr
 }
 
 bool dxfRW::writeLineType(DRW_LType *ent, dxfWriter* writer){
-    std::string strname = dxfRW::toupper(ent->name);
+    std::string strname = DRW::toUpper(ent->name);
 
 //do not write linetypes handled by library
     if (strname == "BYLAYER" || strname == "BYBLOCK" || strname == "CONTINUOUS") {
@@ -300,7 +300,7 @@ bool dxfRW::writeTextstyle(const DRW_Textstyle *ent, dxfWriter* writer){
     writer->writeString(0, "STYLE");
     if (!dimstyleStd) {
         //stringstream cause crash in OS/X, bug#3597944
-        std::string name = dxfRW::toupper(ent->name);
+        std::string name = DRW::toUpper(ent->name);
         if (name == "STANDARD")
             dimstyleStd = true;
     }
@@ -417,7 +417,7 @@ bool dxfRW::writeVport(DRW_Vport *ent, dxfWriter* writer){
 bool dxfRW::writeDimstyle(const DRW_Dimstyle *ent, dxfWriter* writer){
     writer->writeString(0, "DIMSTYLE");
     if (!dimstyleStd) {
-        std::string name = dxfRW::toupper(ent->name);
+        std::string name = DRW::toUpper(ent->name);
         if (name == "STANDARD")
             dimstyleStd = true;
     }
@@ -534,7 +534,7 @@ bool dxfRW::writeDimstyle(const DRW_Dimstyle *ent, dxfWriter* writer){
 }
 
 bool dxfRW::writeAppId(DRW_AppId *ent, dxfWriter* writer) {
-    std::string strname = dxfRW::toupper(ent->name);
+    std::string strname = DRW::toUpper(ent->name);
 //do not write mandatory ACAD appId, handled by library
     if (strname == "ACAD")
         return true;
@@ -773,7 +773,7 @@ bool dxfRW::writeLWPolyline(DRW_LWPolyline *ent, dxfWriter* writer){
             writer->writeDouble(38, ent->elevation);
         if (ent->thickness != 0)
             writer->writeDouble(39, ent->thickness);
-        for (int i = 0;  i< ent->vertexnum; i++){
+        for (size_t i = 0;  i< ent->vertexnum; i++){
             auto& v = ent->vertlist.at(i);
             writer->writeDouble(10, v->x);
             writer->writeDouble(20, v->y);
@@ -937,7 +937,7 @@ bool dxfRW::writeHatch(DRW_Hatch *ent, dxfWriter* writer){
         ent->loopsnum = ent->looplist.size();
         writer->writeInt16(91, static_cast<int>(ent->loopsnum));
         //write paths data
-        for (int i = 0;  i< ent->loopsnum; i++){
+        for (size_t i = 0;  i< ent->loopsnum; i++){
             DRW_HatchLoop *loop = ent->looplist.at(i).get();
             writer->writeInt16(92, loop->type);
             if ( (loop->type & 2) == 2){

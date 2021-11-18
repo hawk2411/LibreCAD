@@ -10,9 +10,7 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
-#include <fstream>
 #include <string>
-#include <algorithm>
 #include "dxfwriter.h"
 
 //RLZ TODO change std::endl to x0D x0A (13 10)
@@ -96,8 +94,8 @@ bool dxfWriter::writeUtf8String(int code, const std::string &text) {
 }
 
 bool dxfWriter::writeUtf8Caps(int code, const std::string &text) {
-    std::string strname = text;
-    std::transform(strname.begin(), strname.end(), strname.begin(), std::toupper);
+    std::string strname = DRW::toUpper(text);
+
     std::string t = encoder.fromUtf8(strname);
     return writeString(code, t);
 }

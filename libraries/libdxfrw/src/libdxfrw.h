@@ -127,12 +127,6 @@ private:
     bool writeAppData(const std::list<std::list<DRW_Variant>> &appData, dxfWriter* writer);
 
     bool setError(DRW::error lastError);
-    static std::string toupper(const std::string& str) {
-        std::string result = str;
-        std::transform(result.begin(), result.end(), result.begin(),
-                       [](unsigned char c){ return static_cast<unsigned char>(std::toupper(c)); });
-        return result;
-    }
 private:
     DRW::Version version{DRW::UNKNOWNV};
     DRW::error error{DRW::BAD_NONE};
