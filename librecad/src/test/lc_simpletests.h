@@ -10,12 +10,14 @@ class LC_SimpleTests:public QObject
 {
 	Q_OBJECT
 public:
-	LC_SimpleTests(QWidget* parent);
-	~LC_SimpleTests()=default;
+	explicit LC_SimpleTests(QWidget* parent);
+	~LC_SimpleTests() override =default;
 
+    void slotDumpEntities(RS_EntityContainer* d = nullptr);
 public slots:
 	/** dumps entities to file */
-	void slotTestDumpEntities(RS_EntityContainer* d = nullptr);
+    void slotTestDumpEntities();
+
 	/** dumps undo info to stdout */
 	void slotTestDumpUndo();
 	/** updates all inserts */

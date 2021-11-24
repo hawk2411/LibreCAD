@@ -27,6 +27,7 @@
 #include <QRegExp>
 #include <QAction>
 #include <QMouseEvent>
+#include "rs_graphicview.h"
 #include "rs_eventhandler.h"
 #include "rs_actioninterface.h"
 #include "rs_dialogfactory.h"
@@ -42,8 +43,8 @@
  */
 RS_EventHandler::RS_EventHandler(QObject* parent) : QObject(parent)
 {
-    connect(parent, SIGNAL(relative_zero_changed(const RS_Vector&)),
-            this, SLOT(setRelativeZero(const RS_Vector&)));
+    connect(dynamic_cast<RS_GraphicView*>(parent), &RS_GraphicView::relative_zero_changed,
+            this, &RS_EventHandler::setRelativeZero);
 }
 
 /**

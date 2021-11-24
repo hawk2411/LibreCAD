@@ -34,87 +34,92 @@ LC_SimpleTests::LC_SimpleTests(QWidget *parent):
 	QMenu* testMenu=appWin->menuBar()->addMenu(tr("De&bugging"));
 	testMenu->setObjectName("Debugging");
 
-		QAction* action = new QAction("Dump Entities", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestDumpEntities()));
+		auto* action = new QAction("Dump Entities", this);
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestDumpEntities);
 		testMenu->addAction(action);
 
 			action = new QAction("Dump Undo Info", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestDumpUndo()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestDumpUndo);
 		testMenu->addAction(action);
 
 		action = new QAction("Update Inserts", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestUpdateInserts()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestUpdateInserts);
 		testMenu->addAction(action);
 
 			 action = new QAction("Draw Freehand", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestDrawFreehand()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestDrawFreehand);
 		testMenu->addAction(action);
 
 			 action = new QAction("Draw Freehand", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestDrawFreehand()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestDrawFreehand);
 		testMenu->addAction(action);
 
 		action = new QAction("Insert Block", this);
 
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestInsertBlock()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestInsertBlock);
 		testMenu->addAction(action);
 
 		action = new QAction("Insert MText", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestInsertMText()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestInsertMText);
 		testMenu->addAction(action);
 
 		action = new QAction("Insert Text", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestInsertText()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestInsertText);
 		testMenu->addAction(action);
 
 		action = new QAction(tr("Insert Image"), this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestInsertImage()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestInsertImage);
 		testMenu->addAction(action);
 
 		action = new QAction("Unicode", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestUnicode()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestUnicode);
 		testMenu->addAction(action);
 
 		action = new QAction("Insert Ellipse", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestInsertEllipse()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestInsertEllipse);
 		testMenu->addAction(action);
 
 		action = new QAction("Math01", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestMath01()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestMath01);
 		testMenu->addAction(action);
 
 		action = new QAction("Resize to 640x480", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestResize640()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestResize640);
 		testMenu->addAction(action);
 
 		action = new QAction("Resize to 800x600", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestResize800()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestResize800);
 		testMenu->addAction(action);
 
 		action = new QAction("Resize to 1024x768", this);
-		connect(action, SIGNAL(triggered()),
-				this, SLOT(slotTestResize1024()));
+		connect(action, &QAction::triggered,
+				this, &LC_SimpleTests::slotTestResize1024);
 		testMenu->addAction(action);
 }
+
 
 /**
  * Testing function.
  */
-void LC_SimpleTests::slotTestDumpEntities(RS_EntityContainer* d){
+void LC_SimpleTests::slotTestDumpEntities(){
+    slotDumpEntities(nullptr);
+}
+
+void LC_SimpleTests::slotDumpEntities(RS_EntityContainer* d){
 
 	int level = 0;
 	std::ofstream dumpFile;
@@ -381,7 +386,7 @@ void LC_SimpleTests::slotTestDumpEntities(RS_EntityContainer* d){
 				RS_EntityContainer* ec = (RS_EntityContainer*)e;
 				dumpFile << "<table><tr><td valign=\"top\">&nbsp;&nbsp;&nbsp;&nbsp;Contents:</td><td>\n";
 				dumpFile.close();
-				slotTestDumpEntities(ec);
+				slotDumpEntities(ec);
 				dumpFile.open("debug_entities.html", std::ios::app);
 				dumpFile << "</td></tr></table>\n";
 			}

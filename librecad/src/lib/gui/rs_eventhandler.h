@@ -29,7 +29,6 @@
 #define RS_EVENTHANDLER_H
 
 #include <QObject>
-
 #include "rs_vector.h"
 
 class RS_ActionInterface;

@@ -61,8 +61,8 @@ class RS_GraphicView : public QWidget
     Q_OBJECT
 
 public:
-	RS_GraphicView(QWidget * parent = 0, Qt::WindowFlags f = 0);
-	virtual ~RS_GraphicView();
+	explicit RS_GraphicView(QWidget * parent = nullptr, Qt::WindowFlags f = nullptr);
+	~RS_GraphicView() override;
 
     void cleanUp();
 
