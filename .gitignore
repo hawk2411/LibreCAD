@@ -95,7 +95,7 @@ core.*
 *.sln
 
 #CMake generated files
-cmake-build-debug/
+cmake-build-*/
 
 #JetBrain's IDE files
 .idea/
