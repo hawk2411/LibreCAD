@@ -86,8 +86,8 @@ LC_ActionGroupManager::LC_ActionGroupManager(QObject* parent)
         ag->setExclusive(false);
         if (ag->objectName() != QObject::tr("File"))
         {
-            connect(parent, SIGNAL(windowsChanged(bool)),
-                    ag, SLOT(setEnabled(bool)));
+            connect(dynamic_cast<QC_ApplicationWindow *>(parent), &QC_ApplicationWindow::windowsChanged,
+                    ag, &QActionGroup::setEnabled);
         }
     }
 
@@ -103,7 +103,7 @@ void LC_ActionGroupManager::sortGroupsByName(QList<QActionGroup*>& list)
     std::sort(list.begin(), list.end(), Sorting::byObjectName);
 }
 
-QList<QActionGroup*> LC_ActionGroupManager::toolGroups()
+QList<QActionGroup*> LC_ActionGroupManager::toolGroups() const
 {
     QList<QActionGroup*> ag_list;
     ag_list << block

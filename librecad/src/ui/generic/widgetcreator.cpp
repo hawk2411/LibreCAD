@@ -28,14 +28,14 @@
 #include "ui_widgetcreator.h"
 
 #include <QAction>
-#include <QActionGroup>
 #include <QSettings>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QFontComboBox>
 
 WidgetCreator::WidgetCreator(QWidget* parent,
                              QMap<QString, QAction*>& actions,
-                             QMap<QString, QActionGroup*> action_groups,
+                             const QMap<QString, QActionGroup*>& action_groups,
                              bool assigner)
     : QFrame(parent)
     , ui(new Ui::WidgetCreator)
@@ -51,8 +51,8 @@ WidgetCreator::WidgetCreator(QWidget* parent,
     }
     else
     {
-        connect(ui->assign_button, SIGNAL(released()), this, SLOT(requestAssignment()));
-        connect(ui->update_button, SIGNAL(released()), this, SLOT(requestUpdate()));
+        connect(ui->assign_button, &QPushButton::released, this, &WidgetCreator::requestAssignment);
+        connect(ui->update_button, &QPushButton::released, this, &WidgetCreator::requestUpdate);
     }
 
     ui->categories_combobox->addItem(QObject::tr("All"));
@@ -67,20 +67,22 @@ WidgetCreator::WidgetCreator(QWidget* parent,
 
     ui->offered_actions->fromActionMap(a_map);
 
-    connect(ui->add_button, SIGNAL(released()), this, SLOT(addChosenAction()));
-    connect(ui->remove_button, SIGNAL(released()), this, SLOT(removeChosenAction()));
+    connect(ui->add_button, &QPushButton::released, this, static_cast<void (WidgetCreator::*)()>(&WidgetCreator::addChosenAction));
 
-    connect(ui->offered_actions, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-            this, SLOT(addChosenAction(QListWidgetItem*)));
-    connect(ui->chosen_actions, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-            this, SLOT(removeChosenAction(QListWidgetItem*)));
+    connect(ui->remove_button, &QPushButton::released, this, static_cast<void (WidgetCreator::*)()>(&WidgetCreator::removeChosenAction));
 
-    connect(ui->combo, SIGNAL(activated(QString)), this, SLOT(setLists(QString)));
+    connect(ui->offered_actions, &ActionList::itemDoubleClicked,
+            this, static_cast<void (WidgetCreator::*)(QListWidgetItem*)>(&WidgetCreator::addChosenAction));
 
-    connect(ui->create_button, SIGNAL(released()), this, SLOT(createWidget()));
-    connect(ui->destroy_button, SIGNAL(released()), this, SLOT(destroyWidget()));
+    connect(ui->chosen_actions, &ActionList::itemDoubleClicked,
+            this, static_cast<void (WidgetCreator::*)(QListWidgetItem*)>(&WidgetCreator::removeChosenAction));
 
-    connect(ui->categories_combobox, SIGNAL(activated(QString)), this, SLOT(setCategory(QString)));
+    connect(ui->combo, static_cast<void (QComboBox::*)(const QString&)>(&QComboBox::activated), this, &WidgetCreator::setLists);
+
+    connect(ui->create_button, &QPushButton::released, this, &WidgetCreator::createWidget);
+    connect(ui->destroy_button, &QPushButton::released, this, &WidgetCreator::destroyWidget);
+
+    connect(ui->categories_combobox, static_cast<void(QComboBox::*)(const QString&)>(&QComboBox::activated), this, &WidgetCreator::setCategory);
 }
 
 WidgetCreator::~WidgetCreator()
@@ -153,7 +155,7 @@ void WidgetCreator::addCustomWidgets(const QString& group)
     ui->combo->lineEdit()->clear();
 }
 
-void WidgetCreator::setLists(QString key)
+void WidgetCreator::setLists(const QString& key)
 {
     w_key = key;
     QSettings settings;
@@ -218,7 +220,7 @@ void WidgetCreator::destroyWidget()
     }
 }
 
-void WidgetCreator::setCategory(QString category)
+void WidgetCreator::setCategory(const QString& category)
 {
     if (category == QObject::tr("All"))
     {

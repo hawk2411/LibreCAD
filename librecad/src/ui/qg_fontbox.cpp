@@ -58,8 +58,8 @@ void QG_FontBox::init() {
 	}
     addItems(fonts);
 
-    connect(this, SIGNAL(activated(int)),
-            this, SLOT(slotFontChanged(int)));
+    connect(this, static_cast<void (QG_FontBox::*)(int)>(&QG_FontBox::activated),
+            this, &QG_FontBox::slotFontChanged);
 
     setCurrentIndex(0);
     slotFontChanged(currentIndex());

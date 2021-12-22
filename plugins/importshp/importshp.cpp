@@ -150,10 +150,10 @@ dibSHP::dibSHP(QWidget *parent) :  QDialog(parent)
     readSettings();
     updateFile();
 
-    connect(cancelbut, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(acceptbut, SIGNAL(clicked()), this, SLOT(checkAccept()));
-    connect(filebut, SIGNAL(clicked()), this, SLOT(getFile()));
-    connect(fileedit, SIGNAL(editingFinished()), this, SLOT(updateFile()));
+    connect(cancelbut, &QPushButton::clicked, this, &dibSHP::reject);
+    connect(acceptbut, &QPushButton::clicked, this, &dibSHP::checkAccept);
+    connect(filebut, &QPushButton::clicked, this, &dibSHP::getFile);
+    connect(fileedit, &QLineEdit::editingFinished, this, &dibSHP::updateFile);
 }
 
 void dibSHP::checkAccept()

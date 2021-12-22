@@ -48,7 +48,7 @@ public:
     void setLayer(RS_Layer& layer);
     void setLayer(QString& layer);
 
-    void init(RS_LayerList& layerList, bool showByBlock, bool showUnchanged);
+    void init(RS_LayerList& list, bool show_by_block, bool show_unchanged);
 
 	bool isUnchanged() {
 		return unchanged;

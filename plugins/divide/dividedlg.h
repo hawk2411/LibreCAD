@@ -26,7 +26,7 @@ class dividedlg : public QDialog
     Q_OBJECT
 
 public:
-    dividedlg( Document_Interface *doc, QString,
+    dividedlg( Document_Interface *doc, const QString&,
                QWidget *parent = nullptr );
     ~dividedlg();
 
@@ -48,7 +48,7 @@ signals:
 
 private:
     enum ElementKind { STRAIGHT, CURVED };
-    QFrame* choice(ElementKind ek, QFont font);
+    QFrame* choice(ElementKind ek, const QFont& font);
     Document_Interface *d;
     QRadioButton *R1; //on/off ticks
     QRadioButton *R2; //on/off breaks
@@ -59,10 +59,10 @@ private:
     QString dataToReturn;
     bool ticksShowHideFlag;
     bool breaksOnOffFlag;
-    bool backSpace;
-    bool inOut; //tick position in/out - above/below
-    int size; //%
-    int qty; //ticks and breaks
+    bool backSpace{};
+    bool inOut{}; //tick position in/out - above/below
+    int size{}; //%
+    int qty{}; //ticks and breaks
     int activeLayer;
 };
 

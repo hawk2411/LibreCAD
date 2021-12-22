@@ -60,8 +60,8 @@ void QG_PatternBox::init() {
     patterns.sort();
     insertItems(0, patterns);
 
-    connect(this, SIGNAL(activated(int)),
-            this, SLOT(slotPatternChanged(int)));
+    connect(this, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+            this, &QG_PatternBox::slotPatternChanged);
 
     setCurrentIndex(0);
     slotPatternChanged(currentIndex());

@@ -30,8 +30,8 @@ LC_WidgetOptionsDialog::LC_WidgetOptionsDialog(QWidget* parent)
 {
     setupUi(this);
 
-    connect(stylesheet_button, SIGNAL(released()),
-            this, SLOT(chooseStyleSheet()));
+    connect(stylesheet_button, &QPushButton::released,
+            this, &LC_WidgetOptionsDialog::chooseStyleSheet);
 }
 
 void LC_WidgetOptionsDialog::chooseStyleSheet()

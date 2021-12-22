@@ -47,7 +47,7 @@ void LC_List::execComm(Document_Interface *doc,
         text.append( getStrData(obj.at(i)));
         text.append( "\n");
     }
-    lc_Listdlg dlg(parent);
+    lc_ListDlg dlg(parent);
     dlg.setText(text);
     dlg.exec();
 
@@ -273,26 +273,26 @@ double LC_List::polylineRadius( const Plug_VertexData& ptA, const Plug_VertexDat
 }
 
 /*****************************/
-lc_Listdlg::lc_Listdlg(QWidget *parent) :  QDialog(parent)
+lc_ListDlg::lc_ListDlg(QWidget *parent) : QDialog(parent)
 {
     setWindowTitle(tr("List entities"));
 //    QTextEdit *edit= new QTextEdit(this);
     edit.setReadOnly (true);
     edit.setAcceptRichText ( false );
-    QDialogButtonBox* bb = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal, this );
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto* bb = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal, this );
+    auto *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(&edit);
     mainLayout->addWidget(bb);
     this->setLayout(mainLayout);
     this->resize ( 450, 350 );
 
-    connect(bb, SIGNAL(rejected()), this, SLOT(accept()));
+    connect(bb, &QDialogButtonBox::rejected, this, &lc_ListDlg::accept);
 }
 
-void lc_Listdlg::setText(QString text)
+void lc_ListDlg::setText(QString text)
 {
     edit.setText(text);
 }
-lc_Listdlg::~lc_Listdlg()
+lc_ListDlg::~lc_ListDlg()
 {
 }

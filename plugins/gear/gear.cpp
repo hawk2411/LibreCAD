@@ -61,7 +61,7 @@ void LC_Gear::execComm(Document_Interface *doc,
     }
 
     if (!parameters_dialog) {
-        parameters_dialog = new lc_Geardlg(parent);
+        parameters_dialog = new lc_GearDlg(parent);
         if (!parameters_dialog) {
             return;
         }
@@ -74,89 +74,109 @@ void LC_Gear::execComm(Document_Interface *doc,
 
 /*****************************/
 
-lc_Geardlg::lc_Geardlg(QWidget *parent) :
+lc_GearDlg::lc_GearDlg(QWidget *parent) :
     QDialog(parent),
-    settings(QSettings::IniFormat, QSettings::UserScope, "LibreCAD", "gear_plugin")
-{
+    settings(QSettings::IniFormat, QSettings::UserScope, "LibreCAD", "gear_plugin") {
+
     const char *windowTitle = "Draw a gear";
 
     setWindowTitle(tr(windowTitle));
 
-    QLabel *label;
-    QGridLayout *mainLayout = new QGridLayout(this);
+    auto *mainLayout = new QGridLayout(this);
 
-    int i = 0, j = 0;
+    int row = 0;
+    int column = 0;
 
-#define RST() do{ if(j) { ++i; j = 0; } } while(0)
+    auto resetColumn = [&](){
+        if(column) {
+            row++;
+            column = 0;
+        }
+    };
+    auto addToLayout = [&](QWidget* widget, const QString &text) {
+        mainLayout->addWidget(new QLabel((text), this), row, 0);
+        mainLayout->addWidget(widget, row, 1);
+    };
 
-#define Q(name, type, text, min, max, stp) do {                  \
-            label = new QLabel((text), this);                    \
-            name = new type(this);                               \
-            name->setMinimum(min);                               \
-            name->setMaximum(max);                               \
-            name->setSingleStep(stp);                            \
-            mainLayout->addWidget(label,  i, 0);                 \
-            mainLayout->addWidget((name), i, 1);                 \
-        } while(0)
+    auto initDoubleSpinBox = [&](const QString& text, double min, double max, double stp, int dec ) {
+        resetColumn();
 
-#define QDSB(name, text, min, max, stp, dec) do {                \
-            RST();                                               \
-            Q(name, QDoubleSpinBox, (text),(min),(max),(stp));   \
-            name->setDecimals(dec);                              \
-            ++i; j = 0;                                          \
-        } while(0)
+        auto* widget = new QDoubleSpinBox(this);
+        widget->setMinimum(min);
+        widget->setMaximum(max);
+        widget->setSingleStep(stp);
+        widget->setDecimals(dec);
 
-#define QSB(name, text, min, max, stp) do {                      \
-            RST();                                               \
-            Q(name, QSpinBox, (text),(min),(max), (stp));        \
-            ++i; j = 0;                                          \
-        } while(0)
+        addToLayout(widget, text);
+        row++;
+        column = 0;
+        return widget;
+    };
 
-#define QCB(name, text) do {                                     \
-            name = new QCheckBox((text), this);                  \
-            mainLayout->addWidget(name, i, j);                   \
-            j++; if (j >= 2) { j = 0; i++; }                     \
-        } while(0)
+    auto initSpinBox = [&](const QString& text, int min, int max, int stp) {
+        resetColumn();
 
-    QDSB(rotateBox,               tr("Rotation angle"), -360.0, 360.0, 1.0, 6);
-    QSB (nteethBox,               tr("Number of teeth"), 1, 2000, 1);
-    QDSB(modulusBox,              tr("Modulus"), 1.0E-10, 1.0E+10, 0.1, 6); 
-    QDSB(pressureBox,             tr("Pressure angle (deg)"), 0.1, 89.9, 1.0, 5);
-    QDSB(addendumBox,             tr("Addendum (rel. to modulus)"), 0.0, 5.0, 0.1, 5);
-    QDSB(dedendumBox,             tr("Dedendum (rel. to modulus)"), 0.0, 5.0, 0.1, 5);
-    QSB (n1Box,                   tr("Number of segments to draw (dedendum)"), 1, 1024, 8);
-    QSB (n2Box,                   tr("Number of segments to draw (addendum)"), 1, 1024, 8);
-    QCB (drawAllTeethBox,         tr("Draw all teeth?"));
-    QCB (drawBothSidesOfToothBox, tr("Draw symmetric face?"));
+        auto* widget = new QSpinBox(this);
+        widget->setMinimum(min);
+        widget->setMaximum(max);
+        widget->setSingleStep(stp);
 
-    QCB (useLayersBox,            tr("Use layers?")); RST();
-    QCB (drawAddendumCircleBox,   tr("Draw addendum circle?"));
-    QCB (drawPitchCircleBox,      tr("Draw pitch circle?"));
-    QCB (drawBaseCircleBox,       tr("Draw base circle?"));
-    QCB (drawRootCircleBox,       tr("Draw root circle?"));
-    QCB (drawPressureLineBox,     tr("Draw pressure line?"));
-    QCB (drawPressureLimitBox,    tr("Draw pressure limits?"));
+        addToLayout(widget, text);
+        row++;
+        column=0;
+        return widget;
+    };
 
-    QCB (calcInterferenceBox,     tr("Calculate interference?"));
-    QSB (n3Box,                   tr("Number of segments to draw (interference)"), 1, 1024,     8);
+    auto initCheckBox = [&](const QString& text) {
+        auto * widget = new QCheckBox(text);
+        mainLayout->addWidget(widget, row, column);
+        column++;
+        if (column >= 2) {
+            column = 0;
+            row++;
+        }
+        return widget;
+    };
 
-    QPushButton *acceptbut = new QPushButton(tr("Accept"), this);
-    QPushButton *cancelbut = new QPushButton(tr("Cancel"), this);
-    QHBoxLayout *acceptLayout = new QHBoxLayout();
+    rotateBox = initDoubleSpinBox(tr("Rotation angle"), -360.0, 360.0, 1.0, 6);
+    nteethBox = initSpinBox(tr("Number of teeth"), 1, 2000, 1);
+    modulusBox= initDoubleSpinBox(tr("Modulus"), 1.0E-10, 1.0E+10, 0.1, 6);
+    pressureBox = initDoubleSpinBox(tr("Pressure angle (deg)"), 0.1, 89.9, 1.0, 5);
+    addendumBox= initDoubleSpinBox(tr("Addendum (rel. to modulus)"), 0.0, 5.0, 0.1, 5);
+    dedendumBox = initDoubleSpinBox(tr("Dedendum (rel. to modulus)"), 0.0, 5.0, 0.1, 5);
+    n1Box = initSpinBox (tr("Number of segments to draw (dedendum)"), 1, 1024, 8);
+    n2Box = initSpinBox (tr("Number of segments to draw (addendum)"), 1, 1024, 8);
+    drawAllTeethBox = initCheckBox (tr("Draw all teeth?"));
+    drawBothSidesOfToothBox = initCheckBox (tr("Draw symmetric face?"));
 
-    acceptLayout->addStretch();
-    acceptLayout->addWidget(acceptbut);
-    acceptLayout->addStretch();
-    acceptLayout->addWidget(cancelbut);
-    acceptLayout->addStretch();
+    useLayersBox = initCheckBox (tr("Use layers?")); resetColumn();
+    drawAddendumCircleBox = initCheckBox (tr("Draw addendum circle?"));
+    drawPitchCircleBox = initCheckBox (tr("Draw pitch circle?"));
+    drawBaseCircleBox = initCheckBox (tr("Draw base circle?"));
+    drawRootCircleBox = initCheckBox (tr("Draw root circle?"));
+    drawPressureLineBox = initCheckBox (tr("Draw pressure line?"));
+    drawPressureLimitBox = initCheckBox (tr("Draw pressure limits?"));
 
-    mainLayout->addLayout(acceptLayout, i, 0, 1, 2);
+    calcInterferenceBox = initCheckBox (tr("Calculate interference?"));
+    n3Box = initSpinBox (tr("Number of segments to draw (interference)"), 1, 1024, 8);
+
+    auto *accept_but = new QPushButton(tr("Accept"), this);
+    auto *cancel_but = new QPushButton(tr("Cancel"), this);
+    auto *accept_layout = new QHBoxLayout();
+
+    accept_layout->addStretch();
+    accept_layout->addWidget(accept_but);
+    accept_layout->addStretch();
+    accept_layout->addWidget(cancel_but);
+    accept_layout->addStretch();
+
+    mainLayout->addLayout(accept_layout, row, 0, 1, 2);
     setLayout(mainLayout);
 
     readSettings();
 
-    connect(cancelbut, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(acceptbut, SIGNAL(clicked()), this, SLOT(checkAccept()));
+    connect(cancel_but, &QPushButton::clicked, this, &lc_GearDlg::reject);
+    connect(accept_but, &QPushButton::clicked, this, &lc_GearDlg::checkAccept);
 }
 
 /* calculate the radius of a point in canonical evoluta
@@ -310,7 +330,7 @@ double evolute::find_common_phi_evo1(const double eps)
     return x;
 } /* find_common_phi_evo1 */
 
-void lc_Geardlg::processAction(Document_Interface *doc, const QString& cmd, QPointF& center)
+void lc_GearDlg::processAction(Document_Interface *doc, const QString& cmd, QPointF& center)
 {
     Q_UNUSED(doc);
     Q_UNUSED(cmd);
@@ -520,21 +540,21 @@ void lc_Geardlg::processAction(Document_Interface *doc, const QString& cmd, QPoi
     writeSettings();
 }
 
-void lc_Geardlg::checkAccept()
+void lc_GearDlg::checkAccept()
 {
     accept();
 }
 
-lc_Geardlg::~lc_Geardlg()
+lc_GearDlg::~lc_GearDlg()
 {
 }
 
-void lc_Geardlg::closeEvent(QCloseEvent *event)
+void lc_GearDlg::closeEvent(QCloseEvent *event)
 {
     QWidget::closeEvent(event);
 }
 
-void lc_Geardlg::readSettings()
+void lc_GearDlg::readSettings()
 {
 
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
@@ -571,7 +591,7 @@ void lc_Geardlg::readSettings()
     move(pos);
 }
 
-void lc_Geardlg::writeSettings()
+void lc_GearDlg::writeSettings()
 {
 #define W(var, vfunc) do { \
         settings.setValue(#var, var##Box->vfunc()); \

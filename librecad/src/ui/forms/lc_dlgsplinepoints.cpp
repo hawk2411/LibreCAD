@@ -12,9 +12,8 @@ LC_DlgSplinePoints::LC_DlgSplinePoints(QWidget* parent, bool modal, Qt::WindowFl
 	setModal(modal);
 	ui->setupUi(this);
 
-	connect(ui->rbSplinePoints, SIGNAL(toggled(bool)),
-			this, SLOT(updatePoints())
-			);
+	connect(ui->rbSplinePoints, &QRadioButton::toggled,
+			this, &LC_DlgSplinePoints::updatePoints);
 }
 
 LC_DlgSplinePoints::~LC_DlgSplinePoints() = default;

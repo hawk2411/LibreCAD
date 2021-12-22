@@ -24,13 +24,13 @@ class QCheckBox;
 class QDoubleSpinBox;
 class QComboBox;
 
-class lc_Geardlg : public QDialog
+class lc_GearDlg : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit lc_Geardlg(QWidget *parent);
-    virtual ~lc_Geardlg();
+    explicit lc_GearDlg(QWidget *parent);
+    virtual ~lc_GearDlg();
 
 public slots:
     void processAction(Document_Interface *doc, const QString& cmd, QPointF& center);
@@ -74,7 +74,7 @@ class LC_Gear : public QObject, QC_PluginInterface
     Q_INTERFACES(QC_PluginInterface)
     Q_PLUGIN_METADATA(IID LC_DocumentInterface_iid FILE  "gear.json")
 
-    lc_Geardlg      *parameters_dialog {nullptr};
+    lc_GearDlg      *parameters_dialog {nullptr};
 
  public:
     LC_Gear();

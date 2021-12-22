@@ -87,10 +87,10 @@ picPunto::picPunto(QWidget *parent) :  QDialog(parent)
     setLayout(mainLayout);
     readSettings();
 
-    connect(cancelbut, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(acceptbut, SIGNAL(clicked()), this, SLOT(checkAccept()));
+    connect(cancelbut, &QPushButton::clicked, this, &picPunto::reject);
+    connect(acceptbut, &QPushButton::clicked, this, &picPunto::checkAccept);
 
-    connect(filebut, SIGNAL(clicked()), this, SLOT(dptFile()));
+    connect(filebut, &QPushButton::clicked, this, &picPunto::dptFile);
 }
 
 void picPunto::checkAccept()

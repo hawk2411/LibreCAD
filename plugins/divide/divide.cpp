@@ -106,8 +106,7 @@ void divide::execComm( Document_Interface *doc,
     }
 
     dividedlg dlg( d, passedData, parent );
-    QObject::connect( &dlg, SIGNAL( returnData( QString ) ), this,
-                      SLOT( gotReturnedDataSlot( QString ) ) );
+    QObject::connect( &dlg, &dividedlg::returnData, this, &divide::gotReturnedDataSlot);
     if ( dlg.exec() == QDialog::Accepted )
     {
         QList<QString> data = ( returnedData.split( ":" ) );

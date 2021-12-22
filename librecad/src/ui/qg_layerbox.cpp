@@ -56,30 +56,31 @@ QG_LayerBox::~QG_LayerBox() {}
 /**
  * Initialisation (called manually only once).
  *
- * @param layerList Layer list which provides the layer names that are 
+ * @param list Layer list which provides the layer names that are
  *                  available.
- * @param showByBlock true: Show attribute ByBlock.
+ * @param show_by_block true: Show attribute ByBlock.
  */
-void QG_LayerBox::init(RS_LayerList& layerList, 
-		bool showByBlock, bool showUnchanged) {
-    this->showByBlock = showByBlock;
-	this->showUnchanged = showUnchanged;
-    layerList.sort();
-    this->layerList = &layerList;
+void QG_LayerBox::init(RS_LayerList& list,
+                       bool show_by_block, bool show_unchanged) {
+    this->showByBlock = show_by_block;
+	this->showUnchanged = show_unchanged;
+    list.sort();
+    this->layerList = &list;
 
-    if (showUnchanged) {
+    if (show_unchanged) {
         addItem(tr("- Unchanged -"));
 	}
 
-    for (unsigned i=0; i<layerList.count(); ++i) {
-        RS_Layer* lay = layerList.at(i);
-        if (lay && (lay->getName()!="ByBlock" || showByBlock)) {
+    for (unsigned i=0; i < list.count(); ++i) {
+        RS_Layer* lay = list.at(i);
+        if (lay && (lay->getName()!="ByBlock" || show_by_block)) {
             addItem(lay->getName());
         }
     }
 
-    connect(this, SIGNAL(activated(int)),
-            this, SLOT(slotLayerChanged(int)));
+    void (QG_LayerBox::* activated)(int) = &QG_LayerBox::activated;
+    connect(this, activated,
+            this, &QG_LayerBox::slotLayerChanged);
 
     setCurrentIndex(0);
 

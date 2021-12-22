@@ -36,6 +36,7 @@
 #include <QDateTime>
 #include <QImageWriter>
 #include <QMouseEvent>
+#include <memory>
 
 #include "rs_system.h"
 #include "rs_settings.h"
@@ -79,27 +80,14 @@ QG_LibraryWidget::QG_LibraryWidget(QWidget* parent, const char* name, Qt::Window
 
     buildTree();
 
-    connect(dirView, SIGNAL(expanded(QModelIndex)), this, SLOT(expandView(QModelIndex)));
-    connect(dirView, SIGNAL(collapsed(QModelIndex)), this, SLOT(collapseView(QModelIndex)));
-    connect(dirView, SIGNAL(clicked(QModelIndex)), this, SLOT(updatePreview(QModelIndex)));
-    connect(bInsert, SIGNAL(clicked()), this, SLOT(insert()));
-    connect(bRefresh, SIGNAL(clicked()), this, SLOT(refresh()));
-    connect(bRebuild, SIGNAL(clicked()), this, SLOT(buildTree()));
+    connect(dirView, &QTreeView::expanded, this, &QG_LibraryWidget::expandView);
+    connect(dirView, &QTreeView::collapsed, this, &QG_LibraryWidget::collapseView);
+    connect(dirView, &QTreeView::clicked, this, &QG_LibraryWidget::updatePreview);
+    connect(bInsert, &QPushButton::clicked, this, &QG_LibraryWidget::insert);
+    connect(bRefresh, &QPushButton::clicked, this, &QG_LibraryWidget::refresh);
+    connect(bRebuild, &QPushButton::clicked, this, &QG_LibraryWidget::buildTree);
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- *
- * @author Rallaz
- */
-QG_LibraryWidget::~QG_LibraryWidget()
-{
-    // no need to delete child widgets, Qt does it all for us
-//    delete model; //??????
-/*    QStandardItemModel *model;
-    QTreeView *dirView;
-    QListView *ivPreview;*/
-}
 
 /*
  *  Sets the strings of the subwidgets using the current
@@ -448,8 +436,8 @@ QString QG_LibraryWidget::getPathToPixmap(const QString& dir,
 //    QString foo=iconCacheLocation + dir + QDir::separator() + fiDxf.baseName() + ".png";
     pngPath = iconCacheLocation + dir + QDir::separator() + fiDxf.baseName() + ".png";
 
-    QPixmap* buffer = new QPixmap(128,128);
-    RS_PainterQt painter(buffer);
+    auto buffer = std::unique_ptr<QPixmap>(new QPixmap(128,128));
+    RS_PainterQt painter(buffer.get());
     painter.setBackground(RS_Color(255,255,255));
     painter.eraseRect(0,0, 128,128);
 
@@ -491,7 +479,7 @@ QString QG_LibraryWidget::getPathToPixmap(const QString& dir,
 
     // GraphicView deletes painter
     painter.end();
-    delete buffer;
 
     return pngPath;
 }
+

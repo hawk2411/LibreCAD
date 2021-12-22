@@ -39,33 +39,16 @@ private:
     Document_Interface *d;
 };
 
-class lc_Listdlg : public QDialog
+class lc_ListDlg : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit lc_Listdlg(QWidget *parent = 0);
-    ~lc_Listdlg();
+    explicit lc_ListDlg(QWidget *parent = 0);
+    ~lc_ListDlg() override;
     void setText(QString text);
 
-public slots:
-//    void processAction(QStringList *commandList);
-//    void processAction(Document_Interface *doc);
-//    void checkAccept();
-
-protected:
-//    void closeEvent(QCloseEvent *event);
-
 private:
-//    void readSettings();
-//    void writeSettings();
-//    bool failGUI(QString *msg);
-
-private:
-//    QString errmsg;
-//    QLineEdit *startxedit;
-//    QLineEdit *startyedit;
-//    QLineEdit *endxedit;
     QTextEdit edit;
 };
 

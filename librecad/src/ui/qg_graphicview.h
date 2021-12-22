@@ -94,7 +94,7 @@ public:
     void setAntialiasing(bool state);
     void setCursorHiding(bool state);
     void addScrollbars();
-    bool hasScrollbars();
+    bool hasScrollbars() const;
 
     void setCurrentQAction(QAction* q_action);
 

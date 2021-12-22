@@ -38,8 +38,8 @@ LC_DeviceOptions::LC_DeviceOptions(QWidget* parent) :
     int index = ui->device_combobox->findText(device);
     ui->device_combobox->setCurrentIndex(index);
 
-    connect(ui->save_button, SIGNAL(pressed()), this, SLOT(save()));
-    connect(ui->save_button, SIGNAL(released()), parent, SLOT(close()));
+    connect(ui->save_button, &QPushButton::pressed, this, &LC_DeviceOptions::save);
+    connect(ui->save_button, &QPushButton::released, parent, &QWidget::close);
 }
 
 LC_DeviceOptions::~LC_DeviceOptions()

@@ -42,16 +42,16 @@ QG_PenToolBar::QG_PenToolBar( const QString & title, QWidget * parent )
 		, lineTypeBox(new QG_LineTypeBox{true, false, this, "lineTypebox"})
 {
     colorBox->setToolTip(tr("Line color"));
-	connect(colorBox.get(), SIGNAL(colorChanged(const RS_Color&)),
-            this, SLOT(slotColorChanged(const RS_Color&)));
+	connect(colorBox.get(), &QG_ColorBox::colorChanged,
+            this, &QG_PenToolBar::slotColorChanged);
 
     widthBox->setToolTip(tr("Line width"));
-	connect(widthBox.get(), SIGNAL(widthChanged(RS2::LineWidth)),
-            this, SLOT(slotWidthChanged(RS2::LineWidth)));
+	connect(widthBox.get(), &QG_WidthBox::widthChanged,
+            this, &QG_PenToolBar::slotWidthChanged);
 
     lineTypeBox->setToolTip(tr("Line type"));
-	connect(lineTypeBox.get(), SIGNAL(lineTypeChanged(RS2::LineType)),
-            this, SLOT(slotLineTypeChanged(RS2::LineType)));
+	connect(lineTypeBox.get(), &QG_LineTypeBox::lineTypeChanged,
+            this, &QG_PenToolBar::slotLineTypeChanged);
 
 	currentPen->setColor(colorBox->getColor());
 	currentPen->setWidth(widthBox->getWidth());

@@ -41,8 +41,7 @@ class QG_LibraryWidget : public QWidget
     Q_OBJECT
 
 public:
-    QG_LibraryWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
-    ~QG_LibraryWidget();
+    explicit QG_LibraryWidget(QWidget* parent = nullptr, const char* name = nullptr, Qt::WindowFlags fl = nullptr);
 
     QPushButton *bInsert; //RLZ change bInsert to private
 private:

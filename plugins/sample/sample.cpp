@@ -83,22 +83,22 @@ lc_Sampledlg::lc_Sampledlg(QWidget *parent) :  QDialog(parent)
 
 
     QHBoxLayout *loaccept = new QHBoxLayout;
-    QPushButton *acceptbut = new QPushButton(tr("Accept"));
+    QPushButton *accept_button = new QPushButton(tr("Accept"));
     loaccept->addStretch();
-    loaccept->addWidget(acceptbut);
+    loaccept->addWidget(accept_button);
     mainLayout->addLayout(loaccept, 4, 0);
 
-    QPushButton *cancelbut = new QPushButton(tr("Cancel"));
-    QHBoxLayout *locancel = new QHBoxLayout;
-    locancel->addWidget(cancelbut);
+    auto *cancel_button = new QPushButton(tr("Cancel"));
+    auto *locancel = new QHBoxLayout;
+    locancel->addWidget(cancel_button);
     locancel->addStretch();
     mainLayout->addLayout(locancel, 4, 1);
 
     setLayout(mainLayout);
     readSettings();
 
-    connect(cancelbut, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(acceptbut, SIGNAL(clicked()), this, SLOT(checkAccept()));
+    connect(cancel_button, &QPushButton::clicked, this, &lc_Sampledlg::reject);
+    connect(accept_button, &QPushButton::clicked, this, &lc_Sampledlg::checkAccept);
 }
 
 

@@ -70,10 +70,8 @@ plotDialog::plotDialog(QWidget *parent) :
 
     setLayout(mainLayout);
 
-    connect(btnAccept, SIGNAL(clicked()), this, SLOT(slotDrawButtonClicked()));
-    connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
-
-
+    connect(btnAccept, &QPushButton::clicked, this, &plotDialog::slotDrawButtonClicked);
+    connect(btnCancel, &QPushButton::clicked, this, &plotDialog::reject);
 }
 
 plotDialog::EntityType plotDialog::getEntityType() const

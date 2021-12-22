@@ -34,9 +34,9 @@ public:
      */
     explicit WidgetCreator(QWidget* parent,
                            QMap<QString, QAction*>& actions,
-                           QMap<QString, QActionGroup*> action_groups,
+                           const QMap<QString, QActionGroup*>& action_groups,
                            bool assigner = false);
-    ~WidgetCreator();
+    ~WidgetCreator() override;
 
 
     QStringList getChosenActions();
@@ -63,14 +63,14 @@ private slots:
     void removeChosenAction();
     void removeChosenAction(QListWidgetItem* item);
 
-    void setLists(QString);
+    void setLists(const QString&);
 
     void destroyWidget();
     void createWidget();
     void requestAssignment();
     void requestUpdate();
 
-    void setCategory(QString);
+    void setCategory(const QString&);
 
 signals:
     void widgetToCreate(QString);

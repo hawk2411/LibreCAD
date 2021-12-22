@@ -110,8 +110,8 @@ void QG_ColorBox::init(bool showByLayer, bool showUnchanged) {
     addColor(Qt::lightGray,tr("Light Gray"));
 //static colors ends here
 
-    connect(this, SIGNAL(activated(int)),
-            this, SLOT(slotColorChanged(int)));
+    connect(this, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+            this, &QG_ColorBox::slotColorChanged);
 
     if (showUnchanged || showByLayer ) {
         setCurrentIndex(0);

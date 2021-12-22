@@ -32,7 +32,7 @@ protected slots:
 
 private:
 
-	LC_SplinePoints* bezier;
+	LC_SplinePoints* bezier{};
 	std::unique_ptr<Ui::DlgSplinePoints> ui;
 };
 

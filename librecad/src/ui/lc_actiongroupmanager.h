@@ -36,9 +36,9 @@ public:
     QActionGroup* view;
     QActionGroup* widgets;
 
-    QList<QActionGroup*> toolGroups();
+    QList<QActionGroup*> toolGroups() const;
     QMap<QString, QActionGroup*> allGroups();
-    void sortGroupsByName(QList<QActionGroup*>& list);
+    static void sortGroupsByName(QList<QActionGroup*>& list);
 
 public slots:
     void toggleExclusiveSnapMode(bool state);

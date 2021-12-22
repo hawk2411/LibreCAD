@@ -6,9 +6,7 @@
 LinkList::LinkList(QWidget* parent)
     : QListWidget(parent)
 {
-
-    connect(this, SIGNAL(itemActivated(QListWidgetItem*)),
-            this, SLOT(showWebPage(QListWidgetItem*)));
+    connect(this, &LinkList::itemActivated,this, &LinkList::showWebPage);
 }
 
 void LinkList::addLink(const QString& text, const QString& url)

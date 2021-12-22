@@ -106,8 +106,8 @@ void QG_LineTypeBox::init(bool showByLayer, bool showUnchanged) {
     addItem(QIcon(":ui/linetype07.png"), tr("Border (small)"),RS2::BorderLine2);
     addItem(QIcon(":ui/linetype07.png"), tr("Border (large)"),RS2::BorderLineX2);
 
-    connect(this, SIGNAL(activated(int)),
-            this, SLOT(slotLineTypeChanged(int)));
+    connect(this, static_cast<void(QG_LineTypeBox::*)(int)>(&QG_LineTypeBox::activated),
+            this, &QG_LineTypeBox::slotLineTypeChanged);
 
     setCurrentIndex(0);
     slotLineTypeChanged(currentIndex());

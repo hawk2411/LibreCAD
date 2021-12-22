@@ -38,7 +38,7 @@
 #include "pdf_print_loop.h"
 
 
-static RS_Vector parsePageSizeArg(QString);
+static RS_Vector parsePageSizeArg(const QString&);
 static void parsePagesNumArg(QString, PdfPrintParams&);
 static void parseMarginsArg(QString, PdfPrintParams&);
 
@@ -180,17 +180,17 @@ int console_dxf2pdf(int argc, char* argv[])
     RS_FONTLIST->init();
     RS_PATTERNLIST->init();
 
-    PdfPrintLoop *loop = new PdfPrintLoop(params, &app);
+    auto *loop = new PdfPrintLoop(params, &app);
 
-    QObject::connect(loop, SIGNAL(finished()), &app, SLOT(quit()));
+    QObject::connect(loop, &PdfPrintLoop::finished, &app, &QApplication::quit);
 
     QTimer::singleShot(0, loop, SLOT(run()));
 
-    return app.exec();
+    return QApplication::exec();
 }
 
 
-static RS_Vector parsePageSizeArg(QString arg)
+static RS_Vector parsePageSizeArg(const QString& arg)
 {
     RS_Vector v(0.0, 0.0);
 

@@ -104,8 +104,8 @@ void QG_WidthBox::init(bool showByLayer, bool showUnchanged) {
     addItem(QIcon(":ui/width12.png"), tr("2.00mm (ISO)"));
     addItem(QIcon(":ui/width12.png"), tr("2.11mm"));
 
-    connect(this, SIGNAL(activated(int)),
-            this, SLOT(slotWidthChanged(int)));
+    connect(this, static_cast<void(QG_WidthBox::*)(int)>(&QG_WidthBox::activated),
+            this, &QG_WidthBox::slotWidthChanged);
 
     setCurrentIndex(0);
     slotWidthChanged(currentIndex());
