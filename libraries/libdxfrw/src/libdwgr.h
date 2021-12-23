@@ -34,7 +34,7 @@ public:
     DRW::Version getVersion(){return version;}
     DRW::error getError(){return error;}
 bool testReader();
-    void setDebug(DRW::DebugLevel lvl);
+    static void setDebug(DRW::DebugLevel lvl);
 
 private:
     bool openFile(std::ifstream *filestr);

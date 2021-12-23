@@ -34,7 +34,7 @@
 };*/
 
 dxfRW::dxfRW(const char* name) :fileName(name){
-    DRW_DBGSL(DRW_dbg::Level::None);
+    drw_dbgsl(DRW_dbg::Level::None);
 }
 dxfRW::~dxfRW(){
     for (auto &it: imageDef) { delete it; }
@@ -45,10 +45,10 @@ dxfRW::~dxfRW(){
 void dxfRW::setDebug(DRW::DebugLevel lvl){
     switch (lvl){
     case DRW::DebugLevel::Debug:
-        DRW_DBGSL(DRW_dbg::Level::Debug);
+        drw_dbgsl(DRW_dbg::Level::Debug);
         break;
     case DRW::DebugLevel::None:
-        DRW_DBGSL(DRW_dbg::Level::None);
+        drw_dbgsl(DRW_dbg::Level::None);
     }
 }
 

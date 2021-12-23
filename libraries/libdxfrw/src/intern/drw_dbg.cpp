@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <memory>
 #include "drw_dbg.h"
 
 DRW_dbg *DRW_dbg::instance{nullptr};
@@ -41,7 +42,7 @@ DRW_dbg *DRW_dbg::getInstance(){
 }
 
 DRW_dbg::DRW_dbg(){
-    debugPrinter.reset(new print_debug);
+    debugPrinter = std::make_unique<print_debug>();
     currentPrinter = &silentDebug;
 }
 
