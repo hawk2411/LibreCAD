@@ -566,8 +566,8 @@ public:
     }
 	std::shared_ptr<DRW_Vertex2D> addVertex () {
 		std::shared_ptr<DRW_Vertex2D> vert = std::make_shared<DRW_Vertex2D>();
-        vert->stawidth = 0;
-        vert->endwidth = 0;
+        vert->start_width = 0;
+        vert->end_width = 0;
         vert->bulge = 0;
         vertlist.push_back(vert);
         return vert;

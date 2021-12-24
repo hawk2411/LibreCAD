@@ -230,12 +230,13 @@ bool dwgR::openFile(std::ifstream *filestr){
     drw_dbg(line);
     drw_dbg("\n");
 
+    std::string drw_version(line);
     // check version line against known version strings
     version = DRW::UNKNOWNV;
-    for ( auto it = DRW::dwgVersionStrings.begin(); it != DRW::dwgVersionStrings.end(); ++it )
+    for (const auto & dwgVersionString : DRW::getDwgVersionStrings())
     {
-        if ( strcmp( line, it->first ) == 0 ) {
-            version = it->second;
+        if ( drw_version == dwgVersionString.first  ) {
+            version = dwgVersionString.second;
             break;
         }
     }

@@ -1137,11 +1137,11 @@ void DRW_LWPolyline::parseCode(int code, dxfReader *reader){
         break;
     case 40:
 		if(vertex)
-            vertex->stawidth = reader->getDouble();
+            vertex->start_width = reader->getDouble();
         break;
     case 41:
 		if(vertex)
-            vertex->endwidth = reader->getDouble();
+            vertex->end_width = reader->getDouble();
         break;
     case 42:
 		if(vertex)
@@ -1258,8 +1258,8 @@ bool DRW_LWPolyline::parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs)
             double staW = buf->getBitDouble();
             double endW = buf->getBitDouble();
             if (vertlist.size()< i) {
-                vertlist.at(i)->stawidth = staW;
-                vertlist.at(i)->endwidth = endW;
+                vertlist.at(i)->start_width = staW;
+                vertlist.at(i)->end_width = endW;
             }
         }
     }
@@ -1267,7 +1267,7 @@ bool DRW_LWPolyline::parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs)
         drw_dbg("\nVertex list: ");
 		for (auto& pv: vertlist) {
             drw_dbg("\n   x: "); drw_dbg(pv->x); drw_dbg(" y: "); drw_dbg(pv->y); drw_dbg(" bulge: "); drw_dbg(pv->bulge);
-            drw_dbg(" stawidth: "); drw_dbg(pv->stawidth); drw_dbg(" endwidth: "); drw_dbg(pv->endwidth);
+            drw_dbg(" stawidth: "); drw_dbg(pv->start_width); drw_dbg(" endwidth: "); drw_dbg(pv->end_width);
         }
     }
 

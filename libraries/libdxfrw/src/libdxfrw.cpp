@@ -776,10 +776,10 @@ bool dxfRW::writeLWPolyline(DRW_LWPolyline *ent, dxfWriter* writer){
             auto& v = ent->vertlist.at(i);
             writer->writeDouble(10, v->x);
             writer->writeDouble(20, v->y);
-            if (v->stawidth != 0)
-                writer->writeDouble(40, v->stawidth);
-            if (v->endwidth != 0)
-                writer->writeDouble(41, v->endwidth);
+            if (v->start_width != 0)
+                writer->writeDouble(40, v->start_width);
+            if (v->end_width != 0)
+                writer->writeDouble(41, v->end_width);
             if (v->bulge != 0)
                 writer->writeDouble(42, v->bulge);
         }
