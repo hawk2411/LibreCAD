@@ -22,7 +22,7 @@
 namespace {
     //helper function to cleanup pointers in Look Up Tables
     template<typename T>
-    void mapCleanUp(std::unordered_map<duint32, T*>& table)
+    void mapCleanUp(std::unordered_map<uint32_t, T*>& table)
     {
         for (auto& item: table)
             delete item.second;
@@ -46,8 +46,8 @@ void dwgReader::parseAttribs(DRW_Entity* e) {
         return;
     }
 
-    duint32 ltref =e->lTypeH.ref;
-    duint32 lyref =e->layerH.ref;
+    uint32_t ltref =e->lTypeH.ref;
+    uint32_t lyref =e->layerH.ref;
     auto lt_it = ltypemap.find(ltref);
     if (lt_it != ltypemap.end()) {
         e->lineType = (lt_it->second)->name;
@@ -58,7 +58,7 @@ void dwgReader::parseAttribs(DRW_Entity* e) {
     }
 }
 
-std::string dwgReader::findTableName(DRW::TTYPE table, dint32 handle){
+std::string dwgReader::findTableName(DRW::TTYPE table, int32_t handle){
     std::string name;
     switch (table){
     case DRW::STYLE:{
@@ -107,7 +107,7 @@ bool dwgReader::readDwgHeader(DRW_Header& hdr, dwgBuffer *buf, dwgBuffer *hBuf){
 
 //RLZ: TODO add check instead print
 bool dwgReader::checkSentinel(dwgBuffer *buf, enum secEnum::DWGSection, bool start){
-    DRW_UNUSED(start);
+   (void)start;
     for (int i=0; i<16;i++) {
         drw_dbgh(buf->getRawChar8()); drw_dbg(" ");
     }
@@ -121,22 +121,22 @@ bool dwgReader::checkSentinel(dwgBuffer *buf, enum secEnum::DWGSection, bool sta
  *  2 bytes size + data bytes
  *  last section are 2 bytes size + 2 bytes crc (size value always 2)
 **/
-bool dwgReader::readDwgHandles(dwgBuffer *dbuf, duint64 offset, duint64 size) {
+bool dwgReader::readDwgHandles(dwgBuffer *dbuf, uint64_t offset, uint64_t size) {
     drw_dbg("\ndwgReader::readDwgHandles\n");
     if (!dbuf->setPosition(offset))
         return false;
 
-    duint32 maxPos = offset + size;
+    uint32_t maxPos = offset + size;
     drw_dbg("\nSection HANDLES offset= "); drw_dbg(offset);
     drw_dbg("\nSection HANDLES size= "); drw_dbg(size);
     drw_dbg("\nSection HANDLES maxPos= "); drw_dbg(maxPos);
 
     int startPos = offset;
 
-    std::vector<duint8> tmpByteStr;
+    std::vector<uint8_t> tmpByteStr;
     while (maxPos > dbuf->getPosition()) {
         drw_dbg("\nstart handles section buf->curPosition()= "); drw_dbg(dbuf->getPosition()); drw_dbg("\n");
-        duint16 size = dbuf->getBERawShort16();
+        uint16_t size = dbuf->getBERawShort16();
         drw_dbg("object map section size= "); drw_dbg(size); drw_dbg("\n");
         dbuf->setPosition(startPos);
         tmpByteStr.resize(size);
@@ -156,8 +156,8 @@ bool dwgReader::readDwgHandles(dwgBuffer *dbuf, duint64 offset, duint64 size) {
             }
         }
         //verify crc
-        duint16 crcCalc = buff.crc8(0xc0c1,0,size);
-        duint16 crcRead = dbuf->getBERawShort16();
+        uint16_t crcCalc = buff.crc8(0xc0c1,0,size);
+        uint16_t crcRead = dbuf->getBERawShort16();
         drw_dbg("object map section crc8 read= "); drw_dbg(crcRead);
         drw_dbg("\nobject map section crc8 calculated= "); drw_dbg(crcCalc);
         drw_dbg("\nobject section buf->curPosition()= "); drw_dbg(dbuf->getPosition()); drw_dbg("\n");
@@ -178,9 +178,9 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
     bool ret = true;
     bool ret2 = true;
     objHandle oc;
-    dint16 oType;
-    duint32 bs = 0; //bit size of handle stream 2010+
-    std::vector<duint8> tmpByteStr;
+    int16_t oType;
+    uint32_t bs = 0; //bit size of handle stream 2010+
+    std::vector<uint8_t> tmpByteStr;
 
     //parse linetypes, start with linetype Control
     auto mit = ObjectMap.find(hdr.linetypeCtrl);
@@ -302,7 +302,7 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
     //set linetype in layer
     for (auto it=layermap.begin(); it!=layermap.end(); ++it) {
         DRW_Layer *ly = it->second;
-        duint32 ref =ly->lTypeH.ref;
+        uint32_t ref =ly->lTypeH.ref;
         auto lt_it = ltypemap.find(ref);
         if (lt_it != ltypemap.end()){
             ly->lineType = (lt_it->second)->name;
@@ -378,7 +378,7 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         ObjectMap.erase(mit);
         DRW_ObjControl dimstyControl;
         dbuf->setPosition(oc.loc);
-        duint32 size = dbuf->getModularShort();
+        uint32_t size = dbuf->getModularShort();
         if (version > DRW::AC1021) //2010+
             bs = dbuf->getUModularChar();
         else
@@ -710,7 +710,7 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
 bool dwgReader::readDwgBlocks(DRW_Interface& intfa, dwgBuffer *dbuf){
     bool ret = true;
     bool ret2 = true;
-    duint32 bs =0;
+    uint32_t bs =0;
     drw_dbg("\nobject map total size= "); drw_dbg(ObjectMap.size());
 
     for (auto it=blockRecordmap.begin(); it != blockRecordmap.end(); ++it){
@@ -737,7 +737,7 @@ bool dwgReader::readDwgBlocks(DRW_Interface& intfa, dwgBuffer *dbuf){
         else
             bs = 0;
 
-        std::vector<duint8> tmpByteStr(size);
+        std::vector<uint8_t> tmpByteStr(size);
         dbuf->getBytes(tmpByteStr.data(), size);
         dwgBuffer buff(tmpByteStr.data(), size, &decoder);
         DRW_Block bk;
@@ -759,7 +759,7 @@ bool dwgReader::readDwgBlocks(DRW_Interface& intfa, dwgBuffer *dbuf){
             //and do not send block entities like dxf
         } else {
             if (version < DRW::AC1018) { //pre 2004
-                duint32 nextH = bkr->firstEH;
+                uint32_t nextH = bkr->firstEH;
                 while (nextH != 0){
                     mit = ObjectMap.find(nextH);
                     if (mit==ObjectMap.end()) {
@@ -779,8 +779,8 @@ bool dwgReader::readDwgBlocks(DRW_Interface& intfa, dwgBuffer *dbuf){
                         nextH = nextEntLink;
                 }
             } else {//2004+
-                for (std::vector<duint32>::iterator it = bkr->entMap.begin() ; it != bkr->entMap.end(); ++it){
-                    duint32 nextH = *it;
+                for (std::vector<uint32_t>::iterator it = bkr->entMap.begin() ; it != bkr->entMap.end(); ++it){
+                    uint32_t nextH = *it;
                     mit = ObjectMap.find(nextH);
                     if (mit==ObjectMap.end()) {
                         drw_dbg("\nWARNING: Entity of block not found\n");
@@ -832,10 +832,10 @@ bool dwgReader::readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf){
     bool ret = true;
     bool ret2 = true;
     objHandle oc;
-    duint32 bs = 0;
+    uint32_t bs = 0;
 
     if (version < DRW::AC1018) { //pre 2004
-        duint32 nextH = pline.firstEH;
+        uint32_t nextH = pline.firstEH;
         while (nextH != 0){
             auto mit = ObjectMap.find(nextH);
             if (mit==ObjectMap.end()) {
@@ -853,10 +853,10 @@ bool dwgReader::readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf){
                 if (version > DRW::AC1021) {//2010+
                     bs = dbuf->getUModularChar();
                 }
-                std::vector<duint8> tmpByteStr(size);
+                std::vector<uint8_t> tmpByteStr(size);
                 dbuf->getBytes(tmpByteStr.data(), size);
                 dwgBuffer buff(tmpByteStr.data(), size, &decoder);
-                dint16 oType = buff.getObjType(version);
+                int16_t oType = buff.getObjType(version);
                 buff.resetPosition();
                 drw_dbg(" object type= "); drw_dbg(oType); drw_dbg("\n");
                 ret2 = vt.parseDwg(version, &buff, bs, pline.basePoint.z);
@@ -871,8 +871,8 @@ bool dwgReader::readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf){
                 nextH = nextEntLink;
         }
     } else {//2004+
-        for (std::list<duint32>::iterator it = pline.hadlesList.begin() ; it != pline.hadlesList.end(); ++it){
-            duint32 nextH = *it;
+        for (std::list<uint32_t>::iterator it = pline.hadlesList.begin() ; it != pline.hadlesList.end(); ++it){
+            uint32_t nextH = *it;
             auto mit = ObjectMap.find(nextH);
             if (mit==ObjectMap.end()) {
                 drw_dbg("\nWARNING: Entity of block not found\n");
@@ -889,10 +889,10 @@ bool dwgReader::readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf){
                 if (version > DRW::AC1021) {//2010+
                     bs = dbuf->getUModularChar();
                 }
-                std::vector<duint8> tmpByteStr(size);
+                std::vector<uint8_t> tmpByteStr(size);
                 dbuf->getBytes(tmpByteStr.data(), size);
                 dwgBuffer buff(tmpByteStr.data(), size, &decoder);
-                dint16 oType = buff.getObjType(version);
+                int16_t oType = buff.getObjType(version);
                 buff.resetPosition();
                 drw_dbg(" object type= "); drw_dbg(oType); drw_dbg("\n");
                 ret2 = vt.parseDwg(version, &buff, bs, pline.basePoint.z);
@@ -936,7 +936,7 @@ bool dwgReader::readDwgEntities(DRW_Interface& intfa, dwgBuffer *dbuf){
  */
 bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle &obj, DRW_Interface &intfa) {
     bool ret = true;
-    duint32 bs = 0;
+    uint32_t bs = 0;
 
 
     nextEntLink = prevEntLink = 0;// set to 0 to skip unimplemented entities
@@ -950,7 +950,7 @@ bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle &obj, DRW_Interface &in
     if (version > DRW::AC1021) {//2010+
         bs = dbuf->getUModularChar();
     }
-    std::vector<duint8> tmpByteStr(size);
+    std::vector<uint8_t> tmpByteStr(size);
     dbuf->getBytes(tmpByteStr.data(), size);
     //verify if getBytes is ok:
     if (!dbuf->isGood()) {
@@ -958,7 +958,7 @@ bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle &obj, DRW_Interface &in
         return false;
     }
     dwgBuffer buff(tmpByteStr.data(), size, &decoder);
-    dint16 oType = buff.getObjType(version);
+    int16_t oType = buff.getObjType(version);
     buff.resetPosition();
 
     if (oType > 499) {
@@ -1181,7 +1181,7 @@ bool dwgReader::readDwgObjects(DRW_Interface& intfa, dwgBuffer *dbuf){
     bool ret = true;
     bool ret2 = true;
 
-    duint32 i=0;
+    uint32_t i=0;
     drw_dbg("\nentities map total size= "); drw_dbg(ObjectMap.size());
     drw_dbg("\nobjects map total size= "); drw_dbg(objObjectMap.size());
     auto itB=objObjectMap.begin();
@@ -1208,7 +1208,7 @@ bool dwgReader::readDwgObjects(DRW_Interface& intfa, dwgBuffer *dbuf){
  */
 bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& intfa){
     bool ret = true;
-    duint32 bs = 0;
+    uint32_t bs = 0;
 
         dbuf->setPosition(obj.loc);
         //verify if position is ok:
@@ -1220,7 +1220,7 @@ bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
         if (version > DRW::AC1021) {//2010+
             bs = dbuf->getUModularChar();
         }
-        duint8 *tmpByteStr = new duint8[size];
+        uint8_t *tmpByteStr = new uint8_t[size];
         dbuf->getBytes(tmpByteStr, size);
         //verify if getBytes is ok:
         if (!dbuf->isGood()){
@@ -1230,7 +1230,7 @@ bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
         }
         dwgBuffer buff(tmpByteStr, size, &decoder);
         //oType are set parsing entities
-        dint16 oType = obj.type;
+        int16_t oType = obj.type;
 
         switch (oType){
         case 102: {
@@ -1252,7 +1252,7 @@ bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
 
 
 
-bool DRW_ObjControl::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
+bool DRW_ObjControl::parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs){
 int unkData=0;
     bool ret = DRW_TableEntry::parseDwg(version, buf, nullptr, bs);
     drw_dbg("\n***************************** parsing object control entry *********************************************\n");

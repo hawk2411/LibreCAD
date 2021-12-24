@@ -41,15 +41,15 @@ public:
 private:
     void toDwgType();
 public:
-    UTF8STRING recName;      /*!< record name, code 1 */
-    UTF8STRING className;    /*!< C++ class name, code 2 */
-    UTF8STRING appName;      /*!< app name, code 3 */
+    std::string recName;      /*!< record name, code 1 */
+    std::string className;    /*!< C++ class name, code 2 */
+    std::string appName;      /*!< app name, code 3 */
     int proxyFlag;           /*!< Proxy capabilities flag, code 90 */
     int instanceCount;       /*!< number of instances for a custom class, code 91*/
     int wasaProxyFlag;       /*!< proxy flag (app loaded on save), code 280 */
     int entityFlag;          /*!< entity flag, code 281 (0 object, 1 entity)*/
 public: //only for read dwg
-    duint16 classNum;
+    uint16_t classNum;
     int dwgType;
 };
 

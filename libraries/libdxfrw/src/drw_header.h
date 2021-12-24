@@ -69,7 +69,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf, duint8 mv=0);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf, uint8_t mv=0);
 private:
     bool getDouble(std::string key, double *varDouble);
     bool getInt(std::string key, int *varInt);
@@ -90,16 +90,16 @@ private:
     DRW_Variant* curr {nullptr};
     int version; //to use on read
 
-    duint32 linetypeCtrl;
-    duint32 layerCtrl;
-    duint32 styleCtrl;
-    duint32 dimstyleCtrl;
-    duint32 appidCtrl;
-    duint32 blockCtrl;
-    duint32 viewCtrl;
-    duint32 ucsCtrl;
-    duint32 vportCtrl;
-    duint32 vpEntHeaderCtrl;
+    uint32_t linetypeCtrl;
+    uint32_t layerCtrl;
+    uint32_t styleCtrl;
+    uint32_t dimstyleCtrl;
+    uint32_t appidCtrl;
+    uint32_t blockCtrl;
+    uint32_t viewCtrl;
+    uint32_t ucsCtrl;
+    uint32_t vportCtrl;
+    uint32_t vpEntHeaderCtrl;
 };
 
 #endif

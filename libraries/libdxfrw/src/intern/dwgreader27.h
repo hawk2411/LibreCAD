@@ -43,10 +43,6 @@ public:
         ret = dwgReader::readDwgObjects(intfa, &dataBuf);
         return ret;
     }
-//    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa){
-//        DRW_UNUSED(obj);
-//        DRW_UNUSED(intfa);
-//        return false;}
 };
 
 #endif // DWGREADER27_H

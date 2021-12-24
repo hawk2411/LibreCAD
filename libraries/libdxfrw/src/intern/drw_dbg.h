@@ -35,8 +35,9 @@ public:
     void print(int i) const;
     void print(unsigned int i) const;
     void print(long long int i) const;
-    void print(long unsigned int i) const;
     void print(long long unsigned int i) const;
+    void print(long int i) const;
+    void print(long unsigned int i) const;
     void print(double d) const;
     void printH(long long int i) const;
     void printB(int i) const;

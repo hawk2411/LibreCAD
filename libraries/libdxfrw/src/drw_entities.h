@@ -121,9 +121,9 @@ protected:
     void calculateAxis(DRW_Coord extPoint);
     //apply extrusion to @extPoint and return data in @point
     void extrudePoint(DRW_Coord extPoint, DRW_Coord *point);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0)=0;
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0)=0;
     //parses dwg common start part to read entity
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer* strBuf, duint32 bs=0);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer* strBuf, uint32_t bs=0);
     //parses dwg common handles part to read entity
     bool parseDwgEntHandle(DRW::Version version, dwgBuffer *buf);
 
@@ -132,13 +132,13 @@ protected:
 
 public:
 	enum DRW::ETYPE eType = DRW::UNKNOWN;     /*!< enum: entity type, code 0 */
-	duint32 handle = DRW::NoHandle;            /*!< entity identifier, code 5 */
+	uint32_t handle = DRW::NoHandle;            /*!< entity identifier, code 5 */
     std::list<std::list<DRW_Variant> > appData; /*!< list of application data, code 102 */
-	duint32 parentHandle = DRW::NoHandle;      /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
+	uint32_t parentHandle = DRW::NoHandle;      /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
 	DRW::Space space = DRW::ModelSpace;          /*!< space indicator, code 67*/
-	UTF8STRING layer = "0";          /*!< layer name, code 8 */
-	UTF8STRING lineType = "BYLAYER";       /*!< line type, code 6 */
-	duint32 material = DRW::MaterialByLayer;          /*!< hard pointer id to material object, code 347 */
+	std::string layer = "0";          /*!< layer name, code 8 */
+	std::string lineType = "BYLAYER";       /*!< line type, code 6 */
+	uint32_t material = DRW::MaterialByLayer;          /*!< hard pointer id to material object, code 347 */
 	int color = DRW::ColorByLayer;                 /*!< entity color, code 62 */
 	enum DRW_LW_Conv::lineWidth lWeight = DRW_LW_Conv::widthByLayer; /*!< entity lineweight, code 370 */
 	double ltypeScale = 1.0;         /*!< linetype scale, code 48 */
@@ -154,21 +154,21 @@ public:
 	std::vector<std::shared_ptr<DRW_Variant>> extData; /*!< FIFO list of extended data, codes 1000 to 1071*/
 
 protected: //only for read dwg
-    duint8 haveNextLinks; //aka nolinks //B
-    duint8 plotFlags; //presence of plot style //BB
-    duint8 ltFlags; //presence of linetype handle //BB
-    duint8 materialFlag; //presence of material handle //BB
-    duint8 shadowFlag; //presence of shadow handle ?? (in dwg may be plotflag)//RC
+    uint8_t haveNextLinks; //aka nolinks //B
+    uint8_t plotFlags; //presence of plot style //BB
+    uint8_t ltFlags; //presence of linetype handle //BB
+    uint8_t materialFlag; //presence of material handle //BB
+    uint8_t shadowFlag; //presence of shadow handle ?? (in dwg may be plotflag)//RC
     dwgHandle lTypeH;
     dwgHandle layerH;
-	duint32 nextEntLink = 0;
-	duint32 prevEntLink = 0;
+	uint32_t nextEntLink = 0;
+	uint32_t prevEntLink = 0;
 	bool ownerHandle = false;
 
-	duint8 xDictFlag = 0;
-	dint32 numReactors = 0; //
-    duint32 objSize;  //RL 32bits object data size in bits
-    dint16 oType;
+	uint8_t xDictFlag = 0;
+	int32_t numReactors = 0; //
+    uint32_t objSize;  //RL 32bits object data size in bits
+    int16_t oType;
 
 private:
 	void init(DRW_Entity const& rhs);
@@ -197,7 +197,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     DRW_Coord basePoint;      /*!<  base point, code 10, 20 & 30 */
@@ -222,7 +222,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     DRW_Coord secPoint;        /*!< second point, code 11, 21 & 31 */
@@ -240,7 +240,7 @@ public:
         eType = DRW::RAY;
     }
 protected:
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 };
 
 //! Class to handle xline entity
@@ -271,7 +271,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     double radious;                 /*!< radius, code 40 */
@@ -309,7 +309,7 @@ protected:
     //! interpret code in dxf reading process or dispatch to inherited class
     void parseCode(int code, dxfReader *reader);
     //! interpret dwg data (was already determined to be part of this object)
-    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     double staangle;            /*!< start angle, code 50 in radians*/
@@ -339,7 +339,7 @@ protected:
     //! interpret code in dxf reading process or dispatch to inherited class
     void parseCode(int code, dxfReader *reader);
     //! interpret dwg data (was already determined to be part of this object)
-    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, uint32_t bs=0);
 
 private:
     void correctAxis();
@@ -369,7 +369,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     DRW_Coord thirdPoint;        /*!< third point, code 12, 22 & 32 */
@@ -392,7 +392,7 @@ protected:
     //! interpret code in dxf reading process or dispatch to inherited class
     void parseCode(int code, dxfReader *reader);
     //! interpret dwg data (was already determined to be part of this object)
-    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     //! first corner (2D)
@@ -451,7 +451,7 @@ protected:
     //! interpret code in dxf reading process or dispatch to inherited class
     void parseCode(int code, dxfReader *reader);
     //! interpret dwg data (was already determined to be part of this object)
-    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     int invisibleflag;       /*!< invisible edge flag, code 70 */
@@ -478,10 +478,10 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, uint32_t bs=0);
 
 public:
-    UTF8STRING name;             /*!< block name, code 2 */
+    std::string name;             /*!< block name, code 2 */
     int flags;                   /*!< block type, code 70 */
 private:
     bool isEnd; //for dwg parsing
@@ -512,10 +512,10 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf, uint32_t bs=0);
 
 public:
-    UTF8STRING name;         /*!< block name, code 2 */
+    std::string name;         /*!< block name, code 2 */
     double xscale;           /*!< x scale factor, code 41 */
     double yscale;           /*!< y scale factor, code 42 */
     double zscale;           /*!< z scale factor, code 43 */
@@ -575,7 +575,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-     bool parseDwg(DRW::Version v, dwgBuffer *buf, duint32 bs=0);
+     bool parseDwg(DRW::Version v, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     size_t vertexnum;            /*!< number of vertex, code 90 */
@@ -629,15 +629,15 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     double height;             /*!< height text, code 40 */
-    UTF8STRING text;           /*!< text string, code 1 */
+    std::string text;           /*!< text string, code 1 */
     double angle;              /*!< rotation angle in degrees (360), code 50 */
     double widthscale;         /*!< width factor, code 41 */
     double oblique;            /*!< oblique angle, code 51 */
-    UTF8STRING style;          /*!< style name, code 7 */
+    std::string style;          /*!< style name, code 7 */
     int textgen;               /*!< text generation, code 71 */
     enum HAlign alignH;        /*!< horizontal align, code 72 */
     enum VAlign alignV;        /*!< vertical align, code 73 */
@@ -676,7 +676,7 @@ public:
 protected:
     void parseCode(int code, dxfReader *reader);
     void updateAngle();    // recalculate angle if 'hasXAxisVec' is true
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     double interlin;     /*!< width factor, code 44 */
@@ -710,9 +710,9 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0, double el=0);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer* buf, duint32 bs=0){
-        DRW_UNUSED(version); DRW_UNUSED(buf); DRW_UNUSED(bs); return true;}
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0, double el=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer* buf, uint32_t bs=0){
+        (void)version; (void)buf; (void)bs; return true;}
 
 public:
     double stawidth;          /*!< Start width, code 40 */
@@ -759,7 +759,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     int flags;               /*!< polyline flag, code 70, default 0 */
@@ -774,9 +774,9 @@ public:
     std::vector<std::shared_ptr<DRW_Vertex>> vertlist;  /*!< vertex list */
 
 private:
-    std::list<duint32>hadlesList; //list of handles, only in 2004+
-    duint32 firstEH;      //handle of first entity, only in pre-2004
-    duint32 lastEH;       //handle of last entity, only in pre-2004
+    std::list<uint32_t>hadlesList; //list of handles, only in 2004+
+    uint32_t firstEH;      //handle of first entity, only in pre-2004
+    uint32_t lastEH;       //handle of last entity, only in pre-2004
     dwgHandle seqEndH;    //handle of SEQEND entity
 };
 
@@ -799,7 +799,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
 //    double ex;                /*!< normal vector x coordinate, code 210 */
@@ -816,9 +816,9 @@ public:
 //    double tgez;              /*!< end tangent z coordinate, code 33 */
     int flags;                /*!< spline flag, code 70 */
     int degree;               /*!< degree of the spline, code 71 */
-    dint32 nknots;            /*!< number of knots, code 72, default 0 */
-    dint32 ncontrol;          /*!< number of control points, code 73, default 0 */
-    dint32 nfit;              /*!< number of fit points, code 74, default 0 */
+    int32_t nknots;            /*!< number of knots, code 72, default 0 */
+    int32_t ncontrol;          /*!< number of control points, code 73, default 0 */
+    int32_t nfit;              /*!< number of fit points, code 74, default 0 */
     double tolknot;           /*!< knot tolerance, code 42, default 0.0000001 */
     double tolcontrol;        /*!< control point tolerance, code 43, default 0.0000001 */
     double tolfit;            /*!< fit point tolerance, code 44, default 0.0000001 */
@@ -881,10 +881,10 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
-    UTF8STRING name;           /*!< hatch pattern name, code 2 */
+    std::string name;           /*!< hatch pattern name, code 2 */
     int solid;                 /*!< solid fill flag, code 70, solid=1, pattern=0 */
     int associative;           /*!< associativity, code 71, associatve=1, non-assoc.=0 */
     int hstyle;                /*!< hatch style, code 75 */
@@ -968,10 +968,10 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
-    duint32 ref;               /*!< Hard reference to imagedef object, code 340 */
+    uint32_t ref;               /*!< Hard reference to imagedef object, code 340 */
     DRW_Coord vVector;         /*!< V-vector of single pixel, x coordinate, code 12, 22 & 32 */
 //    double vx;                 /*!< V-vector of single pixel, x coordinate, code 12 */
 //    double vy;                 /*!< V-vector of single pixel, y coordinate, code 22 */
@@ -1038,8 +1038,8 @@ public:
 protected:
     void parseCode(int code, dxfReader *reader);
     bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *sBuf);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer* buf, duint32 bs=0){
-        DRW_UNUSED(version); DRW_UNUSED(buf); DRW_UNUSED(bs); return true;}
+    virtual bool parseDwg(DRW::Version version, dwgBuffer* buf, uint32_t bs=0){
+       (void)version;(void)buf;(void)bs; return true;}
 
 public:
     DRW_Coord getDefPoint() const {return defPoint;}      /*!< Definition point, code 10, 20 & 30 */
@@ -1088,8 +1088,8 @@ private:
     std::string name;          /*!< Name of the block that contains the entities, code 2 */
     DRW_Coord defPoint;        /*!<  definition point, code 10, 20 & 30 (WCS) */
     DRW_Coord textPoint;       /*!< Middle point of text, code 11, 21 & 31 (OCS) */
-    UTF8STRING text;           /*!< Dimension text explicitly entered by the user, code 1 */
-    UTF8STRING style;          /*!< Dimension style, code 3 */
+    std::string text;           /*!< Dimension text explicitly entered by the user, code 1 */
+    std::string style;          /*!< Dimension style, code 3 */
     int align;                 /*!< attachment point, code 71 */
     int linesty;               /*!< Dimension text line spacing style, code 72, default 1 */
     double linefactor;         /*!< Dimension text line spacing factor, code 41, default 1? (value range 0.25 to 4.00*/
@@ -1139,7 +1139,7 @@ public:
     void setDef2Point(const DRW_Coord p) {setPt4(p);}
 
 protected:
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 };
 
 //! Class to handle  linear or rotated dimension entity
@@ -1185,7 +1185,7 @@ public:
     void setLeaderLength(const double d) {setRa40(d);}
 
 protected:
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 };
 
 //! Class to handle radial dimension entity
@@ -1211,7 +1211,7 @@ public:
     void setLeaderLength(const double d) {setRa40(d);}
 
 protected:
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 };
 
 //! Class to handle angular dimension entity
@@ -1241,7 +1241,7 @@ public:
     void setDimPoint(const DRW_Coord p) {setPt6(p);}
 
 protected:
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 };
 
 
@@ -1270,7 +1270,7 @@ public:
     void setDimPoint(const DRW_Coord p) {setDefPoint(p);}
 
 protected:
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 };
 
 //! Class to handle ordinate dimension entity
@@ -1296,7 +1296,7 @@ public:
     void setSecondLine(const DRW_Coord p) {setPt4(p);}
 
 protected:
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 };
 
 
@@ -1321,10 +1321,10 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
-    UTF8STRING style;          /*!< Dimension style name, code 3 */
+    std::string style;          /*!< Dimension style name, code 3 */
     int arrow;                 /*!< Arrowhead flag, code 71, 0=Disabled; 1=Enabled */
     int leadertype;            /*!< Leader path type, code 72, 0=Straight line segments; 1=Spline */
     int flag;                  /*!< Leader creation flag, code 73, default 3 */
@@ -1334,7 +1334,7 @@ public:
     double textwidth;          /*!< Text annotation width, code 41 */
     int vertnum;               /*!< Number of vertices, code 76 */
     int coloruse;              /*!< Color to use if leader's DIMCLRD = BYBLOCK, code 77 */
-    duint32 annotHandle;       /*!< Hard reference to associated annotation, code 340 */
+    uint32_t annotHandle;       /*!< Hard reference to associated annotation, code 340 */
     DRW_Coord extrusionPoint;  /*!< Normal vector, code 210, 220 & 230 */
     DRW_Coord horizdir;        /*!< "Horizontal" direction for leader, code 211, 221 & 231 */
     DRW_Coord offsetblock;     /*!< Offset of last leader vertex from block, code 212, 222 & 232 */
@@ -1369,7 +1369,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs=0);
 
 public:
     double pswidth;           /*!< Width in paper space units, code 40 */
@@ -1393,7 +1393,7 @@ public:
     double twistAngle;        /*!< view twist angle, code 51 */
 
 private:
-    duint32 frozenLyCount;
+    uint32_t frozenLyCount;
 };//RLZ: missing 15,25, 72, 331, 90, 340, 1, 281, 71, 74, 110, 120, 130, 111, 121,131, 112,122, 132, 345,346, and more...
 
 //used  //DRW_Coord basePoint;      /*!<  base point, code 10, 20 & 30 */
@@ -1401,13 +1401,13 @@ private:
 //double thickness;         /*!< thickness, code 39 */
 //DRW_Coord extPoint;       /*!<  Dir extrusion normal vector, code 210, 220 & 230 */
 //enum DRW::ETYPE eType;     /*!< enum: entity type, code 0 */
-//duint32 handle;            /*!< entity identifier, code 5 */
+//uint32_t handle;            /*!< entity identifier, code 5 */
 //std::list<std::list<DRW_Variant> > appData; /*!< list of application data, code 102 */
-//duint32 parentHandle;      /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
+//uint32_t parentHandle;      /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
 //DRW::Space space;          /*!< space indicator, code 67*/
-//UTF8STRING layer;          /*!< layer name, code 8 */
-//UTF8STRING lineType;       /*!< line type, code 6 */
-//duint32 material;          /*!< hard pointer id to material object, code 347 */
+//std::string layer;          /*!< layer name, code 8 */
+//std::string lineType;       /*!< line type, code 6 */
+//uint32_t material;          /*!< hard pointer id to material object, code 347 */
 //int color;                 /*!< entity color, code 62 */
 //enum DRW_LW_Conv::lineWidth lWeight; /*!< entity lineweight, code 370 */
 //double ltypeScale;         /*!< linetype scale, code 48 */

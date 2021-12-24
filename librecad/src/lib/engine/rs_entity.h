@@ -333,7 +333,7 @@ public:
      *
      * @return The closest middle point.
      */
-    virtual RS_Vector getMiddlePoint(void)const{
+    virtual RS_Vector getMiddlePoint()const{
         return RS_Vector(false);
     }
     virtual RS_Vector getNearestMiddle(const RS_Vector& coord,

@@ -30,9 +30,9 @@ bool dwgReader15::readMetaData() {
     previewImagePos = fileBuf->getRawLong32();
     drw_dbg("previewImagePos (seekerImageData) = "); drw_dbg(previewImagePos);
     /* MEASUREMENT system variable 2 bytes*/
-    duint16 meas = fileBuf->getRawShort16();
+    uint16_t meas = fileBuf->getRawShort16();
     drw_dbg("\nMEASUREMENT (0 = English, 1 = Metric)= "); drw_dbg(meas);
-    duint16 cp = fileBuf->getRawShort16();
+    uint16_t cp = fileBuf->getRawShort16();
     drw_dbg("\ncodepage= "); drw_dbg(cp); drw_dbg("\n");
     if (cp == 29) //TODO RLZ: locate wath code page and correct this
         decoder.setCodePage("ANSI_1252", false);
@@ -46,13 +46,13 @@ bool dwgReader15::readFileHeader() {
     drw_dbg("dwgReader15::readFileHeader\n");
     if (! fileBuf->setPosition(21))
         return false;
-    duint32 count = fileBuf->getRawLong32();
+    uint32_t count = fileBuf->getRawLong32();
     drw_dbg("count records= "); drw_dbg(count); drw_dbg("\n");
 
     for (unsigned int i = 0; i < count; i++) {
-        duint8 rec = fileBuf->getRawChar8();
-        duint32 address = fileBuf->getRawLong32();
-        duint32 size = fileBuf->getRawLong32();
+        uint8_t rec = fileBuf->getRawChar8();
+        uint32_t address = fileBuf->getRawLong32();
+        uint32_t size = fileBuf->getRawLong32();
         dwgSectionInfo si;
         si.Id = rec;
         si.size = size;
@@ -89,7 +89,7 @@ bool dwgReader15::readFileHeader() {
         return false;
     drw_dbg("\nposition after read section locator records= "); drw_dbg(fileBuf->getPosition());
     drw_dbg(", bit are= "); drw_dbg(fileBuf->getBitPos());
-    duint32 ckcrc = fileBuf->crc8(0,0,fileBuf->getPosition());
+    uint32_t ckcrc = fileBuf->crc8(0,0,fileBuf->getPosition());
     drw_dbg("\nfile header crc8 0 result= "); drw_dbg(ckcrc);
     switch (count){
     case 3:
@@ -123,7 +123,7 @@ bool dwgReader15::readDwgHeader(DRW_Header& hdr){
         return false;
     if (!fileBuf->setPosition(si.address))
         return false;
-    std::vector<duint8> tmpByteStr(si.size);
+    std::vector<uint8_t> tmpByteStr(si.size);
     fileBuf->getBytes(tmpByteStr.data(), si.size);
     dwgBuffer buff(tmpByteStr.data(), si.size, &decoder);
     drw_dbg("Header section sentinel= ");
@@ -144,12 +144,12 @@ bool dwgReader15::readDwgClasses(){
     drw_dbg("classes section sentinel= ");
     checkSentinel(fileBuf.get(), secEnum::CLASSES, true);
 
-    duint32 size = fileBuf->getRawLong32();
+    uint32_t size = fileBuf->getRawLong32();
     if (size != (si.size - 38)) {
         drw_dbg("\nWARNING dwgReader15::readDwgClasses size are "); drw_dbg(size);
         drw_dbg(" and secSize - 38 are "); drw_dbg(si.size - 38); drw_dbg("\n");
     }
-    std::vector<duint8> tmpByteStr(size);
+    std::vector<uint8_t> tmpByteStr(size);
     fileBuf->getBytes(tmpByteStr.data(), size);
     dwgBuffer buff(tmpByteStr.data(), size, &decoder);
     size--; //reduce 1 byte instead of check pos + bitPos

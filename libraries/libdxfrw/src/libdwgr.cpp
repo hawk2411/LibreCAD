@@ -84,7 +84,7 @@ bool dwgR::testReader(){
     }
 
     dwgBuffer fileBuf(&filestr);
-    auto tmpStrData = std::unique_ptr<duint8>(new duint8[fileBuf.size()]);
+    auto tmpStrData = std::unique_ptr<uint8_t>(new uint8_t[fileBuf.size()]);
     fileBuf.getBytes(tmpStrData.get(), fileBuf.size());
     dwgBuffer dataBuf(tmpStrData.get(), fileBuf.size());
     fileBuf.setPosition(0);

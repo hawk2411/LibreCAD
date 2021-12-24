@@ -69,7 +69,7 @@ bool DRW_Class::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *strBuf
     if (version > DRW::AC1015) {//2004+
         instanceCount = buf->getBitLong();
         drw_dbg("\nInstance Count: "); drw_dbg(instanceCount);
-        duint32 dwgVersion = buf->getBitLong();
+        uint32_t dwgVersion = buf->getBitLong();
         drw_dbg("\nDWG version: "); drw_dbg(dwgVersion);
         drw_dbg("\nmaintenance version: "); drw_dbg(buf->getBitLong());
         drw_dbg("\nunknown 1: "); drw_dbg(buf->getBitLong());

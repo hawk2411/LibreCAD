@@ -47,11 +47,11 @@ public:
 //}
 
 private:
-    bool parseSysPage(duint64 sizeCompressed, duint64 sizeUncompressed, duint64 correctionFactor, duint64 offset, duint8 *decompData);
-    bool parseDataPage(const dwgSectionInfo &si, duint8 *dData);
+    bool parseSysPage(uint64_t sizeCompressed, uint64_t sizeUncompressed, uint64_t correctionFactor, uint64_t offset, uint8_t *decompData);
+    bool parseDataPage(const dwgSectionInfo &si, uint8_t *dData);
 
-    std::unique_ptr<duint8 []> objData;
-    duint64 dataSize {0};
+    std::unique_ptr<uint8_t []> objData;
+    uint64_t dataSize {0};
 
 };
 

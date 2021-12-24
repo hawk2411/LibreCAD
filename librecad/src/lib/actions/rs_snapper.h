@@ -87,7 +87,7 @@ struct RS_SnapMode {
       *
       * @returns A reference to itself.
       */
-    RS_SnapMode const & clear(void);
+    RS_SnapMode const & clear();
     bool operator == (RS_SnapMode const& rhs) const;
 
     static uint toInt(const RS_SnapMode& s);    //< convert to int, to save settings

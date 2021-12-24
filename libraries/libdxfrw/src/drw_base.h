@@ -24,51 +24,10 @@
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
+#include <utility>
 
-//#define DRW_ASSERTS
-
-#ifdef DRW_ASSERTS
-# define drw_assert(a) assert(a)
-#else
-# define drw_assert(a) ((void)0)
-#endif
-
-#define UTF8STRING std::string
-#define DRW_UNUSED(x) (void)x
-
-#if defined(WIN64) || defined(_WIN64) || defined(__WIN64__)
-#  define DRW_WIN
-#elif defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-#    define DRW_WIN
-#elif defined(__MWERKS__) && defined(__INTEL__)
-#  define DRW_WIN
-#else
-#  define DRW_POSIX
-#endif
-
-#ifndef M_PI
- #define M_PI       3.141592653589793238462643
-#endif
-#ifndef M_PI_2
- #define M_PI_2       1.57079632679489661923
-#endif
-#define M_PIx2      6.283185307179586 // 2*PI
-#define ARAD 57.29577951308232
-
-typedef signed char dint8;              /* 8 bit signed */
-typedef signed short dint16;            /* 16 bit signed */
-typedef signed int dint32;              /* 32 bit signed */
-typedef long long int dint64;           /* 64 bit signed */
-
-typedef unsigned char duint8;           /* 8 bit unsigned */
-typedef unsigned short duint16;         /* 16 bit unsigned */
-typedef unsigned int duint32;           /* 32 bit unsigned */
-typedef unsigned long long int duint64; /* 64 bit unsigned */
-
-typedef float dfloat32;                 /* 32 bit floating point */
-typedef double ddouble64;               /* 64 bit floating point */
-typedef long double ddouble80;          /* 80 bit floating point */
-
+const double M_PIx2 = 6.283185307179586; // 2*PI
+const double ARAD = 57.29577951308232;
 
 namespace DRW {
 /** utility function
@@ -259,13 +218,13 @@ public:
 //TODO: add INT64 support
     DRW_Variant(): sdata(std::string()), vdata(), content(0), vType(INVALID), vCode(0) {}
 
-    DRW_Variant(int c, dint32 i): sdata(std::string()), vdata(), content(i), vType(INTEGER), vCode(c){}
+    DRW_Variant(int c, int32_t i): sdata(std::string()), vdata(), content(i), vType(INTEGER), vCode(c){}
 
-    DRW_Variant(int c, duint32 i): sdata(std::string()), vdata(), content(static_cast<dint32>(i)), vType(INTEGER), vCode(c) {}
+    DRW_Variant(int c, uint32_t i): sdata(std::string()), vdata(), content(static_cast<int32_t>(i)), vType(INTEGER), vCode(c) {}
 
     DRW_Variant(int c, double d): sdata(std::string()), vdata(), content(d), vType(DOUBLE), vCode(c) {}
 
-    DRW_Variant(int c, UTF8STRING s): sdata(s), vdata(), content(&sdata), vType(STRING), vCode(c) {}
+    DRW_Variant(int c, std::string  s): sdata(std::move(s)), vdata(), content(&sdata), vType(STRING), vCode(c) {}
 
     DRW_Variant(int c, DRW_Coord crd): sdata(std::string()), vdata(crd), content(&vdata), vType(COORD), vCode(c) {}
 
@@ -276,10 +235,9 @@ public:
             content.s = &sdata;
     }
 
-    ~DRW_Variant() {
-    }
+    ~DRW_Variant() = default;
 
-    void addString(int c, UTF8STRING s) {vType = STRING; sdata = s; content.s = &sdata; vCode=c;}
+    void addString(int c, const std::string& s) {vType = STRING; sdata = s; content.s = &sdata; vCode=c;}
     void addInt(int c, int i) {vType = INTEGER; content.i = i; vCode=c;}
     void addDouble(int c, double d) {vType = DOUBLE; content.d = d; vCode=c;}
     void addCoord(int c, DRW_Coord v) {vType = COORD; vdata = v; content.v = &vdata; vCode=c;}
@@ -287,7 +245,7 @@ public:
     void setCoordY(double d) { if (vType == COORD) vdata.y = d;}
     void setCoordZ(double d) { if (vType == COORD) vdata.z = d;}
     enum TYPE type() const { return vType;}
-    int code() { return vCode;}            /*!< returns dxf code of this value*/
+    int code() const { return vCode;}            /*!< returns dxf code of this value*/
 
 private:
     std::string sdata;
@@ -295,13 +253,13 @@ private:
 
 private:
     union DRW_VarContent{
-        UTF8STRING *s;
-        dint32 i;
+        std::string *s;
+        int32_t i;
         double d;
         DRW_Coord *v;
 
-        DRW_VarContent(UTF8STRING *sd):s(sd){}
-        DRW_VarContent(dint32 id):i(id){}
+        DRW_VarContent(std::string *sd):s(sd){}
+        DRW_VarContent(int32_t id):i(id){}
         DRW_VarContent(double dd):d(dd){}
         DRW_VarContent(DRW_Coord *vd):v(vd){}
     };
@@ -320,9 +278,9 @@ private:
 *  @author Rallaz
 */
 struct dwgHandle{
-    duint8 code{0};
-    duint8 size{0};
-    duint32 ref{0};
+    uint8_t code{0};
+    uint8_t size{0};
+    uint32_t ref{0};
 };
 
 //! Class to convert between line width and integer

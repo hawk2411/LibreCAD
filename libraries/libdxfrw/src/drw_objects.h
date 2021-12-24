@@ -88,8 +88,8 @@ public:
 
 protected:
     virtual void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) = 0;
-            bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer* strBuf, duint32 bs=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) = 0;
+            bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer* strBuf, uint32_t bs=0);
 
     virtual void reset() {
         flags = 0;
@@ -102,18 +102,18 @@ protected:
 
 public:
     enum DRW::TTYPE tType {DRW::UNKNOWNT};  /*!< enum: entity type, code 0 */
-    duint32         handle {0};             /*!< entity identifier, code 5 */
+    uint32_t         handle {0};             /*!< entity identifier, code 5 */
     int             parentHandle {0};       /*!< Soft-pointer ID/handle to owner object, code 330 */
-    UTF8STRING      name;                   /*!< entry name, code 2 */
+    std::string      name;                   /*!< entry name, code 2 */
     int             flags {0};              /*!< Flags relevant to entry, code 70 */
     std::vector<DRW_Variant*> extData;      /*!< FIFO list of extended data, codes 1000 to 1071*/
 
     //***** dwg parse ********/
 protected:
-    dint16  oType {0};
-    duint8  xDictFlag {0};
-    dint32  numReactors {0};
-    duint32 objSize {0};    //RL 32bits object data size in bits
+    int16_t  oType {0};
+    uint8_t  xDictFlag {0};
+    int32_t  numReactors {0};
+    uint32_t objSize {0};    //RL 32bits object data size in bits
 
 private:
     DRW_Variant* curr {nullptr};
@@ -159,16 +159,16 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader) override;
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) override;
 
 public:
     //V12
-    UTF8STRING dimpost;       /*!< code 3 */
-    UTF8STRING dimapost;      /*!< code 4 */
+    std::string dimpost;       /*!< code 3 */
+    std::string dimapost;      /*!< code 4 */
 /* handle are code 105 */
-    UTF8STRING dimblk;        /*!< code 5, code 342 V2000+ */
-    UTF8STRING dimblk1;       /*!< code 6, code 343 V2000+ */
-    UTF8STRING dimblk2;       /*!< code 7, code 344 V2000+ */
+    std::string dimblk;        /*!< code 5, code 342 V2000+ */
+    std::string dimblk1;       /*!< code 6, code 343 V2000+ */
+    std::string dimblk2;       /*!< code 7, code 344 V2000+ */
     double dimscale{1.0};          /*!< code 40 */
     double dimasz{0.18};            /*!< code 41 */
     double dimexo{0.0625};            /*!< code 42 */
@@ -228,8 +228,8 @@ public:
     int dimupt{0};               /*!< code 288 R13+ */
     int dimatfit{3};             /*!< code 289 V2000+ */
     int dimfxlon{0};             /*!< code 290 V2007+ */
-    UTF8STRING dimtxsty{"Standard"};      /*!< code 340 R13+ */
-    UTF8STRING dimldrblk;     /*!< code 341 V2000+ */
+    std::string dimtxsty{"Standard"};      /*!< code 340 R13+ */
+    std::string dimldrblk;     /*!< code 341 V2000+ */
     int dimlwd{-2};               /*!< code 371 V2000+ */
     int dimlwe{-2};               /*!< code 372 V2000+ */
 };
@@ -257,11 +257,11 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader) override;
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) override;
     void update();
 
 public:
-    UTF8STRING desc;           /*!< descriptive string, code 3 */
+    std::string desc;           /*!< descriptive string, code 3 */
 //    int align;               /*!< align code, always 65 ('A') code 72 */
     int size{0};                 /*!< element number, code 73 */
     double length{0.0};            /*!< total length of pattern, code 40 */
@@ -294,10 +294,10 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader) override;
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) override;
 
 public:
-    UTF8STRING lineType{"CONTINUOUS"};            /*!< line type, code 6 */
+    std::string lineType{"CONTINUOUS"};            /*!< line type, code 6 */
     int color{7};                      /*!< layer color, code 62 */
     int color24{-1};                    /*!< 24-bit color, code 420 */
     bool plotF{true};                     /*!< Plot flag, code 290 */
@@ -329,7 +329,7 @@ public:
 
 protected:
 //    void parseCode(int code, dxfReader *reader);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) override;
 
 public:
 //Note:    int DRW_TableEntry::flags; contains code 70 of block
@@ -338,11 +338,11 @@ public:
 protected:
     //dwg parser
 private:
-    duint32 block{0};   //handle for block entity
-    duint32 endBlock{0};//handle for end block entity
-    duint32 firstEH{DRW::NoHandle}; //handle of first entity, only in pre-2004
-    duint32 lastEH{DRW::NoHandle};  //handle of last entity, only in pre-2004
-    std::vector<duint32>entMap;
+    uint32_t block{0};   //handle for block entity
+    uint32_t endBlock{0};//handle for end block entity
+    uint32_t firstEH{DRW::NoHandle}; //handle of first entity, only in pre-2004
+    uint32_t lastEH{DRW::NoHandle};  //handle of last entity, only in pre-2004
+    std::vector<uint32_t>entMap;
 };
 
 //! Class to handle text style entries
@@ -367,7 +367,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader) override;
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) override;
 
 public:
     double height{0.0};          /*!< Fixed text height (0 not set), code 40 */
@@ -375,8 +375,8 @@ public:
     double oblique{0.0};         /*!< Oblique angle, code 50 */
     int genFlag{0};            /*!< Text generation flags, code 71 */
     double lastHeight{1.0};      /*!< Last height used, code 42 */
-    UTF8STRING font{"txt"};        /*!< primary font file name, code 3 */
-    UTF8STRING bigFont;     /*!< bigfont file name or blank if none, code 4 */
+    std::string font{"txt"};        /*!< primary font file name, code 3 */
+    std::string bigFont;     /*!< bigfont file name or blank if none, code 4 */
     int fontFamily{0};         /*!< ttf font family, italic and bold flags, code 1071 */
 };
 
@@ -412,7 +412,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader) override;
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) override;
 
 public:
     DRW_Coord lowerLeft;     /*!< Lower left corner, code 10 & 20 */
@@ -468,11 +468,11 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader) override;
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) override;
 
 public:
 //    std::string handle;       /*!< entity identifier, code 5 */
-    UTF8STRING name;          /*!< File name of image, code 1 */
+    std::string name;          /*!< File name of image, code 1 */
     int imgVersion{0};              /*!< class version, code 90, 0=R14 version */
     double u{0.0};                 /*!< image size in pixels U value, code 10 */
     double v{0.0};                 /*!< image size in pixels V value, code 20 */
@@ -507,10 +507,10 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader) override;
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) override;
 
 public:
-    UTF8STRING plotViewName;/*!< Plot view name, code 6 */
+    std::string plotViewName;/*!< Plot view name, code 6 */
     double marginLeft{0.0};      /*!< Size, in millimeters, of unprintable margin on left side of paper, code 40 */
     double marginBottom{0.0};    /*!< Size, in millimeters, of unprintable margin on bottom side of paper, code 41 */
     double marginRight{0.0};     /*!< Size, in millimeters, of unprintable margin on right side of paper, code 42 */
@@ -539,7 +539,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader) override{DRW_TableEntry::parseCode(code, reader);}
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) override;
 };
 
 namespace DRW {

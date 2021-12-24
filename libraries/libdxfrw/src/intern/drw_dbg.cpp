@@ -88,6 +88,10 @@ void DRW_dbg::print(long long int i) const {
     currentPrinter->printInt(i);
 }
 
+void DRW_dbg::print(long int i) const {
+    currentPrinter->printInt(i);
+}
+
 void DRW_dbg::print(long unsigned int i) const {
     currentPrinter->printUnsignedInt(i);
 }

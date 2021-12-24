@@ -1754,14 +1754,14 @@ bool DRW_Header::getCoord(std::string key, DRW_Coord *varCoord){
     return result;
 }
 
-bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf, duint8 maintenanceVersion){
+bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf, uint8_t maintenanceVersion){
     bool result = true;
-    duint32 size = buf->getRawLong32();
-    duint32 bitSize = 0;
-    duint32 endBitPos = 160; //start bit: 16 sentinel + 4 size
+    uint32_t size = buf->getRawLong32();
+    uint32_t bitSize = 0;
+    uint32_t endBitPos = 160; //start bit: 16 sentinel + 4 size
     drw_dbg("\nbyte size of data: "); drw_dbg(size);
     if (((version == DRW::AC1021 || version == DRW::AC1027 ) && maintenanceVersion > 3) || version >= DRW::AC1032 ) { //2010+
-        duint32 hSize = buf->getRawLong32();
+        uint32_t hSize = buf->getRawLong32();
         endBitPos += 32; //start bit: + 4 height size
         drw_dbg("\n2010+ & MV> 3, height 32b: "); drw_dbg(hSize);
     }
@@ -1780,7 +1780,7 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     }
 
     if (version > DRW::AC1024) {//2013+
-        duint64 requiredVersions = buf->getBitLongLong();
+        uint64_t requiredVersions = buf->getBitLongLong();
         drw_dbg("\nREQUIREDVERSIONS var: "); drw_dbg(requiredVersions);
     }
     drw_dbg("\nUnknown1: "); drw_dbg(buf->getBitDouble());
@@ -1909,7 +1909,7 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     if (version < DRW::AC1021) {//2004-
         vars["MENU"]=new DRW_Variant(1, buf->getCP8Text());
     }
-    ddouble64 msec, day;
+    double msec, day;
     day = buf->getBitLong();
     msec = buf->getBitLong();
     while (msec > 0)
@@ -2228,7 +2228,7 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
         drw_dbg("\nFlags: "); 
         drw_dbgh(buf->getBitLong());//RLZ TODO change to 8 vars
         vars["INSUNITS"]=new DRW_Variant(70, buf->getBitShort());
-        duint16 cepsntype = buf->getBitShort();
+        uint16_t cepsntype = buf->getBitShort();
         vars["CEPSNTYPE"]=new DRW_Variant(70, cepsntype);
         if (cepsntype == 3){
             CONTROL = hBbuf->getHandle();
@@ -2317,20 +2317,20 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     /**** RLZ: disabled, pending to read all data ***/
     //Start reading string stream for 2007 and further
     if (version > DRW::AC1018) {//2007+
-        duint32 strStartPos = endBitPos -1;
+        uint32_t strStartPos = endBitPos -1;
         buf->setPosition(strStartPos >>3);
         buf->setBitPos(strStartPos&7);
         if (buf->getBit() == 1){
             strStartPos -= 16;
             buf->setPosition(strStartPos >>3);
             buf->setBitPos(strStartPos&7);
-            duint32 strDataSize = buf->getRawShort16();
+            uint32_t strDataSize = buf->getRawShort16();
             if (strDataSize & 0x8000) {
                 strStartPos -= 16;//decrement 16 bits
                 strDataSize &= 0x7FFF; //strip 0x8000;
                 buf->setPosition(strStartPos >> 3);
                 buf->setBitPos(strStartPos & 7);
-                duint32 hiSize = buf->getRawShort16();
+                uint32_t hiSize = buf->getRawShort16();
                 strDataSize |= (hiSize << 15);
             }
             strStartPos -= strDataSize;
@@ -2403,7 +2403,7 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     }
 
     //temporary code to show header end sentinel
-    duint64 sz= buf->size()-1;
+    uint64_t sz= buf->size()-1;
     if (version < DRW::AC1018) {//pre 2004
         sz= buf->size()-16;
         buf->setPosition(sz);

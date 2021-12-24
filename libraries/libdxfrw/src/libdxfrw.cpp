@@ -53,7 +53,6 @@ void dxfRW::setDebug(DRW::DebugLevel lvl){
 }
 
 bool dxfRW::read(DRW_Interface *interface_, bool ext){
-    drw_assert(fileName.empty() == false);
     applyExt = ext;
     std::ifstream filestr;
     if (nullptr == interface_) {

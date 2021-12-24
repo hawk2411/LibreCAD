@@ -24,12 +24,12 @@
 struct objHandle {
     objHandle() = default;
 
-    objHandle(duint32 t, duint32 h, duint32 l)
+    objHandle(uint32_t t, uint32_t h, uint32_t l)
             : type{t}, handle{h}, loc{l} {}
 
-    duint32 type{0};
-    duint32 handle{0};
-    duint32 loc{0};
+    uint32_t type{0};
+    uint32_t handle{0};
+    uint32_t loc{0};
 };
 
 //until 2000 = 2000-
@@ -55,16 +55,16 @@ struct objHandle {
 struct dwgPageInfo {
     dwgPageInfo()=default;
 
-    dwgPageInfo(duint64 i, duint64 ad, duint64 sz)
+    dwgPageInfo(uint64_t i, uint64_t ad, uint64_t sz)
             : Id(i), address(ad), size(sz) {
     }
-    duint64 Id {0};
-    duint64 address {0}; //in file stream, for rd18, rd21
-    duint64 size {0}; //in file stream, for rd18, rd21
-    duint64 dataSize {0}; //for rd18, rd21
-    duint64 startOffset {0}; //for rd18, rd21
-    duint64 cSize {0}; //compressed page size, for rd21
-    duint64 uSize {0}; //uncompressed page size, for rd21
+    uint64_t Id {0};
+    uint64_t address {0}; //in file stream, for rd18, rd21
+    uint64_t size {0}; //in file stream, for rd18, rd21
+    uint64_t dataSize {0}; //for rd18, rd21
+    uint64_t startOffset {0}; //for rd18, rd21
+    uint64_t cSize {0}; //compressed page size, for rd21
+    uint64_t uSize {0}; //uncompressed page size, for rd21
 };
 
 // sections of file
@@ -81,15 +81,15 @@ struct dwgPageInfo {
 struct dwgSectionInfo {
     dwgSectionInfo() = default;
 
-    dint32 Id{-1}; //section Id, 2000-   rd15 rd18
+    int32_t Id{-1}; //section Id, 2000-   rd15 rd18
     std::string name; //section name rd18
-    duint32 compressed{1};//is compressed? 1=no, 2=yes rd18, rd21(encoding)
-    duint32 encrypted{0};//encrypted (doc: 0=no, 1=yes, 2=unkn) on read: objects 0 and encrypted yes rd18
-    std::unordered_map<duint32, dwgPageInfo> pages;//index, size, offset
-    duint64 size{0}; //size of section,  2000- rd15, rd18, rd21 (data size)
-    duint64 pageCount{0}; //number of pages (dwgPageInfo) in section rd18, rd21
-    duint64 maxSize{0}; //max decompressed size (needed??) rd18 rd21
-    duint64 address{0}; //address (seek) , 2000-
+    uint32_t compressed{1};//is compressed? 1=no, 2=yes rd18, rd21(encoding)
+    uint32_t encrypted{0};//encrypted (doc: 0=no, 1=yes, 2=unkn) on read: objects 0 and encrypted yes rd18
+    std::unordered_map<uint32_t, dwgPageInfo> pages;//index, size, offset
+    uint64_t size{0}; //size of section,  2000- rd15, rd18, rd21 (data size)
+    uint64_t pageCount{0}; //number of pages (dwgPageInfo) in section rd18, rd21
+    uint64_t maxSize{0}; //max decompressed size (needed??) rd18 rd21
+    uint64_t address{0}; //address (seek) , 2000-
 };
 
 
@@ -103,8 +103,8 @@ public:
     DRW_ObjControl() = default;
 
     void reset() override{}
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs) override;
-    std::list<duint32>handlesList;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, uint32_t bs) override;
+    std::list<uint32_t>handlesList;
 };
 
 
@@ -138,12 +138,12 @@ protected:
     virtual bool readDwgEntity(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& intfa);
     bool readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& intfa);
     void parseAttribs(DRW_Entity* e);
-    std::string findTableName(DRW::TTYPE table, dint32 handle);
+    std::string findTableName(DRW::TTYPE table, int32_t handle);
 
     void setCodePage(const std::string &c){decoder.setCodePage(c, false);}
     std::string getCodePage(){ return decoder.getCodePage();}
     bool readDwgHeader(DRW_Header& hdr, dwgBuffer *buf, dwgBuffer *hBuf);
-    bool readDwgHandles(dwgBuffer *dbuf, duint64 offset, duint64 size);
+    bool readDwgHandles(dwgBuffer *dbuf, uint64_t offset, uint64_t size);
     bool readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf);
     bool checkSentinel(dwgBuffer *buf, enum secEnum::DWGSection, bool start);
 
@@ -153,19 +153,19 @@ protected:
     bool readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf);
 
 public:
-    std::unordered_map<duint32, objHandle>ObjectMap;
-    std::unordered_map<duint32, objHandle>objObjectMap; //stores the objects & entities not read in readDwgEntities
-    std::unordered_map<duint32, objHandle>remainingMap; //stores the objects & entities not read in all processes, for debug only
-    std::unordered_map<duint32, DRW_LType*> ltypemap;
-    std::unordered_map<duint32, DRW_Layer*> layermap;
-    std::unordered_map<duint32, DRW_Block*> blockmap;
-    std::unordered_map<duint32, DRW_Textstyle*> stylemap;
-    std::unordered_map<duint32, DRW_Dimstyle*> dimstylemap;
-    std::unordered_map<duint32, DRW_Vport*> vportmap;
-    std::unordered_map<duint32, DRW_Block_Record*> blockRecordmap;
-    std::unordered_map<duint32, DRW_AppId*> appIdmap;
-//    duint32 currBlock;
-    duint8 maintenanceVersion{0};
+    std::unordered_map<uint32_t, objHandle>ObjectMap;
+    std::unordered_map<uint32_t, objHandle>objObjectMap; //stores the objects & entities not read in readDwgEntities
+    std::unordered_map<uint32_t, objHandle>remainingMap; //stores the objects & entities not read in all processes, for debug only
+    std::unordered_map<uint32_t, DRW_LType*> ltypemap;
+    std::unordered_map<uint32_t, DRW_Layer*> layermap;
+    std::unordered_map<uint32_t, DRW_Block*> blockmap;
+    std::unordered_map<uint32_t, DRW_Textstyle*> stylemap;
+    std::unordered_map<uint32_t, DRW_Dimstyle*> dimstylemap;
+    std::unordered_map<uint32_t, DRW_Vport*> vportmap;
+    std::unordered_map<uint32_t, DRW_Block_Record*> blockRecordmap;
+    std::unordered_map<uint32_t, DRW_AppId*> appIdmap;
+//    uint32_t currBlock;
+    uint8_t maintenanceVersion{0};
 
 protected:
     std::unique_ptr<dwgBuffer> fileBuf;
@@ -173,19 +173,19 @@ protected:
     DRW::Version version{DRW::UNKNOWNV};
 
 //seeker (position) for the beginning sentinel of the image data (R13 to R15)
-    duint32 previewImagePos {0};
+    uint32_t previewImagePos {0};
 
 //sections map
     std::unordered_map<int, dwgSectionInfo >sections;
-    std::unordered_map<duint32, DRW_Class*> classesmap;
+    std::unordered_map<uint32_t, DRW_Class*> classesmap;
 
 protected:
     DRW_TextCodec decoder;
 
 protected:
-//    duint32 blockCtrl;
-    duint32 nextEntLink{0};
-    duint32 prevEntLink{0};
+//    uint32_t blockCtrl;
+    uint32_t nextEntLink{0};
+    uint32_t prevEntLink{0};
 };
 
 

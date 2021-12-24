@@ -17,8 +17,8 @@
 
 
 namespace dwgRSCodec {
-    void decode239I(duint8 *in, duint8 *out, duint32 blk);
-    void decode251I(duint8 *in, duint8 *out, duint32 blk);
+    void decode239I(uint8_t *in, uint8_t *out, uint32_t blk);
+    void decode251I(uint8_t *in, uint8_t *out, uint32_t blk);
 }
 
 class dwgCompressor {
@@ -30,72 +30,72 @@ class dwgCompressor {
 public:
     dwgCompressor()=default;
 
-    bool decompress18(duint8 *cbuf, duint8 *dbuf, duint64 csize, duint64 dsize);
-    static void decrypt18Hdr(duint8 *buf, duint64 size, duint64 offset);
-//    static void decrypt18Data(duint8 *buf, duint32 size, duint32 offset);
-    static bool decompress21(duint8 *cbuf, duint8 *dbuf, duint64 csize, duint64 dsize);
+    bool decompress18(uint8_t *cbuf, uint8_t *dbuf, uint64_t csize, uint64_t dsize);
+    static void decrypt18Hdr(uint8_t *buf, uint64_t size, uint64_t offset);
+//    static void decrypt18Data(uint8_t *buf, uint32_t size, uint32_t offset);
+    static bool decompress21(uint8_t *cbuf, uint8_t *dbuf, uint64_t csize, uint64_t dsize);
 
 private:
-    duint32 litLength18();
-    static duint32 litLength21(duint8 opCode);
-    static bool copyCompBytes21(duint32 length);
-    static void readInstructions21(duint8 &opCode, duint32 &sourceOffset, duint32 &length);
+    uint32_t litLength18();
+    static uint32_t litLength21(uint8_t opCode);
+    static bool copyCompBytes21(uint32_t length);
+    static void readInstructions21(uint8_t &opCode, uint32_t &sourceOffset, uint32_t &length);
 
-    duint32 longCompressionOffset();
-    duint32 long20CompressionOffset();
-    duint32 twoByteOffset(duint32 *ll);
+    uint32_t longCompressionOffset();
+    uint32_t long20CompressionOffset();
+    uint32_t twoByteOffset(uint32_t *ll);
 
-    static duint8 compressedByte();
-    static duint8 compressedByte(duint32 index);
-    static duint32 compressedHiByte();
-    static bool compressedInc(dint32 inc = 1);
-    static duint8 decompByte(duint32 index);
-    static void decompSet(duint8 value);
+    static uint8_t compressedByte();
+    static uint8_t compressedByte(uint32_t index);
+    static uint32_t compressedHiByte();
+    static bool compressedInc(int32_t inc = 1);
+    static uint8_t decompByte(uint32_t index);
+    static void decompSet(uint8_t value);
     static bool buffersGood();
-    static void copyBlock21(duint32 length);
+    static void copyBlock21(uint32_t length);
 
-    static duint8 *compressedBuffer;
-    static duint32 compressedSize;
-    static duint32 compressedPos;
+    static uint8_t *compressedBuffer;
+    static uint32_t compressedSize;
+    static uint32_t compressedPos;
     static bool    compressedGood;
-    static duint8 *decompBuffer;
-    static duint32 decompSize;
-    static duint32 decompPos;
+    static uint8_t *decompBuffer;
+    static uint32_t decompSize;
+    static uint32_t decompPos;
     static bool    decompGood;
 
-    static const duint8 CopyOrder21_01[];
-    static const duint8 CopyOrder21_02[];
-    static const duint8 CopyOrder21_03[];
-    static const duint8 CopyOrder21_04[];
-    static const duint8 CopyOrder21_05[];
-    static const duint8 CopyOrder21_06[];
-    static const duint8 CopyOrder21_07[];
-    static const duint8 CopyOrder21_08[];
-    static const duint8 CopyOrder21_09[];
-    static const duint8 CopyOrder21_10[];
-    static const duint8 CopyOrder21_11[];
-    static const duint8 CopyOrder21_12[];
-    static const duint8 CopyOrder21_13[];
-    static const duint8 CopyOrder21_14[];
-    static const duint8 CopyOrder21_15[];
-    static const duint8 CopyOrder21_16[];
-    static const duint8 CopyOrder21_17[];
-    static const duint8 CopyOrder21_18[];
-    static const duint8 CopyOrder21_19[];
-    static const duint8 CopyOrder21_20[];
-    static const duint8 CopyOrder21_21[];
-    static const duint8 CopyOrder21_22[];
-    static const duint8 CopyOrder21_23[];
-    static const duint8 CopyOrder21_24[];
-    static const duint8 CopyOrder21_25[];
-    static const duint8 CopyOrder21_26[];
-    static const duint8 CopyOrder21_27[];
-    static const duint8 CopyOrder21_28[];
-    static const duint8 CopyOrder21_29[];
-    static const duint8 CopyOrder21_30[];
-    static const duint8 CopyOrder21_31[];
-    static const duint8 CopyOrder21_32[];
-    static const duint8 *CopyOrder21[Block21OrderArray];
+    static const uint8_t CopyOrder21_01[];
+    static const uint8_t CopyOrder21_02[];
+    static const uint8_t CopyOrder21_03[];
+    static const uint8_t CopyOrder21_04[];
+    static const uint8_t CopyOrder21_05[];
+    static const uint8_t CopyOrder21_06[];
+    static const uint8_t CopyOrder21_07[];
+    static const uint8_t CopyOrder21_08[];
+    static const uint8_t CopyOrder21_09[];
+    static const uint8_t CopyOrder21_10[];
+    static const uint8_t CopyOrder21_11[];
+    static const uint8_t CopyOrder21_12[];
+    static const uint8_t CopyOrder21_13[];
+    static const uint8_t CopyOrder21_14[];
+    static const uint8_t CopyOrder21_15[];
+    static const uint8_t CopyOrder21_16[];
+    static const uint8_t CopyOrder21_17[];
+    static const uint8_t CopyOrder21_18[];
+    static const uint8_t CopyOrder21_19[];
+    static const uint8_t CopyOrder21_20[];
+    static const uint8_t CopyOrder21_21[];
+    static const uint8_t CopyOrder21_22[];
+    static const uint8_t CopyOrder21_23[];
+    static const uint8_t CopyOrder21_24[];
+    static const uint8_t CopyOrder21_25[];
+    static const uint8_t CopyOrder21_26[];
+    static const uint8_t CopyOrder21_27[];
+    static const uint8_t CopyOrder21_28[];
+    static const uint8_t CopyOrder21_29[];
+    static const uint8_t CopyOrder21_30[];
+    static const uint8_t CopyOrder21_31[];
+    static const uint8_t CopyOrder21_32[];
+    static const uint8_t *CopyOrder21[Block21OrderArray];
 };
 
 namespace secEnum {

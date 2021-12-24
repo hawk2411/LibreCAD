@@ -75,18 +75,18 @@ public:
 //    }
 
 protected:
-    std::unique_ptr<duint8[]> objData;
-    duint64 uncompSize;
+    std::unique_ptr<uint8_t[]> objData;
+    uint64_t uncompSize;
 
 private:
     void genMagicNumber();
 //    dwgBuffer* bufObj;
-    bool parseSysPage(duint8 *decompSec, duint32 decompSize); //called: Section page map: 0x41630e3b
-    bool parseDataPage(const dwgSectionInfo &si/*, duint8 *dData*/); //called ???: Section map: 0x4163003b
-    duint32 checksum(duint32 seed, duint8* data, duint64 sz);
+    bool parseSysPage(uint8_t *decompSec, uint32_t decompSize); //called: Section page map: 0x41630e3b
+    bool parseDataPage(const dwgSectionInfo &si/*, uint8_t *dData*/); //called ???: Section map: 0x4163003b
+    uint32_t checksum(uint32_t seed, uint8_t* data, uint64_t sz);
 
 private:
-    duint32 securityFlags;
+    uint32_t securityFlags;
 };
 
 #endif // DWGREADER18_H
