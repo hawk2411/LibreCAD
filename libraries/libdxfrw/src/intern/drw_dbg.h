@@ -16,61 +16,56 @@
 #include <string>
 #include <iostream>
 #include <memory>
+#include "../drw_dbg_base.h"
 #include "../drw_base.h"
-//#include <iomanip>
-
-
-//#define DRW_DBGSL(a) DRW_dbg::getInstance()->setLevel(a)
-//#define DRW_DBGGL DRW_dbg::getInstance()->getLevel()
-#define DRW_DBG(a) DRW_dbg::getInstance()->print(a)
-#define DRW_DBGH(a) DRW_dbg::getInstance()->printH(a)
-#define DRW_DBGB(a) DRW_dbg::getInstance()->printB(a)
-#define DRW_DBGHL(a, b, c) DRW_dbg::getInstance()->printHL(a, b ,c)
-#define DRW_DBGPT(a, b, c) DRW_dbg::getInstance()->printPT(a, b, c)
-
 
 class DRW_dbg {
 public:
-    enum class Level {
-        None,
-        Debug
-    };
-    void setLevel(Level lvl);
+    void setLevel( DRW::DebugLevel lvl);
     /**
      * Sets a custom debug printer to use when non-silent output
      * is required.
      */
-    void setCustomDebugPrinter(std::unique_ptr<DRW::DebugPrinter> printer);
-    Level getLevel();
+    void setCustomDebugPrinter(std::unique_ptr<DRW::IDebugPrinter> printer);
+    DRW::DebugLevel getLevel()const;
     static DRW_dbg *getInstance();
-    void print(const std::string &s);
-    void print(signed char i);
-    void print(unsigned char i);
-    void print(int i);
-    void print(unsigned int i);
-    void print(long long int i);
-    void print(long unsigned int i);
-    void print(long long unsigned int i);
-    void print(double d);
-    void printH(long long int i);
-    void printB(int i);
-    void printHL(int c, int s, int h);
-    void printPT(double x, double y, double z);
+    void print(const std::string &s) const;
+    void print(signed char i) const;
+    void print(unsigned char i) const;
+    void print(int i) const;
+    void print(unsigned int i) const;
+    void print(long long int i) const;
+    void print(long unsigned int i) const;
+    void print(long long unsigned int i) const;
+    void print(double d) const;
+    void printH(long long int i) const;
+    void printB(int i) const;
+    void printHL(int c, int s, int h) const;
+    void printPT(double x, double y, double z) const;
 
 private:
     DRW_dbg();
     static DRW_dbg *instance;
-    Level level{Level::None};
-    DRW::DebugPrinter silentDebug;
-    std::unique_ptr< DRW::DebugPrinter > debugPrinter;
-    DRW::DebugPrinter* currentPrinter{nullptr};
+    DRW::DebugLevel level{DRW::DebugLevel::None};
+    DRW::SilentPrinter silentDebug;     //default implementation of DRW::IDebugPrinter that do nothing (silent)
+    std::unique_ptr<DRW::IDebugPrinter> defaultPrinter;
+    DRW::IDebugPrinter* currentPrinter{nullptr};
 };
+/**
+ * Sets a custom debug printer to use when outputting debug messages.
+ *
+ * Ownership of `printer` is transferred.
+ */
+void setCustomDebugPrinter(DRW::IDebugPrinter* printer );
 
-auto drw_dbgsl = [](DRW_dbg::Level level) {
+auto drw_dbgsl = [](DRW::DebugLevel level) {
     DRW_dbg::getInstance()->setLevel(level);
 };
 
-auto drw_dbggl = [] () -> DRW_dbg::Level { return DRW_dbg::getInstance()->getLevel(); };
-
-
+auto drw_dbggl = [] () -> DRW::DebugLevel { return DRW_dbg::getInstance()->getLevel(); };
+auto drw_dbg = [](const auto & value) {DRW_dbg::getInstance()->print(value);};
+auto drw_dbgh = [](const auto & value) { DRW_dbg::getInstance()->printH(value); };
+auto drw_dbgb = [](const auto& value) { DRW_dbg::getInstance()->printB(value); };
+auto drw_dbghl = [](const auto& a, const auto& b, const auto& c) { DRW_dbg::getInstance()->printHL(a, b, c); };
+auto drw_dbgpt = [](const auto& a, const auto &b, const auto& c) { DRW_dbg::getInstance()->printPT(a, b, c); };
 #endif // DRW_DBG_H

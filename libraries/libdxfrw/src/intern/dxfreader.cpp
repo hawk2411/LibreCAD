@@ -118,13 +118,13 @@ bool dxfReaderBinary::readCode(int *code) {
     int16p = (unsigned short *) buffer;
 //exist a 32bits int (code 90) with 2 bytes???
     if ((*code == 90) && (*int16p>2000)){
-        DRW_DBG(*code); DRW_DBG(" de 16bits\n");
+        drw_dbg(*code); drw_dbg(" de 16bits\n");
         filestr->seekg(-4, std::ios_base::cur);
         filestr->read(buffer,2);
         int16p = (unsigned short *) buffer;
     }
     *code = *int16p;
-    DRW_DBG(*code); DRW_DBG("\n");
+    drw_dbg(*code); drw_dbg("\n");
 
     return (filestr->good());
 }
@@ -132,14 +132,14 @@ bool dxfReaderBinary::readCode(int *code) {
 bool dxfReaderBinary::readString() {
     type = STRING;
     std::getline(*filestr, strData, '\0');
-    DRW_DBG(strData); DRW_DBG("\n");
+    drw_dbg(strData); drw_dbg("\n");
     return (filestr->good());
 }
 
 bool dxfReaderBinary::readString(std::string *text) {
     type = STRING;
     std::getline(*filestr, *text, '\0');
-    DRW_DBG(*text); DRW_DBG("\n");
+    drw_dbg(*text); drw_dbg("\n");
     return (filestr->good());
 }
 
@@ -148,7 +148,7 @@ bool dxfReaderBinary::readBinary() {
 
     filestr->read( reinterpret_cast<char *>(&chunklen), 1);
     filestr->seekg( chunklen, std::ios_base::cur);
-    DRW_DBG( chunklen); DRW_DBG( " byte(s) binary data bypassed\n");
+    drw_dbg( chunklen); drw_dbg( " byte(s) binary data bypassed\n");
 
     return (filestr->good());
 }
@@ -158,7 +158,7 @@ bool dxfReaderBinary::readInt16() {
     char buffer[2];
     filestr->read(buffer,2);
     intData = (int)((buffer[1] << 8) | buffer[0]);
-    DRW_DBG(intData); DRW_DBG("\n");
+    drw_dbg(intData); drw_dbg("\n");
     return (filestr->good());
 }
 
@@ -169,7 +169,7 @@ bool dxfReaderBinary::readInt32() {
     filestr->read(buffer,4);
     int32p = (unsigned int *) buffer;
     intData = *int32p;
-    DRW_DBG(intData); DRW_DBG("\n");
+    drw_dbg(intData); drw_dbg("\n");
     return (filestr->good());
 }
 
@@ -180,7 +180,7 @@ bool dxfReaderBinary::readInt64() {
     filestr->read(buffer,8);
     int64p = (unsigned long long int *) buffer;
     int64 = *int64p;
-    DRW_DBG(int64); DRW_DBG(" int64\n");
+    drw_dbg(int64); drw_dbg(" int64\n");
     return (filestr->good());
 }
 
@@ -191,7 +191,7 @@ bool dxfReaderBinary::readDouble() {
     filestr->read(buffer,8);
     result = (double *) buffer;
     doubleData = *result;
-    DRW_DBG(doubleData); DRW_DBG("\n");
+    drw_dbg(doubleData); drw_dbg("\n");
     return (filestr->good());
 }
 
@@ -200,7 +200,7 @@ bool dxfReaderBinary::readBool() {
     char buffer[1];
     filestr->read(buffer,1);
     intData = (int)(buffer[0]);
-    DRW_DBG(intData); DRW_DBG("\n");
+    drw_dbg(intData); drw_dbg("\n");
     return (filestr->good());
 }
 
@@ -208,7 +208,7 @@ bool dxfReaderAscii::readCode(int *code) {
     std::string text;
     std::getline(*filestr, text);
     *code = atoi(text.c_str());
-    DRW_DBG(*code); DRW_DBG("\n");
+    drw_dbg(*code); drw_dbg("\n");
     return (filestr->good());
 }
 bool dxfReaderAscii::readString(std::string *text) {
@@ -224,7 +224,7 @@ bool dxfReaderAscii::readString() {
     std::getline(*filestr, strData);
     if (!strData.empty() && strData.at(strData.size()-1) == '\r')
         strData.erase(strData.size()-1);
-    DRW_DBG(strData); DRW_DBG("\n");
+    drw_dbg(strData); drw_dbg("\n");
     return (filestr->good());
 }
 
@@ -237,7 +237,7 @@ bool dxfReaderAscii::readInt16() {
     std::string text;
     if (readString(&text)){
         intData = atoi(text.c_str());
-        DRW_DBG(intData); DRW_DBG("\n");
+        drw_dbg(intData); drw_dbg("\n");
         return true;
     } else
         return false;
@@ -260,14 +260,14 @@ bool dxfReaderAscii::readDouble() {
 #if defined(__APPLE__)
         int succeeded=sscanf( & (text[0]), "%lg", &doubleData);
         if(succeeded != 1) {
-            DRW_DBG("dxfReaderAscii::readDouble(): reading double error: ");
-            DRW_DBG(text);
-            DRW_DBG('\n');
+            drw_dbg("dxfReaderAscii::readDouble(): reading double error: ");
+            drw_dbg(text);
+            drw_dbg('\n');
         }
 #else
         std::istringstream sd(text);
         sd >> doubleData;
-        DRW_DBG(doubleData); DRW_DBG('\n');
+        drw_dbg(doubleData); drw_dbg('\n');
 #endif
         return true;
     } else
@@ -280,7 +280,7 @@ bool dxfReaderAscii::readBool() {
     std::string text;
     if (readString(&text)){
         intData = atoi(text.c_str());
-        DRW_DBG(intData); DRW_DBG("\n");
+        drw_dbg(intData); drw_dbg("\n");
         return true;
     } else
         return false;

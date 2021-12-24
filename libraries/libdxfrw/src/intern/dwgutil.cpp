@@ -34,7 +34,7 @@ void dwgRSCodec::decode239I(unsigned char *in, unsigned char *out, duint32 blk){
         }
         int r = rsc.decode(data);
         if (r<0)
-            DRW_DBG("\nWARNING: dwgRSCodec::decode239I, can't correct all errors");
+            drw_dbg("\nWARNING: dwgRSCodec::decode239I, can't correct all errors");
         k = i*239;
         for (int j=0; j<239; j++) {
             out[k++] = data[j];
@@ -60,7 +60,7 @@ void dwgRSCodec::decode251I(unsigned char *in, unsigned char *out, duint32 blk){
         }
         int r = rsc.decode(data);
         if (r<0)
-            DRW_DBG("\nWARNING: dwgRSCodec::decode251I, can't correct all errors");
+            drw_dbg("\nWARNING: dwgRSCodec::decode251I, can't correct all errors");
         k = i*251;
         for (int j=0; j<251; j++) {
             out[k++] = data[j];
@@ -137,8 +137,8 @@ bool dwgCompressor::decompress18(duint8 *cbuf, duint8 *dbuf, duint64 csize, duin
     compressedPos = 0;
     decompPos = 0;
 
-    DRW_DBG("dwgCompressor::decompress, last 2 bytes: ");
-    DRW_DBGH(compressedBuffer[compressedSize - 2]);DRW_DBG(" ");DRW_DBGH(compressedBuffer[compressedSize - 1]);DRW_DBG("\n");
+    drw_dbg("dwgCompressor::decompress, last 2 bytes: ");
+    drw_dbgh(compressedBuffer[compressedSize - 2]);drw_dbg(" ");drw_dbgh(compressedBuffer[compressedSize - 1]);drw_dbg("\n");
 
     duint32 compBytes {0};
     duint32 compOffset {0};
@@ -179,20 +179,20 @@ bool dwgCompressor::decompress18(duint8 *cbuf, duint8 *dbuf, duint64 csize, duin
             if (litCount < 1){
                 litCount= litLength18();}
         } else if (oc == 0x11){
-            DRW_DBG("dwgCompressor::decompress, end of input stream, Cpos: ");
-            DRW_DBG(compressedPos);DRW_DBG(", Dpos: ");DRW_DBG(decompPos);DRW_DBG("\n");
+            drw_dbg("dwgCompressor::decompress, end of input stream, Cpos: ");
+            drw_dbg(compressedPos);drw_dbg(", Dpos: ");drw_dbg(decompPos);drw_dbg("\n");
             return true; //end of input stream
         } else { //ll < 0x10
-            DRW_DBG("WARNING dwgCompressor::decompress, failed, illegal char: "); DRW_DBGH(oc);
-            DRW_DBG(", Cpos: "); DRW_DBG(compressedPos);
-            DRW_DBG(", Dpos: "); DRW_DBG(decompPos); DRW_DBG("\n");
+            drw_dbg("WARNING dwgCompressor::decompress, failed, illegal char: "); drw_dbgh(oc);
+            drw_dbg(", Cpos: "); drw_dbg(compressedPos);
+            drw_dbg(", Dpos: "); drw_dbg(decompPos); drw_dbg("\n");
             return false; //fails, not valid
         }
 
         //copy "compressed data", if size allows
         if (decompSize < decompPos + compBytes) {
-            DRW_DBG("WARNING dwgCompressor::decompress18, bad compBytes size, Cpos: ");
-            DRW_DBG(compressedPos);DRW_DBG(", Dpos: ");DRW_DBG(decompPos);DRW_DBG(", need ");DRW_DBG(compBytes);DRW_DBG(", available ");DRW_DBG(decompSize - decompPos);DRW_DBG("\n");
+            drw_dbg("WARNING dwgCompressor::decompress18, bad compBytes size, Cpos: ");
+            drw_dbg(compressedPos);drw_dbg(", Dpos: ");drw_dbg(decompPos);drw_dbg(", need ");drw_dbg(compBytes);drw_dbg(", available ");drw_dbg(decompSize - decompPos);drw_dbg("\n");
             // only copy what we can fit
             compBytes = decompSize - decompPos;
         }
@@ -203,8 +203,8 @@ bool dwgCompressor::decompress18(duint8 *cbuf, duint8 *dbuf, duint64 csize, duin
 
         //copy "uncompressed data", if size allows
         if (decompSize < decompPos + litCount) {
-            DRW_DBG("WARNING dwgCompressor::decompress18, bad litCount size, Cpos: ");
-            DRW_DBG(compressedPos);DRW_DBG(", Dpos: ");DRW_DBG(decompPos);DRW_DBG(", need ");DRW_DBG(litCount);DRW_DBG(", available ");DRW_DBG(decompSize - decompPos);DRW_DBG("\n");
+            drw_dbg("WARNING dwgCompressor::decompress18, bad litCount size, Cpos: ");
+            drw_dbg(compressedPos);drw_dbg(", Dpos: ");drw_dbg(decompPos);drw_dbg(", need ");drw_dbg(litCount);drw_dbg(", available ");drw_dbg(decompSize - decompPos);drw_dbg("\n");
             // only copy what we can fit
             litCount = decompSize - decompPos;
         }
@@ -213,7 +213,7 @@ bool dwgCompressor::decompress18(duint8 *cbuf, duint8 *dbuf, duint64 csize, duin
         }
     }
 
-    DRW_DBG("WARNING dwgCompressor::decompress, bad out, Cpos: ");DRW_DBG(compressedPos);DRW_DBG(", Dpos: ");DRW_DBG(decompPos);DRW_DBG("\n");
+    drw_dbg("WARNING dwgCompressor::decompress, bad out, Cpos: ");drw_dbg(compressedPos);drw_dbg(", Dpos: ");drw_dbg(decompPos);drw_dbg("\n");
     return false;
 }
 
@@ -344,16 +344,16 @@ bool dwgCompressor::decompress21(duint8 *cbuf, duint8 *dbuf, duint64 csize, duin
         while (true) {
             //prevent crash with corrupted data
             if (sourceOffset > decompPos) {
-                DRW_DBG("\nWARNING dwgCompressor::decompress21 => sourceOffset> dstIndex.\n");
-                DRW_DBG("csize = "); DRW_DBG(compressedSize); DRW_DBG("  srcIndex = "); DRW_DBG(compressedPos);
-                DRW_DBG("\ndsize = "); DRW_DBG(decompSize); DRW_DBG("  dstIndex = "); DRW_DBG(decompPos);
+                drw_dbg("\nWARNING dwgCompressor::decompress21 => sourceOffset> dstIndex.\n");
+                drw_dbg("csize = "); drw_dbg(compressedSize); drw_dbg("  srcIndex = "); drw_dbg(compressedPos);
+                drw_dbg("\ndsize = "); drw_dbg(decompSize); drw_dbg("  dstIndex = "); drw_dbg(decompPos);
                 sourceOffset = decompPos;
             }
             //prevent crash with corrupted data
             if (length > decompSize - decompPos){
-                DRW_DBG("\nWARNING dwgCompressor::decompress21 => length > dsize - dstIndex.\n");
-                DRW_DBG("csize = "); DRW_DBG(compressedSize); DRW_DBG("  srcIndex = "); DRW_DBG(compressedPos);
-                DRW_DBG("\ndsize = "); DRW_DBG(decompSize); DRW_DBG("  dstIndex = "); DRW_DBG(decompPos);
+                drw_dbg("\nWARNING dwgCompressor::decompress21 => length > dsize - dstIndex.\n");
+                drw_dbg("csize = "); drw_dbg(compressedSize); drw_dbg("  srcIndex = "); drw_dbg(compressedPos);
+                drw_dbg("\ndsize = "); drw_dbg(decompSize); drw_dbg("  dstIndex = "); drw_dbg(decompPos);
                 length = decompSize - decompPos;
                 compressedPos = compressedSize; //force exit
                 compressedGood = false;
@@ -380,8 +380,8 @@ bool dwgCompressor::decompress21(duint8 *cbuf, duint8 *dbuf, duint64 csize, duin
             break;
         }
     }
-    DRW_DBG("\ncsize = "); DRW_DBG(compressedSize); DRW_DBG("  srcIndex = "); DRW_DBG(compressedPos);
-    DRW_DBG("\ndsize = "); DRW_DBG(decompSize); DRW_DBG("  dstIndex = "); DRW_DBG(decompPos);DRW_DBG("\n");
+    drw_dbg("\ncsize = "); drw_dbg(compressedSize); drw_dbg("  srcIndex = "); drw_dbg(compressedPos);
+    drw_dbg("\ndsize = "); drw_dbg(decompSize); drw_dbg("  dstIndex = "); drw_dbg(decompPos);drw_dbg("\n");
 
     return buffersGood();
 }
@@ -488,7 +488,7 @@ void dwgCompressor::copyBlock21(const duint32 length)
 
 bool dwgCompressor::copyCompBytes21(duint32 length)
 {
-    DRW_DBG("\ncopyCompBytes21() "); DRW_DBG(length); DRW_DBG("\n");
+    drw_dbg("\ncopyCompBytes21() "); drw_dbg(length); drw_dbg("\n");
 
     while (length >= MaxBlock21Length) {
         copyBlock21( MaxBlock21Length);

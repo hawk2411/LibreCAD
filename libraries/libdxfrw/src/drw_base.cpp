@@ -13,11 +13,6 @@
 #include "drw_base.h"
 #include "intern/drw_dbg.h"
 
-void DRW::setCustomDebugPrinter(DebugPrinter *printer)
-{
-  DRW_dbg::getInstance()->setCustomDebugPrinter(std::unique_ptr<DebugPrinter>(printer));
-}
-
 std::string DRW::toUpper(const std::string &str) {
     std::string result = str;
     std::transform(result.begin(), result.end(), result.begin(),

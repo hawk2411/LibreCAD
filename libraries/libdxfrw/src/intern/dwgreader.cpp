@@ -109,7 +109,7 @@ bool dwgReader::readDwgHeader(DRW_Header& hdr, dwgBuffer *buf, dwgBuffer *hBuf){
 bool dwgReader::checkSentinel(dwgBuffer *buf, enum secEnum::DWGSection, bool start){
     DRW_UNUSED(start);
     for (int i=0; i<16;i++) {
-        DRW_DBGH(buf->getRawChar8()); DRW_DBG(" ");
+        drw_dbgh(buf->getRawChar8()); drw_dbg(" ");
     }
     return true;
 }
@@ -122,22 +122,22 @@ bool dwgReader::checkSentinel(dwgBuffer *buf, enum secEnum::DWGSection, bool sta
  *  last section are 2 bytes size + 2 bytes crc (size value always 2)
 **/
 bool dwgReader::readDwgHandles(dwgBuffer *dbuf, duint64 offset, duint64 size) {
-    DRW_DBG("\ndwgReader::readDwgHandles\n");
+    drw_dbg("\ndwgReader::readDwgHandles\n");
     if (!dbuf->setPosition(offset))
         return false;
 
     duint32 maxPos = offset + size;
-    DRW_DBG("\nSection HANDLES offset= "); DRW_DBG(offset);
-    DRW_DBG("\nSection HANDLES size= "); DRW_DBG(size);
-    DRW_DBG("\nSection HANDLES maxPos= "); DRW_DBG(maxPos);
+    drw_dbg("\nSection HANDLES offset= "); drw_dbg(offset);
+    drw_dbg("\nSection HANDLES size= "); drw_dbg(size);
+    drw_dbg("\nSection HANDLES maxPos= "); drw_dbg(maxPos);
 
     int startPos = offset;
 
     std::vector<duint8> tmpByteStr;
     while (maxPos > dbuf->getPosition()) {
-        DRW_DBG("\nstart handles section buf->curPosition()= "); DRW_DBG(dbuf->getPosition()); DRW_DBG("\n");
+        drw_dbg("\nstart handles section buf->curPosition()= "); drw_dbg(dbuf->getPosition()); drw_dbg("\n");
         duint16 size = dbuf->getBERawShort16();
-        DRW_DBG("object map section size= "); DRW_DBG(size); DRW_DBG("\n");
+        drw_dbg("object map section size= "); drw_dbg(size); drw_dbg("\n");
         dbuf->setPosition(startPos);
         tmpByteStr.resize(size);
         dbuf->getBytes(tmpByteStr.data(), size);
@@ -149,18 +149,18 @@ bool dwgReader::readDwgHandles(dwgBuffer *dbuf, duint64 offset, duint64 size) {
             //read data
             while(buff.getPosition()< size){
                 lastHandle += buff.getUModularChar();
-                DRW_DBG("object map lastHandle= "); DRW_DBGH(lastHandle);
+                drw_dbg("object map lastHandle= "); drw_dbgh(lastHandle);
                 lastLoc += buff.getModularChar();
-                DRW_DBG(" lastLoc= "); DRW_DBG(lastLoc); DRW_DBG("\n");
+                drw_dbg(" lastLoc= "); drw_dbg(lastLoc); drw_dbg("\n");
                 ObjectMap[lastHandle]= objHandle(0, lastHandle, lastLoc);
             }
         }
         //verify crc
         duint16 crcCalc = buff.crc8(0xc0c1,0,size);
         duint16 crcRead = dbuf->getBERawShort16();
-        DRW_DBG("object map section crc8 read= "); DRW_DBG(crcRead);
-        DRW_DBG("\nobject map section crc8 calculated= "); DRW_DBG(crcCalc);
-        DRW_DBG("\nobject section buf->curPosition()= "); DRW_DBG(dbuf->getPosition()); DRW_DBG("\n");
+        drw_dbg("object map section crc8 read= "); drw_dbg(crcRead);
+        drw_dbg("\nobject map section crc8 calculated= "); drw_dbg(crcCalc);
+        drw_dbg("\nobject section buf->curPosition()= "); drw_dbg(dbuf->getPosition()); drw_dbg("\n");
         startPos = dbuf->getPosition();
     }
 
@@ -174,7 +174,7 @@ bool dwgReader::readDwgHandles(dwgBuffer *dbuf, duint64 offset, duint64 size) {
  * (using their object file offsets)
  */
 bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
-    DRW_DBG("\ndwgReader::readDwgTables start\n");
+    drw_dbg("\ndwgReader::readDwgTables start\n");
     bool ret = true;
     bool ret2 = true;
     objHandle oc;
@@ -185,10 +185,10 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
     //parse linetypes, start with linetype Control
     auto mit = ObjectMap.find(hdr.linetypeCtrl);
     if (mit==ObjectMap.end()) {
-        DRW_DBG("\nWARNING: LineType control not found\n");
+        drw_dbg("\nWARNING: LineType control not found\n");
         ret = false;
     } else {
-        DRW_DBG("\n**********Parsing LineType control*******\n");
+        drw_dbg("\n**********Parsing LineType control*******\n");
         oc = mit->second;
         ObjectMap.erase(mit);
         DRW_ObjControl ltControl;
@@ -204,8 +204,8 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         //verify if object are correct
         oType = cbuff.getObjType(version);
         if (oType != 0x38) {
-                DRW_DBG("\nWARNING: Not LineType control object, found oType ");
-                DRW_DBG(oType);  DRW_DBG(" instead 0x38\n");
+                drw_dbg("\nWARNING: Not LineType control object, found oType ");
+                drw_dbg(oType);  drw_dbg(" instead 0x38\n");
                 ret = false;
             } else { //reset position
             cbuff.resetPosition();
@@ -216,16 +216,16 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         for (auto it = ltControl.handlesList.begin(); it != ltControl.handlesList.end(); ++it) {
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
-                DRW_DBG("\nWARNING: LineType not found\n");
+                drw_dbg("\nWARNING: LineType not found\n");
                 ret = false;
             } else {
                 oc = mit->second;
                 ObjectMap.erase(mit);
-                DRW_DBG("\nLineType Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" loc.: "); DRW_DBG(oc.loc); DRW_DBG("\n");
+                drw_dbg("\nLineType Handle= "); drw_dbgh(oc.handle); drw_dbg(" loc.: "); drw_dbg(oc.loc); drw_dbg("\n");
                 DRW_LType *lt = new DRW_LType();
                 dbuf->setPosition(oc.loc);
                 int lsize = dbuf->getModularShort();
-                DRW_DBG("LineType size in bytes= "); DRW_DBG(lsize);
+                drw_dbg("LineType size in bytes= "); drw_dbg(lsize);
                 if (version > DRW::AC1021) //2010+
                     bs = dbuf->getUModularChar();
                 else
@@ -244,10 +244,10 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
     //parse layers, start with layer Control
     mit = ObjectMap.find(hdr.layerCtrl);
     if (mit==ObjectMap.end()) {
-        DRW_DBG("\nWARNING: Layer control not found\n");
+        drw_dbg("\nWARNING: Layer control not found\n");
         ret = false;
     } else {
-        DRW_DBG("\n**********Parsing Layer control*******\n");
+        drw_dbg("\n**********Parsing Layer control*******\n");
         oc = mit->second;
         ObjectMap.erase(mit);
         DRW_ObjControl layControl;
@@ -263,8 +263,8 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         //verify if object are correct
         oType = buff.getObjType(version);
         if (oType != 0x32) {
-                DRW_DBG("\nWARNING: Not Layer control object, found oType ");
-                DRW_DBG(oType);  DRW_DBG(" instead 0x32\n");
+                drw_dbg("\nWARNING: Not Layer control object, found oType ");
+                drw_dbg(oType);  drw_dbg(" instead 0x32\n");
                 ret = false;
             } else { //reset position
             buff.resetPosition();
@@ -275,12 +275,12 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         for (auto it = layControl.handlesList.begin(); it != layControl.handlesList.end(); ++it) {
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
-                DRW_DBG("\nWARNING: Layer not found\n");
+                drw_dbg("\nWARNING: Layer not found\n");
                 ret = false;
             } else {
                 oc = mit->second;
                 ObjectMap.erase(mit);
-                DRW_DBG("Layer Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" "); DRW_DBG(oc.loc); DRW_DBG("\n");
+                drw_dbg("Layer Handle= "); drw_dbgh(oc.handle); drw_dbg(" "); drw_dbg(oc.loc); drw_dbg("\n");
                 DRW_Layer *la = new DRW_Layer();
                 dbuf->setPosition(oc.loc);
                 int size = dbuf->getModularShort();
@@ -312,10 +312,10 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
     //parse text styles, start with style Control
     mit = ObjectMap.find(hdr.styleCtrl);
     if (mit==ObjectMap.end()) {
-        DRW_DBG("\nWARNING: Style control not found\n");
+        drw_dbg("\nWARNING: Style control not found\n");
         ret = false;
     } else {
-        DRW_DBG("\n**********Parsing Style control*******\n");
+        drw_dbg("\n**********Parsing Style control*******\n");
         oc = mit->second;
         ObjectMap.erase(mit);
         DRW_ObjControl styControl;
@@ -331,8 +331,8 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         //verify if object are correct
         oType = buff.getObjType(version);
         if (oType != 0x34) {
-                DRW_DBG("\nWARNING: Not Text Style control object, found oType ");
-                DRW_DBG(oType);  DRW_DBG(" instead 0x34\n");
+                drw_dbg("\nWARNING: Not Text Style control object, found oType ");
+                drw_dbg(oType);  drw_dbg(" instead 0x34\n");
                 ret = false;
             } else { //reset position
             buff.resetPosition();
@@ -343,12 +343,12 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         for (auto it = styControl.handlesList.begin(); it != styControl.handlesList.end(); ++it) {
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
-                DRW_DBG("\nWARNING: Style not found\n");
+                drw_dbg("\nWARNING: Style not found\n");
                 ret = false;
             } else {
                 oc = mit->second;
                 ObjectMap.erase(mit);
-                DRW_DBG("Style Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" "); DRW_DBG(oc.loc); DRW_DBG("\n");
+                drw_dbg("Style Handle= "); drw_dbgh(oc.handle); drw_dbg(" "); drw_dbg(oc.loc); drw_dbg("\n");
                 DRW_Textstyle *sty = new DRW_Textstyle();
                 dbuf->setPosition(oc.loc);
                 int size = dbuf->getModularShort();
@@ -370,10 +370,10 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
     //parse dim styles, start with dimstyle Control
     mit = ObjectMap.find(hdr.dimstyleCtrl);
     if (mit==ObjectMap.end()) {
-        DRW_DBG("\nWARNING: Dimension Style control not found\n");
+        drw_dbg("\nWARNING: Dimension Style control not found\n");
         ret = false;
     } else {
-        DRW_DBG("\n**********Parsing Dimension Style control*******\n");
+        drw_dbg("\n**********Parsing Dimension Style control*******\n");
         oc = mit->second;
         ObjectMap.erase(mit);
         DRW_ObjControl dimstyControl;
@@ -389,8 +389,8 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         //verify if object are correct
         oType = buff.getObjType(version);
         if (oType != 0x44) {
-                DRW_DBG("\nWARNING: Not Dim Style control object, found oType ");
-                DRW_DBG(oType);  DRW_DBG(" instead 0x44\n");
+                drw_dbg("\nWARNING: Not Dim Style control object, found oType ");
+                drw_dbg(oType);  drw_dbg(" instead 0x44\n");
                 ret = false;
             } else { //reset position
             buff.resetPosition();
@@ -401,12 +401,12 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         for (auto it = dimstyControl.handlesList.begin(); it != dimstyControl.handlesList.end(); ++it) {
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
-                DRW_DBG("\nWARNING: Dimension Style not found\n");
+                drw_dbg("\nWARNING: Dimension Style not found\n");
                 ret = false;
             } else {
                 oc = mit->second;
                 ObjectMap.erase(mit);
-                DRW_DBG("Dimstyle Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" "); DRW_DBG(oc.loc); DRW_DBG("\n");
+                drw_dbg("Dimstyle Handle= "); drw_dbgh(oc.handle); drw_dbg(" "); drw_dbg(oc.loc); drw_dbg("\n");
                 DRW_Dimstyle *sty = new DRW_Dimstyle();
                 dbuf->setPosition(oc.loc);
                 int size = dbuf->getModularShort();
@@ -428,10 +428,10 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
     //parse vports, start with vports Control
     mit = ObjectMap.find(hdr.vportCtrl);
     if (mit==ObjectMap.end()) {
-        DRW_DBG("\nWARNING: vports control not found\n");
+        drw_dbg("\nWARNING: vports control not found\n");
         ret = false;
     } else {
-        DRW_DBG("\n**********Parsing vports control*******\n");
+        drw_dbg("\n**********Parsing vports control*******\n");
         oc = mit->second;
         ObjectMap.erase(mit);
         DRW_ObjControl vportControl;
@@ -447,8 +447,8 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         //verify if object are correct
         oType = buff.getObjType(version);
         if (oType != 0x40) {
-                DRW_DBG("\nWARNING: Not VPorts control object, found oType: ");
-                DRW_DBG(oType);  DRW_DBG(" instead 0x40\n");
+                drw_dbg("\nWARNING: Not VPorts control object, found oType: ");
+                drw_dbg(oType);  drw_dbg(" instead 0x40\n");
                 ret = false;
             } else { //reset position
             buff.resetPosition();
@@ -459,12 +459,12 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         for (auto it = vportControl.handlesList.begin(); it != vportControl.handlesList.end(); ++it) {
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
-                DRW_DBG("\nWARNING: vport not found\n");
+                drw_dbg("\nWARNING: vport not found\n");
                 ret = false;
             } else {
                 oc = mit->second;
                 ObjectMap.erase(mit);
-                DRW_DBG("Vport Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" "); DRW_DBG(oc.loc); DRW_DBG("\n");
+                drw_dbg("Vport Handle= "); drw_dbgh(oc.handle); drw_dbg(" "); drw_dbg(oc.loc); drw_dbg("\n");
                 DRW_Vport *vp = new DRW_Vport();
                 dbuf->setPosition(oc.loc);
                 int size = dbuf->getModularShort();
@@ -486,10 +486,10 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
     //parse Block_records , start with Block_record Control
     mit = ObjectMap.find(hdr.blockCtrl);
     if (mit==ObjectMap.end()) {
-        DRW_DBG("\nWARNING: Block_record control not found\n");
+        drw_dbg("\nWARNING: Block_record control not found\n");
         ret = false;
     } else {
-        DRW_DBG("\n**********Parsing Block_record control*******\n");
+        drw_dbg("\n**********Parsing Block_record control*******\n");
         oc = mit->second;
         ObjectMap.erase(mit);
         DRW_ObjControl blockControl;
@@ -505,8 +505,8 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         //verify if object are correct
         oType = buff.getObjType(version);
         if (oType != 0x30) {
-                DRW_DBG("\nWARNING: Not Block Record control object, found oType ");
-                DRW_DBG(oType);  DRW_DBG(" instead 0x30\n");
+                drw_dbg("\nWARNING: Not Block Record control object, found oType ");
+                drw_dbg(oType);  drw_dbg(" instead 0x30\n");
                 ret = false;
             } else { //reset position
             buff.resetPosition();
@@ -517,12 +517,12 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         for (auto it = blockControl.handlesList.begin(); it != blockControl.handlesList.end(); ++it) {
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
-                DRW_DBG("\nWARNING: block record not found\n");
+                drw_dbg("\nWARNING: block record not found\n");
                 ret = false;
             } else {
                 oc = mit->second;
                 ObjectMap.erase(mit);
-                DRW_DBG("block record Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" "); DRW_DBG(oc.loc); DRW_DBG("\n");
+                drw_dbg("block record Handle= "); drw_dbgh(oc.handle); drw_dbg(" "); drw_dbg(oc.loc); drw_dbg("\n");
                 DRW_Block_Record *br = new DRW_Block_Record();
                 dbuf->setPosition(oc.loc);
                 int size = dbuf->getModularShort();
@@ -544,13 +544,13 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
     //parse appId , start with appId Control
     mit = ObjectMap.find(hdr.appidCtrl);
     if (mit==ObjectMap.end()) {
-        DRW_DBG("\nWARNING: AppId control not found\n");
+        drw_dbg("\nWARNING: AppId control not found\n");
         ret = false;
     } else {
-        DRW_DBG("\n**********Parsing AppId control*******\n");
+        drw_dbg("\n**********Parsing AppId control*******\n");
         oc = mit->second;
         ObjectMap.erase(mit);
-        DRW_DBG("AppId Control Obj Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" "); DRW_DBG(oc.loc); DRW_DBG("\n");
+        drw_dbg("AppId Control Obj Handle= "); drw_dbgh(oc.handle); drw_dbg(" "); drw_dbg(oc.loc); drw_dbg("\n");
         DRW_ObjControl appIdControl;
         dbuf->setPosition(oc.loc);
         int size = dbuf->getModularShort();
@@ -564,8 +564,8 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         //verify if object are correct
         oType = buff.getObjType(version);
         if (oType != 0x42) {
-                DRW_DBG("\nWARNING: Not AppId control object, found oType ");
-                DRW_DBG(oType);  DRW_DBG(" instead 0x42\n");
+                drw_dbg("\nWARNING: Not AppId control object, found oType ");
+                drw_dbg(oType);  drw_dbg(" instead 0x42\n");
                 ret = false;
             } else { //reset position
             buff.resetPosition();
@@ -573,15 +573,15 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
             if(ret)
                 ret = ret2;
         }
-        for (auto it = appIdControl.handlesList.begin(); it != appIdControl.handlesList.end(); ++it) {
-            mit = ObjectMap.find(*it);
+        for (unsigned int & it : appIdControl.handlesList) {
+            mit = ObjectMap.find(it);
             if (mit==ObjectMap.end()) {
-                DRW_DBG("\nWARNING: AppId not found\n");
+                drw_dbg("\nWARNING: AppId not found\n");
                 ret = false;
             } else {
                 oc = mit->second;
                 ObjectMap.erase(mit);
-                DRW_DBG("AppId Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" "); DRW_DBG(oc.loc); DRW_DBG("\n");
+                drw_dbg("AppId Handle= "); drw_dbgh(oc.handle); drw_dbg(" "); drw_dbg(oc.loc); drw_dbg("\n");
                 DRW_AppId *ai = new DRW_AppId();
                 dbuf->setPosition(oc.loc);
                 int size = dbuf->getModularShort();
@@ -601,16 +601,16 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
     }
 
     //RLZ: parse remaining object controls, TODO: implement all
-    if (drw_dbggl() == DRW_dbg::Level::Debug){
+    if (drw_dbggl() == DRW::DebugLevel::Debug){
         mit = ObjectMap.find(hdr.viewCtrl);
         if (mit==ObjectMap.end()) {
-            DRW_DBG("\nWARNING: View control not found\n");
+            drw_dbg("\nWARNING: View control not found\n");
             ret = false;
         } else {
-            DRW_DBG("\n**********Parsing View control*******\n");
+            drw_dbg("\n**********Parsing View control*******\n");
             oc = mit->second;
             ObjectMap.erase(mit);
-            DRW_DBG("View Control Obj Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" "); DRW_DBG(oc.loc); DRW_DBG("\n");
+            drw_dbg("View Control Obj Handle= "); drw_dbgh(oc.handle); drw_dbg(" "); drw_dbg(oc.loc); drw_dbg("\n");
             DRW_ObjControl viewControl;
             dbuf->setPosition(oc.loc);
             int size = dbuf->getModularShort();
@@ -624,8 +624,8 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
             //verify if object are correct
             oType = buff.getObjType(version);
             if (oType != 0x3C) {
-                    DRW_DBG("\nWARNING: Not View control object, found oType ");
-                    DRW_DBG(oType);  DRW_DBG(" instead 0x3C\n");
+                    drw_dbg("\nWARNING: Not View control object, found oType ");
+                    drw_dbg(oType);  drw_dbg(" instead 0x3C\n");
                     ret = false;
                 } else { //reset position
                 buff.resetPosition();
@@ -637,13 +637,13 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
 
         mit = ObjectMap.find(hdr.ucsCtrl);
         if (mit==ObjectMap.end()) {
-            DRW_DBG("\nWARNING: Ucs control not found\n");
+            drw_dbg("\nWARNING: Ucs control not found\n");
             ret = false;
         } else {
             oc = mit->second;
             ObjectMap.erase(mit);
-            DRW_DBG("\n**********Parsing Ucs control*******\n");
-            DRW_DBG("Ucs Control Obj Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" "); DRW_DBG(oc.loc); DRW_DBG("\n");
+            drw_dbg("\n**********Parsing Ucs control*******\n");
+            drw_dbg("Ucs Control Obj Handle= "); drw_dbgh(oc.handle); drw_dbg(" "); drw_dbg(oc.loc); drw_dbg("\n");
             DRW_ObjControl ucsControl;
             dbuf->setPosition(oc.loc);
             int size = dbuf->getModularShort();
@@ -657,8 +657,8 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
             //verify if object are correct
             oType = buff.getObjType(version);
             if (oType != 0x3E) {
-                    DRW_DBG("\nWARNING: Not Ucs control object, found oType ");
-                    DRW_DBG(oType);  DRW_DBG(" instead 0x3E\n");
+                    drw_dbg("\nWARNING: Not Ucs control object, found oType ");
+                    drw_dbg(oType);  drw_dbg(" instead 0x3E\n");
                     ret = false;
                 } else { //reset position
                 buff.resetPosition();
@@ -671,13 +671,13 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
         if (version < DRW::AC1018) {//r2000-
             mit = ObjectMap.find(hdr.vpEntHeaderCtrl);
             if (mit==ObjectMap.end()) {
-                DRW_DBG("\nWARNING: vpEntHeader control not found\n");
+                drw_dbg("\nWARNING: vpEntHeader control not found\n");
                 ret = false;
             } else {
-                DRW_DBG("\n**********Parsing vpEntHeader control*******\n");
+                drw_dbg("\n**********Parsing vpEntHeader control*******\n");
                 oc = mit->second;
                 ObjectMap.erase(mit);
-                DRW_DBG("vpEntHeader Control Obj Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" "); DRW_DBG(oc.loc); DRW_DBG("\n");
+                drw_dbg("vpEntHeader Control Obj Handle= "); drw_dbgh(oc.handle); drw_dbg(" "); drw_dbg(oc.loc); drw_dbg("\n");
                 DRW_ObjControl vpEntHeaderCtrl;
                 dbuf->setPosition(oc.loc);
                 int size = dbuf->getModularShort();
@@ -691,8 +691,8 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
                 //verify if object are correct
                 oType = buff.getObjType(version);
                 if (oType != 0x46) {
-                        DRW_DBG("\nWARNING: Not vpEntHeader control object, found oType ");
-                        DRW_DBG(oType);  DRW_DBG(" instead 0x46\n");
+                        drw_dbg("\nWARNING: Not vpEntHeader control object, found oType ");
+                        drw_dbg(oType);  drw_dbg(" instead 0x46\n");
                         ret = false;
                     } else { //reset position
                     buff.resetPosition();
@@ -711,23 +711,23 @@ bool dwgReader::readDwgBlocks(DRW_Interface& intfa, dwgBuffer *dbuf){
     bool ret = true;
     bool ret2 = true;
     duint32 bs =0;
-    DRW_DBG("\nobject map total size= "); DRW_DBG(ObjectMap.size());
+    drw_dbg("\nobject map total size= "); drw_dbg(ObjectMap.size());
 
     for (auto it=blockRecordmap.begin(); it != blockRecordmap.end(); ++it){
         DRW_Block_Record* bkr= it->second;
-        DRW_DBG("\nParsing Block, record handle= "); DRW_DBGH(it->first); DRW_DBG(" Name= "); DRW_DBG(bkr->name); DRW_DBG("\n");
-        DRW_DBG("\nFinding Block, handle= "); DRW_DBGH(bkr->block); DRW_DBG("\n");
+        drw_dbg("\nParsing Block, record handle= "); drw_dbgh(it->first); drw_dbg(" Name= "); drw_dbg(bkr->name); drw_dbg("\n");
+        drw_dbg("\nFinding Block, handle= "); drw_dbgh(bkr->block); drw_dbg("\n");
         auto mit = ObjectMap.find(bkr->block);
         if (mit==ObjectMap.end()) {
-            DRW_DBG("\nWARNING: block entity not found\n");
+            drw_dbg("\nWARNING: block entity not found\n");
             ret = false;
             continue;
         }
         objHandle oc = mit->second;
         ObjectMap.erase(mit);
-        DRW_DBG("Block Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" Location: "); DRW_DBG(oc.loc); DRW_DBG("\n");
+        drw_dbg("Block Handle= "); drw_dbgh(oc.handle); drw_dbg(" Location: "); drw_dbg(oc.loc); drw_dbg("\n");
         if ( !(dbuf->setPosition(oc.loc)) ){
-            DRW_DBG("Bad Location reading blocks\n");
+            drw_dbg("Bad Location reading blocks\n");
             ret = false;
             continue;
         }
@@ -764,7 +764,7 @@ bool dwgReader::readDwgBlocks(DRW_Interface& intfa, dwgBuffer *dbuf){
                     mit = ObjectMap.find(nextH);
                     if (mit==ObjectMap.end()) {
                         nextH = bkr->lastEH;//end while if entity not foud
-                        DRW_DBG("\nWARNING: Entity of block not found\n");
+                        drw_dbg("\nWARNING: Entity of block not found\n");
                         ret = false;
                         continue;
                     } else {//foud entity reads it
@@ -783,13 +783,13 @@ bool dwgReader::readDwgBlocks(DRW_Interface& intfa, dwgBuffer *dbuf){
                     duint32 nextH = *it;
                     mit = ObjectMap.find(nextH);
                     if (mit==ObjectMap.end()) {
-                        DRW_DBG("\nWARNING: Entity of block not found\n");
+                        drw_dbg("\nWARNING: Entity of block not found\n");
                         ret = false;
                         continue;
                     } else {//foud entity reads it
                         oc = mit->second;
                         ObjectMap.erase(mit);
-                        DRW_DBG("\nBlocks, parsing entity: "); DRW_DBGH(oc.handle); DRW_DBG(", pos: "); DRW_DBG(oc.loc); DRW_DBG("\n");
+                        drw_dbg("\nBlocks, parsing entity: "); drw_dbgh(oc.handle); drw_dbg(", pos: "); drw_dbg(oc.loc); drw_dbg("\n");
                         ret2 = readDwgEntity(dbuf, oc, intfa);
                         ret = ret && ret2;
                     }
@@ -800,13 +800,13 @@ bool dwgReader::readDwgBlocks(DRW_Interface& intfa, dwgBuffer *dbuf){
         //end block entity, really needed to parse a dummy entity??
         mit = ObjectMap.find(bkr->endBlock);
         if (mit==ObjectMap.end()) {
-            DRW_DBG("\nWARNING: end block entity not found\n");
+            drw_dbg("\nWARNING: end block entity not found\n");
             ret = false;
             continue;
         }
         oc = mit->second;
         ObjectMap.erase(mit);
-        DRW_DBG("End block Handle= "); DRW_DBGH(oc.handle); DRW_DBG(" Location: "); DRW_DBG(oc.loc); DRW_DBG("\n");
+        drw_dbg("End block Handle= "); drw_dbgh(oc.handle); drw_dbg(" Location: "); drw_dbg(oc.loc); drw_dbg("\n");
         dbuf->setPosition(oc.loc);
         size = dbuf->getModularShort();
         if (version > DRW::AC1021) //2010+
@@ -840,7 +840,7 @@ bool dwgReader::readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf){
             auto mit = ObjectMap.find(nextH);
             if (mit==ObjectMap.end()) {
                 nextH = pline.lastEH;//end while if entity not foud
-                DRW_DBG("\nWARNING: pline vertex not found\n");
+                drw_dbg("\nWARNING: pline vertex not found\n");
                 ret = false;
                 continue;
             } else {//foud entity reads it
@@ -858,7 +858,7 @@ bool dwgReader::readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf){
                 dwgBuffer buff(tmpByteStr.data(), size, &decoder);
                 dint16 oType = buff.getObjType(version);
                 buff.resetPosition();
-                DRW_DBG(" object type= "); DRW_DBG(oType); DRW_DBG("\n");
+                drw_dbg(" object type= "); drw_dbg(oType); drw_dbg("\n");
                 ret2 = vt.parseDwg(version, &buff, bs, pline.basePoint.z);
                 pline.addVertex(vt);
                 nextEntLink = vt.nextEntLink; \
@@ -875,13 +875,13 @@ bool dwgReader::readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf){
             duint32 nextH = *it;
             auto mit = ObjectMap.find(nextH);
             if (mit==ObjectMap.end()) {
-                DRW_DBG("\nWARNING: Entity of block not found\n");
+                drw_dbg("\nWARNING: Entity of block not found\n");
                 ret = false;
                 continue;
             } else {//foud entity reads it
                 oc = mit->second;
                 ObjectMap.erase(mit);
-                DRW_DBG("\nPline vertex, parsing entity: "); DRW_DBGH(oc.handle); DRW_DBG(", pos: "); DRW_DBG(oc.loc); DRW_DBG("\n");
+                drw_dbg("\nPline vertex, parsing entity: "); drw_dbgh(oc.handle); drw_dbg(", pos: "); drw_dbg(oc.loc); drw_dbg("\n");
                 DRW_Vertex vt;
                 dbuf->setPosition(oc.loc);
                 //RLZ: verify if pos is ok
@@ -894,7 +894,7 @@ bool dwgReader::readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf){
                 dwgBuffer buff(tmpByteStr.data(), size, &decoder);
                 dint16 oType = buff.getObjType(version);
                 buff.resetPosition();
-                DRW_DBG(" object type= "); DRW_DBG(oType); DRW_DBG("\n");
+                drw_dbg(" object type= "); drw_dbg(oType); drw_dbg("\n");
                 ret2 = vt.parseDwg(version, &buff, bs, pline.basePoint.z);
                 pline.addVertex(vt);
                 nextEntLink = vt.nextEntLink; \
@@ -903,7 +903,7 @@ bool dwgReader::readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf){
             }
         }
     }//end 2004+
-    DRW_DBG("\nRemoved SEQEND entity: "); DRW_DBGH(pline.seqEndH.ref);DRW_DBG("\n");
+    drw_dbg("\nRemoved SEQEND entity: "); drw_dbgh(pline.seqEndH.ref);drw_dbg("\n");
     ObjectMap.erase(pline.seqEndH.ref);
 
     return ret;
@@ -913,7 +913,7 @@ bool dwgReader::readDwgEntities(DRW_Interface& intfa, dwgBuffer *dbuf){
     bool ret = true;
     bool ret2 = true;
 
-    DRW_DBG("\nobject map total size= "); DRW_DBG(ObjectMap.size());
+    drw_dbg("\nobject map total size= "); drw_dbg(ObjectMap.size());
     auto itB=ObjectMap.begin();
     auto itE=ObjectMap.end();
     while (itB != itE){
@@ -943,7 +943,7 @@ bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle &obj, DRW_Interface &in
     dbuf->setPosition(obj.loc);
     //verify if position is ok:
     if (!dbuf->isGood()) {
-        DRW_DBG(" Warning: readDwgEntity, bad location\n");
+        drw_dbg(" Warning: readDwgEntity, bad location\n");
         return false;
     }
     int size = dbuf->getModularShort();
@@ -954,7 +954,7 @@ bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle &obj, DRW_Interface &in
     dbuf->getBytes(tmpByteStr.data(), size);
     //verify if getBytes is ok:
     if (!dbuf->isGood()) {
-        DRW_DBG(" Warning: readDwgEntity, bad size\n");
+        drw_dbg(" Warning: readDwgEntity, bad size\n");
         return false;
     }
     dwgBuffer buff(tmpByteStr.data(), size, &decoder);
@@ -964,11 +964,11 @@ bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle &obj, DRW_Interface &in
     if (oType > 499) {
         auto it = classesmap.find(oType);
         if (it == classesmap.end()) {//fail, not found in classes set error
-            DRW_DBG("Class ");
-            DRW_DBG(oType);
-            DRW_DBG("not found, handle: ");
-            DRW_DBG(obj.handle);
-            DRW_DBG("\n");
+            drw_dbg("Class ");
+            drw_dbg(oType);
+            drw_dbg("not found, handle: ");
+            drw_dbg(obj.handle);
+            drw_dbg("\n");
             return false;
         } else {
             DRW_Class *cl = it->second;
@@ -1168,11 +1168,11 @@ bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle &obj, DRW_Interface &in
             break;
     }
     if (!ret) {
-        DRW_DBG("Warning: Entity type ");
-        DRW_DBG(oType);
-        DRW_DBG("has failed, handle: ");
-        DRW_DBG(obj.handle);
-        DRW_DBG("\n");
+        drw_dbg("Warning: Entity type ");
+        drw_dbg(oType);
+        drw_dbg("has failed, handle: ");
+        drw_dbg(obj.handle);
+        drw_dbg("\n");
     }
     return ret;
 }
@@ -1182,8 +1182,8 @@ bool dwgReader::readDwgObjects(DRW_Interface& intfa, dwgBuffer *dbuf){
     bool ret2 = true;
 
     duint32 i=0;
-    DRW_DBG("\nentities map total size= "); DRW_DBG(ObjectMap.size());
-    DRW_DBG("\nobjects map total size= "); DRW_DBG(objObjectMap.size());
+    drw_dbg("\nentities map total size= "); drw_dbg(ObjectMap.size());
+    drw_dbg("\nobjects map total size= "); drw_dbg(objObjectMap.size());
     auto itB=objObjectMap.begin();
     auto itE=objObjectMap.end();
     while (itB != itE){
@@ -1193,12 +1193,12 @@ bool dwgReader::readDwgObjects(DRW_Interface& intfa, dwgBuffer *dbuf){
         if (ret)
             ret = ret2;
     }
-    if (drw_dbggl() == DRW_dbg::Level::Debug) {
+    if (drw_dbggl() == DRW::DebugLevel::Debug) {
         for (auto it=remainingMap.begin(); it != remainingMap.end(); ++it){
-            DRW_DBG("\nnum.# "); DRW_DBG(i++); DRW_DBG(" Remaining object Handle, loc, type= "); DRW_DBG(it->first);
-            DRW_DBG(" "); DRW_DBG(it->second.loc); DRW_DBG(" "); DRW_DBG(it->second.type);
+            drw_dbg("\nnum.# "); drw_dbg(i++); drw_dbg(" Remaining object Handle, loc, type= "); drw_dbg(it->first);
+            drw_dbg(" "); drw_dbg(it->second.loc); drw_dbg(" "); drw_dbg(it->second.type);
         }
-        DRW_DBG("\n");
+        drw_dbg("\n");
     }
     return ret;
 }
@@ -1213,7 +1213,7 @@ bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
         dbuf->setPosition(obj.loc);
         //verify if position is ok:
         if (!dbuf->isGood()){
-            DRW_DBG(" Warning: readDwgObject, bad location\n");
+            drw_dbg(" Warning: readDwgObject, bad location\n");
             return false;
         }
         int size = dbuf->getModularShort();
@@ -1224,7 +1224,7 @@ bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
         dbuf->getBytes(tmpByteStr, size);
         //verify if getBytes is ok:
         if (!dbuf->isGood()){
-            DRW_DBG(" Warning: readDwgObject, bad size\n");
+            drw_dbg(" Warning: readDwgObject, bad size\n");
             delete[]tmpByteStr;
             return false;
         }
@@ -1244,7 +1244,7 @@ bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
             break;
         }
         if (!ret){
-            DRW_DBG("Warning: Object type "); DRW_DBG(oType);DRW_DBG("has failed, handle: "); DRW_DBG(obj.handle); DRW_DBG("\n");
+            drw_dbg("Warning: Object type "); drw_dbg(oType);drw_dbg("has failed, handle: "); drw_dbg(obj.handle); drw_dbg("\n");
         }
         delete[]tmpByteStr;
     return ret;
@@ -1255,33 +1255,33 @@ bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
 bool DRW_ObjControl::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
 int unkData=0;
     bool ret = DRW_TableEntry::parseDwg(version, buf, nullptr, bs);
-    DRW_DBG("\n***************************** parsing object control entry *********************************************\n");
+    drw_dbg("\n***************************** parsing object control entry *********************************************\n");
     if (!ret)
         return ret;
     //last parsed is: XDic Missing Flag 2004+
     int numEntries = buf->getBitLong();
-    DRW_DBG(" num entries: "); DRW_DBG(numEntries); DRW_DBG("\n");
-    DRW_DBG("Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
+    drw_dbg(" num entries: "); drw_dbg(numEntries); drw_dbg("\n");
+    drw_dbg("Remaining bytes: "); drw_dbg(buf->numRemainingBytes()); drw_dbg("\n");
 
 //    if (oType == 68 && version== DRW::AC1015){//V2000 dimstyle seems have one unknown byte hard handle counter??
     if (oType == 68 && version > DRW::AC1014){//dimstyle seems have one unknown byte hard handle counter??
         unkData = buf->getRawChar8();
-        DRW_DBG(" unknown v2000 byte: "); DRW_DBG( unkData); DRW_DBG("\n");
+        drw_dbg(" unknown v2000 byte: "); drw_dbg( unkData); drw_dbg("\n");
     }
     if (version > DRW::AC1018){//from v2007+ have a bit for strings follows (ObjControl do not have)
         int stringBit = buf->getBit();
-        DRW_DBG(" string bit for  v2007+: "); DRW_DBG( stringBit); DRW_DBG("\n");
+        drw_dbg(" string bit for  v2007+: "); drw_dbg( stringBit); drw_dbg("\n");
     }
 
     dwgHandle objectH = buf->getHandle();
-    DRW_DBG(" NULL Handle: "); DRW_DBGHL(objectH.code, objectH.size, objectH.ref); DRW_DBG("\n");
-    DRW_DBG("Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
+    drw_dbg(" NULL Handle: "); drw_dbghl(objectH.code, objectH.size, objectH.ref); drw_dbg("\n");
+    drw_dbg("Remaining bytes: "); drw_dbg(buf->numRemainingBytes()); drw_dbg("\n");
 
 //    if (oType == 56 && version== DRW::AC1015){//linetype in 2004 seems not have XDicObjH or NULL handle
     if (xDictFlag !=1){//linetype in 2004 seems not have XDicObjH or NULL handle
         dwgHandle XDicObjH = buf->getHandle();
-        DRW_DBG(" XDicObj control Handle: "); DRW_DBGHL(XDicObjH.code, XDicObjH.size, XDicObjH.ref); DRW_DBG("\n");
-        DRW_DBG("Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
+        drw_dbg(" XDicObj control Handle: "); drw_dbghl(XDicObjH.code, XDicObjH.size, XDicObjH.ref); drw_dbg("\n");
+        drw_dbg("Remaining bytes: "); drw_dbg(buf->numRemainingBytes()); drw_dbg("\n");
     }
 //add 2 for modelspace, paperspace blocks & bylayer, byblock linetypes
     numEntries = ((oType == 48) || (oType == 56)) ? (numEntries +2) : numEntries;
@@ -1290,14 +1290,14 @@ int unkData=0;
         objectH = buf->getOffsetHandle(handle);
         if (objectH.ref != 0) //in vports R14  I found some NULL handles
             handlesList.push_back (objectH.ref);
-        DRW_DBG(" objectH Handle: "); DRW_DBGHL(objectH.code, objectH.size, objectH.ref); DRW_DBG("\n");
-        DRW_DBG("Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
+        drw_dbg(" objectH Handle: "); drw_dbghl(objectH.code, objectH.size, objectH.ref); drw_dbg("\n");
+        drw_dbg("Remaining bytes: "); drw_dbg(buf->numRemainingBytes()); drw_dbg("\n");
     }
 
     for (int i =0; i< unkData; i++){
         objectH = buf->getOffsetHandle(handle);
-        DRW_DBG(" unknown Handle: "); DRW_DBGHL(objectH.code, objectH.size, objectH.ref); DRW_DBG("\n");
-        DRW_DBG("Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
+        drw_dbg(" unknown Handle: "); drw_dbghl(objectH.code, objectH.size, objectH.ref); drw_dbg("\n");
+        drw_dbg("Remaining bytes: "); drw_dbg(buf->numRemainingBytes()); drw_dbg("\n");
     }
     return buf->isGood();
 }

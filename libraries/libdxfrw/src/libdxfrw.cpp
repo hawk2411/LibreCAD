@@ -34,7 +34,7 @@
 };*/
 
 dxfRW::dxfRW(const char* name) :fileName(name){
-    drw_dbgsl(DRW_dbg::Level::None);
+    drw_dbgsl(DRW::DebugLevel::None);
 }
 dxfRW::~dxfRW(){
     for (auto &it: imageDef) { delete it; }
@@ -45,10 +45,10 @@ dxfRW::~dxfRW(){
 void dxfRW::setDebug(DRW::DebugLevel lvl){
     switch (lvl){
     case DRW::DebugLevel::Debug:
-        drw_dbgsl(DRW_dbg::Level::Debug);
+        drw_dbgsl(DRW::DebugLevel::Debug);
         break;
     case DRW::DebugLevel::None:
-        drw_dbgsl(DRW_dbg::Level::None);
+        drw_dbgsl(DRW::DebugLevel::None);
     }
 }
 
@@ -59,7 +59,7 @@ bool dxfRW::read(DRW_Interface *interface_, bool ext){
     if (nullptr == interface_) {
         return setError(DRW::BAD_UNKNOWN);
     }
-    DRW_DBG("dxfRW::read 1def\n");
+    drw_dbg("dxfRW::read 1def\n");
     filestr.open (fileName.c_str(), std::ios_base::in | std::ios::binary);
     if (!filestr.is_open()
         || !filestr.good()) {
@@ -74,13 +74,13 @@ bool dxfRW::read(DRW_Interface *interface_, bool ext){
     filestr.close();
     iface = interface_;
     std::unique_ptr<dxfReader> reader;
-    DRW_DBG("dxfRW::read 2\n");
+    drw_dbg("dxfRW::read 2\n");
     if (strcmp(line, line2) == 0) {
         filestr.open (fileName.c_str(), std::ios_base::in | std::ios::binary);
         //skip sentinel
         filestr.seekg (22, std::ios::beg);
         reader = std::unique_ptr<dxfReader>(new dxfReaderBinary(&filestr));
-        DRW_DBG("dxfRW::read binary file\n");
+        drw_dbg("dxfRW::read binary file\n");
     } else {
         filestr.open (fileName.c_str(), std::ios_base::in);
         reader = std::unique_ptr<dxfReader>(new dxfReaderAscii(&filestr));
@@ -104,7 +104,7 @@ bool dxfRW::write(DRW_Interface *interface_, DRW::Version ver, bool bin){
         //write sentinel
         filestr << "AutoCAD Binary DXF\r\n" << (char)26 << '\0';
         writer = std::unique_ptr<dxfWriter>(new dxfWriterBinary(&filestr));
-        DRW_DBG("dxfRW::read binary file\n");
+        drw_dbg("dxfRW::read binary file\n");
     } else {
         filestr.open (fileName.c_str(), std::ios_base::out | std::ios::trunc);
         writer = std::unique_ptr<dxfWriterAscii>(new dxfWriterAscii(&filestr));
@@ -1853,13 +1853,13 @@ bool dxfRW::writeExtData(const std::vector<DRW_Variant*> &ed, dxfWriter* writer)
 /********* Reader Process *********/
 
 bool dxfRW::processDxf(dxfReader *reader) {
-    DRW_DBG("dxfRW::processDxf() start processing dxf\n");
+    drw_dbg("dxfRW::processDxf() start processing dxf\n");
     int code {-1};
     bool inSection {false};
 
     reader->setIgnoreComments( false);
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG(" code\n");
+        drw_dbg(code); drw_dbg(" code\n");
         /* at this level we should only get:
          999 - Comment
          0 - SECTION or EOF
@@ -1878,7 +1878,7 @@ bool dxfRW::processDxf(dxfReader *reader) {
                 std::string sectionstr {reader->getString()};
 
                 if ("SECTION" == sectionstr) {
-                    DRW_DBG(sectionstr); DRW_DBG(" new section\n");
+                    drw_dbg(sectionstr); drw_dbg(" new section\n");
                     inSection = true;
                     continue;
                 }
@@ -1899,7 +1899,7 @@ bool dxfRW::processDxf(dxfReader *reader) {
                 bool processed {false};
                 std::string sectionname {reader->getString()};
 
-                DRW_DBG(sectionname); DRW_DBG(" process section\n");
+                drw_dbg(sectionname); drw_dbg(" process section\n");
                 if ("HEADER" == sectionname) {
                     processed = processHeader(reader);
                 }
@@ -1918,12 +1918,12 @@ bool dxfRW::processDxf(dxfReader *reader) {
                 else {
                     //TODO handle CLASSES
 
-                    DRW_DBG("section unknown or not supported\n");
+                    drw_dbg("section unknown or not supported\n");
                     continue;
                 }
 
                 if (!processed) {
-                    DRW_DBG("  failed\n");
+                    drw_dbg("  failed\n");
                     return setError(DRW::BAD_READ_SECTION);
                 }
 
@@ -1950,20 +1950,20 @@ bool dxfRW::processDxf(dxfReader *reader) {
 /********* Header Section *********/
 
 bool dxfRW::processHeader(dxfReader *reader) {
-    DRW_DBG("dxfRW::processHeader\n");
+    drw_dbg("dxfRW::processHeader\n");
     int code;
     std::string sectionstr;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG(" processHeader\n");
+        drw_dbg(code); drw_dbg(" processHeader\n");
         if (code == 0) {
             sectionstr = reader->getString();
-            DRW_DBG(sectionstr); DRW_DBG(" processHeader\n\n");
+            drw_dbg(sectionstr); drw_dbg(" processHeader\n\n");
             if (sectionstr == "ENDSEC") {
                 iface->addHeader(&header);
                 return true;  //found ENDSEC terminate
             }
 
-            DRW_DBG("unexpected 0 code in header!\n");
+            drw_dbg("unexpected 0 code in header!\n");
             return setError(DRW::BAD_READ_HEADER);
         }
 
@@ -1976,24 +1976,24 @@ bool dxfRW::processHeader(dxfReader *reader) {
 /********* Tables Section *********/
 
 bool dxfRW::processTables(dxfReader *reader) {
-    DRW_DBG("dxfRW::processTables\n");
+    drw_dbg("dxfRW::processTables\n");
     int code;
     std::string sectionstr;
     bool more = true;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         if (code == 0) {
             sectionstr = reader->getString();
-            DRW_DBG(sectionstr); DRW_DBG(" processHeader\n\n");
+            drw_dbg(sectionstr); drw_dbg(" processHeader\n\n");
             if (sectionstr == "TABLE") {
                 more = reader->readRec(&code);
-                DRW_DBG(code); DRW_DBG("\n");
+                drw_dbg(code); drw_dbg("\n");
                 if (!more) {
                     return setError(DRW::BAD_READ_TABLES); //wrong dxf file
                 }
                 if (code == 2) {
                     sectionstr = reader->getString();
-                    DRW_DBG(sectionstr); DRW_DBG(" processHeader\n\n");
+                    drw_dbg(sectionstr); drw_dbg(" processHeader\n\n");
                 //found section, process it
                     if (sectionstr == "LTYPE") {
                         processLType(reader);
@@ -2025,20 +2025,20 @@ bool dxfRW::processTables(dxfReader *reader) {
 }
 
 bool dxfRW::processLType(dxfReader *reader) {
-    DRW_DBG("dxfRW::processLType\n");
+    drw_dbg("dxfRW::processLType\n");
     int code;
     std::string sectionstr;
     bool reading = false;
     DRW_LType ltype;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         if (code == 0) {
             if (reading) {
                 ltype.update();
                 iface->addLType(ltype);
             }
             sectionstr = reader->getString();
-            DRW_DBG(sectionstr); DRW_DBG("\n");
+            drw_dbg(sectionstr); drw_dbg("\n");
             if (sectionstr == "LTYPE") {
                 reading = true;
                 ltype.reset();
@@ -2053,18 +2053,18 @@ bool dxfRW::processLType(dxfReader *reader) {
 }
 
 bool dxfRW::processLayer(dxfReader *reader) {
-    DRW_DBG("dxfRW::processLayer\n");
+    drw_dbg("dxfRW::processLayer\n");
     int code;
     std::string sectionstr;
     bool reading = false;
     DRW_Layer layer;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         if (code == 0) {
             if (reading)
                 iface->addLayer(layer);
             sectionstr = reader->getString();
-            DRW_DBG(sectionstr); DRW_DBG("\n");
+            drw_dbg(sectionstr); drw_dbg("\n");
             if (sectionstr == "LAYER") {
                 reading = true;
                 layer.reset();
@@ -2079,18 +2079,18 @@ bool dxfRW::processLayer(dxfReader *reader) {
 }
 
 bool dxfRW::processDimStyle(dxfReader *reader) {
-    DRW_DBG("dxfRW::processDimStyle");
+    drw_dbg("dxfRW::processDimStyle");
     int code;
     std::string sectionstr;
     bool reading = false;
     DRW_Dimstyle dimSty;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         if (code == 0) {
             if (reading)
                 iface->addDimStyle(dimSty);
             sectionstr = reader->getString();
-            DRW_DBG(sectionstr); DRW_DBG("\n");
+            drw_dbg(sectionstr); drw_dbg("\n");
             if (sectionstr == "DIMSTYLE") {
                 reading = true;
                 dimSty.reset();
@@ -2105,18 +2105,18 @@ bool dxfRW::processDimStyle(dxfReader *reader) {
 }
 
 bool dxfRW::processTextStyle(dxfReader *reader){
-    DRW_DBG("dxfRW::processTextStyle");
+    drw_dbg("dxfRW::processTextStyle");
     int code;
     std::string sectionstr;
     bool reading = false;
     DRW_Textstyle TxtSty;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         if (code == 0) {
             if (reading)
                 iface->addTextStyle(TxtSty);
             sectionstr = reader->getString();
-            DRW_DBG(sectionstr); DRW_DBG("\n");
+            drw_dbg(sectionstr); drw_dbg("\n");
             if (sectionstr == "STYLE") {
                 reading = true;
                 TxtSty.reset();
@@ -2131,18 +2131,18 @@ bool dxfRW::processTextStyle(dxfReader *reader){
 }
 
 bool dxfRW::processVports(dxfReader *reader){
-    DRW_DBG("dxfRW::processVports");
+    drw_dbg("dxfRW::processVports");
     int code;
     std::string sectionstr;
     bool reading = false;
     DRW_Vport vp;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         if (code == 0) {
             if (reading)
                 iface->addVport(vp);
             sectionstr = reader->getString();
-            DRW_DBG(sectionstr); DRW_DBG("\n");
+            drw_dbg(sectionstr); drw_dbg("\n");
             if (sectionstr == "VPORT") {
                 reading = true;
                 vp.reset();
@@ -2157,18 +2157,18 @@ bool dxfRW::processVports(dxfReader *reader){
 }
 
 bool dxfRW::processAppId(dxfReader *reader){
-    DRW_DBG("dxfRW::processAppId");
+    drw_dbg("dxfRW::processAppId");
     int code;
     std::string sectionstr;
     bool reading = false;
     DRW_AppId vp;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         if (code == 0) {
             if (reading)
                 iface->addAppId(vp);
             sectionstr = reader->getString();
-            DRW_DBG(sectionstr); DRW_DBG("\n");
+            drw_dbg(sectionstr); drw_dbg("\n");
             if (sectionstr == "APPID") {
                 reading = true;
                 vp.reset();
@@ -2185,14 +2185,14 @@ bool dxfRW::processAppId(dxfReader *reader){
 /********* Block Section *********/
 
 bool dxfRW::processBlocks(dxfReader *reader) {
-    DRW_DBG("dxfRW::processBlocks\n");
+    drw_dbg("dxfRW::processBlocks\n");
     int code;
     std::string sectionstr;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         if (code == 0) {
             sectionstr = reader->getString();
-            DRW_DBG(sectionstr); DRW_DBG("\n");
+            drw_dbg(sectionstr); drw_dbg("\n");
             if (sectionstr == "BLOCK") {
                 processBlock(reader);
             } else if (sectionstr == "ENDSEC") {
@@ -2205,15 +2205,15 @@ bool dxfRW::processBlocks(dxfReader *reader) {
 }
 
 bool dxfRW::processBlock(dxfReader *reader) {
-    DRW_DBG("dxfRW::processBlock");
+    drw_dbg("dxfRW::processBlock");
     int code;
     DRW_Block block;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addBlock(block);
             if (nextentity == "ENDBLK") {
                 iface->endBlock();
@@ -2237,7 +2237,7 @@ bool dxfRW::processBlock(dxfReader *reader) {
 /********* Entities Section *********/
 
 bool dxfRW::processEntities(bool isblock, dxfReader *reader) {
-    DRW_DBG("dxfRW::processEntities\n");
+    drw_dbg("dxfRW::processEntities\n");
     int code;
     if (!reader->readRec(&code)){
         return setError(DRW::BAD_READ_ENTITIES);
@@ -2312,15 +2312,15 @@ bool dxfRW::processEntities(bool isblock, dxfReader *reader) {
 }
 
 bool dxfRW::processEllipse(dxfReader *reader) {
-    DRW_DBG("dxfRW::processEllipse");
+    drw_dbg("dxfRW::processEllipse");
     int code;
     DRW_Ellipse ellipse;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             if (applyExt)
                 ellipse.applyExtrusion();
             iface->addEllipse(ellipse);
@@ -2336,15 +2336,15 @@ bool dxfRW::processEllipse(dxfReader *reader) {
 }
 
 bool dxfRW::processTrace(dxfReader *reader) {
-    DRW_DBG("dxfRW::processTrace");
+    drw_dbg("dxfRW::processTrace");
     int code;
     DRW_Trace trace;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             if (applyExt)
                 trace.applyExtrusion();
             iface->addTrace(trace);
@@ -2360,15 +2360,15 @@ bool dxfRW::processTrace(dxfReader *reader) {
 }
 
 bool dxfRW::processSolid(dxfReader *reader) {
-    DRW_DBG("dxfRW::processSolid");
+    drw_dbg("dxfRW::processSolid");
     int code;
     DRW_Solid solid;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             if (applyExt)
                 solid.applyExtrusion();
             iface->addSolid(solid);
@@ -2384,15 +2384,15 @@ bool dxfRW::processSolid(dxfReader *reader) {
 }
 
 bool dxfRW::process3dface(dxfReader *reader) {
-    DRW_DBG("dxfRW::process3dface");
+    drw_dbg("dxfRW::process3dface");
     int code;
     DRW_3Dface face;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->add3dFace(face);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2406,15 +2406,15 @@ bool dxfRW::process3dface(dxfReader *reader) {
 }
 
 bool dxfRW::processViewport(dxfReader *reader) {
-    DRW_DBG("dxfRW::processViewport");
+    drw_dbg("dxfRW::processViewport");
     int code;
     DRW_Viewport vp;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addViewport(vp);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2428,15 +2428,15 @@ bool dxfRW::processViewport(dxfReader *reader) {
 }
 
 bool dxfRW::processPoint(dxfReader *reader) {
-    DRW_DBG("dxfRW::processPoint\n");
+    drw_dbg("dxfRW::processPoint\n");
     int code;
     DRW_Point point;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addPoint(point);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2450,15 +2450,15 @@ bool dxfRW::processPoint(dxfReader *reader) {
 }
 
 bool dxfRW::processLine(dxfReader *reader) {
-    DRW_DBG("dxfRW::processLine\n");
+    drw_dbg("dxfRW::processLine\n");
     int code;
     DRW_Line line;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addLine(line);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2472,15 +2472,15 @@ bool dxfRW::processLine(dxfReader *reader) {
 }
 
 bool dxfRW::processRay(dxfReader *reader) {
-    DRW_DBG("dxfRW::processRay\n");
+    drw_dbg("dxfRW::processRay\n");
     int code;
     DRW_Ray line;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addRay(line);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2494,15 +2494,15 @@ bool dxfRW::processRay(dxfReader *reader) {
 }
 
 bool dxfRW::processXline(dxfReader *reader) {
-    DRW_DBG("dxfRW::processXline\n");
+    drw_dbg("dxfRW::processXline\n");
     int code;
     DRW_Xline line;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addXline(line);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2516,15 +2516,15 @@ bool dxfRW::processXline(dxfReader *reader) {
 }
 
 bool dxfRW::processCircle(dxfReader *reader) {
-    DRW_DBG("dxfRW::processPoint\n");
+    drw_dbg("dxfRW::processPoint\n");
     int code;
     DRW_Circle circle;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             if (applyExt)
                 circle.applyExtrusion();
             iface->addCircle(circle);
@@ -2540,15 +2540,15 @@ bool dxfRW::processCircle(dxfReader *reader) {
 }
 
 bool dxfRW::processArc(dxfReader *reader) {
-    DRW_DBG("dxfRW::processPoint\n");
+    drw_dbg("dxfRW::processPoint\n");
     int code;
     DRW_Arc arc;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             if (applyExt)
                 arc.applyExtrusion();
             iface->addArc(arc);
@@ -2564,15 +2564,15 @@ bool dxfRW::processArc(dxfReader *reader) {
 }
 
 bool dxfRW::processInsert(dxfReader *reader) {
-    DRW_DBG("dxfRW::processInsert");
+    drw_dbg("dxfRW::processInsert");
     int code;
     DRW_Insert insert;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addInsert(insert);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2586,15 +2586,15 @@ bool dxfRW::processInsert(dxfReader *reader) {
 }
 
 bool dxfRW::processLWPolyline(dxfReader *reader) {
-    DRW_DBG("dxfRW::processLWPolyline");
+    drw_dbg("dxfRW::processLWPolyline");
     int code;
     DRW_LWPolyline pl;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             if (applyExt)
                 pl.applyExtrusion();
             iface->addLWPolyline(pl);
@@ -2610,14 +2610,14 @@ bool dxfRW::processLWPolyline(dxfReader *reader) {
 }
 
 bool dxfRW::processPolyline(dxfReader *reader) {
-    DRW_DBG("dxfRW::processPolyline");
+    drw_dbg("dxfRW::processPolyline");
     int code;
     DRW_Polyline pl;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         if(0 == code) {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             if (nextentity != "VERTEX") {
                 iface->addPolyline(pl);
                 return true;  //found new entity or ENDSEC, terminate
@@ -2631,15 +2631,15 @@ bool dxfRW::processPolyline(dxfReader *reader) {
 }
 
 bool dxfRW::processVertex(DRW_Polyline *pl, dxfReader *reader) {
-    DRW_DBG("dxfRW::processVertex");
+    drw_dbg("dxfRW::processVertex");
     int code;
     auto v = std::make_shared<DRW_Vertex>();
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         if(0 == code)  {
             pl->appendVertex(v);
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             if (nextentity == "SEQEND") {
                 return true;  //found SEQEND no more vertex, terminate
             }
@@ -2654,15 +2654,15 @@ bool dxfRW::processVertex(DRW_Polyline *pl, dxfReader *reader) {
 }
 
 bool dxfRW::processText(dxfReader *reader) {
-    DRW_DBG("dxfRW::processText");
+    drw_dbg("dxfRW::processText");
     int code;
     DRW_Text txt;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addText(txt);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2676,15 +2676,15 @@ bool dxfRW::processText(dxfReader *reader) {
 }
 
 bool dxfRW::processMText(dxfReader *reader) {
-    DRW_DBG("dxfRW::processMText");
+    drw_dbg("dxfRW::processMText");
     int code;
     DRW_MText txt;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             txt.updateAngle();
             iface->addMText(txt);
             return true;  //found new entity or ENDSEC, terminate
@@ -2699,15 +2699,15 @@ bool dxfRW::processMText(dxfReader *reader) {
 }
 
 bool dxfRW::processHatch(dxfReader *reader) {
-    DRW_DBG("dxfRW::processHatch");
+    drw_dbg("dxfRW::processHatch");
     int code;
     DRW_Hatch hatch;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addHatch(&hatch);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2722,15 +2722,15 @@ bool dxfRW::processHatch(dxfReader *reader) {
 
 
 bool dxfRW::processSpline(dxfReader *reader) {
-    DRW_DBG("dxfRW::processSpline");
+    drw_dbg("dxfRW::processSpline");
     int code;
     DRW_Spline sp;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addSpline(&sp);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2745,15 +2745,15 @@ bool dxfRW::processSpline(dxfReader *reader) {
 
 
 bool dxfRW::processImage(dxfReader *reader) {
-    DRW_DBG("dxfRW::processImage");
+    drw_dbg("dxfRW::processImage");
     int code;
     DRW_Image img;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addImage(&img);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2768,15 +2768,15 @@ bool dxfRW::processImage(dxfReader *reader) {
 
 
 bool dxfRW::processDimension(dxfReader *reader) {
-    DRW_DBG("dxfRW::processDimension");
+    drw_dbg("dxfRW::processDimension");
     int code;
     DRW_Dimension dim;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             int type = dim.type & 0x0F;
             switch (type) {
             case 0: {
@@ -2820,15 +2820,15 @@ bool dxfRW::processDimension(dxfReader *reader) {
 }
 
 bool dxfRW::processLeader(dxfReader *reader) {
-    DRW_DBG("dxfRW::processLeader");
+    drw_dbg("dxfRW::processLeader");
     int code;
     DRW_Leader leader;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addLeader(&leader);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2845,7 +2845,7 @@ bool dxfRW::processLeader(dxfReader *reader) {
 /********* Objects Section *********/
 
 bool dxfRW::processObjects(dxfReader *reader) {
-    DRW_DBG("dxfRW::processObjects\n");
+    drw_dbg("dxfRW::processObjects\n");
     int code;
     if (!reader->readRec(&code)
             || 0 != code){
@@ -2882,15 +2882,15 @@ bool dxfRW::processObjects(dxfReader *reader) {
 }
 
 bool dxfRW::processImageDef(dxfReader *reader) {
-    DRW_DBG("dxfRW::processImageDef");
+    drw_dbg("dxfRW::processImageDef");
     int code;
     DRW_ImageDef img;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->linkImage(&img);
             return true;  //found new entity or ENDSEC, terminate
         }
@@ -2904,15 +2904,15 @@ bool dxfRW::processImageDef(dxfReader *reader) {
 }
 
 bool dxfRW::processPlotSettings(dxfReader* reader) {
-    DRW_DBG("dxfRW::processPlotSettings");
+    drw_dbg("dxfRW::processPlotSettings");
     int code;
     DRW_PlotSettings ps;
     while (reader->readRec(&code)) {
-        DRW_DBG(code); DRW_DBG("\n");
+        drw_dbg(code); drw_dbg("\n");
         switch (code) {
         case 0: {
             nextentity = reader->getString();
-            DRW_DBG(nextentity); DRW_DBG("\n");
+            drw_dbg(nextentity); drw_dbg("\n");
             iface->addPlotSettings(&ps);
             return true;  //found new entity or ENDSEC, terminate
         }

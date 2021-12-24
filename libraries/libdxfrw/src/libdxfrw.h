@@ -21,7 +21,7 @@
 #include "drw_objects.h"
 #include "drw_header.h"
 #include "drw_interface.h"
-
+#include "drw_dbg_base.h"
 
 class dxfReader;
 class dxfWriter;

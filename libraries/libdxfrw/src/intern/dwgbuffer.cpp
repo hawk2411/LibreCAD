@@ -752,17 +752,17 @@ duint32 dwgBuffer::getCmColor(DRW::Version v) {
     duint32 rgb = getBitLong();
     duint8 cb = getRawChar8();
     duint8 type = rgb >> 24;
-    DRW_DBG("\ntype COLOR: "); DRW_DBGH(type);
-    DRW_DBG("\nindex COLOR: "); DRW_DBGH(idx);
-    DRW_DBG("\nRGB COLOR: "); DRW_DBGH(rgb);
-    DRW_DBG("\nbyte COLOR: "); DRW_DBGH(cb);
+    drw_dbg("\ntype COLOR: "); drw_dbgh(type);
+    drw_dbg("\nindex COLOR: "); drw_dbgh(idx);
+    drw_dbg("\nRGB COLOR: "); drw_dbgh(rgb);
+    drw_dbg("\nbyte COLOR: "); drw_dbgh(cb);
     if (cb&1){
         std::string colorName = getVariableText(v, false);
-        DRW_DBG("\ncolorName: "); DRW_DBG(colorName);
+        drw_dbg("\ncolorName: "); drw_dbg(colorName);
     }
     if (cb&2){
         std::string bookName = getVariableText(v, false);
-        DRW_DBG("\nbookName: "); DRW_DBG(bookName);
+        drw_dbg("\nbookName: "); drw_dbg(bookName);
     }
     switch (type) {
     case 0xC0:
@@ -791,25 +791,25 @@ duint32 dwgBuffer::getEnColor(DRW::Version v) {
     duint32 rgb = 0;
     duint32 cb = 0;
     duint16 idx = getBitShort();
-    DRW_DBG("idx reads COLOR: "); DRW_DBGH(idx);
+    drw_dbg("idx reads COLOR: "); drw_dbgh(idx);
     duint16 flags = idx>>8;
     idx = idx & 0x1FF; //RLZ: warning this is correct?
-    DRW_DBG("\nflag COLOR: "); DRW_DBGH(flags);
-    DRW_DBG(", index COLOR: "); DRW_DBGH(idx);
+    drw_dbg("\nflag COLOR: "); drw_dbgh(flags);
+    drw_dbg(", index COLOR: "); drw_dbgh(idx);
 //    if (flags & 0x80) {
 //        rgb = getBitLong();
-//        DRW_DBG("\nRGB COLOR: "); DRW_DBGH(rgb);
+//        drw_dbg("\nRGB COLOR: "); drw_dbgh(rgb);
 //    }
     if (flags & 0x20) {
         cb = getBitLong();
-        DRW_DBG("\nTransparency COLOR: "); DRW_DBGH(cb);
+        drw_dbg("\nTransparency COLOR: "); drw_dbgh(cb);
     }
     if (flags & 0x40)
-        DRW_DBG("\nacdbColor COLOR are present");
+        drw_dbg("\nacdbColor COLOR are present");
     else {
         if (flags & 0x80) {
             rgb = getBitLong();
-            DRW_DBG("\nRGB COLOR: "); DRW_DBGH(rgb);
+            drw_dbg("\nRGB COLOR: "); drw_dbgh(rgb);
         }
     }
 

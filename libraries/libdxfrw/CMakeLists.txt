@@ -9,6 +9,7 @@ add_library(${DLL_NAME} STATIC
     src/libdxfrw.cpp 
     src/libdwgr.cpp
     src/drw_base.cpp
+    src/drw_dbg_base.h
     src/drw_header.cpp 
     src/drw_classes.cpp 
     src/drw_entities.cpp 

@@ -17,145 +17,112 @@
 
 DRW_dbg *DRW_dbg::instance{nullptr};
 
-/*********private clases*************/
-
-class print_debug : public DRW::DebugPrinter {
-public:
-    void printS(const std::string &s) override;
-    void printI(long long int i) override;
-    void printUI(long long unsigned int i) override;
-    void printD(double d) override;
-    void printH(long long int i) override;
-    void printB(int i) override;
-    void printHL(int c, int s, int h) override;
-    void printPT(double x, double y, double z) override;
-private:
-    std::ios_base::fmtflags flags{std::cerr.flags()};
-};
+void setCustomDebugPrinter(DRW::IDebugPrinter *printer)
+{
+    DRW_dbg::getInstance()->setCustomDebugPrinter(std::unique_ptr<DRW::IDebugPrinter>(printer));
+}
 
 /********* debug class *************/
-DRW_dbg *DRW_dbg::getInstance(){
-    if (!instance){
+DRW_dbg *DRW_dbg::getInstance() {
+    if (!instance) {
         instance = new DRW_dbg;
     }
     return instance;
 }
 
-DRW_dbg::DRW_dbg(){
-    debugPrinter = std::make_unique<print_debug>();
+
+DRW_dbg::DRW_dbg() {
+    defaultPrinter = std::make_unique<DRW::CErrPrinter>();
     currentPrinter = &silentDebug;
 }
 
-void DRW_dbg::setCustomDebugPrinter(std::unique_ptr<DRW::DebugPrinter> printer)
-{
-    debugPrinter = std::move( printer );
-    if (level == Level::Debug){
-        currentPrinter = debugPrinter.get();
+void DRW_dbg::setCustomDebugPrinter(std::unique_ptr<DRW::IDebugPrinter> printer) {
+    if (printer == nullptr) {
+        defaultPrinter = std::make_unique<DRW::CErrPrinter>();
+    } else {
+        defaultPrinter = std::move(printer);
+    }
+
+    if (level == DRW::DebugLevel::Debug) {
+        currentPrinter = defaultPrinter.get();
     }
 }
 
-void DRW_dbg::setLevel(Level lvl){
+void DRW_dbg::setLevel(DRW::DebugLevel lvl) {
     level = lvl;
-    switch (level){
-    case Level::Debug:
-        currentPrinter = debugPrinter.get();
-        break;
-    case Level::None:
-        currentPrinter = &silentDebug;
-        break;
+    switch (level) {
+        case DRW::DebugLevel::Debug:
+            currentPrinter = defaultPrinter.get();
+            break;
+        case DRW::DebugLevel::None:
+            currentPrinter = &silentDebug;
+            break;
     }
 }
 
-DRW_dbg::Level DRW_dbg::getLevel(){
+DRW::DebugLevel DRW_dbg::getLevel() const {
     return level;
 }
 
-void DRW_dbg::print(const std::string &s){
-    currentPrinter->printS(s);
+void DRW_dbg::print(const std::string &s) const {
+    currentPrinter->printString(s);
 }
 
-void DRW_dbg::print(signed char i){
-    currentPrinter->printI(i);
+void DRW_dbg::print(signed char i) const {
+    currentPrinter->printInt(i);
 }
 
-void DRW_dbg::print(unsigned char i){
-    currentPrinter->printUI(i);
+void DRW_dbg::print(unsigned char i) const {
+    currentPrinter->printUnsignedInt(i);
 }
 
-void DRW_dbg::print(int i){
-    currentPrinter->printI(i);
+void DRW_dbg::print(int i) const {
+    currentPrinter->printInt(i);
 }
 
-void DRW_dbg::print(unsigned int i){
-    currentPrinter->printUI(i);
+void DRW_dbg::print(unsigned int i) const {
+    currentPrinter->printUnsignedInt(i);
 }
 
-void DRW_dbg::print(long long int i){
-    currentPrinter->printI(i);
+void DRW_dbg::print(long long int i) const {
+    currentPrinter->printInt(i);
 }
 
-void DRW_dbg::print(long unsigned int i){
-    currentPrinter->printUI(i);
+void DRW_dbg::print(long unsigned int i) const {
+    currentPrinter->printUnsignedInt(i);
 }
 
-void DRW_dbg::print(long long unsigned int i){
-    currentPrinter->printUI(i);
+void DRW_dbg::print(long long unsigned int i) const {
+    currentPrinter->printUnsignedInt(i);
 }
 
-void DRW_dbg::print(double d){
-    currentPrinter->printD(d);
+void DRW_dbg::print(double d) const {
+    currentPrinter->printDouble(d);
 }
 
-void DRW_dbg::printH(long long int i){
-    currentPrinter->printH(i);
+void DRW_dbg::printH(long long int i) const {
+    currentPrinter->printHex(i);
 }
 
-void DRW_dbg::printB(int i){
-    currentPrinter->printB(i);
+void DRW_dbg::printB(int i) const {
+    currentPrinter->printBinary(i);
 }
-void DRW_dbg::printHL(int c, int s, int h){
+
+void DRW_dbg::printHL(int c, int s, int h) const {
     currentPrinter->printHL(c, s, h);
 }
 
-void DRW_dbg::printPT(double x, double y, double z){
-    currentPrinter->printPT(x, y, z);
+void DRW_dbg::printPT(double x, double y, double z) const {
+    currentPrinter->printPoint(x, y, z);
 }
 
-void print_debug::printS(const std::string &s){
-    std::cerr << s;
-}
-
-void print_debug::printI(long long int i){
-    std::cerr << i;
-}
-
-void print_debug::printUI(long long unsigned int i){
-    std::cerr << i;
-}
-
-void print_debug::printD(double d){
-    std::cerr << std::fixed << d;
-}
-
-void print_debug::printH(long long  i){
-    std::cerr << "0x" << std::setw(2) << std::setfill('0');
-    std::cerr << std::hex << i;
-    std::cerr.flags(flags);
-}
-
-void print_debug::printB(int i){
-    std::cerr << std::setw(8) << std::setfill('0');
-    std::cerr << std::setbase(2) << i;
-    std::cerr.flags(flags);
-}
-
-void print_debug::printHL(int c, int s, int h){
-    std::cerr << c << '.' << s << '.';
-    std::cerr << "0x" << std::setw(2) << std::setfill('0');
-    std::cerr << std::hex << h;
-    std::cerr.flags(flags);
-}
-
-void print_debug::printPT(double x, double y, double z){
-    std::cerr << std::fixed << "x: " << x << ", y: " << y << ", z: "<< z;
-}
+//template<typename T>
+//void DRW_dbg::print(T value) const {
+//    if( std::is_arithmetic<T>(value) ) {
+//        if(std::is_signed<T>(value))  {
+//            currentPrinter->printInt(value);
+//        } else {
+//            currentPrinter->printUnsignedInt(value);
+//        }
+//    }
+//}

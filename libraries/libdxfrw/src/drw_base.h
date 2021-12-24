@@ -22,6 +22,8 @@
 #include <cassert>
 #include <sstream>
 #include <algorithm>
+#include <iomanip>
+#include <iostream>
 
 //#define DRW_ASSERTS
 
@@ -76,7 +78,8 @@ namespace DRW {
 // reason for this particular APPLE implementation was a bug in GCC 4.2 from 2009.
 
     template<typename T>
-    std::string toHexStr(T digit) {
+    std::string toHexStr(T digit)
+    {
         static_assert(std::numeric_limits<T>::is_integer, "Require an integral type");
         std::ostringstream Convert;
         Convert << std::uppercase << std::hex << digit;
@@ -147,36 +150,6 @@ BAD_READ_OBJECTS,     /*!< error in objects read process. */
 BAD_READ_SECTION,     /*!< error in sections read process. */
 };
 
-enum class DebugLevel {
-    None,
-    Debug
-};
-
-/**
- * Interface for debug printers.
- *
- * The base class is silent and ignores all debugging.
- */
-class DebugPrinter {
-public:
-    virtual void printS(const std::string &s){(void)s;}
-    virtual void printI(long long int i){(void)i;}
-    virtual void printUI(long long unsigned int i){(void)i;}
-    virtual void printD(double d){(void)d;}
-    virtual void printH(long long int i){(void)i;}
-    virtual void printB(int i){(void)i;}
-    virtual void printHL(int c, int s, int h){(void)c;(void)s;(void)h;}
-    virtual void printPT(double x, double y, double z){(void)x;(void)y;(void)z;}
-    DebugPrinter()=default;
-    virtual ~DebugPrinter()=default;
-};
-
-/**
- * Sets a custom debug printer to use when outputting debug messages.
- *
- * Ownership of `printer` is transferred.
- */
-void setCustomDebugPrinter( DebugPrinter* printer );
 
 //! Special codes for colors
 enum ColorCodes {

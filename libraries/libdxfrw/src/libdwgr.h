@@ -16,7 +16,7 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
-//#include <deque>
+#include "drw_dbg_base.h"
 #include "drw_entities.h"
 #include "drw_objects.h"
 #include "drw_classes.h"

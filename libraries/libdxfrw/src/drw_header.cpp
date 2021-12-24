@@ -30,9 +30,9 @@ void DRW_Header::addComment(std::string c){
 
 void DRW_Header::parseCode(int code, dxfReader *reader){
     if (nullptr == curr && 9 != code) {
-        DRW_DBG("invalid header code: ");
-        DRW_DBG(code);
-        DRW_DBG("\n");
+        drw_dbg("invalid header code: ");
+        drw_dbg(code);
+        drw_dbg("\n");
         return;
     }
 
@@ -1667,9 +1667,9 @@ void DRW_Header::write(dxfWriter *writer, DRW::Version ver){
             writer->writeDouble(40, 0.0);
     }
 
-#ifdef DRW_DBG
+#ifdef drw_dbg
     for ( auto it=vars.begin() ; it != vars.end(); ++it ){
-        DRW_DBG((*it).first); DRW_DBG("\n");
+        drw_dbg((*it).first); drw_dbg("\n");
     }
 #endif
 }
@@ -1759,11 +1759,11 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     duint32 size = buf->getRawLong32();
     duint32 bitSize = 0;
     duint32 endBitPos = 160; //start bit: 16 sentinel + 4 size
-    DRW_DBG("\nbyte size of data: "); DRW_DBG(size);
+    drw_dbg("\nbyte size of data: "); drw_dbg(size);
     if (((version == DRW::AC1021 || version == DRW::AC1027 ) && maintenanceVersion > 3) || version >= DRW::AC1032 ) { //2010+
         duint32 hSize = buf->getRawLong32();
         endBitPos += 32; //start bit: + 4 height size
-        DRW_DBG("\n2010+ & MV> 3, height 32b: "); DRW_DBG(hSize);
+        drw_dbg("\n2010+ & MV> 3, height 32b: "); drw_dbg(hSize);
     }
 //RLZ TODO add $ACADVER var & $DWGCODEPAGE & $MEASUREMENT
 //RLZ TODO EN 2000 falta $CELWEIGHT, $ENDCAPS, $EXTNAMES $JOINSTYLE $LWDISPLAY $PSTYLEMODE $TDUCREATE  $TDUUPDATE $XEDIT
@@ -1773,7 +1773,7 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     //header is one object reads data and continue read strings ???
     if (version > DRW::AC1018) {//2007+
         bitSize = buf->getRawLong32();
-        DRW_DBG("\nsize in bits: "); DRW_DBG(bitSize);
+        drw_dbg("\nsize in bits: "); drw_dbg(bitSize);
         endBitPos += bitSize;
         hBbuf->setPosition(endBitPos >>3);
         hBbuf->setBitPos(endBitPos&7);
@@ -1781,26 +1781,26 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
 
     if (version > DRW::AC1024) {//2013+
         duint64 requiredVersions = buf->getBitLongLong();
-        DRW_DBG("\nREQUIREDVERSIONS var: "); DRW_DBG(requiredVersions);
+        drw_dbg("\nREQUIREDVERSIONS var: "); drw_dbg(requiredVersions);
     }
-    DRW_DBG("\nUnknown1: "); DRW_DBG(buf->getBitDouble());
-    DRW_DBG("\nUnknown2: "); DRW_DBG(buf->getBitDouble());
-    DRW_DBG("\nUnknown3: "); DRW_DBG(buf->getBitDouble());
-    DRW_DBG("\nUnknown4: "); DRW_DBG(buf->getBitDouble());
+    drw_dbg("\nUnknown1: "); drw_dbg(buf->getBitDouble());
+    drw_dbg("\nUnknown2: "); drw_dbg(buf->getBitDouble());
+    drw_dbg("\nUnknown3: "); drw_dbg(buf->getBitDouble());
+    drw_dbg("\nUnknown4: "); drw_dbg(buf->getBitDouble());
     if (version < DRW::AC1021) {//2007-
-        DRW_DBG("\nUnknown text1: "); DRW_DBG(buf->getCP8Text());
-        DRW_DBG("\nUnknown text2: "); DRW_DBG(buf->getCP8Text());
-        DRW_DBG("\nUnknown text3: "); DRW_DBG(buf->getCP8Text());
-        DRW_DBG("\nUnknown text4: "); DRW_DBG(buf->getCP8Text());
+        drw_dbg("\nUnknown text1: "); drw_dbg(buf->getCP8Text());
+        drw_dbg("\nUnknown text2: "); drw_dbg(buf->getCP8Text());
+        drw_dbg("\nUnknown text3: "); drw_dbg(buf->getCP8Text());
+        drw_dbg("\nUnknown text4: "); drw_dbg(buf->getCP8Text());
     }
-    DRW_DBG("\nUnknown long1 (24L): "); DRW_DBG(buf->getBitLong());
-    DRW_DBG("\nUnknown long2 (0L): "); DRW_DBG(buf->getBitLong());
+    drw_dbg("\nUnknown long1 (24L): "); drw_dbg(buf->getBitLong());
+    drw_dbg("\nUnknown long2 (0L): "); drw_dbg(buf->getBitLong());
     if (version < DRW::AC1015) {//pre 2000
-        DRW_DBG("\nUnknown short (0): "); DRW_DBG(buf->getBitShort());
+        drw_dbg("\nUnknown short (0): "); drw_dbg(buf->getBitShort());
     }
     if (version < DRW::AC1018) {//pre 2004
         dwgHandle hcv = hBbuf->getHandle();
-        DRW_DBG("\nhandle of current view: "); DRW_DBGHL(hcv.code, hcv.size, hcv.ref);
+        drw_dbg("\nhandle of current view: "); drw_dbghl(hcv.code, hcv.size, hcv.ref);
     }
     vars["DIMASO"]=new DRW_Variant(70, buf->getBit());
     vars["DIMSHO"]=new DRW_Variant(70, buf->getBit());
@@ -1818,7 +1818,7 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
         vars["BLIPMODE"]=new DRW_Variant(70, buf->getBit());
     }
     if (version > DRW::AC1015) {//2004+
-         DRW_DBG("\nUndocumented: "); DRW_DBG(buf->getBit());
+         drw_dbg("\nUndocumented: "); drw_dbg(buf->getBit());
     }
     vars["USRTIMER"]=new DRW_Variant(70, buf->getBit());
     vars["SKPOLY"]=new DRW_Variant(70, buf->getBit());
@@ -1862,9 +1862,9 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
         vars["PICKSTYLE"]=new DRW_Variant(70, buf->getBitShort());
     }
     if (version > DRW::AC1015) {//2004+
-         DRW_DBG("\nUnknown long 1: "); DRW_DBG(buf->getBitLong());
-         DRW_DBG("\nUnknown long 2: "); DRW_DBG(buf->getBitLong());
-         DRW_DBG("\nUnknown long 3: "); DRW_DBG(buf->getBitLong());
+         drw_dbg("\nUnknown long 1: "); drw_dbg(buf->getBitLong());
+         drw_dbg("\nUnknown long 2: "); drw_dbg(buf->getBitLong());
+         drw_dbg("\nUnknown long 3: "); drw_dbg(buf->getBitLong());
     }
     vars["USERI1"]=new DRW_Variant(70, buf->getBitShort());
     vars["USERI2"]=new DRW_Variant(70, buf->getBitShort());
@@ -1925,9 +1925,9 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
 //    vars["TDUPDATE"]=new DRW_Variant(40, buf->getBitLong());//RLZ: TODO convert to day.msec
 //    vars["TDUPDATE"]=new DRW_Variant(40, buf->getBitLong());
     if (version > DRW::AC1015) {//2004+
-         DRW_DBG("\nUnknown long 4: "); DRW_DBG(buf->getBitLong());
-         DRW_DBG("\nUnknown long 5: "); DRW_DBG(buf->getBitLong());
-         DRW_DBG("\nUnknown long 6: "); DRW_DBG(buf->getBitLong());
+         drw_dbg("\nUnknown long 4: "); drw_dbg(buf->getBitLong());
+         drw_dbg("\nUnknown long 5: "); drw_dbg(buf->getBitLong());
+         drw_dbg("\nUnknown long 6: "); drw_dbg(buf->getBitLong());
     }
     day = buf->getBitLong();
     msec = buf->getBitLong();
@@ -1945,21 +1945,21 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
 //    vars["TDUSRTIMER"]=new DRW_Variant(40, buf->getBitLong());//RLZ: TODO convert to day.msec
     vars["CECOLOR"]=new DRW_Variant(62, buf->getCmColor(version));//RLZ: TODO read CMC or EMC color
     dwgHandle HANDSEED = buf->getHandle();//always present in data stream
-    DRW_DBG("\nHANDSEED: "); DRW_DBGHL(HANDSEED.code, HANDSEED.size, HANDSEED.ref);
+    drw_dbg("\nHANDSEED: "); drw_dbghl(HANDSEED.code, HANDSEED.size, HANDSEED.ref);
     dwgHandle CLAYER = hBbuf->getHandle();
-    DRW_DBG("\nCLAYER: "); DRW_DBGHL(CLAYER.code, CLAYER.size, CLAYER.ref);
+    drw_dbg("\nCLAYER: "); drw_dbghl(CLAYER.code, CLAYER.size, CLAYER.ref);
     dwgHandle TEXTSTYLE = hBbuf->getHandle();
-    DRW_DBG("\nTEXTSTYLE: "); DRW_DBGHL(TEXTSTYLE.code, TEXTSTYLE.size, TEXTSTYLE.ref);
+    drw_dbg("\nTEXTSTYLE: "); drw_dbghl(TEXTSTYLE.code, TEXTSTYLE.size, TEXTSTYLE.ref);
     dwgHandle CELTYPE = hBbuf->getHandle();
-    DRW_DBG("\nCELTYPE: "); DRW_DBGHL(CELTYPE.code, CELTYPE.size, CELTYPE.ref);
+    drw_dbg("\nCELTYPE: "); drw_dbghl(CELTYPE.code, CELTYPE.size, CELTYPE.ref);
     if (version > DRW::AC1018) {//2007+
         dwgHandle CMATERIAL = hBbuf->getHandle();
-        DRW_DBG("\nCMATERIAL: "); DRW_DBGHL(CMATERIAL.code, CMATERIAL.size, CMATERIAL.ref);
+        drw_dbg("\nCMATERIAL: "); drw_dbghl(CMATERIAL.code, CMATERIAL.size, CMATERIAL.ref);
     }
     dwgHandle DIMSTYLE = hBbuf->getHandle();
-    DRW_DBG("\nDIMSTYLE: "); DRW_DBGHL(DIMSTYLE.code, DIMSTYLE.size, DIMSTYLE.ref);
+    drw_dbg("\nDIMSTYLE: "); drw_dbghl(DIMSTYLE.code, DIMSTYLE.size, DIMSTYLE.ref);
     dwgHandle CMLSTYLE = hBbuf->getHandle();
-    DRW_DBG("\nCMLSTYLE: "); DRW_DBGHL(CMLSTYLE.code, CMLSTYLE.size, CMLSTYLE.ref);
+    drw_dbg("\nCMLSTYLE: "); drw_dbghl(CMLSTYLE.code, CMLSTYLE.size, CMLSTYLE.ref);
     if (version > DRW::AC1014) {//2000+
         vars["PSVPSCALE"]=new DRW_Variant(40, buf->getBitDouble());
     }
@@ -1973,13 +1973,13 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     vars["PUCSXDIR"]=new DRW_Variant(10, buf->get3BitDouble());
     vars["PUCSYDIR"]=new DRW_Variant(10, buf->get3BitDouble());
     dwgHandle PUCSNAME = hBbuf->getHandle();
-    DRW_DBG("\nPUCSNAME: "); DRW_DBGHL(PUCSNAME.code, PUCSNAME.size, PUCSNAME.ref);
+    drw_dbg("\nPUCSNAME: "); drw_dbghl(PUCSNAME.code, PUCSNAME.size, PUCSNAME.ref);
     if (version > DRW::AC1014) {//2000+
         dwgHandle PUCSORTHOREF = hBbuf->getHandle();
-        DRW_DBG("\nPUCSORTHOREF: "); DRW_DBGHL(PUCSORTHOREF.code, PUCSORTHOREF.size, PUCSORTHOREF.ref);
+        drw_dbg("\nPUCSORTHOREF: "); drw_dbghl(PUCSORTHOREF.code, PUCSORTHOREF.size, PUCSORTHOREF.ref);
         vars["PUCSORTHOVIEW"]=new DRW_Variant(70, buf->getBitShort());
         dwgHandle PUCSBASE = hBbuf->getHandle();
-        DRW_DBG("\nPUCSBASE: "); DRW_DBGHL(PUCSBASE.code, PUCSBASE.size, PUCSBASE.ref);
+        drw_dbg("\nPUCSBASE: "); drw_dbghl(PUCSBASE.code, PUCSBASE.size, PUCSBASE.ref);
         vars["PUCSORGTOP"]=new DRW_Variant(10, buf->get3BitDouble());
         vars["PUCSORGBOTTOM"]=new DRW_Variant(10, buf->get3BitDouble());
         vars["PUCSORGLEFT"]=new DRW_Variant(10, buf->get3BitDouble());
@@ -1997,13 +1997,13 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     vars["UCSXDIR"]=new DRW_Variant(10, buf->get3BitDouble());
     vars["UCSYDIR"]=new DRW_Variant(10, buf->get3BitDouble());
     dwgHandle UCSNAME = hBbuf->getHandle();
-    DRW_DBG("\nUCSNAME: "); DRW_DBGHL(UCSNAME.code, UCSNAME.size, UCSNAME.ref);
+    drw_dbg("\nUCSNAME: "); drw_dbghl(UCSNAME.code, UCSNAME.size, UCSNAME.ref);
     if (version > DRW::AC1014) {//2000+
         dwgHandle UCSORTHOREF = hBbuf->getHandle();
-        DRW_DBG("\nUCSORTHOREF: "); DRW_DBGHL(UCSORTHOREF.code, UCSORTHOREF.size, UCSORTHOREF.ref);
+        drw_dbg("\nUCSORTHOREF: "); drw_dbghl(UCSORTHOREF.code, UCSORTHOREF.size, UCSORTHOREF.ref);
         vars["UCSORTHOVIEW"]=new DRW_Variant(70, buf->getBitShort());
         dwgHandle UCSBASE = hBbuf->getHandle();
-        DRW_DBG("\nUCSBASE: "); DRW_DBGHL(UCSBASE.code, UCSBASE.size, UCSBASE.ref);
+        drw_dbg("\nUCSBASE: "); drw_dbghl(UCSBASE.code, UCSBASE.size, UCSBASE.ref);
         vars["UCSORGTOP"]=new DRW_Variant(10, buf->get3BitDouble());
         vars["UCSORGBOTTOM"]=new DRW_Variant(10, buf->get3BitDouble());
         vars["UCSORGLEFT"]=new DRW_Variant(10, buf->get3BitDouble());
@@ -2046,7 +2046,7 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
         vars["DIMALTU"]=new DRW_Variant(70, buf->getBitShort());
         vars["DIMALTTD"]=new DRW_Variant(70, buf->getBitShort());
         dwgHandle DIMTXSTY = hBbuf->getHandle();
-        DRW_DBG("\nDIMTXSTY: "); DRW_DBGHL(DIMTXSTY.code, DIMTXSTY.size, DIMTXSTY.ref);
+        drw_dbg("\nDIMTXSTY: "); drw_dbghl(DIMTXSTY.code, DIMTXSTY.size, DIMTXSTY.ref);
     }
     vars["DIMSCALE"]=new DRW_Variant(40, buf->getBitDouble());
     vars["DIMASZ"]=new DRW_Variant(40, buf->getBitDouble());
@@ -2135,66 +2135,66 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     }
     if (version > DRW::AC1014) {//2000+
         dwgHandle DIMTXSTY = hBbuf->getHandle();
-        DRW_DBG("\nDIMTXSTY: "); DRW_DBGHL(DIMTXSTY.code, DIMTXSTY.size, DIMTXSTY.ref);
+        drw_dbg("\nDIMTXSTY: "); drw_dbghl(DIMTXSTY.code, DIMTXSTY.size, DIMTXSTY.ref);
         dwgHandle DIMLDRBLK = hBbuf->getHandle();
-        DRW_DBG("\nDIMLDRBLK: "); DRW_DBGHL(DIMLDRBLK.code, DIMLDRBLK.size, DIMLDRBLK.ref);
+        drw_dbg("\nDIMLDRBLK: "); drw_dbghl(DIMLDRBLK.code, DIMLDRBLK.size, DIMLDRBLK.ref);
         dwgHandle DIMBLK = hBbuf->getHandle();
-        DRW_DBG("\nDIMBLK: "); DRW_DBGHL(DIMBLK.code, DIMBLK.size, DIMBLK.ref);
+        drw_dbg("\nDIMBLK: "); drw_dbghl(DIMBLK.code, DIMBLK.size, DIMBLK.ref);
         dwgHandle DIMBLK1 = hBbuf->getHandle();
-        DRW_DBG("\nDIMBLK1: "); DRW_DBGHL(DIMBLK1.code, DIMBLK1.size, DIMBLK1.ref);
+        drw_dbg("\nDIMBLK1: "); drw_dbghl(DIMBLK1.code, DIMBLK1.size, DIMBLK1.ref);
         dwgHandle DIMBLK2 = hBbuf->getHandle();
-        DRW_DBG("\nDIMBLK2: "); DRW_DBGHL(DIMBLK2.code, DIMBLK2.size, DIMBLK2.ref);
+        drw_dbg("\nDIMBLK2: "); drw_dbghl(DIMBLK2.code, DIMBLK2.size, DIMBLK2.ref);
     }
     if (version > DRW::AC1018) {//2007+
         dwgHandle DIMLTYPE = hBbuf->getHandle();
-        DRW_DBG("\nDIMLTYPE: "); DRW_DBGHL(DIMLTYPE.code, DIMLTYPE.size, DIMLTYPE.ref);
+        drw_dbg("\nDIMLTYPE: "); drw_dbghl(DIMLTYPE.code, DIMLTYPE.size, DIMLTYPE.ref);
         dwgHandle DIMLTEX1 = hBbuf->getHandle();
-        DRW_DBG("\nDIMLTEX1: "); DRW_DBGHL(DIMLTEX1.code, DIMLTEX1.size, DIMLTEX1.ref);
+        drw_dbg("\nDIMLTEX1: "); drw_dbghl(DIMLTEX1.code, DIMLTEX1.size, DIMLTEX1.ref);
         dwgHandle DIMLTEX2 = hBbuf->getHandle();
-        DRW_DBG("\nDIMLTEX2: "); DRW_DBGHL(DIMLTEX2.code, DIMLTEX2.size, DIMLTEX2.ref);
+        drw_dbg("\nDIMLTEX2: "); drw_dbghl(DIMLTEX2.code, DIMLTEX2.size, DIMLTEX2.ref);
     }
     if (version > DRW::AC1014) {//2000+
         vars["DIMLWD"]=new DRW_Variant(70, buf->getBitShort());
         vars["DIMLWE"]=new DRW_Variant(70, buf->getBitShort());
     }
     dwgHandle CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nBLOCK CONTROL: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nBLOCK CONTROL: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     blockCtrl = CONTROL.ref;
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nLAYER CONTROL: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nLAYER CONTROL: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     layerCtrl = CONTROL.ref;
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nSTYLE CONTROL: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nSTYLE CONTROL: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     styleCtrl = CONTROL.ref;
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nLINETYPE CONTROL: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nLINETYPE CONTROL: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     linetypeCtrl = CONTROL.ref;
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nVIEW CONTROL: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nVIEW CONTROL: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     viewCtrl = CONTROL.ref;
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nUCS CONTROL: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nUCS CONTROL: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     ucsCtrl = CONTROL.ref;
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nVPORT CONTROL: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nVPORT CONTROL: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     vportCtrl = CONTROL.ref;
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nAPPID CONTROL: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nAPPID CONTROL: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     appidCtrl = CONTROL.ref;
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nDIMSTYLE CONTROL: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nDIMSTYLE CONTROL: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     dimstyleCtrl = CONTROL.ref;
     if (version < DRW::AC1018) {//r2000-
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nVIEWPORT ENTITY HEADER CONTROL: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nVIEWPORT ENTITY HEADER CONTROL: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
         vpEntHeaderCtrl = CONTROL.ref; //RLZ: only in R13-R15 ????
     }
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nDICT ACAD_GROUP: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nDICT ACAD_GROUP: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nDICT ACAD_MLINESTYLE: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nDICT ACAD_MLINESTYLE: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nDICT NAMED OBJS: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nDICT NAMED OBJS: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
 
     if (version > DRW::AC1014) {//2000+
         vars["TSTACKALIGN"]=new DRW_Variant(70, buf->getBitShort());
@@ -2204,34 +2204,35 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
             vars["STYLESHEET"]=new DRW_Variant(1, buf->getCP8Text());
         }
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nDICT LAYOUTS: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nDICT LAYOUTS: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nDICT PLOTSETTINGS: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nDICT PLOTSETTINGS: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nDICT PLOTSTYLES: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nDICT PLOTSTYLES: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     }
     if (version > DRW::AC1015) {//2004+
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nDICT MATERIALS: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nDICT MATERIALS: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nDICT COLORS: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nDICT COLORS: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     }
     if (version > DRW::AC1018) {//2007+
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nDICT VISUALSTYLE: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nDICT VISUALSTYLE: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     }
     if (version > DRW::AC1024) {//2013+
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nUNKNOWN HANDLE: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nUNKNOWN HANDLE: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     }
     if (version > DRW::AC1014) {//2000+
-        DRW_DBG("\nFlags: "); DRW_DBGH(buf->getBitLong());//RLZ TODO change to 8 vars
+        drw_dbg("\nFlags: "); 
+        drw_dbgh(buf->getBitLong());//RLZ TODO change to 8 vars
         vars["INSUNITS"]=new DRW_Variant(70, buf->getBitShort());
         duint16 cepsntype = buf->getBitShort();
         vars["CEPSNTYPE"]=new DRW_Variant(70, cepsntype);
         if (cepsntype == 3){
             CONTROL = hBbuf->getHandle();
-            DRW_DBG("\nCPSNID HANDLE: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+            drw_dbg("\nCPSNID HANDLE: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
         }
         if (version < DRW::AC1021) {//2004-
             vars["FINGERPRINTGUID"]=new DRW_Variant(1, buf->getCP8Text());
@@ -2254,20 +2255,20 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
         }
     }
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nBLOCK PAPER_SPACE: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nBLOCK PAPER_SPACE: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nBLOCK MODEL_SPACE: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nBLOCK MODEL_SPACE: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nLTYPE BYLAYER: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nLTYPE BYLAYER: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nLTYPE BYBLOCK: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nLTYPE BYBLOCK: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     CONTROL = hBbuf->getHandle();
-    DRW_DBG("\nLTYPE CONTINUOUS: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+    drw_dbg("\nLTYPE CONTINUOUS: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
     if (version > DRW::AC1018) {//2007+
         vars["CAMERADISPLAY"]=new DRW_Variant(70, buf->getBit());
-        DRW_DBG("\nUnknown 2007+ long1: "); DRW_DBG(buf->getBitLong());
-        DRW_DBG("\nUnknown 2007+ long2: "); DRW_DBG(buf->getBitLong());
-        DRW_DBG("\nUnknown 2007+ double2: "); DRW_DBG(buf->getBitDouble());
+        drw_dbg("\nUnknown 2007+ long1: "); drw_dbg(buf->getBitLong());
+        drw_dbg("\nUnknown 2007+ long2: "); drw_dbg(buf->getBitLong());
+        drw_dbg("\nUnknown 2007+ double2: "); drw_dbg(buf->getBitDouble());
         vars["STEPSPERSEC"]=new DRW_Variant(40, buf->getBitDouble());
         vars["STEPSIZE"]=new DRW_Variant(40, buf->getBitDouble());
         vars["3DDWFPREC"]=new DRW_Variant(40, buf->getBitDouble());
@@ -2291,26 +2292,26 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
         vars["TILEMODELIGHTSYNCH"]=new DRW_Variant(70, buf->getRawChar8());
         vars["DWFFRAME"]=new DRW_Variant(70, buf->getRawChar8());
         vars["DGNFRAME"]=new DRW_Variant(70, buf->getRawChar8());
-        DRW_DBG("\nUnknown 2007+ BIT: "); DRW_DBG(buf->getBit());
+        drw_dbg("\nUnknown 2007+ BIT: "); drw_dbg(buf->getBit());
         vars["INTERFERECOLOR"]=new DRW_Variant(70, buf->getCmColor(version));
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nINTERFEREOBJVS: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nINTERFEREOBJVS: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nINTERFEREVPVS: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nINTERFEREVPVS: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
         CONTROL = hBbuf->getHandle();
-        DRW_DBG("\nDRAGVS: "); DRW_DBGHL(CONTROL.code, CONTROL.size, CONTROL.ref);
+        drw_dbg("\nDRAGVS: "); drw_dbghl(CONTROL.code, CONTROL.size, CONTROL.ref);
         vars["CSHADOW"]=new DRW_Variant(70, buf->getRawChar8());
-        DRW_DBG("\nUnknown 2007+ double2: "); DRW_DBG(buf->getBitDouble());
+        drw_dbg("\nUnknown 2007+ double2: "); drw_dbg(buf->getBitDouble());
     }
     if (version > DRW::AC1012) {//R14+
-        DRW_DBG("\nUnknown R14+ short1: "); DRW_DBG(buf->getBitShort());
-        DRW_DBG("\nUnknown R14+ short2: "); DRW_DBG(buf->getBitShort());
-        DRW_DBG("\nUnknown R14+ short3: "); DRW_DBG(buf->getBitShort());
-        DRW_DBG("\nUnknown R14+ short4: "); DRW_DBG(buf->getBitShort());
+        drw_dbg("\nUnknown R14+ short1: "); drw_dbg(buf->getBitShort());
+        drw_dbg("\nUnknown R14+ short2: "); drw_dbg(buf->getBitShort());
+        drw_dbg("\nUnknown R14+ short3: "); drw_dbg(buf->getBitShort());
+        drw_dbg("\nUnknown R14+ short4: "); drw_dbg(buf->getBitShort());
     }
 
-    DRW_DBG("\nbuf position: "); DRW_DBG(buf->getPosition());
-    DRW_DBG("  buf bit position: "); DRW_DBG(buf->getBitPos());
+    drw_dbg("\nbuf position: "); drw_dbg(buf->getPosition());
+    drw_dbg("  buf bit position: "); drw_dbg(buf->getBitPos());
 
 
     /**** RLZ: disabled, pending to read all data ***/
@@ -2336,13 +2337,13 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
             buf->setPosition(strStartPos >> 3);
             buf->setBitPos(strStartPos & 7);
 
-            DRW_DBG("\nstring buf position: "); DRW_DBG(buf->getPosition());
-            DRW_DBG("\nstring buf bit position: "); DRW_DBG(buf->getBitPos());
+            drw_dbg("\nstring buf position: "); drw_dbg(buf->getPosition());
+            drw_dbg("\nstring buf bit position: "); drw_dbg(buf->getBitPos());
         }
-        DRW_DBG("\nUnknown text1: "); DRW_DBG(buf->getUCSText(false));
-        DRW_DBG("\nUnknown text2: "); DRW_DBG(buf->getUCSText(false));
-        DRW_DBG("\nUnknown text3: "); DRW_DBG(buf->getUCSText(false));
-        DRW_DBG("\nUnknown text4: "); DRW_DBG(buf->getUCSText(false));
+        drw_dbg("\nUnknown text1: "); drw_dbg(buf->getUCSText(false));
+        drw_dbg("\nUnknown text2: "); drw_dbg(buf->getUCSText(false));
+        drw_dbg("\nUnknown text3: "); drw_dbg(buf->getUCSText(false));
+        drw_dbg("\nUnknown text4: "); drw_dbg(buf->getUCSText(false));
         vars["MENU"]=new DRW_Variant(1, buf->getUCSText(false));
         vars["DIMPOST"]=new DRW_Variant(1, buf->getUCSText(false));
         vars["DIMAPOST"]=new DRW_Variant(1, buf->getUCSText(false));
@@ -2353,39 +2354,39 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
         vars["HYPERLINKBASE"]=new DRW_Variant(1, buf->getUCSText(false));
         vars["STYLESHEET"]=new DRW_Variant(1, buf->getUCSText(false));
         vars["FINGERPRINTGUID"]=new DRW_Variant(1, buf->getUCSText(false));
-        DRW_DBG("\nstring buf position: "); DRW_DBG(buf->getPosition());
-        DRW_DBG("  string buf bit position: "); DRW_DBG(buf->getBitPos());
+        drw_dbg("\nstring buf position: "); drw_dbg(buf->getPosition());
+        drw_dbg("  string buf bit position: "); drw_dbg(buf->getBitPos());
         vars["VERSIONGUID"]=new DRW_Variant(1, buf->getUCSText(false));
-        DRW_DBG("\nstring buf position: "); DRW_DBG(buf->getPosition());
-        DRW_DBG("  string buf bit position: "); DRW_DBG(buf->getBitPos());
+        drw_dbg("\nstring buf position: "); drw_dbg(buf->getPosition());
+        drw_dbg("  string buf bit position: "); drw_dbg(buf->getBitPos());
         vars["PROJECTNAME"]=new DRW_Variant(1, buf->getUCSText(false));
     }
 /***    ****/
-    DRW_DBG("\nstring buf position: "); DRW_DBG(buf->getPosition());
-    DRW_DBG("  string buf bit position: "); DRW_DBG(buf->getBitPos());
+    drw_dbg("\nstring buf position: "); drw_dbg(buf->getPosition());
+    drw_dbg("  string buf bit position: "); drw_dbg(buf->getBitPos());
 
-    if (drw_dbggl() == DRW_dbg::Level::Debug){
+    if (drw_dbggl() == DRW::DebugLevel::Debug){
         for (auto it=vars.begin(); it!=vars.end(); ++it){
-            DRW_DBG("\n"); DRW_DBG(it->first); DRW_DBG(": ");
+            drw_dbg("\n"); drw_dbg(it->first); drw_dbg(": ");
             switch (it->second->type()){
             case DRW_Variant::INTEGER:
-                DRW_DBG(it->second->content.i);
+                drw_dbg(it->second->content.i);
                 break;
             case DRW_Variant::DOUBLE:
-                DRW_DBG(it->second->content.d);
+                drw_dbg(it->second->content.d);
                 break;
             case DRW_Variant::STRING:
-                DRW_DBG(it->second->content.s->c_str());
+                drw_dbg(it->second->content.s->c_str());
                 break;
             case DRW_Variant::COORD:
-                 DRW_DBG("x= "); DRW_DBG(it->second->content.v->x);
-                 DRW_DBG(", y= "); DRW_DBG(it->second->content.v->y);
-                 DRW_DBG(", z= "); DRW_DBG(it->second->content.v->z);
+                 drw_dbg("x= "); drw_dbg(it->second->content.v->x);
+                 drw_dbg(", y= "); drw_dbg(it->second->content.v->y);
+                 drw_dbg(", z= "); drw_dbg(it->second->content.v->z);
                 break;
             default:
                 break;
             }
-             DRW_DBG(" code: ");DRW_DBG(it->second->code());
+             drw_dbg(" code: ");drw_dbg(it->second->code());
         }
     }
 
@@ -2393,12 +2394,12 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     if (((version == DRW::AC1021 || version == DRW::AC1027 ) && maintenanceVersion > 3) || version >= DRW::AC1032 ) { //2010+
         buf->getRawLong32();//advance 4 bytes (hisize)
     }
-    DRW_DBG("\nsetting position to: "); DRW_DBG(buf->getPosition());
-    DRW_DBG("\nHeader CRC: "); DRW_DBGH(buf->getRawShort16());
-    DRW_DBG("\nbuf position: "); DRW_DBG(buf->getPosition());
-    DRW_DBG("\ndwg header end sentinel= ");
+    drw_dbg("\nsetting position to: "); drw_dbg(buf->getPosition());
+    drw_dbg("\nHeader CRC: "); drw_dbgh(buf->getRawShort16());
+    drw_dbg("\nbuf position: "); drw_dbg(buf->getPosition());
+    drw_dbg("\ndwg header end sentinel= ");
     for (int i=0; i<16;i++) {
-        DRW_DBGH(buf->getRawChar8()); DRW_DBG(" ");
+        drw_dbgh(buf->getRawChar8()); drw_dbg(" ");
     }
 
     //temporary code to show header end sentinel
@@ -2406,45 +2407,45 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     if (version < DRW::AC1018) {//pre 2004
         sz= buf->size()-16;
         buf->setPosition(sz);
-        DRW_DBG("\nsetting position to: "); DRW_DBG(buf->getPosition());
-        DRW_DBG("\ndwg header end sentinel= ");
+        drw_dbg("\nsetting position to: "); drw_dbg(buf->getPosition());
+        drw_dbg("\ndwg header end sentinel= ");
         for (int i=0; i<16;i++) {
-            DRW_DBGH(buf->getRawChar8()); DRW_DBG(" ");
+            drw_dbgh(buf->getRawChar8()); drw_dbg(" ");
         }
     } else if (version == DRW::AC1018) {//2004
 //        sz= buf->size()-132;
 //        buf->setPosition(sz);
         buf->moveBitPos(-128);
-        DRW_DBG("\nsetting position to: "); DRW_DBG(buf->getPosition());
-        DRW_DBG("\ndwg header end sentinel= ");
+        drw_dbg("\nsetting position to: "); drw_dbg(buf->getPosition());
+        drw_dbg("\ndwg header end sentinel= ");
         for (int i=0; i<16;i++) {
-            DRW_DBGH(buf->getRawChar8()); DRW_DBG(" ");
+            drw_dbgh(buf->getRawChar8()); drw_dbg(" ");
         }
     } else if (version == DRW::AC1021) {//2007
         sz= buf->size()-16;
         buf->setPosition(sz);
-        DRW_DBG("\nsetting position to: "); DRW_DBG(buf->getPosition());
-        DRW_DBG("\ndwg header end sentinel= ");
+        drw_dbg("\nsetting position to: "); drw_dbg(buf->getPosition());
+        drw_dbg("\ndwg header end sentinel= ");
         for (int i=0; i<16;i++) {
-            DRW_DBGH(buf->getRawChar8()); DRW_DBG(" ");
+            drw_dbgh(buf->getRawChar8()); drw_dbg(" ");
         }
     } else if (version == DRW::AC1024) {//2010
 //        sz= buf->size()-93;
 //        buf->setPosition(sz);
         buf->moveBitPos(-128);
-        DRW_DBG("\nsetting position to: "); DRW_DBG(buf->getPosition());
-        DRW_DBG("\ndwg header end sentinel= ");
+        drw_dbg("\nsetting position to: "); drw_dbg(buf->getPosition());
+        drw_dbg("\ndwg header end sentinel= ");
         for (int i=0; i<16;i++) {
-            DRW_DBGH(buf->getRawChar8()); DRW_DBG(" ");
+            drw_dbgh(buf->getRawChar8()); drw_dbg(" ");
         }
     } else if (version == DRW::AC1027) {//2013
 //        sz= buf->size()-76;
 //        buf->setPosition(sz);
         buf->moveBitPos(-128);
-        DRW_DBG("\nsetting position to: "); DRW_DBG(buf->getPosition());
-        DRW_DBG("\ndwg header end sentinel= ");
+        drw_dbg("\nsetting position to: "); drw_dbg(buf->getPosition());
+        drw_dbg("\ndwg header end sentinel= ");
         for (int i=0; i<16;i++) {
-            DRW_DBGH(buf->getRawChar8()); DRW_DBG(" ");
+            drw_dbgh(buf->getRawChar8()); drw_dbg(" ");
         }
     }
 

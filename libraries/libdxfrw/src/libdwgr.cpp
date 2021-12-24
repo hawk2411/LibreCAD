@@ -38,7 +38,7 @@
 dwgR::dwgR(const char* name)
     : fileName{ name }
 {
-    drw_dbgsl(DRW_dbg::Level::None);
+    drw_dbgsl(DRW::DebugLevel::None);
 }
 
 dwgR::~dwgR() = default;
@@ -46,10 +46,10 @@ dwgR::~dwgR() = default;
 void dwgR::setDebug(DRW::DebugLevel lvl){
     switch (lvl){
     case DRW::DebugLevel::Debug:
-        drw_dbgsl(DRW_dbg::Level::Debug);
+        drw_dbgsl(DRW::DebugLevel::Debug);
         break;
     case DRW::DebugLevel::None:
-        drw_dbgsl(DRW_dbg::Level::None);
+        drw_dbgsl(DRW::DebugLevel::None);
     }
 }
 
@@ -88,41 +88,41 @@ bool dwgR::testReader(){
     fileBuf.getBytes(tmpStrData.get(), fileBuf.size());
     dwgBuffer dataBuf(tmpStrData.get(), fileBuf.size());
     fileBuf.setPosition(0);
-    DRW_DBG("\ndwgR::testReader filebuf size: ");DRW_DBG(fileBuf.size());
-    DRW_DBG("\ndwgR::testReader dataBuf size: ");DRW_DBG(dataBuf.size());
-    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
-    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
-    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
-    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
-    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
-    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
+    drw_dbg("\ndwgR::testReader filebuf size: ");drw_dbg(fileBuf.size());
+    drw_dbg("\ndwgR::testReader dataBuf size: ");drw_dbg(dataBuf.size());
+    drw_dbg("\n filebuf pos: ");drw_dbg(fileBuf.getPosition());
+    drw_dbg("\n dataBuf pos: ");drw_dbg(dataBuf.getPosition());
+    drw_dbg("\n filebuf bitpos: ");drw_dbg(fileBuf.getBitPos());
+    drw_dbg("\n dataBuf bitpos: ");drw_dbg(dataBuf.getBitPos());
+    drw_dbg("\n filebuf first byte : ");drw_dbgh(fileBuf.getRawChar8());
+    drw_dbg("\n dataBuf  first byte : ");drw_dbgh(dataBuf.getRawChar8());
     fileBuf.setBitPos(4);
     dataBuf.setBitPos(4);
-    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
-    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
-    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
-    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
-    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
-    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
+    drw_dbg("\n filebuf first byte : ");drw_dbgh(fileBuf.getRawChar8());
+    drw_dbg("\n dataBuf  first byte : ");drw_dbgh(dataBuf.getRawChar8());
+    drw_dbg("\n filebuf pos: ");drw_dbg(fileBuf.getPosition());
+    drw_dbg("\n dataBuf pos: ");drw_dbg(dataBuf.getPosition());
+    drw_dbg("\n filebuf bitpos: ");drw_dbg(fileBuf.getBitPos());
+    drw_dbg("\n dataBuf bitpos: ");drw_dbg(dataBuf.getBitPos());
     fileBuf.setBitPos(6);
     dataBuf.setBitPos(6);
-    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
-    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
-    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
-    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
-    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
-    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
+    drw_dbg("\n filebuf pos: ");drw_dbg(fileBuf.getPosition());
+    drw_dbg("\n dataBuf pos: ");drw_dbg(dataBuf.getPosition());
+    drw_dbg("\n filebuf bitpos: ");drw_dbg(fileBuf.getBitPos());
+    drw_dbg("\n dataBuf bitpos: ");drw_dbg(dataBuf.getBitPos());
+    drw_dbg("\n filebuf first byte : ");drw_dbgh(fileBuf.getRawChar8());
+    drw_dbg("\n dataBuf  first byte : ");drw_dbgh(dataBuf.getRawChar8());
     fileBuf.setBitPos(0);
     dataBuf.setBitPos(0);
-    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
-    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
-    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
-    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
-    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
-    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
+    drw_dbg("\n filebuf first byte : ");drw_dbgh(fileBuf.getRawChar8());
+    drw_dbg("\n dataBuf  first byte : ");drw_dbgh(dataBuf.getRawChar8());
+    drw_dbg("\n filebuf pos: ");drw_dbg(fileBuf.getPosition());
+    drw_dbg("\n dataBuf pos: ");drw_dbg(dataBuf.getPosition());
+    drw_dbg("\n filebuf bitpos: ");drw_dbg(fileBuf.getBitPos());
+    drw_dbg("\n dataBuf bitpos: ");drw_dbg(dataBuf.getBitPos());
 
     filestr.close();
-    DRW_DBG("\n\n");
+    drw_dbg("\n\n");
     return true;
 }
 
@@ -215,7 +215,7 @@ std::unique_ptr<dwgReader> dwgR::createReaderForVersion(DRW::Version version, st
 */
 bool dwgR::openFile(std::ifstream *filestr){
     bool isOk = false;
-    DRW_DBG("dwgR::read 1\n");
+    drw_dbg("dwgR::read 1\n");
     filestr->open (fileName.c_str(), std::ios_base::in | std::ios::binary);
     if (!filestr->is_open() || !filestr->good() ){
         error = DRW::BAD_OPEN;
@@ -225,10 +225,10 @@ bool dwgR::openFile(std::ifstream *filestr){
     char line[7];
     filestr->read (line, 6);
     line[6]='\0';
-    DRW_DBG("dwgR::read 2\n");
-    DRW_DBG("dwgR::read line version: ");
-    DRW_DBG(line);
-    DRW_DBG("\n");
+    drw_dbg("dwgR::read 2\n");
+    drw_dbg("dwgR::read line version: ");
+    drw_dbg(line);
+    drw_dbg("\n");
 
     // check version line against known version strings
     version = DRW::UNKNOWNV;
@@ -254,7 +254,7 @@ bool dwgR::openFile(std::ifstream *filestr){
 /********* Reader Process *********/
 
 bool dwgR::processDwg() {
-    DRW_DBG("dwgR::processDwg() start processing dwg\n");
+    drw_dbg("dwgR::processDwg() start processing dwg\n");
     bool ret;
     bool ret2;
     DRW_Header hdr;
