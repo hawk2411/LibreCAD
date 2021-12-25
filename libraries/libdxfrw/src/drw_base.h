@@ -70,7 +70,7 @@ namespace DRW {
         AC1032,       //!< AutoCAD 2018/2019/2020
     };
 
-    const std::unordered_map<std::string, DRW::Version> &getDwgVersionStrings();
+    const std::unordered_map<std::string, DRW::Version>& getDwgVersionStrings();
 
     enum error {
         BAD_NONE,             /*!< No error. */
@@ -109,7 +109,7 @@ namespace DRW {
 
 //! Shadow mode
     enum ShadowMode {
-        CastAndReceieveShadows = 0,
+        CastAndReceiveShadows = 0,
         CastShadows = 1,
         ReceiveShadows = 2,
         IgnoreShadows = 3

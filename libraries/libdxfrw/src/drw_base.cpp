@@ -13,7 +13,7 @@
 #include "drw_base.h"
 #include "intern/drw_dbg.h"
 
-const std::unordered_map< std::string, DRW::Version >& getDwgVersionStrings() {
+const std::unordered_map< std::string, DRW::Version >& DRW::getDwgVersionStrings() {
 
     static std::unordered_map< std::string, DRW::Version > dwgVersionStrings {
             { "MC0.0", DRW::MC00 },
