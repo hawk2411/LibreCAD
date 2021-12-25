@@ -609,7 +609,7 @@ bool dxfRW::writeRay(DRW_Ray *ent, dxfWriter* writer) {
     return true;
 }
 
-bool dxfRW::writeXline(DRW_Xline *ent, dxfWriter* writer) {
+bool dxfRW::writeXline(DRW_Xline *ent, dxfWriter *writer) {
     writer->writeString(0, "XLINE");
     writeEntity(ent, writer);
     if (version > DRW::AC1009) {

@@ -145,7 +145,7 @@ protected:
     bool readDwgHeader(DRW_Header& hdr, dwgBuffer *buf, dwgBuffer *hBuf);
     bool readDwgHandles(dwgBuffer *dbuf, uint64_t offset, uint64_t size);
     bool readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf);
-    bool checkSentinel(dwgBuffer *buf, enum secEnum::DWGSection, bool start);
+    static bool checkSentinel(dwgBuffer *buf, enum secEnum::DWGSection, bool start);
 
     bool readDwgBlocks(DRW_Interface& intfa, dwgBuffer *dbuf);
     bool readDwgEntities(DRW_Interface& intfa, dwgBuffer *dbuf);

@@ -13,7 +13,8 @@ add_library(${DLL_NAME} STATIC
     src/drw_header.cpp 
     src/drw_classes.cpp 
     src/drw_entities.cpp 
-    src/drw_objects.cpp 
+    src/drw_objects.cpp
+    src/main_doc.h
     src/intern/drw_textcodec.cpp 
     src/intern/dxfreader.cpp 
     src/intern/dxfwriter.cpp 
