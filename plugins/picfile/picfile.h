@@ -65,10 +65,10 @@ class picPunto : public QDialog
         void processFilePic(QFile* file);
         void drawLine();
         void drawCircle(QString x, QString y, QString rad);
-        void drawText(QString x, QString y, QString txt, QString align);
+        void drawText(const QString& x, const QString& y, const QString& txt, const QString& align);
         void drawBox(QString posx, QString posy, QString width, QString height);
         bool failGUI(QString *msg);
-        double getPValue(QString posxy);
+        double getPValue(const QString &p) const;
     
     private:
         QString errmsg;

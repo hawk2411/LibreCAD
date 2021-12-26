@@ -42,10 +42,10 @@ public:
 
     void addLine(QPointF *start, QPointF *end) override;
 
-    void addMText(QString txt, QString sty, QPointF *start,
+    void addMText(const QString& txt, const QString& sty, QPointF *start,
                   double height, double angle, DPI::HAlign ha, DPI::VAlign va);
 
-    void addText(QString txt, QString sty, QPointF *start,
+    void addText(const QString &txt, const QString &sty, QPointF *start,
                  double height, double angle, DPI::HAlign ha, DPI::VAlign va) override;
 
     void addCircle(QPointF *start, qreal radius) override;
@@ -61,11 +61,11 @@ public:
     void addSplinePoints(std::vector<QPointF> const &points, bool closed) override;
 
     void addImage(int handle, QPointF *start, QPointF *uvr, QPointF *vvr,
-                  int w, int h, QString name, int br, int con, int fade) override;
+                  int w, int h, const QString &name, int br, int con, int fade) override;
 
-    void addInsert(QString name, QPointF ins, QPointF scale, qreal rot) override;
+    void addInsert(const QString &name, QPointF ins, QPointF scale, qreal rot) override;
 
-    QString addBlockFromDisk(QString fullName) override;
+    QString addBlockFromDisk(const QString &fullName) override;
 
     void addEntity(Plug_Entity *handle) override;
 
@@ -75,7 +75,7 @@ public:
 
     void updateEntity(RS_Entity *org, RS_Entity *newe);
 
-    void setLayer(QString name) override;
+    void setLayer(const QString &name) override;
 
     QString getCurrentLayer() override;
 
@@ -83,7 +83,7 @@ public:
 
     QStringList getAllBlocks() override;
 
-    bool deleteLayer(QString name) override;
+    bool deleteLayer(const QString &name) override;
 
     void getCurrentLayerProperties(int *c, DPI::LineWidth *w, DPI::LineType *t) override;
 

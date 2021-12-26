@@ -82,7 +82,7 @@ void DocumentPluginImplementation::addPoint(QPointF *start) {
 
     RS_Vector v1(start->x(), start->y());
     if (doc) {
-        RS_Point *entity = new RS_Point(doc, RS_PointData(v1));
+        auto *entity = new RS_Point(doc, RS_PointData(v1));
         doc->addEntity(entity);
         LC_UndoSection undo(doc);
         undo.addUndoable(entity);
@@ -95,7 +95,7 @@ void DocumentPluginImplementation::addLine(QPointF *start, QPointF *end) {
     RS_Vector v1(start->x(), start->y());
     RS_Vector v2(end->x(), end->y());
     if (doc) {
-        RS_Line *entity = new RS_Line{doc, v1, v2};
+        auto *entity = new RS_Line{doc, v1, v2};
         doc->addEntity(entity);
         LC_UndoSection undo(doc);
         undo.addUndoable(entity);
@@ -103,19 +103,19 @@ void DocumentPluginImplementation::addLine(QPointF *start, QPointF *end) {
         RS_DEBUG->print("Doc_plugin_interface::addLine: currentContainer is nullptr");
 }
 
-void DocumentPluginImplementation::addMText(QString txt, QString sty, QPointF *start,
+void DocumentPluginImplementation::addMText(const QString& txt, const QString& sty, QPointF *start,
                                             double height, double angle, DPI::HAlign ha, DPI::VAlign va) {
 
     RS_Vector v1(start->x(), start->y());
     if (doc) {
         double width = 100.0;
 
-        RS_MTextData::VAlign valign = static_cast <RS_MTextData::VAlign>(va);
-        RS_MTextData::HAlign halign = static_cast <RS_MTextData::HAlign>(ha);
+        auto valign = static_cast <RS_MTextData::VAlign>(va);
+        auto halign = static_cast <RS_MTextData::HAlign>(ha);
         RS_MTextData d(v1, height, width, valign, halign,
                        RS_MTextData::ByStyle, RS_MTextData::Exact, 0.0,
                        txt, sty, angle, RS2::Update);
-        RS_MText *entity = new RS_MText(doc, d);
+        auto *entity = new RS_MText(doc, d);
 
         doc->addEntity(entity);
         LC_UndoSection undo(doc);
@@ -124,18 +124,18 @@ void DocumentPluginImplementation::addMText(QString txt, QString sty, QPointF *s
         RS_DEBUG->print("Doc_plugin_interface::addMtext: currentContainer is nullptr");
 }
 
-void DocumentPluginImplementation::addText(QString txt, QString sty, QPointF *start,
+void DocumentPluginImplementation::addText(const QString &txt, const QString &sty, QPointF *start,
                                            double height, double angle, DPI::HAlign ha, DPI::VAlign va) {
 
     RS_Vector v1(start->x(), start->y());
     if (doc) {
         double width = 1.0;
 
-        RS_TextData::VAlign valign = static_cast <RS_TextData::VAlign>(va);
-        RS_TextData::HAlign halign = static_cast <RS_TextData::HAlign>(ha);
+        auto valign = static_cast <RS_TextData::VAlign>(va);
+        auto halign = static_cast <RS_TextData::HAlign>(ha);
         RS_TextData d(v1, v1, height, width, valign, halign,
                       RS_TextData::None, txt, sty, angle, RS2::Update);
-        RS_Text *entity = new RS_Text(doc, d);
+        auto *entity = new RS_Text(doc, d);
 
         doc->addEntity(entity);
         LC_UndoSection undo(doc);
@@ -148,13 +148,14 @@ void DocumentPluginImplementation::addCircle(QPointF *start, qreal radius) {
     if (doc) {
         RS_Vector v(start->x(), start->y());
         RS_CircleData d(v, radius);
-        RS_Circle *entity = new RS_Circle(doc, d);
+        auto *entity = new RS_Circle(doc, d);
 
         doc->addEntity(entity);
         LC_UndoSection undo(doc);
         undo.addUndoable(entity);
-    } else
+    } else {
         RS_DEBUG->print("Doc_plugin_interface::addCircle: currentContainer is nullptr");
+    }
 }
 
 void DocumentPluginImplementation::addArc(QPointF *start, qreal radius, qreal a1, qreal a2) {
@@ -164,7 +165,7 @@ void DocumentPluginImplementation::addArc(QPointF *start, qreal radius, qreal a1
                      RS_Math::deg2rad(a1),
                      RS_Math::deg2rad(a2),
                      false);
-        RS_Arc *entity = new RS_Arc(doc, d);
+        auto *entity = new RS_Arc(doc, d);
         doc->addEntity(entity);
         LC_UndoSection undo(doc);
         undo.addUndoable(entity);
@@ -178,13 +179,14 @@ void DocumentPluginImplementation::addEllipse(QPointF *start, QPointF *end, qrea
         RS_Vector v2(end->x(), end->y());
 
         RS_EllipseData ed{v1, v2, ratio, a1, a2, false};
-        RS_Ellipse *entity = new RS_Ellipse(doc, ed);
+        auto *entity = new RS_Ellipse(doc, ed);
 
         doc->addEntity(entity);
         LC_UndoSection undo(doc);
         undo.addUndoable(entity);
-    } else
+    } else {
         RS_DEBUG->print("Doc_plugin_interface::addEllipse: currentContainer is nullptr");
+    }
 }
 
 void DocumentPluginImplementation::addLines(std::vector<QPointF> const &points, bool closed) {
@@ -197,14 +199,14 @@ void DocumentPluginImplementation::addLines(std::vector<QPointF> const &points, 
         for (size_t i = 1; i < points.size(); ++i) {
             data.startpoint = data.endpoint;
             data.endpoint = RS_Vector(points[i].x(), points[i].y());
-            RS_Line *line = new RS_Line(doc, data);
+            auto *line = new RS_Line(doc, data);
             doc->addEntity(line);
             undo.addUndoable(line);
         }
         if (closed) {
             data.startpoint = data.endpoint;
             data.endpoint = RS_Vector(points.front().x(), points.front().y());
-            RS_Line *line = new RS_Line(doc, data);
+            auto *line = new RS_Line(doc, data);
             doc->addEntity(line);
             undo.addUndoable(line);
         }
@@ -215,9 +217,10 @@ void DocumentPluginImplementation::addLines(std::vector<QPointF> const &points, 
 void DocumentPluginImplementation::addPolyline(std::vector<Plug_VertexData> const &points, bool closed) {
     if (doc) {
         RS_PolylineData data;
-        if (closed)
+        if (closed) {
             data.setFlag(RS2::FlagClosed);
-        RS_Polyline *entity = new RS_Polyline(doc, data);
+        }
+        auto *entity = new RS_Polyline(doc, data);
 
         for (auto const &pt: points) {
             entity->addVertex(RS_Vector(pt.point.x(), pt.point.y()), pt.bulge);
@@ -226,8 +229,9 @@ void DocumentPluginImplementation::addPolyline(std::vector<Plug_VertexData> cons
         doc->addEntity(entity);
         LC_UndoSection undo(doc);
         undo.addUndoable(entity);
-    } else
+    } else {
         RS_DEBUG->print("%s: currentContainer is nullptr", __func__);
+    }
 }
 
 void DocumentPluginImplementation::addSplinePoints(std::vector<QPointF> const &points, bool closed) {
@@ -237,7 +241,7 @@ void DocumentPluginImplementation::addSplinePoints(std::vector<QPointF> const &p
             data.splinePoints.emplace_back(RS_Vector(pt.x(), pt.y()));
         }
 
-        LC_SplinePoints *entity = new LC_SplinePoints(doc, data);
+        auto *entity = new LC_SplinePoints(doc, data);
 
         doc->addEntity(entity);
         LC_UndoSection undo(doc);
@@ -247,14 +251,14 @@ void DocumentPluginImplementation::addSplinePoints(std::vector<QPointF> const &p
 }
 
 void DocumentPluginImplementation::addImage(int handle, QPointF *start, QPointF *uvr, QPointF *vvr,
-                                            int w, int h, QString name, int br, int con, int fade) {
+                                            int w, int h, const QString &name, int br, int con, int fade) {
     if (doc) {
         RS_Vector ip(start->x(), start->y());
         RS_Vector uv(uvr->x(), uvr->y());
         RS_Vector vv(vvr->x(), vvr->y());
         RS_Vector size(w, h);
 
-        RS_Image *image =
+        auto *image =
                 new RS_Image(
                         doc,
                         RS_ImageData(handle /*QString(data.ref.c_str()).toInt(nullptr, 16)*/,
@@ -272,13 +276,13 @@ void DocumentPluginImplementation::addImage(int handle, QPointF *start, QPointF 
         RS_DEBUG->print("Doc_plugin_interface::addImage: currentContainer is nullptr");
 }
 
-void DocumentPluginImplementation::addInsert(QString name, QPointF ins, QPointF scale, qreal rot) {
+void DocumentPluginImplementation::addInsert(const QString &name, QPointF ins, QPointF scale, qreal rot) {
     if (doc) {
         RS_Vector ip(ins.x(), ins.y());
         RS_Vector sp(scale.x(), scale.y());
 
         RS_InsertData id(name, ip, sp, rot, 1, 1, RS_Vector(0.0, 0.0));
-        RS_Insert *entity = new RS_Insert(doc, id);
+        auto *entity = new RS_Insert(doc, id);
 
         doc->addEntity(entity);
         LC_UndoSection undo(doc);
@@ -288,7 +292,7 @@ void DocumentPluginImplementation::addInsert(QString name, QPointF ins, QPointF 
 }
 
 /*TODO RLZ: add undo support in this method*/
-QString DocumentPluginImplementation::addBlockFromDisk(QString fullName) {
+QString DocumentPluginImplementation::addBlockFromDisk(const QString &fullName) {
     if (fullName.isEmpty() || !doc)
         return nullptr;
     RS_BlockList *blockList = doc->getBlockList();
@@ -302,7 +306,7 @@ QString DocumentPluginImplementation::addBlockFromDisk(QString fullName) {
 
     if (fi.isReadable()) {
         RS_BlockData d(name, RS_Vector(0, 0), false);
-        RS_Block *b = new RS_Block(doc, d);
+        auto *b = new RS_Block(doc, d);
         RS_Graphic g;
         if (!g.open(fi.absoluteFilePath(), RS2::FormatUnknown)) {
             RS_DEBUG->print(RS_Debug::D_WARNING,
@@ -317,7 +321,7 @@ QString DocumentPluginImplementation::addBlockFromDisk(QString fullName) {
         }
         RS_BlockList *bl = g.getBlockList();
         for (int i = 0; i < bl->count(); i++) {
-            RS_Block *nb = (RS_Block *) bl->at(i)->clone();
+            auto *nb = (RS_Block *) bl->at(i)->clone();
             docGr->addBlock(nb);
         }
         for (unsigned int i = 0; i < g.count(); i++) {
@@ -347,7 +351,7 @@ void DocumentPluginImplementation::addEntity(Plug_Entity *handle) {
 
 /*newEntity not added into graphic, then not needed undo support*/
 Plug_Entity *DocumentPluginImplementation::newEntity(enum DPI::ETYPE type) {
-    PluginEntity *e = new PluginEntity(doc, type);
+    auto *e = new PluginEntity(doc, type);
     if (!(e->isValid())) {
         delete e;
         return nullptr;
@@ -380,7 +384,7 @@ void DocumentPluginImplementation::updateEntity(RS_Entity *org, RS_Entity *newe)
 }
 
 /*TODO RLZ: add undo support in the remaining methods*/
-void DocumentPluginImplementation::setLayer(QString name) {
+void DocumentPluginImplementation::setLayer(const QString &name) {
     RS_LayerList *listLay = doc->getLayerList();
     RS_Layer *lay = listLay->find(name);
     if (!lay) {
@@ -412,7 +416,7 @@ QStringList DocumentPluginImplementation::getAllBlocks() {
     return listName;
 }
 
-bool DocumentPluginImplementation::deleteLayer(QString name) {
+bool DocumentPluginImplementation::deleteLayer(const QString &name) {
     RS_Layer *layer = docGr->findLayer(name);
     if (layer) {
         docGr->removeLayer(layer);
@@ -467,44 +471,41 @@ void DocumentPluginImplementation::setCurrentLayerProperties(int c, QString cons
 bool DocumentPluginImplementation::getPoint(QPointF *point, const QString &message,
                                             QPointF *base) {
     bool status = false;
-    QC_ActionGetPoint *a = new QC_ActionGetPoint(*doc, *gView);
-    if (a) {
-        if (!(message.isEmpty())) a->setMessage(message);
-        gView->killAllActions();
-        gView->setCurrentAction(a);
-        if (base) a->setBasepoint(base);
-        QEventLoop ev;
-        while (!a->isCompleted()) {
-            ev.processEvents();
-            if (!gView->getEventHandler()->hasAction())
-                break;
+    auto *actionPoint = new QC_ActionGetPoint(*doc, *gView);
+    if (!(message.isEmpty())) { actionPoint->setMessage(message); }
+    gView->killAllActions();
+    gView->setCurrentAction(actionPoint);
+    if (base) actionPoint->setBasepoint(base);
+    QEventLoop ev;
+    while (!actionPoint->isCompleted()) {
+        ev.processEvents();
+        if (!gView->getEventHandler()->hasAction()) {
+            break;
         }
-        if (a->isCompleted() && !a->wasCanceled()) {
-            a->getPoint(point);
-            status = true;
-        }
-        //RLZ: delete QC_ActionGetPoint. Investigate how to kill only this action
-        gView->killAllActions();
     }
+    if (actionPoint->isCompleted() && !actionPoint->wasCanceled()) {
+        actionPoint->getPoint(point);
+        status = true;
+    }
+    //RLZ: delete QC_ActionGetPoint. Investigate how to kill only this action
+    gView->killAllActions();
     return status;
 }
 
 Plug_Entity *DocumentPluginImplementation::getEnt(const QString &message) {
-    QC_ActionGetEnt *a = new QC_ActionGetEnt(*doc, *gView);
-    if (a) {
-        if (!(message.isEmpty()))
-            a->setMessage(message);
-        gView->killAllActions();
-        gView->setCurrentAction(a);
-        QEventLoop ev;
-        while (!a->isCompleted()) {
-            ev.processEvents();
-            if (!gView->getEventHandler()->hasAction())
-                break;
-        }
+    auto *entity = new QC_ActionGetEnt(*doc, *gView);
+
+    if (!(message.isEmpty())) { entity->setMessage(message); }
+    gView->killAllActions();
+    gView->setCurrentAction(entity);
+    QEventLoop ev;
+    while (!entity->isCompleted()) {
+        ev.processEvents();
+        if (!gView->getEventHandler()->hasAction()) { break; }
     }
-    Plug_Entity *e = reinterpret_cast<Plug_Entity *>(a->getSelected(this));
-    a->finish();
+
+    auto *e = reinterpret_cast<Plug_Entity *>(entity->getSelected(this));
+    entity->finish();
     gView->killAllActions();
     return e;
 }
@@ -512,20 +513,17 @@ Plug_Entity *DocumentPluginImplementation::getEnt(const QString &message) {
 bool DocumentPluginImplementation::getSelect(QList<Plug_Entity *> *sel, const QString &message) {
     bool status = false;
     auto *action = new QC_ActionGetSelect(*doc, *gView);
-    if (action) {
-        if (!(message.isEmpty())) {
-            action->setMessage(message);
-        }
-        gView->killAllActions();
-        gView->setCurrentAction(action);
-        QEventLoop ev;
-        while (!action->isCompleted()) {
-            ev.processEvents();
-            if (!gView->getEventHandler()->hasAction())
-                break;
-        }
-        // qDebug() << "getSelect: passed event loop";
+    if (!(message.isEmpty())) {
+        action->setMessage(message);
     }
+    gView->killAllActions();
+    gView->setCurrentAction(action);
+    QEventLoop ev;
+    while (!action->isCompleted()) {
+        ev.processEvents();
+        if (!gView->getEventHandler()->hasAction()) { break; }
+    }
+    // qDebug() << "getSelect: passed event loop";
 //    check if a are cancelled by the user issue #349
     RS_EventHandler *event_handle = gView->getEventHandler();
     if (event_handle && event_handle->isValid(action)) {
@@ -538,17 +536,13 @@ bool DocumentPluginImplementation::getSelect(QList<Plug_Entity *> *sel, const QS
 }
 
 bool DocumentPluginImplementation::getAllEntities(QList<Plug_Entity *> *plug_entities, bool visible) {
-    bool status = false;
-
     for (auto e: *doc) {
-
         if (e->isVisible() || !visible) {
             auto *pe = new PluginEntity(e, this);
             plug_entities->append(reinterpret_cast<Plug_Entity *>(pe));
         }
     }
-    status = true;
-    return status;
+    return true;
 }
 
 bool DocumentPluginImplementation::getVariableInt(const QString &key, int *num) {
@@ -559,10 +553,8 @@ bool DocumentPluginImplementation::getVariableInt(const QString &key, int *num) 
 }
 
 bool DocumentPluginImplementation::getVariableDouble(const QString &key, double *num) {
-    if ((*num = docGr->getVariableDouble(key, 0.0)))
-        return true;
-    else
-        return false;
+    *num = docGr->getVariableDouble(key, 0.0);
+    return (*num != 0.0);
 }
 
 bool DocumentPluginImplementation::addVariable(const QString &key, int value, int code) {

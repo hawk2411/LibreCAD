@@ -311,8 +311,8 @@ public:
     *  \param ha horizontal alignment of text
     *  \param va vertical alignment of text
     */
-    virtual void addText(QString txt, QString sty, QPointF *start, double height,
-                double angle, DPI::HAlign ha,  DPI::VAlign va) = 0;
+    virtual void addText(const QString &txt, const QString &sty, QPointF *start, double height,
+                         double angle, DPI::HAlign ha, DPI::VAlign va) = 0;
 
     //! Add circle entity to current document.
     /*! Add circle entity to current document with current attributes.
@@ -340,20 +340,20 @@ public:
     *  \param points of line segments
     *  \param closed whether line is closed
     */
-    virtual void addLines(std::vector<QPointF> const& points, bool closed) = 0;
+    virtual void addLines(const std::vector<QPointF>& points, bool closed) = 0;
 
     //! Add polyline entity to current document.
     /*! Add polyline entity to current document with current attributes.
     *  \param points polyline points
     *  \param closed whether polyline is closed
     */
-    virtual void addPolyline(std::vector<Plug_VertexData> const& points, bool closed) = 0;
+    virtual void addPolyline(const std::vector<Plug_VertexData>& points, bool closed) = 0;
     //! Add LC_SplinePoints entity to current document.
     /*! Add splinepoints entity to current document with current attributes.
     *  \param points interpolation points
     *  \param closed whether splinepoints is closed
     */
-    virtual void addSplinePoints(std::vector<QPointF> const& points, bool closed) = 0;
+    virtual void addSplinePoints(const std::vector<QPointF> & points, bool closed) = 0;
 
     //! Add image entity to current document.
     /*! Add image entity to current document with current attributes.
@@ -361,7 +361,7 @@ public:
     *  \param end end point coordinate.
     */
     virtual void addImage(int handle, QPointF *start, QPointF *uvr, QPointF *vvr,
-                  int w, int h, QString name, int br, int con, int fade) = 0;
+                          int w, int h, const QString &name, int br, int con, int fade) = 0;
 
     //! Add insert entity to current document.
     /*! Add a block insert entity to current document with current attributes.
@@ -370,14 +370,14 @@ public:
     *  \param scale x,y scale factor.
     *  \param rot rotation angle.
     */
-    virtual void addInsert(QString name, QPointF ins, QPointF scale, qreal rot) = 0;
+    virtual void addInsert(const QString &name, QPointF ins, QPointF scale, qreal rot) = 0;
 
     //! Add block definition from disk to current document.
     /*! Add block definition from disk to current document.
     *  \param fullName path+name of dxf file to add.
     *  \return name of created block or NULL if fail.
     */
-    virtual QString addBlockFromDisk(QString fullName) = 0;
+    virtual QString addBlockFromDisk(const QString &fullName) = 0;
 
     //! Add a entity to current document.
     /*! Add a entity to current document with the data sets with Plug_Entity.updateData().
@@ -404,7 +404,7 @@ public:
     /*! Set the current layer in current document, if not exist create it.
     *  \param name a QString with the name of the layer.
     */
-    virtual void setLayer(QString name) = 0;
+    virtual void setLayer(const QString &name) = 0;
 
     //! Get the current layer in current document.
     /*! Get the current layer in current document.
@@ -428,7 +428,7 @@ public:
     /*! Delete the layer "name" in current document if it exist.
     *  \return The name of the current layer.
     */
-    virtual bool deleteLayer(QString name) = 0;
+    virtual bool deleteLayer(const QString &name) = 0;
 
     virtual void getCurrentLayerProperties(int *c, DPI::LineWidth *w, DPI::LineType *t) = 0;
     virtual void getCurrentLayerProperties(int *c, QString *w, QString *t) = 0;

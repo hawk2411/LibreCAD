@@ -142,10 +142,10 @@ void picPunto::processFile(IDocumentPlugin *doc)
     infile.close ();
 
     QMessageBox::information(this, "Info", QString(tr("%1 objects imported")).arg(cnt) );
-    currDoc = NULL;
+    currDoc = nullptr;
 }
 
-double picPunto::getPValue(QString p)
+double picPunto::getPValue(const QString &p) const
 {
     return (p.toDouble() * scale);
 }
@@ -195,7 +195,7 @@ void picPunto::drawCircle(QString x, QString y, QString radius)
     cnt++;
 }
 
-void picPunto::drawText(QString x, QString y, QString txt, QString align)
+void picPunto::drawText(const QString& x, const QString& y, const QString& txt, const QString& align)
 {
     DPI::VAlign va = DPI::VAlignBottom;
     DPI::HAlign ha;
