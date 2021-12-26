@@ -377,7 +377,7 @@ public:
     *  \param fullName path+name of dxf file to add.
     *  \return name of created block or NULL if fail.
     */
-    virtual QString addBlockfromFromdisk(QString fullName) = 0;
+    virtual QString addBlockFromDisk(QString fullName) = 0;
 
     //! Add a entity to current document.
     /*! Add a entity to current document with the data sets with Plug_Entity.updateData().

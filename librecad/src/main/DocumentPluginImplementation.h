@@ -65,7 +65,7 @@ public:
 
     void addInsert(QString name, QPointF ins, QPointF scale, qreal rot) override;
 
-    QString addBlockfromFromdisk(QString fullName) override;
+    QString addBlockFromDisk(QString fullName) override;
 
     void addEntity(Plug_Entity *handle) override;
 

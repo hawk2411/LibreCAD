@@ -288,7 +288,7 @@ void DocumentPluginImplementation::addInsert(QString name, QPointF ins, QPointF 
 }
 
 /*TODO RLZ: add undo support in this method*/
-QString DocumentPluginImplementation::addBlockfromFromdisk(QString fullName) {
+QString DocumentPluginImplementation::addBlockFromDisk(QString fullName) {
     if (fullName.isEmpty() || !doc)
         return nullptr;
     RS_BlockList *blockList = doc->getBlockList();
@@ -306,7 +306,7 @@ QString DocumentPluginImplementation::addBlockfromFromdisk(QString fullName) {
         RS_Graphic g;
         if (!g.open(fi.absoluteFilePath(), RS2::FormatUnknown)) {
             RS_DEBUG->print(RS_Debug::D_WARNING,
-                            "Doc_plugin_interface::addBlockfromFromdisk: Cannot open file: %s");
+                            "Doc_plugin_interface::addBlockFromDisk: Cannot open file: %s");
             delete b;
             return nullptr;
         }
