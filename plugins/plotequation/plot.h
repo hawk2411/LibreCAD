@@ -15,7 +15,7 @@ public:
 
     virtual PluginCapabilities getCapabilities() const Q_DECL_OVERRIDE;
     virtual QString name() const Q_DECL_OVERRIDE;
-    virtual void execComm(Document_Interface *doc,
+    virtual void execComm(IDocumentPlugin *doc,
                           QWidget *parent, QString cmd) Q_DECL_OVERRIDE;
 
 signals:

@@ -88,7 +88,7 @@
 
 #include "rs_dialogfactory.h"
 #include "qc_dialogfactory.h"
-#include "doc_plugin_interface.h"
+#include "DocumentPluginImplementation.h"
 #include "qc_plugininterface.h"
 #include "rs_commands.h"
 
@@ -682,7 +682,7 @@ void QC_ApplicationWindow::execPlug() {
     QC_MDIWindow *w = getMDIWindow();
     RS_Document *currdoc = w->getDocument();
 //create document interface instance
-    Doc_plugin_interface pligundoc(currdoc, w->getGraphicView(), this);
+    DocumentPluginImplementation pligundoc(currdoc, w->getGraphicView(), this);
 //execute plugin
     LC_UndoSection undo(currdoc);
     plugin->execComm(&pligundoc, this, action->data().toString());

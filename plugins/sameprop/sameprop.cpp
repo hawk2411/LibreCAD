@@ -29,8 +29,8 @@ PluginCapabilities LC_SameProp::getCapabilities() const
     return pluginCapabilities;
 }
 
-void LC_SameProp::execComm(Document_Interface *doc,
-                             QWidget *parent, QString cmd)
+void LC_SameProp::execComm(IDocumentPlugin *doc,
+                           QWidget *parent, QString cmd)
 {
     Q_UNUSED(parent);
     Q_UNUSED(cmd);

@@ -38,7 +38,7 @@ PluginCapabilities plot::getCapabilities() const
     return pluginCapabilities;
 }
 
-void plot::execComm(Document_Interface *doc, QWidget *parent, QString cmd)
+void plot::execComm(IDocumentPlugin *doc, QWidget *parent, QString cmd)
 {
     Q_UNUSED(doc);
     Q_UNUSED(cmd);

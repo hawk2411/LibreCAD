@@ -41,8 +41,8 @@ QString AsciiFile::name() const
      return (tr("Read ascii points"));
  }
 
-void AsciiFile::execComm(Document_Interface *doc,
-                             QWidget *parent, QString cmd)
+void AsciiFile::execComm(IDocumentPlugin *doc,
+                         QWidget *parent, QString cmd)
 {
     Q_UNUSED(cmd);
     dibPunto pdt(parent);
@@ -334,7 +334,7 @@ bool dibPunto::failGUI(QString *msg)
     return false;
 }
 
-void dibPunto::procesFile(Document_Interface *doc)
+void dibPunto::procesFile(IDocumentPlugin *doc)
 {
     QString sep;
     QMessageBox::information(this, "Info", "dibpunto procesFile");

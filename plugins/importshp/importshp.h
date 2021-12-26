@@ -32,7 +32,7 @@ class ImportShp : public QObject, QC_PluginInterface
  public:
     virtual PluginCapabilities getCapabilities() const Q_DECL_OVERRIDE;
     virtual QString name() const Q_DECL_OVERRIDE;
-    virtual void execComm(Document_Interface *doc,
+    virtual void execComm(IDocumentPlugin *doc,
                           QWidget *parent, QString cmd) Q_DECL_OVERRIDE;
 };
 
@@ -67,7 +67,7 @@ class dibSHP : public QDialog
 public:
     explicit dibSHP(QWidget *parent = 0);
     ~dibSHP();
-    void procesFile(Document_Interface *doc);
+    void procesFile(IDocumentPlugin *doc);
 
 public slots:
     void getFile();
@@ -106,7 +106,7 @@ private:
     SHPObject *sobject;
     QString currlayer;
 
-    Document_Interface *currDoc;
+    IDocumentPlugin *currDoc;
 
 };
 

@@ -18,34 +18,58 @@
 
 class Plug_Entity;
 
-class divide : public QObject, QC_PluginInterface
-{
-    Q_OBJECT
+class divide : public QObject, QC_PluginInterface {
+Q_OBJECT
     Q_INTERFACES(QC_PluginInterface)
-    Q_PLUGIN_METADATA( IID LC_DocumentInterface_iid FILE "divide.json" )
+    Q_PLUGIN_METADATA(IID LC_DocumentInterface_iid FILE "divide.json")
 
 public:
-    virtual PluginCapabilities getCapabilities() const Q_DECL_OVERRIDE;
-    virtual QString name() const Q_DECL_OVERRIDE;
-    virtual void execComm ( Document_Interface *doc,
-                            QWidget *parent, QString cmd ) Q_DECL_OVERRIDE;
+    PluginCapabilities getCapabilities() const Q_DECL_OVERRIDE;
+
+    QString name() const Q_DECL_OVERRIDE;
+
+    void execComm(IDocumentPlugin *doc,
+                  QWidget *parent, QString cmd) Q_DECL_OVERRIDE;
 
 public slots:
-    void gotReturnedDataSlot( QString );
+
+    void gotReturnedDataSlot(QString);
 
 private:
-    QString getStrData( Plug_Entity *ent );
-    double polylineRadius( const Plug_VertexData& ptA,
-                           const Plug_VertexData& ptB );
-    Document_Interface *d;
+    QString getStrData(Plug_Entity *ent);
+
+    static double polylineRadius(const Plug_VertexData &ptA,
+                                 const Plug_VertexData &ptB);
+
+    IDocumentPlugin *document;
     QString returnedData;
-    double findHypLength( double, double, double, double );
-    QPointF findLineEndPoint( double, double, double, double );
-    QPoint findWindowCentre();
-    QPointF findStartX( double, double, QPointF );
-    void drawTick( QPointF, double, double );
-    void segmentLine( QPointF, QPointF, QPointF, QString, int, int );
-    void segment( QPointF *, double, double, double, QString);
+
+    static double findHypLength(double, double, double, double);
+
+    static QPointF findLineEndPoint(double, double, double, double);
+
+    static QPoint findWindowCentre();
+
+    static QPointF findStartX(double, double, QPointF);
+
+    void drawTick(QPointF, double, double);
+
+    void segmentLine(QPointF, QPointF, QPointF, const QString &, int, int);
+
+    void segment(QPointF *, double, double, double, const QString &);
+
+    static bool jumpOutWithError(bool user_button, QList<Plug_Entity *> *obj_list);
+    static void clearObjectList(QList<Plug_Entity *> *obj_list);
+
+    void handleCircle(const QString &entityType, const QList<QString> &pData, const QList<QString> &data, bool ticks,
+                      bool breaks);
+
+    void
+    handleLine(const QString &entityType, const QList<QString> &pData, const QList<QString> &data, bool ticks,
+               bool breaks);
+    void
+    handleArc(const QString &entityType, const QList<QString> &pData, const QList<QString> &data, bool ticks,
+               bool breaks);
 };
 
 #endif //end DIVIDE_H

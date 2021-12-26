@@ -31,7 +31,7 @@
 #include "rs_modification.h"
 
 class Plug_Entity;
-class Doc_plugin_interface;
+class DocumentPluginImplementation;
 
 
 /**
@@ -64,7 +64,7 @@ public:
 
     void setMessage(QString msg);
 	bool isCompleted() const{return completed;}
-	void getSelected(QList<Plug_Entity *> *se, Doc_plugin_interface* d) const;
+	void getSelected(QList<Plug_Entity *> *se, DocumentPluginImplementation* d) const;
 
 private:
     bool completed;

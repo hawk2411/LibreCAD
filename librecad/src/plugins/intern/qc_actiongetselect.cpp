@@ -25,13 +25,12 @@
 **********************************************************************/
 
 #include <QMouseEvent>
-#include <QKeyEvent>
 #include "qc_actiongetselect.h"
-#include "doc_plugin_interface.h"
+#include "DocumentPluginImplementation.h"
 #include "rs_dialogfactory.h"
 #include "rs_graphicview.h"
 #include "rs_actionselectsingle.h"
-// #include <QDebug>
+#include "PluginEntity.h"
 
 #include "rs_snapper.h"
 
@@ -97,12 +96,12 @@ void QC_ActionGetSelect::keyPressEvent(QKeyEvent* e)
 /**
  * Adds all selected entities from 'container' to the selection.
  */
-void QC_ActionGetSelect::getSelected(QList<Plug_Entity *> *se, Doc_plugin_interface* d) const
+void QC_ActionGetSelect::getSelected(QList<Plug_Entity *> *se, DocumentPluginImplementation* d) const
 {
 	for(auto e: *container){
 
         if (e->isSelected()) {
-            Plugin_Entity *pe = new Plugin_Entity(e, d);
+            PluginEntity *pe = new PluginEntity(e, d);
             se->append(reinterpret_cast<Plug_Entity*>(pe));
         }
     }

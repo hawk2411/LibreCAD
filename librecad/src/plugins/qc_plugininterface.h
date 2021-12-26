@@ -28,8 +28,9 @@
 #define QC_PLUGININTERFACE_H
 
 #include <QtPlugin>
+#include <utility>
 
-class Document_Interface;
+class IDocumentPlugin;
 
 /**
   * Menu locations for Plugins
@@ -38,8 +39,8 @@ class PluginMenuLocation
 {
     public:
         PluginMenuLocation(QString menuEntryPoint, QString menuEntryActionName) {
-            this->menuEntryActionName=menuEntryActionName;
-            this->menuEntryPoint=menuEntryPoint;
+            this->menuEntryActionName=std::move(menuEntryActionName);
+            this->menuEntryPoint=std::move(menuEntryPoint);
         }
 
     QString menuEntryPoint;
@@ -66,7 +67,7 @@ public:
     virtual ~QC_PluginInterface() {}
     virtual QString name() const = 0;
     virtual PluginCapabilities getCapabilities() const = 0;
-    virtual void execComm(Document_Interface *doc, QWidget *parent, QString cmd) = 0;
+    virtual void execComm(IDocumentPlugin *doc, QWidget *parent, QString cmd) = 0;
 //    virtual void paintEvent(Document_Interface *doc) = 0;
 
 };

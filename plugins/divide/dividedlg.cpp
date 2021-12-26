@@ -26,7 +26,7 @@
 
 //#include <QDebug>
 
-dividedlg::dividedlg(Document_Interface *doc, const QString &passedData,
+dividedlg::dividedlg(IDocumentPlugin *doc, const QString &passedData,
                      QWidget *parent) : QDialog(parent) {
     //hide titie bar '?'
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);

@@ -444,9 +444,13 @@ set(SOURCES
         main/qc_applicationwindow.cpp
         main/qc_dialogfactory.cpp
         main/qc_mdiwindow.cpp
-        main/doc_plugin_interface.cpp
+        main/DocumentPluginImplementation.cpp
         main/main.cpp
         main/mainwindowx.cpp
+        main/ConvertLine.cpp
+        main/ConvertLine.h
+        main/PluginEntity.cpp
+        main/PluginEntity.h
         main/console_dxf2pdf/console_dxf2pdf.cpp
         main/console_dxf2pdf/pdf_print_loop.cpp
         plugins/intern/qc_actiongetpoint.cpp

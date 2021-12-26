@@ -28,20 +28,20 @@ PluginCapabilities LC_Align::getCapabilities() const
     return pluginCapabilities;
 }
 
-void LC_Align::execComm(Document_Interface *doc,
-                             QWidget *parent, QString cmd)
+void LC_Align::execComm(IDocumentPlugin *doc,
+                        QWidget *parent, QString cmd)
 {
     Q_UNUSED(parent);
     Q_UNUSED(cmd);
     QPointF base1, base2, target1, target2;
     QList<Plug_Entity *> obj;
-    bool yes  = doc->getSelect(&obj);
+    bool yes  = doc->getSelect(&obj, "");
     if (!yes || obj.isEmpty()) return;
-    yes = doc->getPoint(&base1, QString(tr("first base point:")));
+    yes = doc->getPoint(&base1, QString(tr("first base point:")), nullptr);
     if (yes) {
         yes = doc->getPoint(&target1, QString(tr("first target point:")), &base1);
         if (yes) {
-            yes = doc->getPoint(&base2, QString(tr("second base point:")));
+            yes = doc->getPoint(&base2, QString(tr("second base point:")), nullptr);
             if (yes) {
                 yes = doc->getPoint(&target2, QString(tr("second target point:")), &base2);
             }

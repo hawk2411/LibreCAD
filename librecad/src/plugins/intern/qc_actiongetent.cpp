@@ -26,13 +26,12 @@
 
 #include "qc_actiongetent.h"
 #include <QMouseEvent>
-#include <QKeyEvent>
-#include "doc_plugin_interface.h"
+#include "DocumentPluginImplementation.h"
 #include "rs_dialogfactory.h"
 #include "rs_selection.h"
 #include "rs_snapper.h"
 #include "rs_debug.h"
-// #include <QDebug>
+#include "PluginEntity.h"
 
 
 QC_ActionGetEnt::QC_ActionGetEnt(RS_EntityContainer& container,
@@ -97,8 +96,8 @@ void QC_ActionGetEnt::keyPressEvent(QKeyEvent* e)
 /**
  * Add selected entity from 'container' to the selection.
  */
-Plugin_Entity *QC_ActionGetEnt::getSelected(Doc_plugin_interface* d) {
-    Plugin_Entity *pe = en ? new Plugin_Entity(en, d) : nullptr;
+PluginEntity *QC_ActionGetEnt::getSelected(DocumentPluginImplementation* d) {
+    PluginEntity *pe = en ? new PluginEntity(en, d) : nullptr;
     return pe;
 }
 

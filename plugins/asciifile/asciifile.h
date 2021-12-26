@@ -38,7 +38,7 @@ class AsciiFile : public QObject, QC_PluginInterface
  public:
     virtual PluginCapabilities getCapabilities() const Q_DECL_OVERRIDE;
     virtual QString name() const Q_DECL_OVERRIDE;
-    virtual void execComm(Document_Interface *doc,
+    virtual void execComm(IDocumentPlugin *doc,
                           QWidget *parent, QString cmd) Q_DECL_OVERRIDE;
 };
 
@@ -57,7 +57,7 @@ public:
 
 public slots:
     void dptFile();
-    void procesFile(Document_Interface *doc);
+    void procesFile(IDocumentPlugin *doc);
     void checkAccept();
 
 private:
@@ -87,7 +87,7 @@ private:
     QCheckBox *connectPoints;
     QList<pointData*> dataList;
 
-    Document_Interface *currDoc;
+    IDocumentPlugin *currDoc;
 
 };
 

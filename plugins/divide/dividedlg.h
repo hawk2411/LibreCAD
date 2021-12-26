@@ -26,8 +26,8 @@ class dividedlg : public QDialog
     Q_OBJECT
 
 public:
-    dividedlg( Document_Interface *doc, const QString&,
-               QWidget *parent = nullptr );
+    dividedlg(IDocumentPlugin *doc, const QString&,
+              QWidget *parent = nullptr );
     ~dividedlg();
 
 protected:
@@ -49,7 +49,7 @@ signals:
 private:
     enum ElementKind { STRAIGHT, CURVED };
     QFrame* choice(ElementKind ek, const QFont& font);
-    Document_Interface *d;
+    IDocumentPlugin *d;
     QRadioButton *R1; //on/off ticks
     QRadioButton *R2; //on/off breaks
     QLineEdit *Le1; //circle - start angle

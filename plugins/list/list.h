@@ -21,32 +21,29 @@
 //class QTextEdit;
 class Plug_Entity;
 
-class LC_List : public QObject, QC_PluginInterface
-{
+class LC_List : public QObject, QC_PluginInterface {
     Q_OBJECT
     Q_INTERFACES(QC_PluginInterface)
     Q_PLUGIN_METADATA(IID LC_DocumentInterface_iid FILE  "list.json")
 
  public:
-    virtual PluginCapabilities getCapabilities() const Q_DECL_OVERRIDE;
-    virtual QString name() const Q_DECL_OVERRIDE;
-    virtual void execComm(Document_Interface *doc,
-                          QWidget *parent, QString cmd) Q_DECL_OVERRIDE;
+    PluginCapabilities getCapabilities() const Q_DECL_OVERRIDE;
+    QString name() const Q_DECL_OVERRIDE;
+    void execComm(IDocumentPlugin *doc,
+                  QWidget *parent, QString cmd) Q_DECL_OVERRIDE;
 
 private:
     QString getStrData(Plug_Entity *ent);
-    double polylineRadius( const Plug_VertexData& ptA, const Plug_VertexData& ptB);
-    Document_Interface *d;
+    static double polylineRadius( const Plug_VertexData& ptA, const Plug_VertexData& ptB);
+    IDocumentPlugin *document;
 };
 
-class lc_ListDlg : public QDialog
-{
+class lc_ListDlg : public QDialog {
     Q_OBJECT
-
 public:
-    explicit lc_ListDlg(QWidget *parent = 0);
+    explicit lc_ListDlg(QWidget *parent = nullptr);
     ~lc_ListDlg() override;
-    void setText(QString text);
+    void setText(const QString& text);
 
 private:
     QTextEdit edit;

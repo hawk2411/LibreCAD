@@ -33,7 +33,7 @@ public:
     virtual ~lc_GearDlg();
 
 public slots:
-    void processAction(Document_Interface *doc, const QString& cmd, QPointF& center);
+    void processAction(IDocumentPlugin *doc, const QString& cmd, QPointF& center);
     void checkAccept();
 
 protected:
@@ -82,7 +82,7 @@ class LC_Gear : public QObject, QC_PluginInterface
 
     virtual PluginCapabilities getCapabilities() const Q_DECL_OVERRIDE;
     virtual QString name() const Q_DECL_OVERRIDE;
-    virtual void execComm(Document_Interface *doc,
+    virtual void execComm(IDocumentPlugin *doc,
                           QWidget *parent, QString cmd) Q_DECL_OVERRIDE;
 };
 

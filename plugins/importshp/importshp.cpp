@@ -40,8 +40,8 @@ QString ImportShp::name() const
     return (tr("Import ESRI Shapefile"));
 }
 
-void ImportShp::execComm(Document_Interface *doc,
-                             QWidget *parent, QString /*cmd*/)
+void ImportShp::execComm(IDocumentPlugin *doc,
+                         QWidget *parent, QString /*cmd*/)
 {
     dibSHP pdt(parent);
     int result = pdt.exec();
@@ -269,7 +269,7 @@ void dibSHP::updateFile()
     }
 }
 
-void dibSHP::procesFile(Document_Interface *doc)
+void dibSHP::procesFile(IDocumentPlugin *doc)
 {
     int num_ent, st;
     double min_bound[4], max_bound[4];

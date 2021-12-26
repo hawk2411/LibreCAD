@@ -34,8 +34,8 @@ PluginCapabilities LC_Sample::getCapabilities() const
     return pluginCapabilities;
 }
 
-void LC_Sample::execComm(Document_Interface *doc,
-                             QWidget *parent, QString cmd)
+void LC_Sample::execComm(IDocumentPlugin *doc,
+                         QWidget *parent, QString cmd)
 {
     Q_UNUSED(doc);
     Q_UNUSED(cmd);
@@ -112,7 +112,7 @@ bool lc_Sampledlg::failGUI(QString *msg)
 }
 
 
-void lc_Sampledlg::processAction(Document_Interface *doc)
+void lc_Sampledlg::processAction(IDocumentPlugin *doc)
 {
     Q_UNUSED(doc);
     QPointF start, end;

@@ -28,35 +28,30 @@
 #include "document_interface.h"
 #include "gear.h"
 
-QString LC_Gear::name() const
-{
+QString LC_Gear::name() const {
     return (tr("Gear creation plugin"));
 }
 
-PluginCapabilities LC_Gear::getCapabilities() const
-{
+PluginCapabilities LC_Gear::getCapabilities() const {
     PluginCapabilities pluginCapabilities;
     pluginCapabilities.menuEntryPoints
             << PluginMenuLocation("plugins_menu", tr("Gear plugin"));
     return pluginCapabilities;
 }
 
-LC_Gear::LC_Gear()
-{
+LC_Gear::LC_Gear() {
 }
 
-LC_Gear::~LC_Gear()
-{
+LC_Gear::~LC_Gear() {
 }
 
-void LC_Gear::execComm(Document_Interface *doc,
-                        QWidget *parent, QString cmd)
-{
+void LC_Gear::execComm(IDocumentPlugin *doc,
+                       QWidget *parent, QString cmd) {
     Q_UNUSED(doc);
     Q_UNUSED(cmd);
 
     QPointF center;
-    if (!doc->getPoint(&center, QString("select center"))) {
+    if (!doc->getPoint(&center, QString("select center"), nullptr)) {
         return;
     }
 
@@ -67,7 +62,7 @@ void LC_Gear::execComm(Document_Interface *doc,
         }
     }
 
-    int result =  parameters_dialog->exec();
+    int result = parameters_dialog->exec();
     if (result == QDialog::Accepted)
         parameters_dialog->processAction(doc, cmd, center);
 }
@@ -75,8 +70,8 @@ void LC_Gear::execComm(Document_Interface *doc,
 /*****************************/
 
 lc_GearDlg::lc_GearDlg(QWidget *parent) :
-    QDialog(parent),
-    settings(QSettings::IniFormat, QSettings::UserScope, "LibreCAD", "gear_plugin") {
+        QDialog(parent),
+        settings(QSettings::IniFormat, QSettings::UserScope, "LibreCAD", "gear_plugin") {
 
     const char *windowTitle = "Draw a gear";
 
@@ -87,21 +82,21 @@ lc_GearDlg::lc_GearDlg(QWidget *parent) :
     int row = 0;
     int column = 0;
 
-    auto resetColumn = [&](){
-        if(column) {
+    auto resetColumn = [&]() {
+        if (column) {
             row++;
             column = 0;
         }
     };
-    auto addToLayout = [&](QWidget* widget, const QString &text) {
+    auto addToLayout = [&](QWidget *widget, const QString &text) {
         mainLayout->addWidget(new QLabel((text), this), row, 0);
         mainLayout->addWidget(widget, row, 1);
     };
 
-    auto initDoubleSpinBox = [&](const QString& text, double min, double max, double stp, int dec ) {
+    auto initDoubleSpinBox = [&](const QString &text, double min, double max, double stp, int dec) {
         resetColumn();
 
-        auto* widget = new QDoubleSpinBox(this);
+        auto *widget = new QDoubleSpinBox(this);
         widget->setMinimum(min);
         widget->setMaximum(max);
         widget->setSingleStep(stp);
@@ -113,22 +108,22 @@ lc_GearDlg::lc_GearDlg(QWidget *parent) :
         return widget;
     };
 
-    auto initSpinBox = [&](const QString& text, int min, int max, int stp) {
+    auto initSpinBox = [&](const QString &text, int min, int max, int stp) {
         resetColumn();
 
-        auto* widget = new QSpinBox(this);
+        auto *widget = new QSpinBox(this);
         widget->setMinimum(min);
         widget->setMaximum(max);
         widget->setSingleStep(stp);
 
         addToLayout(widget, text);
         row++;
-        column=0;
+        column = 0;
         return widget;
     };
 
-    auto initCheckBox = [&](const QString& text) {
-        auto * widget = new QCheckBox(text);
+    auto initCheckBox = [&](const QString &text) {
+        auto *widget = new QCheckBox(text);
         mainLayout->addWidget(widget, row, column);
         column++;
         if (column >= 2) {
@@ -140,25 +135,26 @@ lc_GearDlg::lc_GearDlg(QWidget *parent) :
 
     rotateBox = initDoubleSpinBox(tr("Rotation angle"), -360.0, 360.0, 1.0, 6);
     nteethBox = initSpinBox(tr("Number of teeth"), 1, 2000, 1);
-    modulusBox= initDoubleSpinBox(tr("Modulus"), 1.0E-10, 1.0E+10, 0.1, 6);
+    modulusBox = initDoubleSpinBox(tr("Modulus"), 1.0E-10, 1.0E+10, 0.1, 6);
     pressureBox = initDoubleSpinBox(tr("Pressure angle (deg)"), 0.1, 89.9, 1.0, 5);
-    addendumBox= initDoubleSpinBox(tr("Addendum (rel. to modulus)"), 0.0, 5.0, 0.1, 5);
+    addendumBox = initDoubleSpinBox(tr("Addendum (rel. to modulus)"), 0.0, 5.0, 0.1, 5);
     dedendumBox = initDoubleSpinBox(tr("Dedendum (rel. to modulus)"), 0.0, 5.0, 0.1, 5);
-    n1Box = initSpinBox (tr("Number of segments to draw (dedendum)"), 1, 1024, 8);
-    n2Box = initSpinBox (tr("Number of segments to draw (addendum)"), 1, 1024, 8);
-    drawAllTeethBox = initCheckBox (tr("Draw all teeth?"));
-    drawBothSidesOfToothBox = initCheckBox (tr("Draw symmetric face?"));
+    n1Box = initSpinBox(tr("Number of segments to draw (dedendum)"), 1, 1024, 8);
+    n2Box = initSpinBox(tr("Number of segments to draw (addendum)"), 1, 1024, 8);
+    drawAllTeethBox = initCheckBox(tr("Draw all teeth?"));
+    drawBothSidesOfToothBox = initCheckBox(tr("Draw symmetric face?"));
 
-    useLayersBox = initCheckBox (tr("Use layers?")); resetColumn();
-    drawAddendumCircleBox = initCheckBox (tr("Draw addendum circle?"));
-    drawPitchCircleBox = initCheckBox (tr("Draw pitch circle?"));
-    drawBaseCircleBox = initCheckBox (tr("Draw base circle?"));
-    drawRootCircleBox = initCheckBox (tr("Draw root circle?"));
-    drawPressureLineBox = initCheckBox (tr("Draw pressure line?"));
-    drawPressureLimitBox = initCheckBox (tr("Draw pressure limits?"));
+    useLayersBox = initCheckBox(tr("Use layers?"));
+    resetColumn();
+    drawAddendumCircleBox = initCheckBox(tr("Draw addendum circle?"));
+    drawPitchCircleBox = initCheckBox(tr("Draw pitch circle?"));
+    drawBaseCircleBox = initCheckBox(tr("Draw base circle?"));
+    drawRootCircleBox = initCheckBox(tr("Draw root circle?"));
+    drawPressureLineBox = initCheckBox(tr("Draw pressure line?"));
+    drawPressureLimitBox = initCheckBox(tr("Draw pressure limits?"));
 
-    calcInterferenceBox = initCheckBox (tr("Calculate interference?"));
-    n3Box = initSpinBox (tr("Number of segments to draw (interference)"), 1, 1024, 8);
+    calcInterferenceBox = initCheckBox(tr("Calculate interference?"));
+    n3Box = initSpinBox(tr("Number of segments to draw (interference)"), 1, 1024, 8);
 
     auto *accept_but = new QPushButton(tr("Accept"), this);
     auto *cancel_but = new QPushButton(tr("Cancel"), this);
@@ -181,34 +177,29 @@ lc_GearDlg::lc_GearDlg(QWidget *parent) :
 
 /* calculate the radius of a point in canonical evoluta
  * whose radius is given. */
-static double radius2arg(const double radius, const double alpha = 0.0)
-{
+static double radius2arg(const double radius, const double alpha = 0.0) {
     const double aux = 1.0 - alpha;
-    return sqrt(radius * radius - aux*aux);
+    return sqrt(radius * radius - aux * aux);
 }
 
 /* canonical evolute is generated by a 1.0 radius circle.
  * We consider it the next complex function:
  * (1.0 - alpha - i*phi) * exp(i*phi) 
  */
-static double re_evolute(const double phi, const double alpha = 0.0)
-{
+static double re_evolute(const double phi, const double alpha = 0.0) {
     return (1.0 - alpha) * cos(phi) + phi * sin(phi);
 }
 
-static double im_evolute(const double phi, const double alpha = 0.0)
-{
+static double im_evolute(const double phi, const double alpha = 0.0) {
     return (1.0 - alpha) * sin(phi) - phi * cos(phi);
 }
 
-static double mod_evolute(const double phi, const double alpha = 0.0)
-{
+static double mod_evolute(const double phi, const double alpha = 0.0) {
     double aux = (1.0 - alpha);
-    return sqrt(aux*aux + phi*phi);
+    return sqrt(aux * aux + phi * phi);
 }
 
-static double arg_evolute(const double phi, const double alpha = 0.0)
-{
+static double arg_evolute(const double phi, const double alpha = 0.0) {
     double aux = (1.0 - alpha);
     return phi - atan2(phi, aux);
 }
@@ -219,55 +210,53 @@ struct evolute {
 
     evolute(int n_t, double add, double ded, double p_ang);
 
-    QPointF evo0(const double phi); /* evolute for tooth face */
-    QPointF evo1(const double phi); /* evolute for tooth carving (interference) */
-    double aux(const double phi); /* auxiliary function */
-    double find_common_phi_evo1(const double eps = default_eps); 
+    QPointF evo0(double phi); /* evolute for tooth face */
+    QPointF evo1(double phi); /* evolute for tooth carving (interference) */
+    double aux(double phi); /* auxiliary function */
+    double find_common_phi_evo1(double eps = default_eps);
 
     const int n_teeth;
     const double
-        addendum, dedendum,
-        c_modulus,
-        p_angle, cos_p_angle, cos2_p_angle,
-        angle_0, cos_angle_0, sin_angle_0,
-        dedendum_radius, addendum_radius,
-        phi_at_dedendum, phi_at_addendum,
-        alpha, angle_1,
-        cos_angle_1, sin_angle_1;
+            addendum, dedendum,
+            c_modulus,
+            p_angle, cos_p_angle, cos2_p_angle,
+            angle_0, cos_angle_0, sin_angle_0,
+            dedendum_radius, addendum_radius,
+            phi_at_dedendum, phi_at_addendum,
+            alpha, angle_1,
+            cos_angle_1, sin_angle_1;
 };
 
 const double evolute::default_eps = 8 * DBL_EPSILON;
 
-evolute::evolute(int n_t, double add, double ded, double p_ang):
-    n_teeth(n_t),
-    addendum(add),
-    dedendum(ded),
-    c_modulus(2.0/n_teeth), 
-    p_angle(p_ang),
-    cos_p_angle(cos(p_ang)),
-    cos2_p_angle(cos_p_angle * cos_p_angle),
-    angle_0(p_angle - tan(p_angle)),
-    cos_angle_0(cos(angle_0)),
-    sin_angle_0(sin(angle_0)),
-    dedendum_radius(1.0 - c_modulus * dedendum),
-    addendum_radius(1.0 + c_modulus * addendum),
-    phi_at_dedendum(dedendum_radius > cos_p_angle
-            ? radius2arg(dedendum_radius / cos_p_angle)
-            : 0.0),
-    phi_at_addendum(radius2arg(addendum_radius / cos_p_angle)),
-    alpha(1.0 - dedendum_radius),
-    angle_1(-alpha * tan(p_angle)),
-    cos_angle_1(cos(angle_1)),
-    sin_angle_1(sin(angle_1))
-{
+evolute::evolute(int n_t, double add, double ded, double p_ang) :
+        n_teeth(n_t),
+        addendum(add),
+        dedendum(ded),
+        c_modulus(2.0 / n_teeth),
+        p_angle(p_ang),
+        cos_p_angle(cos(p_ang)),
+        cos2_p_angle(cos_p_angle * cos_p_angle),
+        angle_0(p_angle - tan(p_angle)),
+        cos_angle_0(cos(angle_0)),
+        sin_angle_0(sin(angle_0)),
+        dedendum_radius(1.0 - c_modulus * dedendum),
+        addendum_radius(1.0 + c_modulus * addendum),
+        phi_at_dedendum(dedendum_radius > cos_p_angle
+                        ? radius2arg(dedendum_radius / cos_p_angle)
+                        : 0.0),
+        phi_at_addendum(radius2arg(addendum_radius / cos_p_angle)),
+        alpha(1.0 - dedendum_radius),
+        angle_1(-alpha * tan(p_angle)),
+        cos_angle_1(cos(angle_1)),
+        sin_angle_1(sin(angle_1)) {
 }
 
 /* this evolute calculates points for an argument phi for the
  * curve that defines de active face of the tooth.  */
-QPointF evolute::evo0(const double phi)
-{
+QPointF evolute::evo0(const double phi) {
     double x = cos_p_angle * re_evolute(phi),
-           y = cos_p_angle * im_evolute(phi);
+            y = cos_p_angle * im_evolute(phi);
     return QPointF(cos_angle_0 * x - sin_angle_0 * y,
                    sin_angle_0 * x + cos_angle_0 * y);
 }
@@ -275,8 +264,7 @@ QPointF evolute::evo0(const double phi)
 /* this evolute calculates points for an argument phi for the
  * curve that defines the carved neck of the tooth in case of
  * interference. */
-QPointF evolute::evo1(const double phi)
-{
+QPointF evolute::evo1(const double phi) {
     double x = re_evolute(phi, alpha);
     double y = im_evolute(phi, alpha);
     return QPointF(cos_angle_1 * x - sin_angle_1 * y,
@@ -288,8 +276,7 @@ QPointF evolute::evo1(const double phi)
  * function to derive the phi angle of the secondary evolute at which
  * it crosses the primary.   This is the common point for both evolutes
  */
-double evolute::aux(const double phi)
-{
+double evolute::aux(const double phi) {
     const double mod = mod_evolute(phi, alpha);
     const double arg = arg_evolute(phi, alpha);
 
@@ -308,30 +295,31 @@ double evolute::aux(const double phi)
  * the second curve hits the base circle.  This being positive means the
  * second evolute has already crossed the first.  Being negative means it
  * has not yet crossed the primary evolute. */
-double evolute::find_common_phi_evo1(const double eps)
-{
+double evolute::find_common_phi_evo1(const double eps) {
     double a = -radius2arg(cos_p_angle, alpha);
     double b = -radius2arg(1.0, alpha);
     double f_a = aux(a), f_b = aux(b);
     double x = a;
 
-    if (f_a > 0) do {
+    if (f_a > 0)
+        do {
 
-        x = (a*f_b - b*f_a) / (f_b - f_a);
-        double f_x = aux(x);
+            x = (a * f_b - b * f_a) / (f_b - f_a);
+            double f_x = aux(x);
 
-        if (fabs(x - a) < fabs(x - b)) {
-            b = x; f_b = f_x;
-        } else {
-            a = x; f_a = f_x;
-        }
-    } while (fabs(a-b) >= eps);
+            if (fabs(x - a) < fabs(x - b)) {
+                b = x;
+                f_b = f_x;
+            } else {
+                a = x;
+                f_a = f_x;
+            }
+        } while (fabs(a - b) >= eps);
 
     return x;
 } /* find_common_phi_evo1 */
 
-void lc_GearDlg::processAction(Document_Interface *doc, const QString& cmd, QPointF& center)
-{
+void lc_GearDlg::processAction(IDocumentPlugin *doc, const QString &cmd, QPointF &center) {
     Q_UNUSED(doc);
     Q_UNUSED(cmd);
     Q_UNUSED(center);
@@ -361,33 +349,32 @@ void lc_GearDlg::processAction(Document_Interface *doc, const QString& cmd, QPoi
 
     const double modulus = modulusBox->value();
     const double scale_factor = modulus / ev.c_modulus;
-    const int    n1 = n1Box->value();
-    const int    n2 = n2Box->value();
+    const int n1 = n1Box->value();
+    const int n2 = n2Box->value();
     const double rotation = rotateBox->value() * M_PI / 180.0;
 
     rotate_and_disp = rotate_and_disp
-        .translate(center.x(), center.y())
-        .rotateRadians(rotation);
+            .translate(center.x(), center.y())
+            .rotateRadians(rotation);
 
     double phi_0 = 0.0;
 
     /* Build one tooth face */
     if (calcInterferenceBox->isChecked()
-        && ev.cos2_p_angle > ev.dedendum_radius)
-    {
-            const int n3 = n3Box->value();
-            double angle_2 = ev.find_common_phi_evo1();
+        && ev.cos2_p_angle > ev.dedendum_radius) {
+        const int n3 = n3Box->value();
+        double angle_2 = ev.find_common_phi_evo1();
 
-            phi_0 = radius2arg(mod_evolute(angle_2, ev.alpha) / ev.cos_p_angle);
+        phi_0 = radius2arg(mod_evolute(angle_2, ev.alpha) / ev.cos_p_angle);
 
-            double phi = 0.0,
-                   delta = angle_2 / n3;
-            for(int i = 0; i < n3; i++) {
-                const QPointF point(scale_factor * ev.evo1(phi));
-                first_tooth.push_back(point);
-                polyline.push_back(Plug_VertexData(rotate_and_disp.map(point), 0.0));
-                phi += delta;
-            } /* for */
+        double phi = 0.0,
+                delta = angle_2 / n3;
+        for (int i = 0; i < n3; i++) {
+            const QPointF point(scale_factor * ev.evo1(phi));
+            first_tooth.push_back(point);
+            polyline.push_back(Plug_VertexData(rotate_and_disp.map(point), 0.0));
+            phi += delta;
+        } /* for */
     } else if (ev.cos_p_angle > ev.dedendum_radius) {
 
         /* no interference calculation at all.  just draw the point at the
@@ -450,7 +437,7 @@ void lc_GearDlg::processAction(Document_Interface *doc, const QString& cmd, QPoi
 
         /* for all points we have to mirror (all but the last one) */
         for (int i = n_to_mirror - 1; i >= 0; --i) {
-            const QPointF& orig(first_tooth[i]);
+            const QPointF &orig(first_tooth[i]);
 
             QPointF target(cos_axis_angle_x_2 * orig.x() + sin_axis_angle_x_2 * orig.y(),
                            sin_axis_angle_x_2 * orig.x() - cos_axis_angle_x_2 * orig.y());
@@ -473,12 +460,11 @@ void lc_GearDlg::processAction(Document_Interface *doc, const QString& cmd, QPoi
                 const double sin_angle = sin(angle);
 
                 for (std::vector<QPointF>::iterator it = first_tooth.begin();
-                        it != first_tooth.end(); ++it)
-                {
-                    const QPointF& orig = *it;
+                     it != first_tooth.end(); ++it) {
+                    const QPointF &orig = *it;
                     polyline.push_back(Plug_VertexData(rotate_and_disp.map(QPointF(
-                                        cos_angle * orig.x() - sin_angle * orig.y(),
-                                        sin_angle * orig.x() + cos_angle * orig.y())),
+                                                               cos_angle * orig.x() - sin_angle * orig.y(),
+                                                               sin_angle * orig.x() + cos_angle * orig.y())),
                                                        0.0));
                 } /* for */
             } /* for */
@@ -496,10 +482,10 @@ void lc_GearDlg::processAction(Document_Interface *doc, const QString& cmd, QPoi
             } \
         } while(0)
 
-    LAYER("shapes"); 
+    LAYER("shapes");
     doc->addPolyline(polyline,
-            drawAllTeethBox->isChecked()
-            && drawBothSidesOfToothBox->isChecked());
+                     drawAllTeethBox->isChecked()
+                     && drawBothSidesOfToothBox->isChecked());
 
     if (drawPitchCircleBox->isChecked()) {
         LAYER("pitch_circles");
@@ -527,7 +513,8 @@ void lc_GearDlg::processAction(Document_Interface *doc, const QString& cmd, QPoi
                    scale_factor * sin(ev.p_angle + rotation) * ev.cos_p_angle),
                 p2(scale_factor * cos(rotation),
                    scale_factor * sin(rotation));
-        p1 += center; p2 += center;
+        p1 += center;
+        p2 += center;
         if (drawPressureLimitBox->isChecked())
             doc->addLine(&center, &p1);
         if (drawPressureLineBox->isChecked())
@@ -540,65 +527,59 @@ void lc_GearDlg::processAction(Document_Interface *doc, const QString& cmd, QPoi
     writeSettings();
 }
 
-void lc_GearDlg::checkAccept()
-{
+void lc_GearDlg::checkAccept() {
     accept();
 }
 
-lc_GearDlg::~lc_GearDlg()
-{
+lc_GearDlg::~lc_GearDlg() = default;
+
+void lc_GearDlg::closeEvent(QCloseEvent *event) {
+    QDialog::closeEvent(event);
 }
 
-void lc_GearDlg::closeEvent(QCloseEvent *event)
-{
-    QWidget::closeEvent(event);
-}
-
-void lc_GearDlg::readSettings()
-{
+void lc_GearDlg::readSettings() {
 
     QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-    QSize size = settings.value("size", QSize(430,140)).toSize();
+    QSize size = settings.value("size", QSize(430, 140)).toSize();
 
-#define R(var,toFunc, defval) do { \
+#define R(var, toFunc, defval) do { \
         var ## Box->setValue(settings.value(#var, defval).toFunc()); \
     } while(0)
-        
-#define RB(var,defval) do { \
+
+#define RB(var, defval) do { \
         var ## Box->setChecked(settings.value(#var, defval).toBool()); \
     } while (0)
-    R(rotate, toDouble,         0.0 );
-    R(nteeth, toInt,           20   );
-    R(modulus, toDouble,        1.0 );
-    R(pressure, toDouble,      20.0 );
-    R(addendum, toDouble,       1.0 );
-    R(dedendum, toDouble,       1.25);
-    R(n1, toInt,               16   );
-    R(n2, toInt,               16   );
-    RB(drawAllTeeth,         true   );
-    RB(drawBothSidesOfTooth, true   );
-    RB(useLayers,            true   );
-    RB(drawAddendumCircle,  false   );
-    RB(drawPitchCircle,      true   );
-    RB(drawBaseCircle,       true   );
-    RB(drawRootCircle,      false   );
-    RB(drawPressureLine,     true   );
-    RB(drawPressureLimit,   false   );
-    RB(calcInterference,    false   );
-    R(n3, toInt,               16   );
+    R(rotate, toDouble, 0.0);
+    R(nteeth, toInt, 20);
+    R(modulus, toDouble, 1.0);
+    R(pressure, toDouble, 20.0);
+    R(addendum, toDouble, 1.0);
+    R(dedendum, toDouble, 1.25);
+    R(n1, toInt, 16);
+    R(n2, toInt, 16);
+    RB(drawAllTeeth, true);
+    RB(drawBothSidesOfTooth, true);
+    RB(useLayers, true);
+    RB(drawAddendumCircle, false);
+    RB(drawPitchCircle, true);
+    RB(drawBaseCircle, true);
+    RB(drawRootCircle, false);
+    RB(drawPressureLine, true);
+    RB(drawPressureLimit, false);
+    RB(calcInterference, false);
+    R(n3, toInt, 16);
 
     resize(size);
     move(pos);
 }
 
-void lc_GearDlg::writeSettings()
-{
+void lc_GearDlg::writeSettings() {
 #define W(var, vfunc) do { \
         settings.setValue(#var, var##Box->vfunc()); \
     } while (0)
 #define WN(var) W(var, value)
 #define WB(var) W(var, isChecked)
-    
+
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     WN(nteeth);

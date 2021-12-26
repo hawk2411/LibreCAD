@@ -39,7 +39,7 @@ class PicFile : public QObject, QC_PluginInterface
     public:
     virtual PluginCapabilities getCapabilities() const Q_DECL_OVERRIDE;
     virtual QString name() const Q_DECL_OVERRIDE;
-    virtual void execComm(Document_Interface *doc,
+    virtual void execComm(IDocumentPlugin *doc,
                           QWidget *parent, QString cmd) Q_DECL_OVERRIDE;
 };
 
@@ -56,7 +56,7 @@ class picPunto : public QDialog
     
     public slots:
         void dptFile();
-        void processFile(Document_Interface *doc);
+        void processFile(IDocumentPlugin *doc);
         void checkAccept();
     
     private:
@@ -76,7 +76,7 @@ class picPunto : public QDialog
         QLineEdit *scaleedit;
         QList<pointData*> dataList;
     
-        Document_Interface *currDoc;
+        IDocumentPlugin *currDoc;
         int cnt;
         double scale;
 };

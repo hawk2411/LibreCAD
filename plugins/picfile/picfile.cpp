@@ -42,8 +42,8 @@ QString PicFile::name() const
      return (tr("import PIC file"));
  }
 
-void PicFile::execComm(Document_Interface *doc,
-                             QWidget *parent, QString cmd)
+void PicFile::execComm(IDocumentPlugin *doc,
+                       QWidget *parent, QString cmd)
 {
     Q_UNUSED(cmd);
     picPunto pdt(parent);
@@ -122,7 +122,7 @@ bool picPunto::failGUI(QString *msg)
     return false;
 }
 
-void picPunto::processFile(Document_Interface *doc)
+void picPunto::processFile(IDocumentPlugin *doc)
 {
     QString sep = " ";
     currDoc = doc;
