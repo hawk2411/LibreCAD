@@ -221,6 +221,8 @@ set(SOURCES
         lib/actions/rs_preview.cpp
         lib/actions/rs_previewactioninterface.cpp
         lib/actions/rs_snapper.cpp
+        lib/actions/RS_SnapMode.cpp
+        lib/actions/RS_SnapMode.h
         lib/creation/rs_creation.cpp
         lib/debug/rs_debug.cpp
         lib/engine/rs_arc.cpp

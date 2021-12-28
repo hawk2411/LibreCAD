@@ -39,9 +39,9 @@
  */
 class RS_Preview : public RS_EntityContainer {
 public:
-    RS_Preview(RS_EntityContainer* parent=nullptr);
-	~RS_Preview() = default;
-    virtual RS2::EntityType rtti() const override{
+    explicit RS_Preview(RS_EntityContainer* parent=nullptr);
+	~RS_Preview() override = default;
+    RS2::EntityType rtti() const override{
         return RS2::EntityPreview;
     }
     virtual void addEntity(RS_Entity* entity) override;
