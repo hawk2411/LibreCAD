@@ -83,7 +83,7 @@ void RS_ActionModifyBevel::trigger() {
         entity2 = nullptr;
         setStatus(SetEntity1);
 
-        RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     }
 }
 
@@ -144,7 +144,7 @@ void RS_ActionModifyBevel::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -162,7 +162,7 @@ void RS_ActionModifyBevel::commandEvent(RS_CommandEvent* e) {
             setStatus(SetLength2);
         } else if (checkCommand("trim", c)) {
 			pPoints->data.trim = !pPoints->data.trim;
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
         }
         break;
 
@@ -173,9 +173,9 @@ void RS_ActionModifyBevel::commandEvent(RS_CommandEvent* e) {
                 e->accept();
 				pPoints->data.length1 = l;
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -186,9 +186,9 @@ void RS_ActionModifyBevel::commandEvent(RS_CommandEvent* e) {
             if (ok) {
 				pPoints->data.length2 = l;
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -240,35 +240,35 @@ QStringList RS_ActionModifyBevel::getAvailableCommands() {
 void RS_ActionModifyBevel::showOptions() {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
 }
 
 void RS_ActionModifyBevel::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 void RS_ActionModifyBevel::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetEntity1:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select first entity"),
+        GetDialogFactory()->updateMouseWidget(tr("Select first entity"),
                                             tr("Cancel"));
         break;
     case SetEntity2:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select second entity"),
+        GetDialogFactory()->updateMouseWidget(tr("Select second entity"),
                                             tr("Back"));
         break;
     case SetLength1:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter length 1:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter length 1:"),
                                             tr("Back"));
         break;
     case SetLength2:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter length 2:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter length 2:"),
                                             tr("Back"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

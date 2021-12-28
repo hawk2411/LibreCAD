@@ -52,9 +52,9 @@ RS_ActionInfoInside::~RS_ActionInfoInside() = default;
 void RS_ActionInfoInside::trigger() {
     bool onContour = false;
 	if (RS_Information::isPointInsideContour(*pt, contour.get(), &onContour)) {
-        RS_DIALOGFACTORY->commandMessage(tr("Point is inside selected contour."));
+        GetDialogFactory()->commandMessage(tr("Point is inside selected contour."));
     } else {
-        RS_DIALOGFACTORY->commandMessage(tr("Point is outside selected contour."));
+        GetDialogFactory()->commandMessage(tr("Point is outside selected contour."));
     }
     finish(false);
 }
@@ -80,11 +80,11 @@ void RS_ActionInfoInside::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionInfoInside::updateMouseButtonHints() {
     switch (getStatus()) {
     case 0:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify point"),
                                             tr("Cancel"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

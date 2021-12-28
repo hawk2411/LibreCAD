@@ -226,7 +226,7 @@ void RS_ActionDrawCircleTan2::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
 	if (checkCommand("help", c)) {
-			RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+			GetDialogFactory()->commandMessage(msgAvailableCommands()
 											 + getAvailableCommands().join(", "));
 		return;
 	}
@@ -243,7 +243,7 @@ void RS_ActionDrawCircleTan2::commandEvent(RS_CommandEvent* e) {
                     setStatus(SetAngle1);
                 }
 			} else
-					RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+					GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
         break;
 
@@ -254,7 +254,7 @@ void RS_ActionDrawCircleTan2::commandEvent(RS_CommandEvent* e) {
                 angle1 = RS_Math::deg2rad(a);
                 setStatus(SetAngle2);
 			} else
-                    RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                    GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
         break;
 
@@ -265,7 +265,7 @@ void RS_ActionDrawCircleTan2::commandEvent(RS_CommandEvent* e) {
                 angle2 = RS_Math::deg2rad(a);
                 trigger();
 			} else
-                    RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                    GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
         break;
 
@@ -280,7 +280,7 @@ void RS_ActionDrawCircleTan2::showOptions() {
 	RS_DEBUG->print("RS_ActionDrawCircleTan2::showOptions");
 	RS_ActionInterface::showOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, true);
+	GetDialogFactory()->requestOptions(this, true);
 	RS_DEBUG->print("RS_ActionDrawCircleTan2::showOptions: OK");
 }
 
@@ -289,7 +289,7 @@ void RS_ActionDrawCircleTan2::showOptions() {
 void RS_ActionDrawCircleTan2::hideOptions() {
 	RS_ActionInterface::hideOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, false);
+	GetDialogFactory()->requestOptions(this, false);
 }
 
 
@@ -302,21 +302,21 @@ QStringList RS_ActionDrawCircleTan2::getAvailableCommands() {
 void RS_ActionDrawCircleTan2::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetCircle1:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify the first line/arc/circle"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify the first line/arc/circle"),
 											tr("Cancel"));
 		break;
 
 	case SetCircle2:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify the second line/arc/circle"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify the second line/arc/circle"),
 											tr("Back"));
 		break;
 
 	case SetCenter:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Select the center of the tangent circle"),
+		GetDialogFactory()->updateMouseWidget(tr("Select the center of the tangent circle"),
 											tr("Back"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

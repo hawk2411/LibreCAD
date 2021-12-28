@@ -289,7 +289,7 @@ void RS_ActionPolylineEquidistant::trigger() {
                 bRightSide = false;
                 setStatus(ChooseEntity);
 
-                RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
                 graphicView->redraw();
@@ -304,10 +304,10 @@ void RS_ActionPolylineEquidistant::mouseReleaseEvent(QMouseEvent* e) {
                 case ChooseEntity:
                         originalEntity = catchEntity(e);
 						if (!originalEntity) {
-                                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                                GetDialogFactory()->commandMessage(tr("No Entity found."));
                         } else if (originalEntity->rtti()!=RS2::EntityPolyline) {
 
-                                RS_DIALOGFACTORY->commandMessage(
+                                GetDialogFactory()->commandMessage(
                                         tr("Entity must be a polyline."));
                         } else {
 								*targetPoint = snapFree(e);
@@ -350,7 +350,7 @@ void RS_ActionPolylineEquidistant::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionPolylineEquidistant::showOptions() {
         RS_ActionInterface::showOptions();
 
-        RS_DIALOGFACTORY->requestOptions(this, true);
+        GetDialogFactory()->requestOptions(this, true);
 }
 
 
@@ -358,7 +358,7 @@ void RS_ActionPolylineEquidistant::showOptions() {
 void RS_ActionPolylineEquidistant::hideOptions() {
         RS_ActionInterface::hideOptions();
 
-        RS_DIALOGFACTORY->requestOptions(this, false);
+        GetDialogFactory()->requestOptions(this, false);
 }
 
 void RS_ActionPolylineEquidistant::updateMouseCursor() {
@@ -368,11 +368,11 @@ void RS_ActionPolylineEquidistant::updateMouseCursor() {
 void RS_ActionPolylineEquidistant::updateMouseButtonHints() {
         switch (getStatus()) {
         case ChooseEntity:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Choose the original polyline"),
+                GetDialogFactory()->updateMouseWidget(tr("Choose the original polyline"),
                                                                                         tr("Cancel"));
                 break;
         default:
-				RS_DIALOGFACTORY->updateMouseWidget();
+				GetDialogFactory()->updateMouseWidget();
                 break;
         }
 }

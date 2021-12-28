@@ -78,7 +78,7 @@ RS_ActionDrawLineAngle::RS_ActionDrawLineAngle(RS_EntityContainer& container,
 	pPoints->angle = angle;
 	pPoints->fixedAngle = fixedAngle;
 
-    RS_DIALOGFACTORY->requestOptions(this, true,false);
+    GetDialogFactory()->requestOptions(this, true,false);
     reset();
 }
 
@@ -193,7 +193,7 @@ void RS_ActionDrawLineAngle::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -216,9 +216,9 @@ void RS_ActionDrawLineAngle::commandEvent(RS_CommandEvent* e) {
                 e->accept();
 				pPoints->angle = RS_Math::deg2rad(a);
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(SetPos);
         }
         break;
@@ -230,9 +230,9 @@ void RS_ActionDrawLineAngle::commandEvent(RS_CommandEvent* e) {
                 e->accept();
 				pPoints->length = l;
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(SetPos);
         }
         break;
@@ -297,16 +297,16 @@ QStringList RS_ActionDrawLineAngle::getAvailableCommands() {
 void RS_ActionDrawLineAngle::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetPos:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify position"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify position"),
                                             tr("Cancel"));
         break;
 
     case SetAngle:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter angle:"), tr("Back"));
+        GetDialogFactory()->updateMouseWidget(tr("Enter angle:"), tr("Back"));
         break;
 
     case SetLength:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter length:"), tr("Back"));
+        GetDialogFactory()->updateMouseWidget(tr("Enter length:"), tr("Back"));
         break;
 
     default:
@@ -317,13 +317,13 @@ void RS_ActionDrawLineAngle::updateMouseButtonHints() {
 void RS_ActionDrawLineAngle::showOptions() {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true,true);
+    GetDialogFactory()->requestOptions(this, true,true);
 }
 
 void RS_ActionDrawLineAngle::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 void RS_ActionDrawLineAngle::updateMouseCursor() {

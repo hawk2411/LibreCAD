@@ -199,7 +199,7 @@ void RS_ActionDrawEllipseFociPoint::commandEvent(RS_CommandEvent* e) {
 	QString cmd = e->getCommand().toLower();
 
 	if (checkCommand("help", cmd)) {
-			RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+			GetDialogFactory()->commandMessage(msgAvailableCommands()
 											 + getAvailableCommands().join(": ")+
 											 tr("specify a point on ellipse, or total distance to foci")
 											 );
@@ -215,9 +215,9 @@ void RS_ActionDrawEllipseFociPoint::commandEvent(RS_CommandEvent* e) {
 			if (pPoints->d > pPoints->c + RS_TOLERANCE) {
 				trigger();
 			} else
-				RS_DIALOGFACTORY->commandMessage(tr("Total distance %1 is smaller than distance between foci").arg(fabs(a)));
+				GetDialogFactory()->commandMessage(tr("Total distance %1 is smaller than distance between foci").arg(fabs(a)));
 		} else
-			RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+			GetDialogFactory()->commandMessage(tr("Not a valid expression"));
 
 	}
 }
@@ -233,23 +233,23 @@ QStringList RS_ActionDrawEllipseFociPoint::getAvailableCommands() {
 void RS_ActionDrawEllipseFociPoint::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetFocus1:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first focus of ellipse"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify first focus of ellipse"),
 											tr("Cancel"));
 		break;
 
 	case SetFocus2:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify second focus of ellipse"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify second focus of ellipse"),
 											tr("Back"));
 		break;
 
 	case SetPoint:
-		RS_DIALOGFACTORY->updateMouseWidget(
+		GetDialogFactory()->updateMouseWidget(
 					tr("Specify a point on ellipse or total distance to foci"),
 					tr("Back"));
 		break;
 
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

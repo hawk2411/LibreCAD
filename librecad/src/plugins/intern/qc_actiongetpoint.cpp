@@ -116,9 +116,9 @@ void QC_ActionGetPoint::coordinateEvent(RS_CoordinateEvent* e) {
 
 void QC_ActionGetPoint::updateMouseButtonHints() {
     if (!completed)
-		RS_DIALOGFACTORY->updateMouseWidget(pPoints->message, tr("Cancel"));
+		GetDialogFactory()->updateMouseWidget(pPoints->message, tr("Cancel"));
     else
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
 }
 
 

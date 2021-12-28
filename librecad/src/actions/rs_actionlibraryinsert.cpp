@@ -74,7 +74,7 @@ void RS_ActionLibraryInsert::setFile(const QString& file) {
 	pPoints->data.file = file;
 
 	if (!pPoints->prev.open(file, RS2::FormatUnknown)) {
-        RS_DIALOGFACTORY->commandMessage(tr("Cannot open file '%1'").arg(file));
+        GetDialogFactory()->commandMessage(tr("Cannot open file '%1'").arg(file));
     }
 }
 
@@ -158,7 +158,7 @@ void RS_ActionLibraryInsert::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -182,9 +182,9 @@ void RS_ActionLibraryInsert::commandEvent(RS_CommandEvent* e) {
             if (ok) {
 				pPoints->data.angle = RS_Math::deg2rad(a);
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -195,9 +195,9 @@ void RS_ActionLibraryInsert::commandEvent(RS_CommandEvent* e) {
             if (ok) {
                 setFactor(f);
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -229,7 +229,7 @@ QStringList RS_ActionLibraryInsert::getAvailableCommands() {
 void RS_ActionLibraryInsert::showOptions() {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
 }
 
 
@@ -237,26 +237,26 @@ void RS_ActionLibraryInsert::showOptions() {
 void RS_ActionLibraryInsert::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 
 void RS_ActionLibraryInsert::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetTargetPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify reference point"),
                                             tr("Cancel"));
         break;
     case SetAngle:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter angle:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter angle:"),
                                             "");
         break;
     case SetFactor:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter factor:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter factor:"),
                                             "");
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

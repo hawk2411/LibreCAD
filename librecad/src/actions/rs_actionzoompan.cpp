@@ -115,15 +115,15 @@ void RS_ActionZoomPan::updateMouseButtonHints()
 {
     switch (getStatus()) {
             case SetPanStart:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Click and drag to pan zoom"),
+        GetDialogFactory()->updateMouseWidget(tr("Click and drag to pan zoom"),
 											tr("Cancel"));
                 break;
             case SetPanning:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Zoom panning"),
+        GetDialogFactory()->updateMouseWidget(tr("Zoom panning"),
 											tr("Cancel"));
                 break;
            default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
     }
 }
 

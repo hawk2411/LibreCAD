@@ -40,7 +40,7 @@ void RS_ActionFileNewTemplate::trigger() {
     // Not supported currently
     RS_DEBUG->print("RS_ActionFileNewTemplate::trigger");
 
-    QString fileName; //= RS_DIALOGFACTORY->requestFileNewDialog();
+    QString fileName; //= GetDialogFactory()->requestFileNewDialog();
     if (graphic && !fileName.isEmpty()) {
         graphic->open(fileName, );
 }

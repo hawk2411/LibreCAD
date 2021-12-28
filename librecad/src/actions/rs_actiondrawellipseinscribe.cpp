@@ -150,8 +150,8 @@ bool RS_ActionDrawEllipseInscribe::preparePreview(){
 		pPoints->valid= e.createInscribeQuadrilateral(pPoints->lines);
 		if (pPoints->valid){
 			pPoints->eData = e.getData();
-		} else if ( RS_DIALOGFACTORY){
-            RS_DIALOGFACTORY->commandMessage(tr("Can not determine uniquely an ellipse"));
+		} else if ( GetDialogFactory()){
+            GetDialogFactory()->commandMessage(tr("Can not determine uniquely an ellipse"));
         }
     }
 	return pPoints->valid;
@@ -214,7 +214,7 @@ void RS_ActionDrawEllipse4Line::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-            RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+            GetDialogFactory()->commandMessage(msgAvailableCommands()
                                              + getAvailableCommands().join(", "));
         return;
     }
@@ -231,7 +231,7 @@ void RS_ActionDrawEllipse4Line::commandEvent(RS_CommandEvent* e) {
                     setStatus(SetAngle1);
                 }
 			} else
-                    RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                    GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
         break;
 
@@ -242,7 +242,7 @@ void RS_ActionDrawEllipse4Line::commandEvent(RS_CommandEvent* e) {
                 angle1 = RS_Math::deg2rad(a);
                 setStatus(SetAngle2);
 			} else
-                    RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                    GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
         break;
 
@@ -253,7 +253,7 @@ void RS_ActionDrawEllipse4Line::commandEvent(RS_CommandEvent* e) {
                 angle2 = RS_Math::deg2rad(a);
                 trigger();
 			} else
-                    RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                    GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
         break;
 
@@ -274,27 +274,27 @@ QStringList RS_ActionDrawEllipseInscribe::getAvailableCommands() {
 void RS_ActionDrawEllipseInscribe::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetLine1:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify the first line"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify the first line"),
 											tr("Cancel"));
 		break;
 
 	case SetLine2:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify the second line"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify the second line"),
 											tr("Back"));
 		break;
 
 	case SetLine3:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify the third line"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify the third line"),
 											tr("Back"));
 		break;
 
 	case SetLine4:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify the fourth line"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify the fourth line"),
 											tr("Back"));
 		break;
 
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

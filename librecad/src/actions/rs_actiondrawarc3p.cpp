@@ -106,8 +106,7 @@ void RS_ActionDrawArc3P::trigger() {
         setStatus(SetPoint1);
         reset();
     } else {
-        //RS_DIALOGFACTORY->requestWarningDialog(tr("Invalid arc data."));
-        RS_DIALOGFACTORY->commandMessage(tr("Invalid arc data."));
+        GetDialogFactory()->commandMessage(tr("Invalid arc data."));
     }
 }
 
@@ -210,7 +209,7 @@ void RS_ActionDrawArc3P::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -234,20 +233,20 @@ QStringList RS_ActionDrawArc3P::getAvailableCommands() {
 void RS_ActionDrawArc3P::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetPoint1:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Specify startpoint or [center]"),
             tr("Cancel"));
         break;
     case SetPoint2:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Specify second point"), tr("Back"));
         break;
     case SetPoint3:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Specify endpoint"), tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

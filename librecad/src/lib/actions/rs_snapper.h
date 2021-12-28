@@ -162,11 +162,11 @@ public:
     RS_Vector snapEndpoint(const RS_Vector& coord) const;
     RS_Vector snapOnEntity(const RS_Vector& coord);
     RS_Vector snapCenter(const RS_Vector& coord) const;
-    RS_Vector snapMiddle(const RS_Vector& coord);
-    RS_Vector snapDist(const RS_Vector& coord);
-    RS_Vector snapIntersection(const RS_Vector& coord);
+    RS_Vector snapMiddle(const RS_Vector& coord) const;
+    RS_Vector snapDist(const RS_Vector& coord) const;
+    RS_Vector snapIntersection(const RS_Vector& coord)const;
     //RS_Vector snapDirect(RS_Vector coord, bool abs);
-    RS_Vector snapToAngle(const RS_Vector &coord, const RS_Vector &ref_coord, const double ang_res);
+    RS_Vector snapToAngle(const RS_Vector &coord, const RS_Vector &ref_coord, double ang_res);
 
     RS_Vector restrictOrthogonal(const RS_Vector& coord);
     RS_Vector restrictHorizontal(const RS_Vector& coord);

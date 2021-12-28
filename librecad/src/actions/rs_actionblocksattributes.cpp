@@ -50,8 +50,7 @@ void RS_ActionBlocksAttributes::trigger() {
         if (blockList && block) {
             QString oldName = block->getName();
 
-            RS_BlockData d;
-            d = RS_DIALOGFACTORY->requestBlockAttributesDialog(
+            RS_BlockData d = GetDialogFactory()->requestBlockAttributesDialog(
                     blockList);
 
             if (d.isValid()) {

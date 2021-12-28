@@ -58,7 +58,7 @@ void RS_ActionDimAngular::reset()
                                         RS_Vector( false),
                                         RS_Vector( false),
                                         RS_Vector( false)) );
-    RS_DIALOGFACTORY->requestOptions( this, true, true);
+    GetDialogFactory()->requestOptions( this, true, true);
 }
 
 void RS_ActionDimAngular::trigger()
@@ -178,7 +178,7 @@ void RS_ActionDimAngular::commandEvent(RS_CommandEvent* e)
     QString c( e->getCommand().toLower());
 
     if (checkCommand( QStringLiteral( "help"), c)) {
-        RS_DIALOGFACTORY->commandMessage( msgAvailableCommands()
+        GetDialogFactory()->commandMessage( msgAvailableCommands()
                                           + getAvailableCommands().join(", "));
         return;
     }
@@ -186,7 +186,7 @@ void RS_ActionDimAngular::commandEvent(RS_CommandEvent* e)
     // setting new text label:
     if (SetText == getStatus()) {
         setText( c);
-        RS_DIALOGFACTORY->requestOptions( this, true, true);
+        GetDialogFactory()->requestOptions( this, true, true);
         graphicView->enableCoordinateInput();
         setStatus( lastStatus);
         return;
@@ -222,40 +222,40 @@ void RS_ActionDimAngular::showOptions()
 {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions( this, true);
+    GetDialogFactory()->requestOptions( this, true);
 }
 
 void RS_ActionDimAngular::hideOptions()
 {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions( this, false);
+    GetDialogFactory()->requestOptions( this, false);
 }
 
 void RS_ActionDimAngular::updateMouseButtonHints()
 {
     switch (getStatus()) {
     case SetLine1:
-        RS_DIALOGFACTORY->updateMouseWidget( tr("Select first line"),
+        GetDialogFactory()->updateMouseWidget( tr("Select first line"),
                                              tr("Cancel"));
         break;
 
     case SetLine2:
-        RS_DIALOGFACTORY->updateMouseWidget( tr("Select second line"),
+        GetDialogFactory()->updateMouseWidget( tr("Select second line"),
                                              tr("Cancel"));
         break;
 
     case SetPos:
-        RS_DIALOGFACTORY->updateMouseWidget( tr("Specify dimension arc line location"),
+        GetDialogFactory()->updateMouseWidget( tr("Specify dimension arc line location"),
                                              tr("Cancel"));
         break;
 
     case SetText:
-        RS_DIALOGFACTORY->updateMouseWidget( tr("Enter dimension text:"), "");
+        GetDialogFactory()->updateMouseWidget( tr("Enter dimension text:"), "");
         break;
 
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

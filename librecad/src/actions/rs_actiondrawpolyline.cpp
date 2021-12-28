@@ -375,7 +375,7 @@ void RS_ActionDrawPolyline::commandEvent(RS_CommandEvent* e) {
     switch (getStatus()) {
     case SetStartpoint:
         if (checkCommand("help", c)) {
-            RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+            GetDialogFactory()->commandMessage(msgAvailableCommands()
                                              + getAvailableCommands().join(", "));
             return;
         }
@@ -430,7 +430,7 @@ QStringList RS_ActionDrawPolyline::getAvailableCommands() {
 void RS_ActionDrawPolyline::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetStartpoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify first point"),
                                             tr("Cancel"));
         break;
     case SetNextPoint: {
@@ -445,18 +445,18 @@ void RS_ActionDrawPolyline::updateMouseButtonHints() {
             }
 
 			if (pPoints->history.size()>=2) {
-                RS_DIALOGFACTORY->updateMouseWidget(
+                GetDialogFactory()->updateMouseWidget(
                     tr("Specify next point or [%1]").arg(msg),
                     tr("Back"));
             } else {
-                RS_DIALOGFACTORY->updateMouseWidget(
+                GetDialogFactory()->updateMouseWidget(
                     tr("Specify next point"),
                     tr("Back"));
             }
         }
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }
@@ -465,7 +465,7 @@ void RS_ActionDrawPolyline::updateMouseButtonHints() {
 void RS_ActionDrawPolyline::showOptions() {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
 }
 
 
@@ -473,7 +473,7 @@ void RS_ActionDrawPolyline::showOptions() {
 void RS_ActionDrawPolyline::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 
@@ -496,7 +496,7 @@ void RS_ActionDrawPolyline::close() {
         setStatus(SetStartpoint);
 		graphicView->moveRelativeZero(pPoints->start);
     } else {
-        RS_DIALOGFACTORY->commandMessage(
+        GetDialogFactory()->commandMessage(
             tr("Cannot close sequence of lines: "
                "Not enough entities defined yet."));
     }
@@ -523,7 +523,7 @@ void RS_ActionDrawPolyline::undo() {
 			graphicView->drawEntity(pPoints->polyline);
         }
     } else {
-        RS_DIALOGFACTORY->commandMessage(
+        GetDialogFactory()->commandMessage(
             tr("Cannot undo: "
                "Not enough entities defined yet."));
     }

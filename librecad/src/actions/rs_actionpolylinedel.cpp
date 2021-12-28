@@ -69,7 +69,7 @@ void RS_ActionPolylineDel::trigger() {
 
 				*delPoint = RS_Vector(false);
 
-            RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+            GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     }
 ////////////////////////////////////////2006/06/15
                 graphicView->redraw();
@@ -105,10 +105,10 @@ void RS_ActionPolylineDel::mouseReleaseEvent(QMouseEvent* e) {
                 case ChooseEntity:
                     delEntity = catchEntity(e);
 					if (delEntity==nullptr) {
-                        RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                        GetDialogFactory()->commandMessage(tr("No Entity found."));
                     } else if (delEntity->rtti()!=RS2::EntityPolyline) {
 
-                        RS_DIALOGFACTORY->commandMessage(
+                        GetDialogFactory()->commandMessage(
                             tr("Entity must be a polyline."));
                     } else {
 							snapPoint(e);
@@ -124,11 +124,11 @@ void RS_ActionPolylineDel::mouseReleaseEvent(QMouseEvent* e) {
                 case SetDelPoint:
 					*delPoint = snapPoint(e);
 					if (delEntity==nullptr) {
-                                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                                GetDialogFactory()->commandMessage(tr("No Entity found."));
 					} else if (!delPoint->valid) {
-                                RS_DIALOGFACTORY->commandMessage(tr("Deleting point is invalid."));
+                                GetDialogFactory()->commandMessage(tr("Deleting point is invalid."));
 					} else if (!delEntity->isPointOnEntity(*delPoint)) {
-                                RS_DIALOGFACTORY->commandMessage(
+                                GetDialogFactory()->commandMessage(
                                     tr("Deleting point is not on entity."));
                     } else {
                                 deleteSnapper();
@@ -155,15 +155,15 @@ void RS_ActionPolylineDel::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionPolylineDel::updateMouseButtonHints() {
     switch (getStatus()) {
     case ChooseEntity:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Specify polyline to delete node"),
+                GetDialogFactory()->updateMouseWidget(tr("Specify polyline to delete node"),
                                             tr("Cancel"));
                 break;
     case SetDelPoint:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Specify deleting node's point"),
+                GetDialogFactory()->updateMouseWidget(tr("Specify deleting node's point"),
                                             tr("Back"));
                 break;
     default:
-                RS_DIALOGFACTORY->updateMouseWidget();
+                GetDialogFactory()->updateMouseWidget();
                 break;
     }
 }

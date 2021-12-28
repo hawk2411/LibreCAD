@@ -58,7 +58,7 @@ void RS_ActionModifyRotate::trigger() {
     RS_Modification m(*container, graphicView);
 	m.rotate(*data);
 
-    RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
 }
 
 void RS_ActionModifyRotate::mouseMoveEvent(QMouseEvent* e) {
@@ -110,7 +110,7 @@ void RS_ActionModifyRotate::coordinateEvent(RS_CoordinateEvent* e) {
         if ( pos.squared()< RS_TOLERANCE2 ) {
 			data->angle = 0.;//angle not well defined, go direct to dialog
             setStatus(ShowDialog);
-			if (RS_DIALOGFACTORY->requestRotateDialog(*data)) {
+			if (GetDialogFactory()->requestRotateDialog(*data)) {
                 trigger();
                 finish(false);
             }
@@ -127,7 +127,7 @@ void RS_ActionModifyRotate::coordinateEvent(RS_CoordinateEvent* e) {
 			data->angle = RS_Math::correctAngle(pos.angle() - data->angle);
         }
         setStatus(ShowDialog);
-		if (RS_DIALOGFACTORY->requestRotateDialog(*data)) {
+		if (GetDialogFactory()->requestRotateDialog(*data)) {
             trigger();
             finish(false);
         }
@@ -141,20 +141,20 @@ void RS_ActionModifyRotate::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionModifyRotate::updateMouseButtonHints() {
     switch (getStatus()) {
     case setCenterPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify rotation center"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify rotation center"),
                                             tr("Back"));
         break;
 
     case setReferencePoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify reference point"),
                                             tr("Back"));
         break;
     case setTargetPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify target point to rotate to"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify target point to rotate to"),
                                             tr("Back"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

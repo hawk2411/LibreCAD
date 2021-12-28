@@ -163,7 +163,7 @@ void RS_ActionDrawCircle::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
 	if (checkCommand("help", c)) {
-		RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+		GetDialogFactory()->commandMessage(msgAvailableCommands()
 										 + getAvailableCommands().join(", "));
 		return;
 	}
@@ -178,7 +178,7 @@ void RS_ActionDrawCircle::commandEvent(RS_CommandEvent* e) {
                 e->accept();
                 trigger();
 			} else
-				RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+				GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             //setStatus(SetCenter);
         }
 
@@ -198,13 +198,13 @@ QStringList RS_ActionDrawCircle::getAvailableCommands() {
 void RS_ActionDrawCircle::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetCenter:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify center"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Specify center"), tr("Cancel"));
         break;
     case SetRadius:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify point on circle"), tr("Back"));
+        GetDialogFactory()->updateMouseWidget(tr("Specify point on circle"), tr("Back"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

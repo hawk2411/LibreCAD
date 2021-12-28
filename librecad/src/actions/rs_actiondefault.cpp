@@ -74,7 +74,7 @@ void RS_ActionDefault::init(int status) {
     //    snapMode.clear();
     //    snapMode.restriction = RS2::RestrictNothing;
     //    restrBak = RS2::RestrictNothing;
-    //        RS_DIALOGFACTORY->requestToolBar(RS2::ToolBarMain);
+    //        GetDialogFactory()->requestToolBar(RS2::ToolBarMain);
 
     RS_DEBUG->print("RS_ActionDefault::init: OK");
 }
@@ -114,7 +114,7 @@ void RS_ActionDefault::mouseMoveEvent(QMouseEvent* e) {
     RS_Vector mouse = graphicView->toGraph(e->x(), e->y());
     RS_Vector relMouse = mouse - graphicView->getRelativeZero();
 
-    RS_DIALOGFACTORY->updateCoordinateWidget(mouse, relMouse);
+    GetDialogFactory()->updateCoordinateWidget(mouse, relMouse);
 
     switch (getStatus()) {
     case Neutral:
@@ -158,7 +158,7 @@ void RS_ActionDefault::mouseMoveEvent(QMouseEvent* e) {
 
     case MovingRef:
 		pPoints->v2 = snapPoint(e);
-		RS_DIALOGFACTORY->updateCoordinateWidget(pPoints->v2, pPoints->v2 - graphicView->getRelativeZero());
+		GetDialogFactory()->updateCoordinateWidget(pPoints->v2, pPoints->v2 - graphicView->getRelativeZero());
 
         if (e->modifiers() & Qt::ShiftModifier) {
             mouse = snapToAngle(mouse, pPoints->v1, 15.);
@@ -180,7 +180,7 @@ void RS_ActionDefault::mouseMoveEvent(QMouseEvent* e) {
 
     case Moving:
 		pPoints->v2 = snapPoint(e);
-		RS_DIALOGFACTORY->updateCoordinateWidget(pPoints->v2, pPoints->v2 - graphicView->getRelativeZero());
+		GetDialogFactory()->updateCoordinateWidget(pPoints->v2, pPoints->v2 - graphicView->getRelativeZero());
 
         if (e->modifiers() & Qt::ShiftModifier) {
             mouse = snapToAngle(mouse, pPoints->v1, 15.);
@@ -261,7 +261,7 @@ void RS_ActionDefault::mousePressEvent(QMouseEvent* e) {
 			data.offset = pPoints->v2 - pPoints->v1;
             m.move(data);
             setStatus(Neutral);
-            RS_DIALOGFACTORY->updateSelectionWidget(
+            GetDialogFactory()->updateSelectionWidget(
                         container->countSelected(),container->totalSelectedLength());
             deleteSnapper();
         }
@@ -280,7 +280,7 @@ void RS_ActionDefault::mousePressEvent(QMouseEvent* e) {
             m.moveRef(data);
             //container->moveSelectedRef(v1, v2-v2);
             setStatus(Neutral);
-            RS_DIALOGFACTORY->updateSelectionWidget(
+            GetDialogFactory()->updateSelectionWidget(
                         container->countSelected(),container->totalSelectedLength());
         }
             break;
@@ -313,7 +313,7 @@ void RS_ActionDefault::mouseReleaseEvent(QMouseEvent* e) {
                 RS_Selection s(*container, graphicView);
                 s.selectSingle(en);
 
-                RS_DIALOGFACTORY->updateSelectionWidget(
+                GetDialogFactory()->updateSelectionWidget(
                             container->countSelected(),container->totalSelectedLength());
 
                 e->accept();
@@ -338,7 +338,7 @@ void RS_ActionDefault::mouseReleaseEvent(QMouseEvent* e) {
             bool select = (e->modifiers() & Qt::ShiftModifier) ? false : true;
 			s.selectWindow(pPoints->v1, pPoints->v2, select, cross);
 
-            RS_DIALOGFACTORY->updateSelectionWidget(
+            GetDialogFactory()->updateSelectionWidget(
                         container->countSelected(),container->totalSelectedLength());
 
             setStatus(Neutral);
@@ -392,14 +392,14 @@ QStringList RS_ActionDefault::getAvailableCommands() {
 void RS_ActionDefault::updateMouseButtonHints() {
     switch (getStatus()) {
     case Neutral:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     case SetCorner2:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Choose second edge"),
+        GetDialogFactory()->updateMouseWidget(tr("Choose second edge"),
                                             tr("Back"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

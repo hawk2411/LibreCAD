@@ -81,7 +81,7 @@ void RS_ActionModifyTrimAmount::trigger() {
 		trimEntity = nullptr;
         setStatus(ChooseTrimEntity);
 
-        RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     }
 }
 
@@ -97,14 +97,14 @@ void RS_ActionModifyTrimAmount::mouseReleaseEvent(QMouseEvent* e) {
                 trigger();
             } else {
 				if (trimEntity == nullptr) {
-                    RS_DIALOGFACTORY->commandMessage(
+                    GetDialogFactory()->commandMessage(
                         tr("No entity found. "));
                 } else if (trimEntity->rtti()==RS2::EntityInsert) {
-                    RS_DIALOGFACTORY->commandMessage(
+                    GetDialogFactory()->commandMessage(
                         tr("The chosen Entity is in a block. "
                            "Please edit the block."));
                 } else {
-                    RS_DIALOGFACTORY->commandMessage(
+                    GetDialogFactory()->commandMessage(
                         tr("The chosen Entity is not an atomic entity "
                            "or cannot be trimmed."));
                 }
@@ -123,7 +123,7 @@ void RS_ActionModifyTrimAmount::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -136,9 +136,9 @@ void RS_ActionModifyTrimAmount::commandEvent(RS_CommandEvent* e) {
                 e->accept();
                 distance = d;
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(ChooseTrimEntity);
         }
         break;
@@ -167,7 +167,7 @@ QStringList RS_ActionModifyTrimAmount::getAvailableCommands() {
 void RS_ActionModifyTrimAmount::showOptions() {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
 }
 
 
@@ -175,19 +175,19 @@ void RS_ActionModifyTrimAmount::showOptions() {
 void RS_ActionModifyTrimAmount::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 
 void RS_ActionModifyTrimAmount::updateMouseButtonHints() {
     switch (getStatus()) {
     case ChooseTrimEntity:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Select entity to trim or enter distance:"),
             tr("Back"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

@@ -131,13 +131,13 @@ void RS_ActionPrintPreview::coordinateEvent(RS_CoordinateEvent* e) {
 //    qDebug()<<"coordinateEvent= ("<<mouse.x<<", "<<mouse.y<<")";
 
     if(m_bPaperOffset) {
-        RS_DIALOGFACTORY->commandMessage(tr("Printout offset in paper coordinates by (%1, %2)").arg(mouse.x).arg(mouse.y));
+        GetDialogFactory()->commandMessage(tr("Printout offset in paper coordinates by (%1, %2)").arg(mouse.x).arg(mouse.y));
         mouse *= graphic->getPaperScale();
     }else
-        RS_DIALOGFACTORY->commandMessage(tr("Printout offset in graph coordinates by (%1, %2)").arg(mouse.x).arg(mouse.y));
+        GetDialogFactory()->commandMessage(tr("Printout offset in graph coordinates by (%1, %2)").arg(mouse.x).arg(mouse.y));
 
-//    RS_DIALOGFACTORY->commandMessage(tr("old insertion base (%1, %2)").arg(pinsbase.x).arg(pinsbase.y));
-//    RS_DIALOGFACTORY->commandMessage(tr("new insertion base (%1, %2)").arg((pinsbase-mouse).x).arg((pinsbase-mouse).y));
+//    GetDialogFactory()->commandMessage(tr("old insertion base (%1, %2)").arg(pinsbase.x).arg(pinsbase.y));
+//    GetDialogFactory()->commandMessage(tr("new insertion base (%1, %2)").arg((pinsbase-mouse).x).arg((pinsbase-mouse).y));
 
     graphic->setPaperInsertionBase(pinsbase-mouse);
     graphicView->redraw(RS2::RedrawGrid); // DRAW Grid also draws paper, background items
@@ -151,26 +151,26 @@ void RS_ActionPrintPreview::commandEvent(RS_CommandEvent*  e) {
 //    qDebug()<<"cmd="<<c;
 	if (checkCommand("blackwhite", c)) {
 		setBlackWhite(true);
-		RS_DIALOGFACTORY->commandMessage(tr("Printout in Black/White"));
+		GetDialogFactory()->commandMessage(tr("Printout in Black/White"));
 		e->accept();
 		return;
 	} else if (checkCommand("color", c)) {
 		setBlackWhite(false);
-		RS_DIALOGFACTORY->commandMessage(tr("Printout in color"));
+		GetDialogFactory()->commandMessage(tr("Printout in color"));
 		e->accept();
 		return;
 	} else if (checkCommand("graphoffset", c)) {
         m_bPaperOffset=false;
-        RS_DIALOGFACTORY->commandMessage(tr("Printout offset in graph coordinates"));
+        GetDialogFactory()->commandMessage(tr("Printout offset in graph coordinates"));
         e->accept();
         return;
     } else if (checkCommand("paperoffset", c)) {
         m_bPaperOffset=true;
-        RS_DIALOGFACTORY->commandMessage(tr("Printout offset in paper coordinates"));
+        GetDialogFactory()->commandMessage(tr("Printout offset in paper coordinates"));
         e->accept();
         return;
     }else if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", ")+tr(": select printout offset coordinates")+
                                          "\n"+tr("type in offset from command line to offset printout")
                                          );
@@ -180,7 +180,7 @@ void RS_ActionPrintPreview::commandEvent(RS_CommandEvent*  e) {
     //coordinate event
     if (c.contains(',')){
         if(c.startsWith('@')) {
-            RS_DIALOGFACTORY->commandMessage(tr("Printout offset ignores relative zero. Ignoring '@'"));
+            GetDialogFactory()->commandMessage(tr("Printout offset ignores relative zero. Ignoring '@'"));
             c.remove(0, 1);
         }
 //        qDebug()<<"offset by absolute coordinate: ";
@@ -215,13 +215,13 @@ void RS_ActionPrintPreview::resume() {
 
 //printout warning in command widget
 void RS_ActionPrintPreview::printWarning(const QString& s) {
-	RS_DIALOGFACTORY->commandMessage(s);
+	GetDialogFactory()->commandMessage(s);
 }
 
 void RS_ActionPrintPreview::showOptions() {
     RS_ActionInterface::showOptions();
 	if (!isFinished()) {
-        RS_DIALOGFACTORY->requestOptions(this, true,hasOptions);
+        GetDialogFactory()->requestOptions(this, true,hasOptions);
         hasOptions=true;
     }
 }
@@ -231,7 +231,7 @@ void RS_ActionPrintPreview::showOptions() {
 void RS_ActionPrintPreview::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 void RS_ActionPrintPreview::updateMouseCursor() {
@@ -264,7 +264,7 @@ void RS_ActionPrintPreview::fit() {
                          "Please set paper size by Menu: Edit->Current Drawing Preferences->Paper");
         //        double f0=graphic->getPaperScale();
 		if ( graphic->fitToPage()==false) {
-            RS_DIALOGFACTORY->commandMessage(
+            GetDialogFactory()->commandMessage(
                         tr("RS_ActionPrintPreview::fit(): Invalid paper size")
                         );
         }
@@ -348,7 +348,7 @@ void RS_ActionPrintPreview::calcPagesNum() {
         int pY = ceil(graphicSize.y / printArea.y);
 
         if ( pX > 99 || pY > 99) {
-            RS_DIALOGFACTORY->commandMessage(tr("RS_ActionPrintPreview::calcPagesNum(): "
+            GetDialogFactory()->commandMessage(tr("RS_ActionPrintPreview::calcPagesNum(): "
                                                 "Limit of pages has been exceeded."));
             return;
         }

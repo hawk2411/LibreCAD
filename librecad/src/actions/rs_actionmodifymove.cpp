@@ -63,7 +63,7 @@ void RS_ActionModifyMove::trigger() {
     RS_Modification m(*container, graphicView);
 	m.move(pPoints->data);
 
-    RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     finish(false);
 }
 
@@ -144,10 +144,10 @@ void RS_ActionModifyMove::coordinateEvent(RS_CoordinateEvent* e) {
 		pPoints->targetPoint = pos;
 		graphicView->moveRelativeZero(pPoints->targetPoint);
         setStatus(ShowDialog);
-		if (RS_DIALOGFACTORY->requestMoveDialog(pPoints->data)) {
+		if (GetDialogFactory()->requestMoveDialog(pPoints->data)) {
 			if(pPoints->data.number<0){
 				pPoints->data.number=abs(pPoints->data.number);
-				RS_DIALOGFACTORY->commandMessage(tr("Invalid number of copies, use %1 ").arg(pPoints->data.number));
+				GetDialogFactory()->commandMessage(tr("Invalid number of copies, use %1 ").arg(pPoints->data.number));
             }
 			pPoints->data.offset = pPoints->targetPoint - pPoints->referencePoint;
             trigger();
@@ -163,19 +163,19 @@ void RS_ActionModifyMove::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionModifyMove::updateMouseButtonHints() {
 	switch (getStatus()) {
 	/*case Select:
-			RS_DIALOGFACTORY->updateMouseWidget(tr("Pick entities to move"),
+			GetDialogFactory()->updateMouseWidget(tr("Pick entities to move"),
 										   tr("Cancel"));
 			break;*/
 	case SetReferencePoint:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify reference point"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify reference point"),
 											tr("Cancel"));
 		break;
 	case SetTargetPoint:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify target point"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify target point"),
 											tr("Back"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

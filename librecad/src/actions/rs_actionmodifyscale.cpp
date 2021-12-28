@@ -64,7 +64,7 @@ void RS_ActionModifyScale::trigger() {
         RS_Modification m(*container, graphicView);
 		m.scale(pPoints->data);
 
-        RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     }
 }
 
@@ -111,7 +111,7 @@ void RS_ActionModifyScale::coordinateEvent(RS_CoordinateEvent* e) {
 
     RS_Vector mouse = e->getCoordinate();
     setStatus(ShowDialog);
-	if (RS_DIALOGFACTORY->requestScaleDialog(pPoints->data)) {
+	if (GetDialogFactory()->requestScaleDialog(pPoints->data)) {
 		pPoints->data.referencePoint = mouse;
         trigger();
         finish();
@@ -121,15 +121,15 @@ void RS_ActionModifyScale::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionModifyScale::updateMouseButtonHints() {
     switch (getStatus()) {
         /*case Select:
-            RS_DIALOGFACTORY->updateMouseWidget(tr("Pick entities to scale"),
+            GetDialogFactory()->updateMouseWidget(tr("Pick entities to scale"),
                                            tr("Cancel"));
             break;*/
     case SetReferencePoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify reference point"),
                                             tr("Cancel"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

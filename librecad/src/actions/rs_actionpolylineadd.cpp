@@ -72,7 +72,7 @@ void RS_ActionPolylineAdd::trigger() {
 
 				*addCoord = {};
 
-                RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
                 graphicView->redraw(RS2::RedrawDrawing);
@@ -105,10 +105,10 @@ void RS_ActionPolylineAdd::mouseReleaseEvent(QMouseEvent* e) {
                 case ChooseSegment:
                         addEntity = catchEntity(e);
 						if (!addEntity) {
-                        RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                        GetDialogFactory()->commandMessage(tr("No Entity found."));
                         } else if (addEntity->rtti()!=RS2::EntityPolyline) {
 
-                        RS_DIALOGFACTORY->commandMessage(
+                        GetDialogFactory()->commandMessage(
                                 tr("Entity must be a polyline."));
                         } else {
                                 addEntity->setHighlighted(true);
@@ -123,16 +123,16 @@ void RS_ActionPolylineAdd::mouseReleaseEvent(QMouseEvent* e) {
                 case SetAddCoord:
 						*addCoord = snapPoint(e);
 						if (!addEntity) {
-                                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                                GetDialogFactory()->commandMessage(tr("No Entity found."));
 						} else if (!addCoord->valid) {
-                                RS_DIALOGFACTORY->commandMessage(tr("Adding point is invalid."));
+                                GetDialogFactory()->commandMessage(tr("Adding point is invalid."));
                         } else {
                                 RS_Vector clickCoord = snapPoint(e);
 								addSegment = nullptr;
                                 double dist = graphicView->toGraphDX(snapRange)*0.9;
                                 addSegment =  ((RS_Polyline*)addEntity)->getNearestEntity( clickCoord, &dist, RS2::ResolveNone);
 								if (!addSegment) {
-                                        RS_DIALOGFACTORY->commandMessage(
+                                        GetDialogFactory()->commandMessage(
                                                         tr("Adding point is not on entity."));
                                         break;
                                 }
@@ -161,15 +161,15 @@ void RS_ActionPolylineAdd::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionPolylineAdd::updateMouseButtonHints() {
         switch (getStatus()) {
         case ChooseSegment:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Specify polyline to add nodes"),
+                GetDialogFactory()->updateMouseWidget(tr("Specify polyline to add nodes"),
                                                 tr("Cancel"));
                 break;
         case SetAddCoord:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Specify adding node's point"),
+                GetDialogFactory()->updateMouseWidget(tr("Specify adding node's point"),
                                                 tr("Back"));
                 break;
         default:
-                RS_DIALOGFACTORY->updateMouseWidget();
+                GetDialogFactory()->updateMouseWidget();
                 break;
         }
 }

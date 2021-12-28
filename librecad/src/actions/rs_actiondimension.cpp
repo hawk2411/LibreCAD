@@ -73,7 +73,7 @@ void RS_ActionDimension::init(int status) {
 void RS_ActionDimension::hideOptions() {
 	RS_ActionInterface::hideOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, false);
+	GetDialogFactory()->requestOptions(this, false);
 }
 
 
@@ -81,7 +81,7 @@ void RS_ActionDimension::hideOptions() {
 void RS_ActionDimension::showOptions() {
 	RS_ActionInterface::showOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, true, true);
+	GetDialogFactory()->requestOptions(this, true, true);
 }
 
 

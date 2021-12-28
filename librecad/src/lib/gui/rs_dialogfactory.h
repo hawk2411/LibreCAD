@@ -32,8 +32,6 @@
 
 class RS_DialogFactoryInterface;
 
-#define RS_DIALOGFACTORY RS_DialogFactory::instance()->getFactoryObject()
-
 /**
  * Interface for objects that can create and show dialogs.
  */
@@ -57,5 +55,6 @@ private:
 	RS_DialogFactoryAdapter factoryAdapter;
 };
 
+auto GetDialogFactory = []() { return RS_DialogFactory::instance()->getFactoryObject(); };
 
 #endif

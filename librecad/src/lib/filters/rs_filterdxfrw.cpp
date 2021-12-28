@@ -169,7 +169,7 @@ bool RS_FilterDXFRW::fileImport(RS_Graphic& g, const QString& file, RS2::FormatT
             dwgr.setDebug(DRW::DebugLevel::Debug);
         bool success = dwgr.read(this, true);
         RS_DEBUG->print("RS_FilterDXFRW::fileImport: reading DWG file: OK");
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("Opened dwg file version %1.").arg(printDwgVersion(dwgr.getVersion())));
+        GetDialogFactory()->commandMessage(QObject::tr("Opened dwg file version %1.").arg(printDwgVersion(dwgr.getVersion())));
         int  lastError = dwgr.getError();
         if (false == success) {
             printDwgError(lastError);
@@ -3992,51 +3992,51 @@ QString RS_FilterDXFRW::printDwgVersion(int v){
 void RS_FilterDXFRW::printDwgError(int le){
     switch (le) {
     case DRW::BAD_UNKNOWN:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("unknown error opening dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("unknown error opening dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_UNKNOWN");
         break;
     case DRW::BAD_OPEN:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("can't open this dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("can't open this dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_OPEN");
         break;
     case DRW::BAD_VERSION:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("unsupported dwg version"));
+        GetDialogFactory()->commandMessage(QObject::tr("unsupported dwg version"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_VERSION");
         break;
     case DRW::BAD_READ_METADATA:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("error reading file metadata in dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("error reading file metadata in dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_READ_FILE_HEADER");
         break;
     case DRW::BAD_READ_FILE_HEADER:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("error reading file header in dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("error reading file header in dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_READ_FILE_HEADER");
         break;
     case DRW::BAD_READ_HEADER:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("error reading header vars in dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("error reading header vars in dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_READ_HEADER");
         break;
     case DRW::BAD_READ_CLASSES:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("error reading classes in dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("error reading classes in dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_READ_CLASSES");
         break;
     case DRW::BAD_READ_HANDLES:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("error reading offsets in dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("error reading offsets in dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_READ_OFFSETS");
         break;
     case DRW::BAD_READ_TABLES:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("error reading tables in dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("error reading tables in dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_READ_TABLES");
         break;
     case DRW::BAD_READ_BLOCKS:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("error reading blocks in dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("error reading blocks in dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_READ_OFFSETS");
         break;
     case DRW::BAD_READ_ENTITIES:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("error reading entities in dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("error reading entities in dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_READ_ENTITIES");
         break;
     case DRW::BAD_READ_OBJECTS:
-        RS_DIALOGFACTORY->commandMessage(QObject::tr("error reading objects in dwg file"));
+        GetDialogFactory()->commandMessage(QObject::tr("error reading objects in dwg file"));
         RS_DEBUG->print("RS_FilterDXFRW::printDwgError: DRW::BAD_READ_OBJECTS");
         break;
     default:

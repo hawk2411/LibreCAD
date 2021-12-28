@@ -52,11 +52,11 @@ void LC_ActionFileExportMakerCam::trigger() {
 
     if (graphic != NULL) {
 
-        bool accepted = RS_DIALOGFACTORY->requestOptionsMakerCamDialog();
+        bool accepted = GetDialogFactory()->requestOptionsMakerCamDialog();
 
         if (accepted) {
 
-            QString filename = RS_DIALOGFACTORY->requestFileSaveAsDialog(tr("Export as"),
+            QString filename = GetDialogFactory()->requestFileSaveAsDialog(tr("Export as"),
                                                                          "",
                                                                          "Scalable Vector Graphics (*.svg)");
 

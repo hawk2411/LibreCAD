@@ -342,7 +342,7 @@ bool RS_Graphic::save(bool isAutoSave)
                  && modifiedTime.isValid() && m != modifiedTime ) {
                 //file modified by others
 //            qDebug()<<"detected on disk change";
-                RS_DIALOGFACTORY->commandMessage(QObject::tr("File on disk modified. Please save to another file to avoid data loss! File modified: %1").arg(filename));
+                GetDialogFactory()->commandMessage(QObject::tr("File on disk modified. Please save to another file to avoid data loss! File modified: %1").arg(filename));
                 return false;
             }
 

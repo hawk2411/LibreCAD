@@ -190,7 +190,7 @@ void LC_ActionDrawSplinePoints::commandEvent(RS_CommandEvent* e)
 	case SetStartPoint:
 		if(checkCommand("help", c))
 		{
-			RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+			GetDialogFactory()->commandMessage(msgAvailableCommands()
 				+ getAvailableCommands().join(", "));
 			return;
 		}
@@ -248,7 +248,7 @@ void LC_ActionDrawSplinePoints::updateMouseButtonHints()
 	switch (getStatus())
 	{
 	case SetStartPoint:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first control point"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify first control point"),
 			tr("Cancel"));
 		break;
 	case SetNextPoint:
@@ -271,20 +271,20 @@ void LC_ActionDrawSplinePoints::updateMouseButtonHints()
 
 		if(pPoints->data.splinePoints.size() > 0)
 		{
-			RS_DIALOGFACTORY->updateMouseWidget(
+			GetDialogFactory()->updateMouseWidget(
 				tr("Specify next control point or [%1]").arg(msg),
 				tr("Back"));
 		}
 		else
 		{
-			RS_DIALOGFACTORY->updateMouseWidget(
+			GetDialogFactory()->updateMouseWidget(
 				tr("Specify next control point"),
 				tr("Back"));
 		}
 		}
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }
@@ -292,13 +292,13 @@ void LC_ActionDrawSplinePoints::updateMouseButtonHints()
 void LC_ActionDrawSplinePoints::showOptions()
 {
 	RS_ActionInterface::showOptions();
-	RS_DIALOGFACTORY->requestOptions(this, true);
+	GetDialogFactory()->requestOptions(this, true);
 }
 
 void LC_ActionDrawSplinePoints::hideOptions()
 {
 	RS_ActionInterface::hideOptions();
-	RS_DIALOGFACTORY->requestOptions(this, false);
+	GetDialogFactory()->requestOptions(this, false);
 }
 
 void LC_ActionDrawSplinePoints::updateMouseCursor()
@@ -319,7 +319,7 @@ void RS_ActionDrawSplinePoints::close() {
         setStatus(SetStartpoint);
         graphicView->moveRelativeZero(start);
     } else {
-        RS_DIALOGFACTORY->commandMessage(
+        GetDialogFactory()->commandMessage(
             tr("Cannot close sequence of lines: "
                "Not enough entities defined yet."));
     }
@@ -330,7 +330,7 @@ void LC_ActionDrawSplinePoints::undo()
 {
 	if(!pPoints->spline.get())
 	{
-		RS_DIALOGFACTORY->commandMessage(
+		GetDialogFactory()->commandMessage(
 			tr("Cannot undo: Not enough entities defined yet."));
 		return;
 	}
@@ -355,7 +355,7 @@ void LC_ActionDrawSplinePoints::undo()
 	}
 	else
 	{
-		RS_DIALOGFACTORY->commandMessage(
+		GetDialogFactory()->commandMessage(
 			tr("Cannot undo: Not enough entities defined yet."));
 	}
 }
@@ -376,7 +376,7 @@ void LC_ActionDrawSplinePoints::redo()
 	}
 	else
 	{
-		RS_DIALOGFACTORY->commandMessage(
+		GetDialogFactory()->commandMessage(
 			tr("Cannot undo: Nothing could be redone."));
 	}
 }

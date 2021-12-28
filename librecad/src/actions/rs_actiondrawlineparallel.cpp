@@ -121,18 +121,18 @@ void RS_ActionDrawLineParallel::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionDrawLineParallel::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetEntity:
-		RS_DIALOGFACTORY->updateMouseWidget(
+		GetDialogFactory()->updateMouseWidget(
 					tr("Specify Distance <%1> or select entity or [%2]")
 					.arg(distance).arg(RS_COMMANDS->command("through")),
 					tr("Cancel"));
 		break;
 
 	case SetNumber:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Enter number:"), "");
+		GetDialogFactory()->updateMouseWidget(tr("Enter number:"), "");
 		break;
 
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }
@@ -140,21 +140,21 @@ void RS_ActionDrawLineParallel::updateMouseButtonHints() {
 void RS_ActionDrawLineParallel::showOptions() {
 	RS_ActionInterface::showOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, true);
+	GetDialogFactory()->requestOptions(this, true);
 	updateMouseButtonHints();
 }
 
 void RS_ActionDrawLineParallel::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, false);
+	GetDialogFactory()->requestOptions(this, false);
 }
 
 void RS_ActionDrawLineParallel::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
 	if (checkCommand("help", c)) {
-		RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+		GetDialogFactory()->commandMessage(msgAvailableCommands()
 										 + getAvailableCommands().join(", "));
 		return;
 	}
@@ -176,8 +176,8 @@ void RS_ActionDrawLineParallel::commandEvent(RS_CommandEvent* e) {
                 if (ok && d>1.0e-10) {
                     distance = d;
 				} else
-					RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
-				RS_DIALOGFACTORY->requestOptions(this, true, true);
+					GetDialogFactory()->commandMessage(tr("Not a valid expression"));
+				GetDialogFactory()->requestOptions(this, true, true);
                 updateMouseButtonHints();
                 //setStatus(SetEntity);
             }
@@ -192,11 +192,11 @@ void RS_ActionDrawLineParallel::commandEvent(RS_CommandEvent* e) {
                 if (n>0 && n<100) {
                     number = n;
 				} else
-					RS_DIALOGFACTORY->commandMessage(tr("Not a valid number. "
+					GetDialogFactory()->commandMessage(tr("Not a valid number. "
 														"Try 1..99"));
 			} else
-				RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
-			RS_DIALOGFACTORY->requestOptions(this, true, true);
+				GetDialogFactory()->commandMessage(tr("Not a valid expression"));
+			GetDialogFactory()->requestOptions(this, true, true);
             setStatus(SetEntity);
         }
         break;

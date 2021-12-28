@@ -48,7 +48,7 @@ void RS_ActionBlocksRemove::trigger() {
 
 	RS_BlockList* bl = graphic->getBlockList();
 	QList<RS_Block*> blocks =
-		RS_DIALOGFACTORY->requestSelectedBlocksRemovalDialog(bl);
+            GetDialogFactory()->requestSelectedBlocksRemovalDialog(bl);
 
     if (blocks.isEmpty()) {
         finish(false);
@@ -95,7 +95,7 @@ void RS_ActionBlocksRemove::trigger() {
 		}
 
 		// close all windows that are editing this block:
-		RS_DIALOGFACTORY->closeEditBlockWindow(block);
+		GetDialogFactory()->closeEditBlockWindow(block);
 
         // Now remove block from the block list, but do not delete:
         block->setUndoState(true);
@@ -109,7 +109,7 @@ void RS_ActionBlocksRemove::trigger() {
     bl->activate(nullptr);
 
 	finish(false);
-	RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+	GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
 }
 
 

@@ -77,7 +77,7 @@ void RS_ActionSelectIntersected::trigger() {
             RS_Selection s(*container, graphicView);
 			s.selectIntersected(pPoints->v1, pPoints->v2, select);
 
-			RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+			GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
 
             init();
         }
@@ -136,13 +136,13 @@ void RS_ActionSelectIntersected::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionSelectIntersected::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetPoint1:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Choose first point of intersection line"), tr("Cancel"));
+		GetDialogFactory()->updateMouseWidget(tr("Choose first point of intersection line"), tr("Cancel"));
 		break;
 	case SetPoint2:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Choose second point of intersection line"), tr("Back"));
+		GetDialogFactory()->updateMouseWidget(tr("Choose second point of intersection line"), tr("Back"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

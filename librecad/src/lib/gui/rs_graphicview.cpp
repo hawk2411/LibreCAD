@@ -736,7 +736,7 @@ void RS_GraphicView::zoomWindow(RS_Vector v1, RS_Vector v2,
 		 pixRight == INT_MIN || pixRight== INT_MAX ||
 		 pixTop == INT_MIN || pixTop== INT_MAX ||
 		 pixBottom == INT_MIN || pixBottom== INT_MAX ) {
-		RS_DIALOGFACTORY->commandMessage("Requested zooming factor out of range. Zooming not changed");
+        GetDialogFactory()->commandMessage("Requested zooming factor out of range. Zooming not changed");
 		return;
 	}
 	saveView();

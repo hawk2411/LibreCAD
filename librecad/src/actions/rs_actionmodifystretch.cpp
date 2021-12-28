@@ -72,7 +72,7 @@ void RS_ActionModifyStretch::trigger() {
 
     setStatus(SetFirstCorner);
 
-    RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
 }
 
 
@@ -173,23 +173,23 @@ void RS_ActionModifyStretch::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionModifyStretch::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetFirstCorner:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first corner"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify first corner"),
                                             tr("Cancel"));
         break;
     case SetSecondCorner:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify second corner"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify second corner"),
                                             tr("Back"));
         break;
     case SetReferencePoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify reference point"),
                                             tr("Back"));
         break;
     case SetTargetPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify target point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify target point"),
                                             tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

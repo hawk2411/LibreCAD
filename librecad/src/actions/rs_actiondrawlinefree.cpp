@@ -137,11 +137,11 @@ void RS_ActionDrawLineFree::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetStartpoint:
     case Dragging:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Click and drag to draw a line"), tr("Cancel"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

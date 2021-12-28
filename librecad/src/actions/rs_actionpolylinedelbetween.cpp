@@ -78,7 +78,7 @@ void RS_ActionPolylineDelBetween::trigger() {
 				pPoints->nodePoint1 = pPoints->nodePoint2 = RS_Vector(false);
                 setStatus(SetNodePoint1);
 
-                RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
                 graphicView->redraw();
@@ -116,10 +116,10 @@ void RS_ActionPolylineDelBetween::mouseReleaseEvent(QMouseEvent* e) {
                 case ChooseSegment:
                         delEntity = catchEntity(e);
 						if (delEntity==nullptr) {
-                                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                                GetDialogFactory()->commandMessage(tr("No Entity found."));
                         } else if (delEntity->rtti()!=RS2::EntityPolyline) {
 
-                                RS_DIALOGFACTORY->commandMessage(
+                                GetDialogFactory()->commandMessage(
                                         tr("Entity must be a polyline."));
                         } else {
 							snapPoint(e);
@@ -141,11 +141,11 @@ void RS_ActionPolylineDelBetween::mouseReleaseEvent(QMouseEvent* e) {
                 case SetNodePoint1:
 						pPoints->nodePoint1 = snapPoint(e);
 						if (delEntity==nullptr) {
-                                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                                GetDialogFactory()->commandMessage(tr("No Entity found."));
 						} else if (!pPoints->nodePoint1.valid) {
-                                RS_DIALOGFACTORY->commandMessage(tr("Deleting point is invalid."));
+                                GetDialogFactory()->commandMessage(tr("Deleting point is invalid."));
 						} else if (!delEntity->isPointOnEntity(pPoints->nodePoint1)) {
-                                RS_DIALOGFACTORY->commandMessage(
+                                GetDialogFactory()->commandMessage(
                                         tr("Deleting point is not on entity."));
                         }else{
                                 setStatus(SetNodePoint2);
@@ -154,11 +154,11 @@ void RS_ActionPolylineDelBetween::mouseReleaseEvent(QMouseEvent* e) {
                 case SetNodePoint2:
 						pPoints->nodePoint2 = snapPoint(e);
 						if (delEntity==nullptr) {
-                                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                                GetDialogFactory()->commandMessage(tr("No Entity found."));
 						} else if (!pPoints->nodePoint2.valid) {
-                                RS_DIALOGFACTORY->commandMessage(tr("Deleting point is invalid."));
+                                GetDialogFactory()->commandMessage(tr("Deleting point is invalid."));
 						} else if (!delEntity->isPointOnEntity(pPoints->nodePoint2)) {
-                                RS_DIALOGFACTORY->commandMessage(
+                                GetDialogFactory()->commandMessage(
                                         tr("Deleting point is not on entity."));
                         } else {
                                 deleteSnapper();
@@ -186,19 +186,19 @@ void RS_ActionPolylineDelBetween::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionPolylineDelBetween::updateMouseButtonHints() {
         switch (getStatus()) {
         case ChooseSegment:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Specify polyline to delete between two nodes"),
+                GetDialogFactory()->updateMouseWidget(tr("Specify polyline to delete between two nodes"),
                                                                                         tr("Cancel"));
                 break;
         case SetNodePoint1:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first node"),
+                GetDialogFactory()->updateMouseWidget(tr("Specify first node"),
                                                                                         tr("Back"));
                 break;
         case SetNodePoint2:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Specify second node"),
+                GetDialogFactory()->updateMouseWidget(tr("Specify second node"),
                                                                                         tr("Back"));
                 break;
         default:
-                RS_DIALOGFACTORY->updateMouseWidget();
+                GetDialogFactory()->updateMouseWidget();
                 break;
         }
 }

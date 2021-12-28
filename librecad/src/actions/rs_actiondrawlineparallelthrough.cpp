@@ -173,20 +173,20 @@ void RS_ActionDrawLineParallelThrough::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionDrawLineParallelThrough::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetEntity:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select entity"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select entity"), tr("Cancel"));
         break;
 
     case SetPos:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify through point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify through point"),
                                             tr("Back"));
         break;
 
     case SetNumber:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Number:"), tr("Back"));
+        GetDialogFactory()->updateMouseWidget(tr("Number:"), tr("Back"));
         break;
 
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }
@@ -196,7 +196,7 @@ void RS_ActionDrawLineParallelThrough::updateMouseButtonHints() {
 void RS_ActionDrawLineParallelThrough::showOptions() {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
     updateMouseButtonHints();
 }
 
@@ -205,7 +205,7 @@ void RS_ActionDrawLineParallelThrough::showOptions() {
 void RS_ActionDrawLineParallelThrough::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 
@@ -214,7 +214,7 @@ void RS_ActionDrawLineParallelThrough::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -238,13 +238,13 @@ void RS_ActionDrawLineParallelThrough::commandEvent(RS_CommandEvent* e) {
                 if (n>0 && n<100) {
                     number = n;
                 } else {
-                    RS_DIALOGFACTORY->commandMessage(tr("Not a valid number. "
+                    GetDialogFactory()->commandMessage(tr("Not a valid number. "
                                                         "Try 1..99"));
                 }
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;

@@ -45,7 +45,7 @@ RS_ActionModifyEntity::RS_ActionModifyEntity(RS_EntityContainer& container,
 void RS_ActionModifyEntity::trigger() {
     if (en) {
         RS_Entity* clone = en->clone();
-        if (RS_DIALOGFACTORY->requestModifyEntityDialog(clone)) {
+        if (GetDialogFactory()->requestModifyEntityDialog(clone)) {
             container->addEntity(clone);
 
             graphicView->deleteEntity(en);
@@ -63,7 +63,7 @@ void RS_ActionModifyEntity::trigger() {
 
                 document->endUndoCycle();
             }
-            RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+            GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
         } else {
             delete clone;
         }
@@ -91,7 +91,7 @@ void RS_ActionModifyEntity::updateMouseCursor() {
 }
 
 void RS_ActionModifyEntity::updateMouseButtonHints() {
-    RS_DIALOGFACTORY->updateMouseWidget(tr("Click on entity to modify"), tr("Cancel"));
+    GetDialogFactory()->updateMouseWidget(tr("Click on entity to modify"), tr("Cancel"));
 }
 
 // EOF

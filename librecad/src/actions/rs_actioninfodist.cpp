@@ -74,7 +74,7 @@ void RS_ActionInfoDist::trigger() {
 		QString&& angle = RS_Units::formatAngle(dV.angle(),
 												graphic->getAngleFormat(), graphic->getAnglePrecision());
 
-		RS_DIALOGFACTORY->commandMessage(
+		GetDialogFactory()->commandMessage(
                     tr("Distance: %1 Cartesian: (%2 , %3), Polar: (%4<%5)").arg(dists[0])
 				.arg(dists[1]).arg(dists[2])
 				.arg(dists[0])
@@ -163,17 +163,17 @@ void RS_ActionInfoDist::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionInfoDist::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetPoint1:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Specify first point of distance"),
             tr("Cancel"));
         break;
     case SetPoint2:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Specify second point of distance"),
             tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

@@ -143,7 +143,7 @@ void RS_ActionDrawLineRectangle::commandEvent(RS_CommandEvent* e) {
 	QString const& c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-            RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+            GetDialogFactory()->commandMessage(msgAvailableCommands()
                                              + getAvailableCommands().join(", "));
         return;
     }
@@ -152,15 +152,15 @@ void RS_ActionDrawLineRectangle::commandEvent(RS_CommandEvent* e) {
 void RS_ActionDrawLineRectangle::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetCorner1:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first corner"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify first corner"),
 											tr("Cancel"));
 		break;
 	case SetCorner2:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify second corner"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify second corner"),
 											tr("Back"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

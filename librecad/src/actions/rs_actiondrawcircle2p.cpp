@@ -100,7 +100,7 @@ void RS_ActionDrawCircle2P::trigger() {
         setStatus(SetPoint1);
         reset();
 	} else
-		RS_DIALOGFACTORY->requestWarningDialog(tr("Invalid Circle data."));
+		GetDialogFactory()->requestWarningDialog(tr("Invalid Circle data."));
 }
 
 
@@ -185,7 +185,7 @@ void RS_ActionDrawCircle2P::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-		RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+		GetDialogFactory()->commandMessage(msgAvailableCommands()
 										 + getAvailableCommands().join(", "));
         return;
     }
@@ -204,15 +204,15 @@ QStringList RS_ActionDrawCircle2P::getAvailableCommands() {
 void RS_ActionDrawCircle2P::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetPoint1:
-		RS_DIALOGFACTORY->updateMouseWidget(
+		GetDialogFactory()->updateMouseWidget(
 					tr("Specify first point"), tr("Cancel"));
 		break;
 	case SetPoint2:
-		RS_DIALOGFACTORY->updateMouseWidget(
+		GetDialogFactory()->updateMouseWidget(
 					tr("Specify second point"), tr("Back"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

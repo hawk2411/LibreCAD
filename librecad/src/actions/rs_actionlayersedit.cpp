@@ -43,7 +43,7 @@ void RS_ActionLayersEdit::trigger() {
 
     if (graphic) {
 	RS_Layer* layer =
-            RS_DIALOGFACTORY->requestEditLayerDialog(graphic->getLayerList());
+            GetDialogFactory()->requestEditLayerDialog(graphic->getLayerList());
 
         if (layer) {
             graphic->editLayer(graphic->getActiveLayer(), *layer);

@@ -71,12 +71,12 @@ void RS_ActionBlocksInsert::init(int status) {
             if (document->rtti() == RS2::EntityBlock) {
                 QString parentBlockName = ((RS_Block*)(document))->getName();
                 if (parentBlockName == blockName) {
-                    RS_DIALOGFACTORY->commandMessage(tr("Block cannot contain an insert of itself."));
+                    GetDialogFactory()->commandMessage(tr("Block cannot contain an insert of itself."));
                     finish(false);
                 } else {
                     QStringList bnChain = block->findNestedInsert(parentBlockName);
                     if (!bnChain.empty()) {
-                        RS_DIALOGFACTORY->commandMessage(blockName
+                        GetDialogFactory()->commandMessage(blockName
                             + tr(" has nested insert of current block in:\n")
                             + bnChain.join("->")
                             + tr("\nThis block cannot be inserted."));
@@ -174,7 +174,7 @@ void RS_ActionBlocksInsert::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -214,9 +214,9 @@ void RS_ActionBlocksInsert::commandEvent(RS_CommandEvent* e) {
             if (ok) {
 				data->angle = RS_Math::deg2rad(a);
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -227,9 +227,9 @@ void RS_ActionBlocksInsert::commandEvent(RS_CommandEvent* e) {
             if (ok) {
                 setFactor(f);
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -240,9 +240,9 @@ void RS_ActionBlocksInsert::commandEvent(RS_CommandEvent* e) {
             if (ok) {
 				data->cols = cols;
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -253,9 +253,9 @@ void RS_ActionBlocksInsert::commandEvent(RS_CommandEvent* e) {
             if (ok) {
 				data->rows = rows;
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -266,9 +266,9 @@ void RS_ActionBlocksInsert::commandEvent(RS_CommandEvent* e) {
             if (ok) {
 				data->spacing.x = cs;
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -279,9 +279,9 @@ void RS_ActionBlocksInsert::commandEvent(RS_CommandEvent* e) {
             if (ok) {
 				data->spacing.y = rs;
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -363,7 +363,7 @@ QStringList RS_ActionBlocksInsert::getAvailableCommands() {
 void RS_ActionBlocksInsert::showOptions() {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
 }
 
 
@@ -371,42 +371,42 @@ void RS_ActionBlocksInsert::showOptions() {
 void RS_ActionBlocksInsert::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 
 void RS_ActionBlocksInsert::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetTargetPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify reference point"),
                                             tr("Cancel"));
         break;
     case SetAngle:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter angle:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter angle:"),
                                             "");
         break;
     case SetFactor:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter factor:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter factor:"),
                                             "");
         break;
     case SetColumns:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter columns:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter columns:"),
                                             "");
         break;
     case SetRows:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter rows:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter rows:"),
                                             "");
         break;
     case SetColumnSpacing:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter column spacing:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter column spacing:"),
                                             "");
         break;
     case SetRowSpacing:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter row spacing:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter row spacing:"),
                                             "");
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

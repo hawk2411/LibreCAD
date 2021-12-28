@@ -40,7 +40,7 @@ void RS_ActionLayersAdd::trigger() {
 	RS_DEBUG->print("add layer");
 
 	if (graphic) {
-		RS_Layer* layer = RS_DIALOGFACTORY->requestNewLayerDialog(
+		RS_Layer* layer = GetDialogFactory()->requestNewLayerDialog(
 					graphic->getLayerList());
 		if (layer)
 			graphic->addLayer(layer);

@@ -64,7 +64,7 @@ void RS_ActionModifyAttributes::trigger() {
     data.changeLayer = false;
 
     if (graphic) {
-        if (RS_DIALOGFACTORY->requestAttributesDialog(data,
+        if (GetDialogFactory()->requestAttributesDialog(data,
                 *graphic->getLayerList())) {
             RS_Modification m(*container, graphicView);
             m.changeAttributes(data);
@@ -73,7 +73,7 @@ void RS_ActionModifyAttributes::trigger() {
 
     graphicView->killSelectActions();
 
-    RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     finish(false);
 }
 
@@ -82,10 +82,10 @@ void RS_ActionModifyAttributes::trigger() {
 void RS_ActionModifyAttributes::updateMouseButtonHints() {
     switch (getStatus()) {
         //case Acknowledge:
-        //RS_DIALOGFACTORY->updateMouseWidget(tr("Acknowledge"), tr("Cancel"));
+        //GetDialogFactory()->updateMouseWidget(tr("Acknowledge"), tr("Cancel"));
         //break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

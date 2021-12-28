@@ -66,7 +66,7 @@ void RS_ActionDrawImage::init(int status) {
 
     reset();
 
-	pImg->data.file = RS_DIALOGFACTORY->requestImageOpenDialog();
+	pImg->data.file = GetDialogFactory()->requestImageOpenDialog();
     // RVT_PORT should we really redarw here?? graphicView->redraw();
 
 	if (!pImg->data.file.isEmpty()) {
@@ -78,7 +78,7 @@ void RS_ActionDrawImage::init(int status) {
         setStatus(SetTargetPoint);
     } else {
         setFinished();
-        //RS_DIALOGFACTORY->requestToolBar(RS2::ToolBarMain);
+        //GetDialogFactory()->requestToolBar(RS2::ToolBarMain);
     }
 }
 
@@ -166,7 +166,7 @@ void RS_ActionDrawImage::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -194,9 +194,9 @@ void RS_ActionDrawImage::commandEvent(RS_CommandEvent* e) {
 		if (ok) {
             setAngle(RS_Math::deg2rad(a));
         } else {
-            RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+            GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
-        RS_DIALOGFACTORY->requestOptions(this, true, true);
+        GetDialogFactory()->requestOptions(this, true, true);
         setStatus(lastStatus);
     }
         break;
@@ -207,9 +207,9 @@ void RS_ActionDrawImage::commandEvent(RS_CommandEvent* e) {
 		if (ok) {
             setFactor(f);
         } else {
-            RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+            GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
-        RS_DIALOGFACTORY->requestOptions(this, true, true);
+        GetDialogFactory()->requestOptions(this, true, true);
         setStatus(lastStatus);
     }
         break;
@@ -221,9 +221,9 @@ void RS_ActionDrawImage::commandEvent(RS_CommandEvent* e) {
 		if(ok) {
             setFactor(RS_Units::dpiToScale(dpi, document->getGraphicUnit()));
         } else {
-            RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+            GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
-        RS_DIALOGFACTORY->requestOptions(this, true, true);
+        GetDialogFactory()->requestOptions(this, true, true);
         setStatus(lastStatus);
     }
         break;
@@ -291,37 +291,37 @@ QStringList RS_ActionDrawImage::getAvailableCommands() {
 void RS_ActionDrawImage::showOptions() {
     RS_ActionInterface::showOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, true);
+	GetDialogFactory()->requestOptions(this, true);
 }
 
 
 
 void RS_ActionDrawImage::hideOptions() {
     RS_ActionInterface::hideOptions();
-	RS_DIALOGFACTORY->requestOptions(this, false);
+	GetDialogFactory()->requestOptions(this, false);
 }
 
 
 void RS_ActionDrawImage::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetTargetPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify reference point"),
                                             tr("Cancel"));
         break;
     case SetAngle:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter angle:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter angle:"),
                                             "");
         break;
     case SetFactor:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter factor:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter factor:"),
                                             "");
         break;
     case SetDPI:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter dpi:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter dpi:"),
                                             "");
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

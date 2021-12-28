@@ -68,7 +68,7 @@ void RS_ActionInfoDist2::trigger() {
 		double dist = entity->getDistanceToPoint(*point);
 		QString str = RS_Units::formatLinear(dist, graphic->getUnit(),
 											 graphic->getLinearFormat(), graphic->getLinearPrecision());
-        RS_DIALOGFACTORY->commandMessage(tr("Distance: %1").arg(str));
+        GetDialogFactory()->commandMessage(tr("Distance: %1").arg(str));
         entity->setHighlighted(false);
         graphicView->redraw(RS2::RedrawDrawing);
     }
@@ -149,17 +149,17 @@ void RS_ActionInfoDist2::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionInfoDist2::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetEntity:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Specify entity"),
             tr("Cancel"));
         break;
     case SetPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Specify point"),
             tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

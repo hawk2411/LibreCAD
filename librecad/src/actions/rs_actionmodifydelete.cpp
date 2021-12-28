@@ -59,7 +59,7 @@ void RS_ActionModifyDelete::trigger() {
 
     finish(false);
 
-	RS_DIALOGFACTORY->updateSelectionWidget(
+	GetDialogFactory()->updateSelectionWidget(
 				container->countSelected(), container->totalSelectedLength());
 }
 
@@ -68,11 +68,11 @@ void RS_ActionModifyDelete::trigger() {
 void RS_ActionModifyDelete::updateMouseButtonHints() {
 	switch (getStatus()) {
 	//case Acknowledge:
-	//    RS_DIALOGFACTORY->updateMouseWidget(tr("Acknowledge"),
+	//    GetDialogFactory()->updateMouseWidget(tr("Acknowledge"),
 	//	tr("Cancel"));
 	//    break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

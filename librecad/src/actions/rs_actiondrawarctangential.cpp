@@ -127,9 +127,9 @@ void RS_ActionDrawArcTangential::preparePreview() {
 		if (suc) {
 			data.reset(new RS_ArcData(arc.getData()));
 			if (byRadius)
-				RS_DIALOGFACTORY->updateArcTangentialOptions(arc.getAngleLength()*180./M_PI,true);
+				GetDialogFactory()->updateArcTangentialOptions(arc.getAngleLength()*180./M_PI,true);
 			else
-				RS_DIALOGFACTORY->updateArcTangentialOptions(arc.getRadius(),false);
+				GetDialogFactory()->updateArcTangentialOptions(arc.getRadius(),false);
 		}
     }
 }
@@ -215,7 +215,7 @@ void RS_ActionDrawArcTangential::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -232,7 +232,7 @@ QStringList RS_ActionDrawArcTangential::getAvailableCommands() {
 void RS_ActionDrawArcTangential::showOptions() {
     RS_ActionInterface::showOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, true);
+	GetDialogFactory()->requestOptions(this, true);
     updateMouseButtonHints();
 }
 
@@ -241,7 +241,7 @@ void RS_ActionDrawArcTangential::showOptions() {
 void RS_ActionDrawArcTangential::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, false);
+	GetDialogFactory()->requestOptions(this, false);
 }
 
 
@@ -249,21 +249,21 @@ void RS_ActionDrawArcTangential::hideOptions() {
 void RS_ActionDrawArcTangential::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetBaseEntity:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
                     tr("Specify base entity"),
                     tr("Cancel"));
         break;
     case SetEndAngle:
         if(byRadius) {
-            RS_DIALOGFACTORY->updateMouseWidget(
+            GetDialogFactory()->updateMouseWidget(
                         tr("Specify end angle"), tr("Back"));
         } else {
-            RS_DIALOGFACTORY->updateMouseWidget(
+            GetDialogFactory()->updateMouseWidget(
                         tr("Specify end point"), tr("Back"));
         }
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

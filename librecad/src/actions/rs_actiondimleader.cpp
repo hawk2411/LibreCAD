@@ -195,7 +195,7 @@ void RS_ActionDimLeader::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
 	if (checkCommand("help", c)) {
-		RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+		GetDialogFactory()->commandMessage(msgAvailableCommands()
 										 + getAvailableCommands().join(", "));
 		return;
     }
@@ -220,15 +220,15 @@ QStringList RS_ActionDimLeader::getAvailableCommands() {
 void RS_ActionDimLeader::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetStartpoint:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify target point"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify target point"),
 											tr("Cancel"));
 		break;
 	case SetEndpoint:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify next point"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify next point"),
 											tr("Finish"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

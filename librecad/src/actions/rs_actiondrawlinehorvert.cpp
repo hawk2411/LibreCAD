@@ -154,15 +154,15 @@ void RS_ActionDrawLineHorVert::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionDrawLineHorVert::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetStartpoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify first point"),
                                             tr("Cancel"));
         break;
     case SetEndpoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify second point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify second point"),
                                             tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

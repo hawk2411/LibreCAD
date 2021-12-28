@@ -104,7 +104,7 @@ void RS_ActionDrawCircleCR::setRadius(double r)
     if(r>RS_TOLERANCE){
 		data->radius=r;
     }else{
-        RS_DIALOGFACTORY->commandMessage(tr("radius=%1 is invalid").arg(r));
+        GetDialogFactory()->commandMessage(tr("radius=%1 is invalid").arg(r));
     }
 }
 
@@ -164,7 +164,7 @@ void RS_ActionDrawCircleCR::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -185,9 +185,9 @@ void RS_ActionDrawCircleCR::commandEvent(RS_CommandEvent* e) {
                 e->accept();
                 trigger();
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
         }
         break;
 
@@ -215,15 +215,15 @@ QStringList RS_ActionDrawCircleCR::getAvailableCommands() {
 void RS_ActionDrawCircleCR::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetCenter:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify circle center"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify circle center"),
                                             tr("Cancel"));
         break;
     case SetRadius:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify circle radius"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify circle radius"),
                                             tr("Back"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }
@@ -233,7 +233,7 @@ void RS_ActionDrawCircleCR::updateMouseButtonHints() {
 void RS_ActionDrawCircleCR::showOptions() {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
 }
 
 
@@ -241,7 +241,7 @@ void RS_ActionDrawCircleCR::showOptions() {
 void RS_ActionDrawCircleCR::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 

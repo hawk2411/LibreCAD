@@ -92,7 +92,7 @@ void RS_ActionBlocksSave::trigger() {
             g.saveAs(fn, t);
             QApplication::restoreOverrideCursor();
 		} else
-			RS_DIALOGFACTORY->commandMessage(tr("No block activated to save"));
+			GetDialogFactory()->commandMessage(tr("No block activated to save"));
     } else {
         RS_DEBUG->print(RS_Debug::D_WARNING,
                         "RS_ActionBlocksSave::trigger():  blockList is NULL");

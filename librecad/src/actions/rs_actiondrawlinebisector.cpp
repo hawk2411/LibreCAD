@@ -208,7 +208,7 @@ void RS_ActionDrawLineBisector::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -233,9 +233,9 @@ void RS_ActionDrawLineBisector::commandEvent(RS_CommandEvent* e) {
                 e->accept();
                 length = l;
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -248,11 +248,11 @@ void RS_ActionDrawLineBisector::commandEvent(RS_CommandEvent* e) {
                 if(n>0 && n<=200)
                     number = n;
                 else
-                     RS_DIALOGFACTORY->commandMessage(tr("Number sector lines not in range: ", "number of bisector to create must be in [1, 200]")+QString::number(n));
+                     GetDialogFactory()->commandMessage(tr("Number sector lines not in range: ", "number of bisector to create must be in [1, 200]")+QString::number(n));
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -285,23 +285,23 @@ QStringList RS_ActionDrawLineBisector::getAvailableCommands() {
 void RS_ActionDrawLineBisector::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetLine1:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select first line"),
+        GetDialogFactory()->updateMouseWidget(tr("Select first line"),
                                             tr("Cancel"));
         break;
     case SetLine2:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select second line"),
+        GetDialogFactory()->updateMouseWidget(tr("Select second line"),
                                             tr("Back"));
         break;
     case SetLength:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter bisector length:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter bisector length:"),
                                             tr("Back"));
         break;
     case SetNumber:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter number of bisectors:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter number of bisectors:"),
                                             tr("Back"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }
@@ -311,7 +311,7 @@ void RS_ActionDrawLineBisector::updateMouseButtonHints() {
 void RS_ActionDrawLineBisector::showOptions() {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
 }
 
 
@@ -319,7 +319,7 @@ void RS_ActionDrawLineBisector::showOptions() {
 void RS_ActionDrawLineBisector::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 

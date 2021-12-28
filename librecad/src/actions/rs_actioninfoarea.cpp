@@ -88,8 +88,8 @@ void RS_ActionInfoArea::display() {
 													  graphic->getUnit(),
 													  graphic->getLinearFormat(),
 													  graphic->getLinearPrecision());
-		RS_DIALOGFACTORY->commandMessage(tr("Circumference: %1").arg(linear));
-		RS_DIALOGFACTORY->commandMessage(tr("Area: %1 %2^2")
+		GetDialogFactory()->commandMessage(tr("Circumference: %1").arg(linear));
+		GetDialogFactory()->commandMessage(tr("Area: %1 %2^2")
 										 .arg(ia->getArea())
 										 .arg(RS_Units::unitToString(graphic->getUnit())));
         break;
@@ -133,7 +133,7 @@ void RS_ActionInfoArea::coordinateEvent(RS_CoordinateEvent* e) {
     RS_Vector mouse = e->getCoordinate();
 	if(ia->duplicated(mouse)) {
 		ia->push_back(mouse);
-        RS_DIALOGFACTORY->commandMessage(tr("Closing Point: %1/%2")
+        GetDialogFactory()->commandMessage(tr("Closing Point: %1/%2")
                                          .arg(mouse.x).arg(mouse.y));
         trigger();
         return;
@@ -141,7 +141,7 @@ void RS_ActionInfoArea::coordinateEvent(RS_CoordinateEvent* e) {
     graphicView->moveRelativeZero(mouse);
 
 	ia->push_back(mouse);
-    RS_DIALOGFACTORY->commandMessage(tr("Point: %1/%2")
+    GetDialogFactory()->commandMessage(tr("Point: %1/%2")
                                      .arg(mouse.x).arg(mouse.y));
     switch (getStatus()) {
     case SetFirstPoint:
@@ -160,17 +160,17 @@ void RS_ActionInfoArea::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionInfoArea::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetFirstPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
                     tr("Specify first point of polygon"),
                     tr("Cancel"));
         break;
     case SetNextPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
                     tr("Specify next point of polygon"),
 					tr("Cancel"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

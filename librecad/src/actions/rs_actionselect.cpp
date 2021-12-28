@@ -72,7 +72,7 @@ void RS_ActionSelect::mouseReleaseEvent(QMouseEvent* e) {
 int RS_ActionSelect::countSelected() {
         int ret=container->countSelected();
 		if (ret==0) {
-            RS_DIALOGFACTORY->commandMessage(tr("No entity selected!"));
+            GetDialogFactory()->commandMessage(tr("No entity selected!"));
         }
         return ret;
 }
@@ -80,59 +80,59 @@ int RS_ActionSelect::countSelected() {
 void RS_ActionSelect::updateMouseButtonHints() {
     switch(nextAction) {
     case RS2::ActionModifyAttributesNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to modify attributes"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to modify attributes"), tr("Cancel"));
         break;
     case RS2::ActionOrderNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select entities to order"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select entities to order"), tr("Cancel"));
         break;
     case RS2::ActionModifyDeleteNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to delete"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to delete"), tr("Cancel"));
         break;
     case RS2::ActionModifyDeleteQuick:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to delete immediately"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to delete immediately"), tr("Cancel"));
         break;
     case RS2::ActionModifyMoveNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to move"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to move"), tr("Cancel"));
         break;
     case RS2::ActionEditCopyNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to copy"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to copy"), tr("Cancel"));
         break;
     case RS2::ActionEditCutNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to cut"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to cut"), tr("Cancel"));
         break;
 	case RS2::ActionModifyRevertDirectionNoSelect:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Select to revert direction"), tr("Cancel"));
+		GetDialogFactory()->updateMouseWidget(tr("Select to revert direction"), tr("Cancel"));
 		break;
 	case RS2::ActionModifyRotateNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to rotate"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to rotate"), tr("Cancel"));
         break;
     case RS2::ActionModifyScaleNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to scale"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to scale"), tr("Cancel"));
         break;
     case RS2::ActionModifyMirrorNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to mirror"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to mirror"), tr("Cancel"));
         break;
     case RS2::ActionModifyMoveRotateNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to move and rotate"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to move and rotate"), tr("Cancel"));
         break;
     case RS2::ActionModifyOffsetNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to create offset"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to create offset"), tr("Cancel"));
         break;
     case RS2::ActionModifyRotate2NoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select for two axis rotation"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select for two axis rotation"), tr("Cancel"));
         break;
     case RS2::ActionModifyExplodeTextNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to explode text"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to explode text"), tr("Cancel"));
         break;
     case RS2::ActionBlocksExplodeNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to explode block"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to explode block"), tr("Cancel"));
         break;
     case RS2::ActionBlocksCreateNoSelect:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select to create block"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Select to create block"), tr("Cancel"));
         break;
 
     default:
-        RS_DIALOGFACTORY->updateMouseWidget(tr(""), tr(""));
+        GetDialogFactory()->updateMouseWidget(tr(""), tr(""));
     }
 }
 

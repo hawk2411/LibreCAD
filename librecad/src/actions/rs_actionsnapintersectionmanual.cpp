@@ -126,7 +126,7 @@ void RS_ActionSnapIntersectionManual::mouseMoveEvent(QMouseEvent* e) {
 				{ip, graphicView->toGraphDX(4)}));
                 drawPreview();
 
-                RS_DIALOGFACTORY->updateCoordinateWidget(ip,
+                GetDialogFactory()->updateCoordinateWidget(ip,
                         ip - graphicView->getRelativeZero());
 
             }
@@ -178,15 +178,15 @@ void RS_ActionSnapIntersectionManual::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionSnapIntersectionManual::updateMouseButtonHints() {
     switch (getStatus()) {
     case ChooseEntity1:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select first entity"),
+        GetDialogFactory()->updateMouseWidget(tr("Select first entity"),
                                             tr("Back"));
         break;
     case ChooseEntity2:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select second entity"),
+        GetDialogFactory()->updateMouseWidget(tr("Select second entity"),
                                             tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

@@ -60,7 +60,7 @@ void RS_ActionModifyRotate2::trigger() {
 
     finish(false);
 
-        RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
 }
 
 void RS_ActionModifyRotate2::mouseMoveEvent(QMouseEvent* e) {
@@ -123,7 +123,7 @@ void RS_ActionModifyRotate2::coordinateEvent(RS_CoordinateEvent* e) {
     case SetReferencePoint2:
 		data->center2 = pos;
         setStatus(ShowDialog);
-		if (RS_DIALOGFACTORY->requestRotate2Dialog(*data)) {
+		if (GetDialogFactory()->requestRotate2Dialog(*data)) {
             trigger();
             //finish();
         }
@@ -145,15 +145,15 @@ QStringList RS_ActionModifyRotate2::getAvailableCommands() {
 void RS_ActionModifyRotate2::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetReferencePoint1:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify absolute reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify absolute reference point"),
                                             tr("Cancel"));
         break;
     case SetReferencePoint2:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify relative reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify relative reference point"),
                                             tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

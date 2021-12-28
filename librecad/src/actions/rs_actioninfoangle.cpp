@@ -90,10 +90,10 @@ void RS_ActionInfoAngle::trigger() {
 					str += RS_Units::formatAngle(angle + 2.*M_PI,
 												 graphic->getAngleFormat(), graphic->getAnglePrecision());
                 }
-                RS_DIALOGFACTORY->commandMessage(tr("Angle: %1").arg(str));
+                GetDialogFactory()->commandMessage(tr("Angle: %1").arg(str));
             }
         } else {
-            RS_DIALOGFACTORY->commandMessage(tr("Lines are parallel"));
+            GetDialogFactory()->commandMessage(tr("Lines are parallel"));
         }
     }
 }
@@ -136,17 +136,17 @@ void RS_ActionInfoAngle::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionInfoAngle::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetEntity1:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Specify first line"),
             tr("Cancel"));
         break;
     case SetEntity2:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Specify second line"),
             tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

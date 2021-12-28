@@ -98,7 +98,7 @@ void RS_ActionDrawPoint::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
 	if (checkCommand("help", c)) {
-		RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+		GetDialogFactory()->commandMessage(msgAvailableCommands()
 										 + getAvailableCommands().join(", "));
 		return;
 	}
@@ -114,10 +114,10 @@ QStringList RS_ActionDrawPoint::getAvailableCommands() {
 void RS_ActionDrawPoint::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case 0:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify location"), tr("Cancel"));
+		GetDialogFactory()->updateMouseWidget(tr("Specify location"), tr("Cancel"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

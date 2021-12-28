@@ -809,7 +809,7 @@ RS2::ActionType RS_Commands::cmdToAction(const QString& cmd, bool verbose) {
 		for(auto const& p: mainCommands){
 			if(p.second==ret){
 				RS_DEBUG->print("RS_Commands::cmdToAction: commandMessage");
-				RS_DIALOGFACTORY->commandMessage(QObject::tr("Command: %1 (%2)").arg(full).arg(p.first));
+				GetDialogFactory()->commandMessage(QObject::tr("Command: %1 (%2)").arg(full).arg(p.first));
 				//                                        RS_DialogFactory::instance()->commandMessage( QObject::tr("Command: %1").arg(full));
 				RS_DEBUG->print("RS_Commands::cmdToAction: "
 								"commandMessage: ok");
@@ -851,12 +851,12 @@ RS2::ActionType RS_Commands::keycodeToAction(const QString& code) {
         //not found, searching for main commands
         it = mainCommands.find(c);
         if( it == mainCommands.end() ){
-//			RS_DIALOGFACTORY->commandMessage(QObject::tr("Command not found: %1").arg(c));
+//			GetDialogFactory()->commandMessage(QObject::tr("Command not found: %1").arg(c));
             return RS2::ActionNone;
         }
     }
     //found
-	RS_DIALOGFACTORY->commandMessage(QObject::tr("Accepted keycode: %1").arg(c));
+	GetDialogFactory()->commandMessage(QObject::tr("Accepted keycode: %1").arg(c));
     //fixme, need to handle multiple hits
     return it->second;
 }
@@ -870,7 +870,7 @@ QString RS_Commands::command(const QString& cmd) {
     if(it != instance()->cmdTranslation.end()){
         return instance()->cmdTranslation[cmd];
     }
-	RS_DIALOGFACTORY->commandMessage(QObject::tr("Command not found: %1").arg(cmd));
+	GetDialogFactory()->commandMessage(QObject::tr("Command not found: %1").arg(cmd));
     RS_DEBUG->print(RS_Debug::D_WARNING,
                 "RS_Commands::command: command '%s' unknown", cmd.toLatin1().data());
     return "";

@@ -62,7 +62,7 @@ void RS_ActionBlocksCreate::trigger() {
         RS_BlockList* blockList = graphic->getBlockList();
 		if (blockList) {
             RS_BlockData d =
-                RS_DIALOGFACTORY->requestNewBlockDialog(blockList);
+                    GetDialogFactory()->requestNewBlockDialog(blockList);
 
             if (!d.name.isEmpty()) {
                 RS_Creation creation(container, graphicView);
@@ -146,11 +146,11 @@ void RS_ActionBlocksCreate::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionBlocksCreate::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetReferencePoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify reference point"),
                                             tr("Cancel"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

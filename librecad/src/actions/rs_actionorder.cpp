@@ -121,7 +121,7 @@ void RS_ActionOrder::mouseReleaseEvent(QMouseEvent* e) {
         case ChooseEntity:
             targetEntity = catchEntity(e);
 			if (!targetEntity) {
-                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                GetDialogFactory()->commandMessage(tr("No Entity found."));
             } else {
                 targetEntity->setHighlighted(true);
                 graphicView->drawEntity(targetEntity);
@@ -147,11 +147,11 @@ void RS_ActionOrder::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionOrder::updateMouseButtonHints() {
     switch (getStatus()) {
     case ChooseEntity:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Choose entity for order"),
+        GetDialogFactory()->updateMouseWidget(tr("Choose entity for order"),
                                             tr("Cancel"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

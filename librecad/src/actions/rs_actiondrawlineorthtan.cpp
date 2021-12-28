@@ -182,15 +182,15 @@ void RS_ActionDrawLineOrthTan::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionDrawLineOrthTan::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetLine:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Select a line"),
+		GetDialogFactory()->updateMouseWidget(tr("Select a line"),
 											tr("Cancel"));
 		break;
 	case SetCircle:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Select circle, arc or ellipse"),
+		GetDialogFactory()->updateMouseWidget(tr("Select circle, arc or ellipse"),
 											tr("Back"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

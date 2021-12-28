@@ -63,7 +63,7 @@ void RS_ActionDrawText::init(int status) {
 		reset();
 
 		RS_Text tmp(NULL, *data);
-		if (RS_DIALOGFACTORY->requestTextDialog(&tmp)) {
+		if (GetDialogFactory()->requestTextDialog(&tmp)) {
 			data.reset(new RS_TextData(tmp.getData()));
 			setStatus(SetPos);
 			showOptions();
@@ -75,7 +75,7 @@ void RS_ActionDrawText::init(int status) {
 		break;
 
 	case SetPos:
-		RS_DIALOGFACTORY->requestOptions(this, true, true);
+		GetDialogFactory()->requestOptions(this, true, true);
 		deletePreview();
 		preview->setVisible(true);
 		preparePreview();
@@ -220,7 +220,7 @@ void RS_ActionDrawText::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
 	if (checkCommand("help", c)) {
-		RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+		GetDialogFactory()->commandMessage(msgAvailableCommands()
 										 + getAvailableCommands().join(", "));
 		return;
 	}
@@ -236,7 +236,7 @@ void RS_ActionDrawText::commandEvent(RS_CommandEvent* e) {
 
     case SetText: {
             setText(e->getCommand());
-			RS_DIALOGFACTORY->requestOptions(this, true, true);
+			GetDialogFactory()->requestOptions(this, true, true);
             graphicView->enableCoordinateInput();
             setStatus(SetPos);
         }
@@ -262,7 +262,7 @@ QStringList RS_ActionDrawText::getAvailableCommands() {
 void RS_ActionDrawText::showOptions() {
     RS_ActionInterface::showOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, true, true);
+	GetDialogFactory()->requestOptions(this, true, true);
 }
 
 
@@ -270,7 +270,7 @@ void RS_ActionDrawText::showOptions() {
 void RS_ActionDrawText::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, false);
+	GetDialogFactory()->requestOptions(this, false);
 }
 
 
@@ -278,20 +278,20 @@ void RS_ActionDrawText::hideOptions() {
 void RS_ActionDrawText::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetPos:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify insertion point"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify insertion point"),
 											tr("Cancel"));
 		break;
 	case SetSecPos:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify second point"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify second point"),
 											tr("Cancel"));
 		break;
 	case ShowDialog:
 	case SetText:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Enter text:"),
+		GetDialogFactory()->updateMouseWidget(tr("Enter text:"),
 											tr("Back"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

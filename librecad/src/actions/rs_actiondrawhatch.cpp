@@ -52,7 +52,7 @@ void RS_ActionDrawHatch::init(int status) {
 	RS_Hatch tmp(container, *data);
     tmp.setLayerToActive();
     tmp.setPenToActive();
-    if (RS_DIALOGFACTORY->requestHatchDialog(&tmp)) {
+    if (GetDialogFactory()->requestHatchDialog(&tmp)) {
 		*data = tmp.getData();
         trigger();
         finish(false);
@@ -149,28 +149,28 @@ void RS_ActionDrawHatch::trigger() {
 		bool printArea = true;
         switch( hatch->getUpdateError()) {
         case RS_Hatch::HATCH_OK :
-            RS_DIALOGFACTORY->commandMessage(tr("Hatch created successfully."));
+            GetDialogFactory()->commandMessage(tr("Hatch created successfully."));
             break;
         case RS_Hatch::HATCH_INVALID_CONTOUR :
-            RS_DIALOGFACTORY->commandMessage(tr("Hatch Error: Invalid contour found!"));
+            GetDialogFactory()->commandMessage(tr("Hatch Error: Invalid contour found!"));
 			printArea = false;
             break;
         case RS_Hatch::HATCH_PATTERN_NOT_FOUND :
-            RS_DIALOGFACTORY->commandMessage(tr("Hatch Error: Pattern not found!"));
+            GetDialogFactory()->commandMessage(tr("Hatch Error: Pattern not found!"));
             break;
         case RS_Hatch::HATCH_TOO_SMALL :
-            RS_DIALOGFACTORY->commandMessage(tr("Hatch Error: Contour or pattern too small!"));
+            GetDialogFactory()->commandMessage(tr("Hatch Error: Contour or pattern too small!"));
             break;
         case RS_Hatch::HATCH_AREA_TOO_BIG :
-            RS_DIALOGFACTORY->commandMessage(tr("Hatch Error: Contour too big!"));
+            GetDialogFactory()->commandMessage(tr("Hatch Error: Contour too big!"));
             break;
         default :
-            RS_DIALOGFACTORY->commandMessage(tr("Hatch Error: Undefined Error!"));
+            GetDialogFactory()->commandMessage(tr("Hatch Error: Undefined Error!"));
 			printArea = false;
             break;
         }
 		if(m_bShowArea && printArea){
-            RS_DIALOGFACTORY->commandMessage(tr("Total hatch area = %1").
+            GetDialogFactory()->commandMessage(tr("Total hatch area = %1").
                                              arg(hatch->getTotalArea(),10,'g',8));
         }
 
@@ -178,7 +178,7 @@ void RS_ActionDrawHatch::trigger() {
 
 	} else {
 		hatch.reset();
-		RS_DIALOGFACTORY->commandMessage(tr("Invalid hatch area. Please check that "
+		GetDialogFactory()->commandMessage(tr("Invalid hatch area. Please check that "
 		"the entities chosen form one or more closed contours."));
 	}
     //}
@@ -228,7 +228,7 @@ void RS_ActionDrawHatch::mouseReleaseEvent(QMouseEvent* e) {
 
 
 void RS_ActionDrawHatch::updateMouseButtonHints() {
-	RS_DIALOGFACTORY->updateMouseWidget();
+	GetDialogFactory()->updateMouseWidget();
 }
 
 void RS_ActionDrawHatch::updateMouseCursor() {

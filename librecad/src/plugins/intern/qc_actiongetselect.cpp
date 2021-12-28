@@ -52,10 +52,10 @@ QC_ActionGetSelect::~QC_ActionGetSelect()
 void QC_ActionGetSelect::updateMouseButtonHints() {
     switch (getStatus()) {
     case Select:
-		RS_DIALOGFACTORY->updateMouseWidget(message, tr("Cancel"));
+		GetDialogFactory()->updateMouseWidget(message, tr("Cancel"));
             break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }
@@ -78,7 +78,7 @@ void QC_ActionGetSelect::init(int status) {
 void QC_ActionGetSelect::mouseReleaseEvent(QMouseEvent* e) {
     if (e->button()==Qt::RightButton) {
         completed = true;
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         finish();
     }
 }
@@ -87,7 +87,7 @@ void QC_ActionGetSelect::keyPressEvent(QKeyEvent* e)
 {
     if (e->key()==Qt::Key_Escape || e->key()==Qt::Key_Enter)
     {
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         finish();
         completed = true;
     }

@@ -67,7 +67,7 @@ void RS_ActionPolylineTrim::trigger() {
                 Segment1 = Segment2 = NULL;
                 setStatus(SetSegment1);
 
-                RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
         graphicView->redraw();
@@ -104,9 +104,9 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                 case ChooseEntity:
                         delEntity = catchEntity(e);
                         if (delEntity==NULL) {
-                                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                                GetDialogFactory()->commandMessage(tr("No Entity found."));
                         } else if (delEntity->rtti()!=RS2::EntityPolyline) {
-                                RS_DIALOGFACTORY->commandMessage(
+                                GetDialogFactory()->commandMessage(
                                         tr("Entity must be a polyline."));
                         } else {
                                 delEntity->setHighlighted(true);
@@ -121,11 +121,11 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                 case SetSegment1:
                         cPoint = snapPoint(e);
                         if (delEntity==NULL) {
-                                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                                GetDialogFactory()->commandMessage(tr("No Entity found."));
                         } else if (!cPoint.valid) {
-                                RS_DIALOGFACTORY->commandMessage(tr("Specifying point is invalid."));
+                                GetDialogFactory()->commandMessage(tr("Specifying point is invalid."));
                         } else if (!delEntity->isPointOnEntity(cPoint)) {
-                                RS_DIALOGFACTORY->commandMessage(
+                                GetDialogFactory()->commandMessage(
                                         tr("No Segment found on entity."));
                         }else{
                                 Segment1 = NULL;
@@ -140,11 +140,11 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                 case SetSegment2:
                         cPoint = snapPoint(e);
                         if (delEntity==NULL) {
-                                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                                GetDialogFactory()->commandMessage(tr("No Entity found."));
                         } else if (!cPoint.valid) {
-                                RS_DIALOGFACTORY->commandMessage(tr("Specifying point is invalid."));
+                                GetDialogFactory()->commandMessage(tr("Specifying point is invalid."));
                         } else if (!delEntity->isPointOnEntity(cPoint)) {
-                                RS_DIALOGFACTORY->commandMessage(
+                                GetDialogFactory()->commandMessage(
                                         tr("No Segment found on entity."));
                         }else{
                                 Segment2 = NULL;
@@ -178,19 +178,19 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionPolylineTrim::updateMouseButtonHints() {
         switch (getStatus()) {
         case ChooseEntity:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Specify polyline to trim"),
+                GetDialogFactory()->updateMouseWidget(tr("Specify polyline to trim"),
                                                         tr("Cancel"));
                 break;
         case SetSegment1:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first segment"),
+                GetDialogFactory()->updateMouseWidget(tr("Specify first segment"),
                                                         tr("Back"));
                 break;
         case SetSegment2:
-                RS_DIALOGFACTORY->updateMouseWidget(tr("Specify second segment"),
+                GetDialogFactory()->updateMouseWidget(tr("Specify second segment"),
                                                         tr("Back"));
                 break;
         default:
-                RS_DIALOGFACTORY->updateMouseWidget();
+                GetDialogFactory()->updateMouseWidget();
                 break;
         }
 }

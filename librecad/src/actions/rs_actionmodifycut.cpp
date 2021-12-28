@@ -67,7 +67,7 @@ void RS_ActionModifyCut::trigger() {
 		*cutCoord = RS_Vector(false);
         setStatus(ChooseCutEntity);
 
-        RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     }
 }
 
@@ -99,24 +99,24 @@ void RS_ActionModifyCut::mouseReleaseEvent(QMouseEvent* e) {
         case ChooseCutEntity:
             cutEntity = catchEntity(e);
 			if (cutEntity==nullptr) {
-                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                GetDialogFactory()->commandMessage(tr("No Entity found."));
             } else if(cutEntity->trimmable()){
                 cutEntity->setHighlighted(true);
                 graphicView->drawEntity(cutEntity);
                 setStatus(SetCutCoord);
             }else
-                RS_DIALOGFACTORY->commandMessage(
+                GetDialogFactory()->commandMessage(
                             tr("Entity must be a line, arc, circle, ellipse or interpolation spline."));
             break;
 
         case SetCutCoord:
 			*cutCoord = snapPoint(e);
 			if (cutEntity==nullptr) {
-                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                GetDialogFactory()->commandMessage(tr("No Entity found."));
 			} else if (!cutCoord->valid) {
-                RS_DIALOGFACTORY->commandMessage(tr("Cutting point is invalid."));
+                GetDialogFactory()->commandMessage(tr("Cutting point is invalid."));
 			} else if (!cutEntity->isPointOnEntity(*cutCoord)) {
-                RS_DIALOGFACTORY->commandMessage(
+                GetDialogFactory()->commandMessage(
                     tr("Cutting point is not on entity."));
             } else {
                 trigger();
@@ -141,15 +141,15 @@ void RS_ActionModifyCut::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionModifyCut::updateMouseButtonHints() {
     switch (getStatus()) {
     case ChooseCutEntity:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify entity to cut"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify entity to cut"),
                                             tr("Cancel"));
         break;
     case SetCutCoord:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify cutting point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify cutting point"),
                                             tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

@@ -864,7 +864,7 @@ void QC_ApplicationWindow::slotKillAllActions() {
 
         RS_Selection s((RS_EntityContainer &) *m->getDocument(), gv);
         s.selectAll(false);
-        RS_DIALOGFACTORY->updateSelectionWidget(
+        GetDialogFactory()->updateSelectionWidget(
                 m->getDocument()->countSelected(),
                 m->getDocument()->totalSelectedLength()
         );
@@ -1476,7 +1476,7 @@ bool QC_ApplicationWindow::fileNewHelper(const QString &fileName, QC_MDIWindow *
 
     RS_DEBUG->print("QC_ApplicationWindow::fileNewHelper: update coordinate widget");
     // update coordinate widget format:
-    RS_DIALOGFACTORY->updateCoordinateWidget(RS_Vector(0.0, 0.0),
+    GetDialogFactory()->updateCoordinateWidget(RS_Vector(0.0, 0.0),
                                              RS_Vector(0.0, 0.0), true);
 
     if (!fileName.isEmpty()) {
@@ -1742,7 +1742,7 @@ void QC_ApplicationWindow::fileOpen(const QString &fileName, RS2::FormatType typ
 
         RS_DEBUG->print("QC_ApplicationWindow::fileOpen: update coordinate widget");
         // update coordinate widget format:
-        RS_DIALOGFACTORY->updateCoordinateWidget(RS_Vector(0.0, 0.0),
+        GetDialogFactory()->updateCoordinateWidget(RS_Vector(0.0, 0.0),
                                                  RS_Vector(0.0, 0.0),
                                                  true);
         RS_DEBUG->print("QC_ApplicationWindow::fileOpen: update coordinate widget: OK");
@@ -2610,7 +2610,7 @@ void QC_ApplicationWindow::slotViewStatusBar(bool toggle) {
  * Shows the dialog for general application preferences.
  */
 void QC_ApplicationWindow::slotOptionsGeneral() {
-    RS_DIALOGFACTORY->requestOptionsGeneralDialog();
+    GetDialogFactory()->requestOptionsGeneralDialog();
 
     RS_SETTINGS->beginGroup("Colors");
     QColor background(RS_SETTINGS->readEntry("/background", Colors::background));

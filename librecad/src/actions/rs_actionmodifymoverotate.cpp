@@ -67,7 +67,7 @@ void RS_ActionModifyMoveRotate::trigger() {
 
     finish(false);
 
-    RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
 }
 
 
@@ -135,7 +135,7 @@ void RS_ActionModifyMoveRotate::coordinateEvent(RS_CoordinateEvent* e) {
 
         setStatus(ShowDialog);
 		pPoints->data.offset = pPoints->targetPoint - pPoints->data.referencePoint;
-		if (RS_DIALOGFACTORY->requestMoveRotateDialog(pPoints->data)) {
+		if (GetDialogFactory()->requestMoveRotateDialog(pPoints->data)) {
             trigger();
             //finish();
         }
@@ -151,7 +151,7 @@ void RS_ActionModifyMoveRotate::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -174,9 +174,9 @@ void RS_ActionModifyMoveRotate::commandEvent(RS_CommandEvent* e) {
                 e->accept();
 				pPoints->data.angle = RS_Math::deg2rad(a);
             } else {
-                RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+                GetDialogFactory()->commandMessage(tr("Not a valid expression"));
             }
-            RS_DIALOGFACTORY->requestOptions(this, true, true);
+            GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;
@@ -208,7 +208,7 @@ void RS_ActionModifyMoveRotate::showOptions() {
 
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
 }
 
 
@@ -218,7 +218,7 @@ void RS_ActionModifyMoveRotate::hideOptions() {
 
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 void RS_ActionModifyMoveRotate::setAngle(double a) {
@@ -232,19 +232,19 @@ double RS_ActionModifyMoveRotate::getAngle() const{
 void RS_ActionModifyMoveRotate::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetReferencePoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify reference point"),
                                             tr("Cancel"));
         break;
     case SetTargetPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify target point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify target point"),
                                             tr("Back"));
         break;
     case SetAngle:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter rotation angle:"),
+        GetDialogFactory()->updateMouseWidget(tr("Enter rotation angle:"),
                                             tr("Back"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

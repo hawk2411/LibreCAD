@@ -120,11 +120,11 @@ void RS_ActionEditPaste::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionEditPaste::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetTargetPoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Set reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Set reference point"),
                                             tr("Cancel"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

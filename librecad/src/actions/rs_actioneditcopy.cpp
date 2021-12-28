@@ -67,7 +67,7 @@ void RS_ActionEditCopy::trigger() {
     finish(false);
     graphicView->killSelectActions();
     //init(getStatus()-1);
-    RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
 }
 
 void RS_ActionEditCopy::mouseMoveEvent(QMouseEvent* e) {
@@ -101,11 +101,11 @@ void RS_ActionEditCopy::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionEditCopy::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetReferencePoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify reference point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify reference point"),
                                             tr("Cancel"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

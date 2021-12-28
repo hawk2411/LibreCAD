@@ -46,7 +46,7 @@ void RS_ActionBlocksAdd::trigger() {
 		RS_BlockList* blockList = graphic->getBlockList();
 		if (blockList) {
 			RS_BlockData d = 
-				RS_DIALOGFACTORY->requestNewBlockDialog(blockList);
+				GetDialogFactory()->requestNewBlockDialog(blockList);
 			if (d.isValid()) {
                 // Block cannot contain blocks.
                 if (container->rtti() == RS2::EntityBlock) {

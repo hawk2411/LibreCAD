@@ -389,7 +389,7 @@ void RS_ActionDrawCircleTan3::commandEvent(RS_CommandEvent* e) {
 	QString c = e->getCommand().toLower();
 
 	if (checkCommand("help", c)) {
-			RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+			GetDialogFactory()->commandMessage(msgAvailableCommands()
 											 + getAvailableCommands().join(", "));
 		return;
 	}
@@ -406,7 +406,7 @@ void RS_ActionDrawCircleTan3::commandEvent(RS_CommandEvent* e) {
 					setStatus(SetAngle1);
 				}
 			} else
-					RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+					GetDialogFactory()->commandMessage(tr("Not a valid expression"));
 		}
 		break;
 
@@ -417,7 +417,7 @@ void RS_ActionDrawCircleTan3::commandEvent(RS_CommandEvent* e) {
 				angle1 = RS_Math::deg2rad(a);
 				setStatus(SetAngle2);
 			} else
-					RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+					GetDialogFactory()->commandMessage(tr("Not a valid expression"));
 		}
 		break;
 
@@ -428,7 +428,7 @@ void RS_ActionDrawCircleTan3::commandEvent(RS_CommandEvent* e) {
 				angle2 = RS_Math::deg2rad(a);
 				trigger();
 			} else
-					RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+					GetDialogFactory()->commandMessage(tr("Not a valid expression"));
 		}
 		break;
 
@@ -446,25 +446,25 @@ QStringList RS_ActionDrawCircleTan3::getAvailableCommands() {
 void RS_ActionDrawCircleTan3::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetCircle1:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify the first line/arc/circle"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify the first line/arc/circle"),
 											tr("Cancel"));
 		break;
 
 	case SetCircle2:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify the second line/arc/circle"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify the second line/arc/circle"),
 											tr("Back"));
 		break;
 	case SetCircle3:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify the third line/arc/circle"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify the third line/arc/circle"),
 											tr("Back"));
 		break;
 
 	case SetCenter:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Select the center of the tangent circle"),
+		GetDialogFactory()->updateMouseWidget(tr("Select the center of the tangent circle"),
 											tr("Back"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

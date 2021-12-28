@@ -62,10 +62,10 @@ void RS_ActionEditUndo::trigger()
 
 	if (undo) {
 		if(!document->undo())
-			RS_DIALOGFACTORY->commandMessage(tr("Nothing to undo!"));
+			GetDialogFactory()->commandMessage(tr("Nothing to undo!"));
 	} else {
 		if(!document->redo())
-			RS_DIALOGFACTORY->commandMessage(tr("Nothing to redo!"));
+			GetDialogFactory()->commandMessage(tr("Nothing to redo!"));
 	}
 
     graphic->addBlockNotification();
@@ -73,7 +73,7 @@ void RS_ActionEditUndo::trigger()
     document->updateInserts();
     graphicView->redraw(RS2::RedrawDrawing);
     finish(false);
-    RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(),
                                             container->totalSelectedLength());
 }
 // EOF

@@ -246,7 +246,7 @@ void RS_ActionDrawLine::commandEvent(RS_CommandEvent* e)
     switch (getStatus()) {
     case SetStartpoint:
         if (checkCommand( "help", c)) {
-            RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+            GetDialogFactory()->commandMessage(msgAvailableCommands()
                                              + getAvailableCommands().join(", "));
             e->accept();
             return;
@@ -310,7 +310,7 @@ void RS_ActionDrawLine::updateMouseButtonHints()
 {
     switch (getStatus()) {
     case SetStartpoint:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify first point"),
                                             tr("Cancel"));
         break;
     case SetEndpoint: {
@@ -333,18 +333,18 @@ void RS_ActionDrawLine::updateMouseButtonHints()
         }
 
         if (pPoints->historyIndex >= 1) {
-            RS_DIALOGFACTORY->updateMouseWidget(
+            GetDialogFactory()->updateMouseWidget(
                         tr("Specify next point or [%1]").arg(msg),
                         tr("Back"));
         } else {
-            RS_DIALOGFACTORY->updateMouseWidget(
+            GetDialogFactory()->updateMouseWidget(
                         tr("Specify next point"),
                         tr("Back"));
         }
         break;
     }
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }
@@ -354,14 +354,14 @@ void RS_ActionDrawLine::showOptions()
     RS_DEBUG->print("RS_ActionDrawLine::showOptions");
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
 }
 
 void RS_ActionDrawLine::hideOptions()
 {
     RS_ActionInterface::hideOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 
@@ -386,7 +386,7 @@ void RS_ActionDrawLine::close()
         }
     }
     else {
-        RS_DIALOGFACTORY->commandMessage(tr("Cannot close sequence of lines: "
+        GetDialogFactory()->commandMessage(tr("Cannot close sequence of lines: "
                                             "Not enough entities defined yet, or already closed."));
     }
 }
@@ -440,7 +440,7 @@ void RS_ActionDrawLine::undo()
         pPoints->startOffset = h.startOffset;
     }
     else {
-        RS_DIALOGFACTORY->commandMessage(tr("Cannot undo: "
+        GetDialogFactory()->commandMessage(tr("Cannot undo: "
                                             "Begin of history reached"));
     }
 }
@@ -475,7 +475,7 @@ void RS_ActionDrawLine::redo()
         }
     }
     else {
-        RS_DIALOGFACTORY->commandMessage( tr("Cannot redo: "
+        GetDialogFactory()->commandMessage( tr("Cannot redo: "
                                              "End of history reached"));
     }
 }

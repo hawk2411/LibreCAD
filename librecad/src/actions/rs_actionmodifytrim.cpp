@@ -92,7 +92,7 @@ void RS_ActionModifyTrim::trigger() {
             setStatus(ChooseTrimEntity);
         }
 
-        RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     }
 }
 
@@ -174,24 +174,24 @@ void RS_ActionModifyTrim::updateMouseButtonHints() {
     switch (getStatus()) {
     case ChooseLimitEntity:
         if (both) {
-            RS_DIALOGFACTORY->updateMouseWidget(tr("Select first trim entity"),
+            GetDialogFactory()->updateMouseWidget(tr("Select first trim entity"),
                                                 tr("Cancel"));
         } else {
-            RS_DIALOGFACTORY->updateMouseWidget(tr("Select limiting entity"),
+            GetDialogFactory()->updateMouseWidget(tr("Select limiting entity"),
                                                 tr("Back"));
         }
         break;
     case ChooseTrimEntity:
         if (both) {
-            RS_DIALOGFACTORY->updateMouseWidget(tr("Select second trim entity"),
+            GetDialogFactory()->updateMouseWidget(tr("Select second trim entity"),
                                                 tr("Cancel"));
         } else {
-            RS_DIALOGFACTORY->updateMouseWidget(tr("Select entity to trim"),
+            GetDialogFactory()->updateMouseWidget(tr("Select entity to trim"),
                                                 tr("Back"));
         }
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

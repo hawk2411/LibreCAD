@@ -49,8 +49,8 @@ void RS_ActionOptionsDrawing::init(int status) {
 
 void RS_ActionOptionsDrawing::trigger() {
     if (graphic) {
-        RS_DIALOGFACTORY->requestOptionsDrawingDialog(*graphic);
-        RS_DIALOGFACTORY->updateCoordinateWidget(RS_Vector(0.0,0.0),
+        GetDialogFactory()->requestOptionsDrawingDialog(*graphic);
+        GetDialogFactory()->updateCoordinateWidget(RS_Vector(0.0,0.0),
                 RS_Vector(0.0,0.0),
                 true);
         graphicView->redraw(RS2::RedrawGrid);

@@ -63,9 +63,9 @@ void RS_ActionPolylineSegment::init(int status) {
 		}
 		if (targetEntity) {
 			convertPolyline(targetEntity, true);
-			RS_DIALOGFACTORY->commandMessage(tr("Polyline created"));
+			GetDialogFactory()->commandMessage(tr("Polyline created"));
 			graphicView->redraw();
-			RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+			GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
 			finish(false);
 			return;
 		}
@@ -268,7 +268,7 @@ void RS_ActionPolylineSegment::trigger() {
 		targetEntity = nullptr;
         setStatus(ChooseEntity);
 
-        RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     }
 ////////////////////////////////////////2006/06/15
                 graphicView->redraw();
@@ -282,9 +282,9 @@ void RS_ActionPolylineSegment::mouseReleaseEvent(QMouseEvent* e) {
 			targetEntity = catchEntity(e, entityType);
 
 			if (targetEntity==nullptr) {
-                RS_DIALOGFACTORY->commandMessage(tr("No Entity found."));
+                GetDialogFactory()->commandMessage(tr("No Entity found."));
 			} else if (targetEntity->rtti()==RS2::EntityPolyline && ((RS_Polyline*)targetEntity)->isClosed()){
-                RS_DIALOGFACTORY->commandMessage(
+                GetDialogFactory()->commandMessage(
                         tr("Entity can not be a closed polyline."));
             } else {
 				//TODO, verify topology of selected
@@ -326,11 +326,11 @@ void RS_ActionPolylineSegment::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionPolylineSegment::updateMouseButtonHints() {
     switch (getStatus()) {
     case ChooseEntity:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Choose one of the segments on the original polyline"),
+        GetDialogFactory()->updateMouseWidget(tr("Choose one of the segments on the original polyline"),
                                             tr("Cancel"));
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

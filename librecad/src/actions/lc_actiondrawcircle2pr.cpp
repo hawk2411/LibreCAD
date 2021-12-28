@@ -186,7 +186,7 @@ void LC_ActionDrawCircle2PR::coordinateEvent(RS_CoordinateEvent* e) {
 			graphicView->moveRelativeZero(mouse);
 			setStatus(SelectCenter);
 		}else{
-			RS_DIALOGFACTORY->commandMessage(tr("radius=%1 is too small for points selected\ndistance between points=%2 is larger than diameter=%3").
+            GetDialogFactory()->commandMessage(tr("radius=%1 is too small for points selected\ndistance between points=%2 is larger than diameter=%3").
 											 arg(data->radius).arg(pPoints->point1.distanceTo(pPoints->point2)).arg(2.*data->radius));
 		}
 		break;
@@ -196,7 +196,7 @@ void LC_ActionDrawCircle2PR::coordinateEvent(RS_CoordinateEvent* e) {
 		if(showPreview || data->isValid())
 			trigger();
 		else
-			RS_DIALOGFACTORY->commandMessage(tr("Select from two possible circle centers"));
+            GetDialogFactory()->commandMessage(tr("Select from two possible circle centers"));
 	}
 		break;
 
@@ -211,7 +211,7 @@ void LC_ActionDrawCircle2PR::commandEvent(RS_CommandEvent* e) {
 	QString c = e->getCommand().toLower();
 
 	if (checkCommand("help", c)) {
-		RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
 										 + getAvailableCommands().join(", "));
 		return;
 	}
@@ -229,19 +229,19 @@ QStringList LC_ActionDrawCircle2PR::getAvailableCommands() {
 void LC_ActionDrawCircle2PR::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetPoint1:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify first point"),
 											tr("Cancel"));
 		break;
 	case SetPoint2:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify second point"),
+        GetDialogFactory()->updateMouseWidget(tr("Specify second point"),
 											tr("Back"));
 		break;
 	case SelectCenter:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Select circle center"),
+        GetDialogFactory()->updateMouseWidget(tr("Select circle center"),
 											tr("Back"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

@@ -249,7 +249,7 @@ void RS_EventHandler::commandEvent(RS_CommandEvent* e) {
                         RS_DEBUG->print("RS_EventHandler::commandEvent: 006");
 						currentActions.last()->coordinateEvent(&ce);
 					} else
-						RS_DIALOGFACTORY->commandMessage(
+						GetDialogFactory()->commandMessage(
 									"Expression Syntax Error");
 					e->accept();
                 }
@@ -268,7 +268,7 @@ void RS_EventHandler::commandEvent(RS_CommandEvent* e) {
                             currentActions.last()->coordinateEvent(&ce);
                             //                            currentActions[actionIndex]->coordinateEvent(&ce);
 						} else
-							RS_DIALOGFACTORY->commandMessage(
+                            GetDialogFactory()->commandMessage(
 										"Expression Syntax Error");
 						e->accept();
                     }
@@ -288,7 +288,7 @@ void RS_EventHandler::commandEvent(RS_CommandEvent* e) {
                             RS_CoordinateEvent ce(pos);
                             currentActions.last()->coordinateEvent(&ce);
 						} else
-                                RS_DIALOGFACTORY->commandMessage(
+                            GetDialogFactory()->commandMessage(
                                             "Expression Syntax Error");
                         e->accept();
                     }
@@ -307,7 +307,7 @@ void RS_EventHandler::commandEvent(RS_CommandEvent* e) {
                             RS_CoordinateEvent ce(pos + relative_zero);
                             currentActions.last()->coordinateEvent(&ce);
 						} else
-                                RS_DIALOGFACTORY->commandMessage(
+                            GetDialogFactory()->commandMessage(
                                             "Expression Syntax Error");
                         e->accept();
                     }

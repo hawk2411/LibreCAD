@@ -64,7 +64,7 @@ void RS_ActionModifyMirror::trigger() {
     RS_Modification m(*container, graphicView);
     m.mirror(pPoints->data);
 
-    RS_DIALOGFACTORY->updateSelectionWidget( container->countSelected(),
+    GetDialogFactory()->updateSelectionWidget( container->countSelected(),
                                              container->totalSelectedLength());
 }
 
@@ -140,7 +140,7 @@ void RS_ActionModifyMirror::coordinateEvent(RS_CoordinateEvent* e) {
             pPoints->axisPoint2 = mouse;
             setStatus(ShowDialog);
                 graphicView->moveRelativeZero(mouse);
-                if (RS_DIALOGFACTORY->requestMirrorDialog(pPoints->data)) {
+                if (GetDialogFactory()->requestMirrorDialog(pPoints->data)) {
                     pPoints->data.axisPoint1 = pPoints->axisPoint1;
                     pPoints->data.axisPoint2 = pPoints->axisPoint2;
                     deletePreview();
@@ -157,17 +157,17 @@ void RS_ActionModifyMirror::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionModifyMirror::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetAxisPoint1:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
                     tr("Specify first point of mirror line"),
                     tr("Cancel"));
         break;
     case SetAxisPoint2:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
                     tr("Specify second point of mirror line"),
                     tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

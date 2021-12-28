@@ -43,7 +43,7 @@ void RS_ActionLayersRemove::trigger() {
     if (graphic) {
         RS_LayerList *ll = graphic->getLayerList();
         QStringList names =
-            RS_DIALOGFACTORY->requestSelectedLayersRemovalDialog(ll);
+            GetDialogFactory()->requestSelectedLayersRemovalDialog(ll);
 
         if (!names.isEmpty()) {
             for (auto name: names) {
@@ -55,7 +55,7 @@ void RS_ActionLayersRemove::trigger() {
         }
     }
     finish(false);
-    RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
 }
 
 void RS_ActionLayersRemove::init(int status) {

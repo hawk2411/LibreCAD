@@ -135,20 +135,20 @@ void RS_ActionDrawLinePolygonCenCor::coordinateEvent(RS_CoordinateEvent* e) {
 void RS_ActionDrawLinePolygonCenCor::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetCenter:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify center"),
+		GetDialogFactory()->updateMouseWidget(tr("Specify center"),
 											"");
 		break;
 
 	case SetCorner:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Specify a corner"), "");
+		GetDialogFactory()->updateMouseWidget(tr("Specify a corner"), "");
 		break;
 
 	case SetNumber:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Enter number:"), "");
+		GetDialogFactory()->updateMouseWidget(tr("Enter number:"), "");
 		break;
 
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }
@@ -158,20 +158,20 @@ void RS_ActionDrawLinePolygonCenCor::updateMouseButtonHints() {
 void RS_ActionDrawLinePolygonCenCor::showOptions() {
     RS_ActionInterface::showOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, true);
+	GetDialogFactory()->requestOptions(this, true);
 }
 
 void RS_ActionDrawLinePolygonCenCor::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, false);
+	GetDialogFactory()->requestOptions(this, false);
 }
 
 void RS_ActionDrawLinePolygonCenCor::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
 	if (checkCommand("help", c)) {
-		RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+		GetDialogFactory()->commandMessage(msgAvailableCommands()
 										 + getAvailableCommands().join(", "));
         return;
     }
@@ -194,11 +194,11 @@ void RS_ActionDrawLinePolygonCenCor::commandEvent(RS_CommandEvent* e) {
                 if (n>0 && n<10000) {
                     number = n;
 				} else
-					RS_DIALOGFACTORY->commandMessage(tr("Not a valid number. "
+					GetDialogFactory()->commandMessage(tr("Not a valid number. "
 														"Try 1..9999"));
 			} else
-				RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
-			RS_DIALOGFACTORY->requestOptions(this, true, true);
+				GetDialogFactory()->commandMessage(tr("Not a valid expression"));
+			GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
         }
         break;

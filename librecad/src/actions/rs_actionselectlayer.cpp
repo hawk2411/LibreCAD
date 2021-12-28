@@ -46,7 +46,7 @@ void RS_ActionSelectLayer::trigger() {
     if (en) {
         RS_Selection s(*container, graphicView);
         s.selectLayer(en);
-		RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+		GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     } else {
         RS_DEBUG->print("RS_ActionSelectLayer::trigger: Entity is NULL\n");
     }

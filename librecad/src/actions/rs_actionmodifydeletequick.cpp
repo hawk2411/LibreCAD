@@ -66,7 +66,7 @@ void RS_ActionModifyDeleteQuick::trigger() {
             }
         }
 
-        RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     } else {
         RS_DEBUG->print("RS_ActionModifyDeleteQuick::mousePressEvent:"
                         " Entity is NULL\n");
@@ -89,11 +89,11 @@ void RS_ActionModifyDeleteQuick::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionModifyDeleteQuick::updateMouseButtonHints() {
     switch (getStatus()) {
     case 0:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Pick entity to delete"),
+        GetDialogFactory()->updateMouseWidget(tr("Pick entity to delete"),
                                        tr("Cancel"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

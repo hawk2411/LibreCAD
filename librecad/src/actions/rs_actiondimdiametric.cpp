@@ -62,7 +62,7 @@ void RS_ActionDimDiametric::reset() {
 				);
 	entity = nullptr;
 	*pos = {};
-    RS_DIALOGFACTORY->requestOptions(this, true, true);
+    GetDialogFactory()->requestOptions(this, true, true);
 }
 
 
@@ -177,7 +177,7 @@ void RS_ActionDimDiametric::mouseReleaseEvent(QMouseEvent* e) {
                         graphicView->moveRelativeZero(center);
                         setStatus(SetPos);
 					} else
-						RS_DIALOGFACTORY->commandMessage(tr("Not a circle "
+						GetDialogFactory()->commandMessage(tr("Not a circle "
 															"or arc entity"));
                 }
             }
@@ -223,7 +223,7 @@ void RS_ActionDimDiametric::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-        RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+        GetDialogFactory()->commandMessage(msgAvailableCommands()
                                          + getAvailableCommands().join(", "));
         return;
     }
@@ -231,7 +231,7 @@ void RS_ActionDimDiametric::commandEvent(RS_CommandEvent* e) {
     // setting new text label:
     if (getStatus()==SetText) {
         setText(c);
-        RS_DIALOGFACTORY->requestOptions(this, true, true);
+        GetDialogFactory()->requestOptions(this, true, true);
         graphicView->enableCoordinateInput();
         setStatus(lastStatus);
         return;
@@ -255,7 +255,7 @@ void RS_ActionDimDiametric::commandEvent(RS_CommandEvent* e) {
             reset();
             setStatus(SetEntity);
         } else {
-            RS_DIALOGFACTORY->commandMessage(tr("Not a valid expression"));
+            GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
         return;
     }
@@ -283,18 +283,18 @@ QStringList RS_ActionDimDiametric::getAvailableCommands() {
 void RS_ActionDimDiametric::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetEntity:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Select arc or circle entity"),
+        GetDialogFactory()->updateMouseWidget(tr("Select arc or circle entity"),
                                             tr("Cancel"));
         break;
     case SetPos:
-        RS_DIALOGFACTORY->updateMouseWidget(
+        GetDialogFactory()->updateMouseWidget(
             tr("Specify dimension line location"), tr("Cancel"));
         break;
     case SetText:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Enter dimension text:"), "");
+        GetDialogFactory()->updateMouseWidget(tr("Enter dimension text:"), "");
         break;
     default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         break;
     }
 }
@@ -304,7 +304,7 @@ void RS_ActionDimDiametric::updateMouseButtonHints() {
 void RS_ActionDimDiametric::showOptions() {
     RS_ActionInterface::showOptions();
 
-    RS_DIALOGFACTORY->requestOptions(this, true);
+    GetDialogFactory()->requestOptions(this, true);
 }
 
 
@@ -312,8 +312,8 @@ void RS_ActionDimDiametric::showOptions() {
 void RS_ActionDimDiametric::hideOptions() {
     RS_ActionInterface::hideOptions();
 
-    //RS_DIALOGFACTORY->requestDimDiametricOptions(edata, false);
-    RS_DIALOGFACTORY->requestOptions(this, false);
+    //GetDialogFactory()->requestDimDiametricOptions(edata, false);
+    GetDialogFactory()->requestOptions(this, false);
 }
 
 

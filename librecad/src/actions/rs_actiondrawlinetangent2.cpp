@@ -153,15 +153,15 @@ void RS_ActionDrawLineTangent2::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionDrawLineTangent2::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetCircle1:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Select first circle or ellipse"),
+		GetDialogFactory()->updateMouseWidget(tr("Select first circle or ellipse"),
 											tr("Cancel"));
 		break;
 	case SetCircle2:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Select second circle or ellipse"),
+		GetDialogFactory()->updateMouseWidget(tr("Select second circle or ellipse"),
 											tr("Back"));
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }

@@ -80,7 +80,7 @@ void RS_ActionSelectWindow::trigger() {
             RS_Selection s(*container, graphicView);
 			s.selectWindow(pPoints->v1, pPoints->v2, select, cross);
 
-            RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+            GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
 
             init();
         }
@@ -164,13 +164,13 @@ void RS_ActionSelectWindow::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionSelectWindow::updateMouseButtonHints() {
     switch (getStatus()) {
     case SetCorner1:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Click and drag for the selection window"), tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(tr("Click and drag for the selection window"), tr("Cancel"));
         break;
     case SetCorner2:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Choose second edge"), tr("Back"));
+        GetDialogFactory()->updateMouseWidget(tr("Choose second edge"), tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }

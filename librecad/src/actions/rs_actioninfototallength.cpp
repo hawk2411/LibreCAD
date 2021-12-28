@@ -54,10 +54,10 @@ void RS_ActionInfoTotalLength::trigger() {
 		QString len= RS_Units::formatLinear(l,
 											graphic->getUnit(),
 											graphic->getLinearFormat(), graphic->getLinearPrecision());
-        RS_DIALOGFACTORY->commandMessage(
+        GetDialogFactory()->commandMessage(
             tr("Total Length of selected entities: %1").arg(len));
     } else {
-        RS_DIALOGFACTORY->commandMessage(tr("At least one of the selected "
+        GetDialogFactory()->commandMessage(tr("At least one of the selected "
                                             "entities cannot be measured."));
     }
 

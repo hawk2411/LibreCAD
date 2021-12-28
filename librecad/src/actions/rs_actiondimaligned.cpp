@@ -57,7 +57,7 @@ void RS_ActionDimAligned::reset() {
 							  RS_Vector(false))
 				);
     lastStatus = SetExtPoint1;
-	RS_DIALOGFACTORY->requestOptions(this, true, true);
+	GetDialogFactory()->requestOptions(this, true, true);
 }
 
 
@@ -200,7 +200,7 @@ void RS_ActionDimAligned::commandEvent(RS_CommandEvent* e) {
     QString c = e->getCommand().toLower();
 
     if (checkCommand("help", c)) {
-		RS_DIALOGFACTORY->commandMessage(msgAvailableCommands()
+		GetDialogFactory()->commandMessage(msgAvailableCommands()
 										 + getAvailableCommands().join(", "));
         return;
     }
@@ -208,7 +208,7 @@ void RS_ActionDimAligned::commandEvent(RS_CommandEvent* e) {
     switch (getStatus()) {
     case SetText: {
             setText(c);
-			RS_DIALOGFACTORY->requestOptions(this, true, true);
+			GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
             graphicView->enableCoordinateInput();
         }
@@ -248,25 +248,25 @@ QStringList RS_ActionDimAligned::getAvailableCommands() {
 void RS_ActionDimAligned::updateMouseButtonHints() {
 	switch (getStatus()) {
 	case SetExtPoint1:
-		RS_DIALOGFACTORY->updateMouseWidget(
+		GetDialogFactory()->updateMouseWidget(
 					tr("Specify first extension line origin"),
 					tr("Cancel"));
 		break;
 	case SetExtPoint2:
-		RS_DIALOGFACTORY->updateMouseWidget(
+		GetDialogFactory()->updateMouseWidget(
 					tr("Specify second extension line origin"),
 					tr("Back"));
 		break;
 	case SetDefPoint:
-		RS_DIALOGFACTORY->updateMouseWidget(
+		GetDialogFactory()->updateMouseWidget(
 					tr("Specify dimension line location"),
 					tr("Back"));
 		break;
 	case SetText:
-		RS_DIALOGFACTORY->updateMouseWidget(tr("Enter dimension text:"), "");
+		GetDialogFactory()->updateMouseWidget(tr("Enter dimension text:"), "");
 		break;
 	default:
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
 		break;
 	}
 }
@@ -274,7 +274,7 @@ void RS_ActionDimAligned::updateMouseButtonHints() {
 
 
 void RS_ActionDimAligned::hideOptions() {
-	RS_DIALOGFACTORY->requestOptions(this, false);
+	GetDialogFactory()->requestOptions(this, false);
 
     RS_ActionDimension::hideOptions();
 }
@@ -284,7 +284,7 @@ void RS_ActionDimAligned::hideOptions() {
 void RS_ActionDimAligned::showOptions() {
     RS_ActionDimension::showOptions();
 
-	RS_DIALOGFACTORY->requestOptions(this, true);
+	GetDialogFactory()->requestOptions(this, true);
 }
 
 // EOF

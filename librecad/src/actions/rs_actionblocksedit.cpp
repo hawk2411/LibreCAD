@@ -54,7 +54,7 @@ void RS_ActionBlocksEdit::trigger() {
     }
 
 //  std::cout<<__func__<<" : "<<__LINE__<<" : graphic->getBlockList()->count()="<<graphic->getBlockList()->count()<<std::endl;
-    RS_DIALOGFACTORY->requestEditBlockWindow(bl);
+    GetDialogFactory()->requestEditBlockWindow(bl);
 
     finish(false);
     RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_ActionBlocksEdit::trigger(): OK");

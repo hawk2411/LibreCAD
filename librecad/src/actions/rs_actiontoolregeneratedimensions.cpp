@@ -66,10 +66,10 @@ void RS_ActionToolRegenerateDimensions::trigger() {
 
     if (num>0) {
     	graphicView->redraw();
-        RS_DIALOGFACTORY->commandMessage(
+        GetDialogFactory()->commandMessage(
             tr("Regenerated %1 dimension entities").arg(num));
     } else {
-        RS_DIALOGFACTORY->commandMessage(tr("No dimension entities found"));
+        GetDialogFactory()->commandMessage(tr("No dimension entities found"));
     }
 
     finish(false);

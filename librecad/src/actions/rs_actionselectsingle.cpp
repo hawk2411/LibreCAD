@@ -56,7 +56,7 @@ void RS_ActionSelectSingle::trigger() {
         RS_Selection s(*container, graphicView);
         s.selectSingle(en);
 
-        RS_DIALOGFACTORY->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
     } else {
         RS_DEBUG->print("RS_ActionSelectSingle::trigger: Entity is NULL\n");
     }

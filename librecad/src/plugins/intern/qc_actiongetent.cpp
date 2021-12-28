@@ -46,9 +46,9 @@ QC_ActionGetEnt::QC_ActionGetEnt(RS_EntityContainer& container,
 
 void QC_ActionGetEnt::updateMouseButtonHints() {
     if (!completed)
-        RS_DIALOGFACTORY->updateMouseWidget(message, tr("Cancel"));
+        GetDialogFactory()->updateMouseWidget(message, tr("Cancel"));
     else
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
 }
 
 
@@ -87,7 +87,7 @@ void QC_ActionGetEnt::keyPressEvent(QKeyEvent* e)
     // qDebug() << "QC_ActionGetEnt::keyPressEvent";
     if (e->key()==Qt::Key_Escape)
     {
-		RS_DIALOGFACTORY->updateMouseWidget();
+		GetDialogFactory()->updateMouseWidget();
         completed = true;
         // qDebug() << "escape QC_ActionGetEnt";
     }

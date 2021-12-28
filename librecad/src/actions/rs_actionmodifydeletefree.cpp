@@ -95,19 +95,19 @@ void RS_ActionModifyDeleteFree::trigger() {
 
                     init();
 
-                    RS_DIALOGFACTORY->updateSelectionWidget(
+                    GetDialogFactory()->updateSelectionWidget(
                         container->countSelected(),container->totalSelectedLength());
                 } else {
-                                RS_DIALOGFACTORY->commandMessage(tr("Entities not in the same polyline."));
+                                GetDialogFactory()->commandMessage(tr("Entities not in the same polyline."));
                 }
             } else {
-                        RS_DIALOGFACTORY->commandMessage(tr("Parent of second entity is not a polyline"));
+                        GetDialogFactory()->commandMessage(tr("Parent of second entity is not a polyline"));
             }
         } else {
-				RS_DIALOGFACTORY->commandMessage(tr("Parent of second entity is nullptr"));
+				GetDialogFactory()->commandMessage(tr("Parent of second entity is nullptr"));
         }
     } else {
-		RS_DIALOGFACTORY->commandMessage(tr("One of the chosen entities is nullptr"));
+		GetDialogFactory()->commandMessage(tr("One of the chosen entities is nullptr"));
     }
 }
 
@@ -129,15 +129,15 @@ void RS_ActionModifyDeleteFree::mouseReleaseEvent(QMouseEvent* e) {
                             polyline = (RS_Polyline*)parent;
                             setStatus(1);
                         } else {
-                                                RS_DIALOGFACTORY->commandMessage(
+                                                GetDialogFactory()->commandMessage(
                                                                 tr("Parent of first entity is not a polyline"));
                         }
                     } else {
-                                        RS_DIALOGFACTORY->commandMessage(
+                                        GetDialogFactory()->commandMessage(
 														tr("Parent of first entity is nullptr"));
                     }
                 } else {
-                                RS_DIALOGFACTORY->commandMessage(
+                                GetDialogFactory()->commandMessage(
 												tr("First entity is nullptr"));
                 }
             }
@@ -150,7 +150,7 @@ void RS_ActionModifyDeleteFree::mouseReleaseEvent(QMouseEvent* e) {
                 if (e2) {
                     trigger();
                 } else {
-								RS_DIALOGFACTORY->commandMessage(tr("Second entity is nullptr"));
+								GetDialogFactory()->commandMessage(tr("Second entity is nullptr"));
                 }
             }
             break;
@@ -163,16 +163,16 @@ void RS_ActionModifyDeleteFree::mouseReleaseEvent(QMouseEvent* e) {
 void RS_ActionModifyDeleteFree::updateMouseButtonHints() {
     switch (getStatus()) {
     case 0:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify first break point "
+        GetDialogFactory()->updateMouseWidget(tr("Specify first break point "
                                                "on a polyline"), tr("Cancel"));
         break;
     case 1:
-        RS_DIALOGFACTORY->updateMouseWidget(tr("Specify second break point "
+        GetDialogFactory()->updateMouseWidget(tr("Specify second break point "
                                                "on the same polyline"),
                                             tr("Back"));
         break;
     default:
-        RS_DIALOGFACTORY->updateMouseWidget();
+        GetDialogFactory()->updateMouseWidget();
         break;
     }
 }
