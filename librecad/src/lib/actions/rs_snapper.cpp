@@ -31,15 +31,12 @@
 
 #include "rs_point.h"
 #include "rs_circle.h"
-#include "rs_line.h"
 #include "rs_dialogfactory.h"
 #include "rs_graphicview.h"
 #include "rs_grid.h"
 #include "rs_settings.h"
 #include "rs_overlayline.h"
-#include "rs_coordinateevent.h"
 #include "rs_entitycontainer.h"
-#include "rs_pen.h"
 #include "rs_debug.h"
 
 /**
@@ -150,24 +147,7 @@ RS_SnapMode RS_SnapMode::fromInt(unsigned int ret)
     return s;
 }
 
-/**
-  * Methods and structs for class RS_Snapper
-  */
-struct RS_Snapper::Indicator
-{
-    bool lines_state;
-    QString lines_type;
-    RS_Pen lines_pen;
 
-    bool shape_state;
-    QString shape_type;
-    RS_Pen shape_pen;
-};
-
-struct RS_Snapper::ImpData {
-RS_Vector snapCoord;
-RS_Vector snapSpot;
-};
 
 /**
  * Constructor.
@@ -179,10 +159,7 @@ RS_Snapper::RS_Snapper(RS_EntityContainer& container, RS_GraphicView& graphicVie
     ,snap_indicator(new Indicator{})
 {}
 
-RS_Snapper::~RS_Snapper()
-{
-    delete snap_indicator;
-}
+RS_Snapper::~RS_Snapper() = default;
 
 /**
  * Initialize (called by all constructors)
@@ -210,7 +187,7 @@ void RS_Snapper::init()
 	snap_indicator->shape_pen = RS_Pen(RS_Color(snap_color), RS2::Width00, RS2::SolidLine);
 	snap_indicator->shape_pen.setScreenWidth(1);
 
-    snapRange=getSnapRange();
+    snapRange = static_cast<int>(getSnapRange());
 }
 
 
@@ -258,7 +235,6 @@ RS_Vector RS_Snapper::snapFree(QMouseEvent* e) {
 RS_Vector RS_Snapper::snapPoint(QMouseEvent* e)
 {
 	pImpData->snapSpot = RS_Vector(false);
-    RS_Vector t(false);
 
 	if (!e) {
                 RS_DEBUG->print(RS_Debug::D_WARNING,
@@ -270,7 +246,7 @@ RS_Vector RS_Snapper::snapPoint(QMouseEvent* e)
     double ds2Min=RS_MAXDOUBLE*RS_MAXDOUBLE;
 
     if (snapMode.snapEndpoint) {
-        t = snapEndpoint(mouseCoord);
+        auto t = snapEndpoint(mouseCoord);
 		double ds2=mouseCoord.squaredTo(t);
 
         if (ds2 < ds2Min){
@@ -279,7 +255,7 @@ RS_Vector RS_Snapper::snapPoint(QMouseEvent* e)
         }
     }
     if (snapMode.snapCenter) {
-        t = snapCenter(mouseCoord);
+        auto t = snapCenter(mouseCoord);
 		double ds2=mouseCoord.squaredTo(t);
         if (ds2 < ds2Min){
             ds2Min=ds2;
@@ -290,7 +266,7 @@ RS_Vector RS_Snapper::snapPoint(QMouseEvent* e)
         //this is still brutal force
         //todo: accept value from widget QG_SnapMiddleOptions
 		RS_DIALOGFACTORY->requestSnapMiddleOptions(middlePoints, snapMode.snapMiddle);
-        t = snapMiddle(mouseCoord);
+        auto t = snapMiddle(mouseCoord);
 		double ds2=mouseCoord.squaredTo(t);
         if (ds2 < ds2Min){
             ds2Min=ds2;
@@ -301,7 +277,7 @@ RS_Vector RS_Snapper::snapPoint(QMouseEvent* e)
         //this is still brutal force
         //todo: accept value from widget QG_SnapDistOptions
 		RS_DIALOGFACTORY->requestSnapDistOptions(m_SnapDistance, snapMode.snapDistance);
-        t = snapDist(mouseCoord);
+        auto t = snapDist(mouseCoord);
 		double ds2=mouseCoord.squaredTo(t);
         if (ds2 < ds2Min){
             ds2Min=ds2;
@@ -309,7 +285,7 @@ RS_Vector RS_Snapper::snapPoint(QMouseEvent* e)
         }
     }
     if (snapMode.snapIntersection) {
-        t = snapIntersection(mouseCoord);
+        auto t = snapIntersection(mouseCoord);
 		double ds2=mouseCoord.squaredTo(t);
         if (ds2 < ds2Min){
             ds2Min=ds2;
@@ -319,7 +295,7 @@ RS_Vector RS_Snapper::snapPoint(QMouseEvent* e)
 
     if (snapMode.snapOnEntity &&
 		pImpData->snapSpot.distanceTo(mouseCoord) > snapMode.distance) {
-        t = snapOnEntity(mouseCoord);
+        auto t = snapOnEntity(mouseCoord);
 		double ds2=mouseCoord.squaredTo(t);
         if (ds2 < ds2Min){
             ds2Min=ds2;
@@ -328,7 +304,7 @@ RS_Vector RS_Snapper::snapPoint(QMouseEvent* e)
     }
 
     if (snapMode.snapGrid) {
-        t = snapGrid(mouseCoord);
+        auto t = snapGrid(mouseCoord);
 		double ds2=mouseCoord.squaredTo(t);
         if (ds2 < ds2Min){
 //            ds2Min=ds2;
@@ -428,12 +404,9 @@ RS_Vector RS_Snapper::snapFree(const RS_Vector& coord) {
  * @param coord The mouse coordinate.
  * @return The coordinates of the point or an invalid vector.
  */
-RS_Vector RS_Snapper::snapEndpoint(const RS_Vector& coord) {
-    RS_Vector vec(false);
-
-    vec = container->getNearestEndpoint(coord,
+RS_Vector RS_Snapper::snapEndpoint(const RS_Vector& coord) const {
+    return container->getNearestEndpoint(coord,
 										nullptr/*, &keyEntity*/);
-    return vec;
 }
 
 
@@ -444,13 +417,7 @@ RS_Vector RS_Snapper::snapEndpoint(const RS_Vector& coord) {
  * @param coord The mouse coordinate.
  * @return The coordinates of the point or an invalid vector.
  */
-RS_Vector RS_Snapper::snapGrid(const RS_Vector& coord) {
-
-//    RS_DEBUG->print("RS_Snapper::snapGrid begin");
-
-//    std::cout<<__FILE__<<" : "<<__func__<<" : line "<<__LINE__<<std::endl;
-//    std::cout<<" mouse: = "<<coord<<std::endl;
-//    std::cout<<" snapGrid: = "<<graphicView->getGrid()->snapGrid(coord)<<std::endl;
+RS_Vector RS_Snapper::snapGrid(const RS_Vector& coord) const {
     return  graphicView->getGrid()->snapGrid(coord);
 }
 
@@ -463,10 +430,7 @@ RS_Vector RS_Snapper::snapGrid(const RS_Vector& coord) {
  * @return The coordinates of the point or an invalid vector.
  */
 RS_Vector RS_Snapper::snapOnEntity(const RS_Vector& coord) {
-
-	RS_Vector vec{};
-	vec = container->getNearestPointOnEntity(coord, true, nullptr, &keyEntity);
-    return vec;
+	return  container->getNearestPointOnEntity(coord, true, nullptr, &keyEntity);
 }
 
 
@@ -477,11 +441,8 @@ RS_Vector RS_Snapper::snapOnEntity(const RS_Vector& coord) {
  * @param coord The mouse coordinate.
  * @return The coordinates of the point or an invalid vector.
  */
-RS_Vector RS_Snapper::snapCenter(const RS_Vector& coord) {
-	RS_Vector vec{};
-
-	vec = container->getNearestCenter(coord, nullptr);
-    return vec;
+RS_Vector RS_Snapper::snapCenter(const RS_Vector& coord) const {
+	return container->getNearestCenter(coord, nullptr);
 }
 
 
@@ -493,8 +454,7 @@ RS_Vector RS_Snapper::snapCenter(const RS_Vector& coord) {
  * @return The coordinates of the point or an invalid vector.
  */
 RS_Vector RS_Snapper::snapMiddle(const RS_Vector& coord) {
-//std::cout<<"RS_Snapper::snapMiddle(): middlePoints="<<middlePoints<<std::endl;
-	return container->getNearestMiddle(coord,static_cast<double *>(nullptr),middlePoints);
+    return container->getNearestMiddle(coord, static_cast<double *>(nullptr), middlePoints);
 }
 
 

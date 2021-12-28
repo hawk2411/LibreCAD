@@ -394,12 +394,12 @@ void RS_EventHandler::setDefaultAction(RS_ActionInterface* action) {
  */
 void RS_EventHandler::setCurrentAction(RS_ActionInterface* action) {
     RS_DEBUG->print("RS_EventHandler::setCurrentAction");
-    if (action==NULL) {
+    if (action==nullptr) {
         return;
     }
 
     // Predecessor of the new action or NULL:
-    RS_ActionInterface* predecessor = NULL;
+    RS_ActionInterface* predecessor = nullptr;
 
     // Suspend current action:
     if(hasAction()){
@@ -415,22 +415,6 @@ void RS_EventHandler::setCurrentAction(RS_ActionInterface* action) {
         }
     }
 
-    //    // Forget about the oldest action and make space for the new action:
-    //    if (actionIndex==RS_MAXACTIONS-1) {
-    //        // delete oldest action if necessary (usually never happens):
-    //        if (currentActions[0]) {
-    //            currentActions[0]->finish();
-    //            delete currentActions[0];
-    //            currentActions[0] = NULL;
-    //        }
-    //        // Move up actionstack (optimize):
-    //        for (int i=0; i<RS_MAXACTIONS-1; ++i) {
-    //            currentActions[i] = currentActions[i+1];
-    //        }
-    //    } else if (actionIndex<RS_MAXACTIONS-1) {
-    //        actionIndex++;
-    //    }
-
     // Set current action:
     currentActions.push_back(action);
     RS_DEBUG->print("RS_EventHandler::setCurrentAction: current action is: %s",
@@ -438,9 +422,9 @@ void RS_EventHandler::setCurrentAction(RS_ActionInterface* action) {
 
     // Initialisation of our new action:
     RS_DEBUG->print("RS_EventHandler::setCurrentAction: init current action");
-    action->init();
+    action->init(0);
     // ## new:
-    if (action->isFinished()==false) {
+    if (!action->isFinished()) {
         RS_DEBUG->print("RS_EventHandler::setCurrentAction: show options");
         currentActions.last()->showOptions();
         RS_DEBUG->print("RS_EventHandler::setCurrentAction: set predecessor");

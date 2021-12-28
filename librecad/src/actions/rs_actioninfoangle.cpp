@@ -125,7 +125,9 @@ void RS_ActionInfoAngle::mouseReleaseEvent(QMouseEvent* e) {
         default:
             break;
         }
-    } else if (e->button()==Qt::RightButton) {
+        return;
+    }
+    if (e->button()==Qt::RightButton) {
         deletePreview();
         init(getStatus()-1);
     }

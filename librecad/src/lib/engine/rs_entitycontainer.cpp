@@ -1211,9 +1211,7 @@ RS_Vector RS_EntityContainer::getNearestPointOnEntity(const RS_Vector& coord,
 
 	RS_Entity* en = getNearestEntity(coord, dist, RS2::ResolveNone);
 
-	if (en && en->isVisible()
-			&& !en->getParent()->ignoredSnap()
-			){
+	if (en && en->isVisible() && !en->getParent()->ignoredSnap() ){
 		point = en->getNearestPointOnEntity(coord, onEntity, dist, entity);
 	}
 

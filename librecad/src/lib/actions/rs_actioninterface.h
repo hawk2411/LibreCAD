@@ -53,14 +53,14 @@ public:
     RS_ActionInterface(const char* name,
                        RS_EntityContainer& container,
                        RS_GraphicView& graphicView);
-	virtual ~RS_ActionInterface() = default;
+	~RS_ActionInterface() override = default;
 
     virtual RS2::ActionType rtti() const;
 
     void setName(const char* _name);
     QString getName();
 
-    virtual void init(int status=0);
+    virtual void init(int status);
     virtual void mouseMoveEvent(QMouseEvent*);
     virtual void mousePressEvent(QMouseEvent*);
 

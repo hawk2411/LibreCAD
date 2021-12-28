@@ -29,6 +29,8 @@
 #define RS_SNAPPER_H
 
 #include<memory>
+#include <rs_vector.h>
+#include <rs_pen.h>
 #include "rs.h"
 
 class RS_Entity;
@@ -96,6 +98,7 @@ struct RS_SnapMode {
 
 typedef std::initializer_list<RS2::EntityType> EntityTypeList;
 
+
 /**
  * This class is used for snapping functions in a graphic view.
  * Actions are usually derived from this base class if they need
@@ -155,10 +158,10 @@ public:
     RS_Vector snapFree(QMouseEvent* e);
 
     RS_Vector snapFree(const RS_Vector& coord);
-    RS_Vector snapGrid(const RS_Vector& coord);
-    RS_Vector snapEndpoint(const RS_Vector& coord);
+    RS_Vector snapGrid(const RS_Vector& coord) const;
+    RS_Vector snapEndpoint(const RS_Vector& coord) const;
     RS_Vector snapOnEntity(const RS_Vector& coord);
-    RS_Vector snapCenter(const RS_Vector& coord);
+    RS_Vector snapCenter(const RS_Vector& coord) const;
     RS_Vector snapMiddle(const RS_Vector& coord);
     RS_Vector snapDist(const RS_Vector& coord);
     RS_Vector snapIntersection(const RS_Vector& coord);
@@ -201,36 +204,51 @@ public:
 
     void drawSnapper();
 
+    struct ImpData {
+        RS_Vector snapCoord;
+        RS_Vector snapSpot;
+    };
+
+/**
+  * Methods and structs for class RS_Snapper
+  */
+    struct Indicator {
+        bool lines_state;
+        QString lines_type;
+        RS_Pen lines_pen;
+
+        bool shape_state;
+        QString shape_type;
+        RS_Pen shape_pen;
+    };
+
 protected:
     void deleteSnapper();
     double getSnapRange() const;
     RS_EntityContainer* container;
     RS_GraphicView* graphicView;
-	RS_Entity* keyEntity;
+	RS_Entity* keyEntity{};
     RS_SnapMode snapMode;
     //RS2::SnapRestriction snapRes;
     /**
      * Snap distance for snapping to points with a
      * given distance from endpoints.
      */
-	double m_SnapDistance;
+	double m_SnapDistance{};
     /**
      * Snap to equidistant middle points
      * default to 1, i.e., equidistant to start/end points
      */
-    int middlePoints;
+    int middlePoints{};
     /**
      * Snap range for catching entities.
      */
-    int snapRange;
+    int snapRange{};
     bool finished{false};
 
 private:
-	struct ImpData;
 	std::unique_ptr<ImpData> pImpData;
-
-    struct Indicator;
-    Indicator* snap_indicator{nullptr};
+    std::unique_ptr<Indicator>snap_indicator;
 };
 
 #endif
