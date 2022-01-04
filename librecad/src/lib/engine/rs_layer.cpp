@@ -30,47 +30,42 @@
 #include <utility>
 #include "rs_layer.h"
 
-RS_LayerData::RS_LayerData(QString  name,
-						   const RS_Pen& pen,
-						   bool frozen,
-						   bool locked):
-	name(std::move(name))
-  ,pen(pen)
-  ,frozen(frozen)
-  ,locked(locked)
-{
+RS_LayerData::RS_LayerData(QString name,
+                           const RS_Pen &pen,
+                           bool frozen,
+                           bool locked) :
+        name(std::move(name)), pen(pen), frozen(frozen), locked(locked) {
 }
 
 /**
  * Constructor.
  */
-RS_Layer::RS_Layer(const QString& name):
-	data(name, RS_Pen(Qt::black, RS2::Width00,RS2::SolidLine), false, false)
-{
+RS_Layer::RS_Layer(const QString &name) :
+        _data(name, RS_Pen(Qt::black, RS2::Width00, RS2::SolidLine), false, false) {
 }
 
-RS_Layer* RS_Layer::clone() const{
-	return new RS_Layer(*this);
+RS_Layer *RS_Layer::clone() const {
+    return new RS_Layer(*this);
 }
 
 /** sets a new name for this layer. */
-void RS_Layer::setName(const QString& name) {
-	data.name = name;
+void RS_Layer::setName(const QString &name) {
+    _data.name = name;
 }
 
 /** @return the name of this layer. */
 QString RS_Layer::getName() const {
-	return data.name;
+    return _data.name;
 }
 
 /** sets the default pen for this layer. */
-void RS_Layer::setPen(const RS_Pen& pen) {
-	data.pen = pen;
+void RS_Layer::setPen(const RS_Pen &pen) {
+    _data.pen = pen;
 }
 
 /** @return default pen for this layer. */
 RS_Pen RS_Layer::getPen() const {
-	return data.pen;
+    return _data.pen;
 }
 
 /**
@@ -78,8 +73,8 @@ RS_Pen RS_Layer::getPen() const {
  * @retval false if this layer isn't frozen (visible)
  */
 bool RS_Layer::isFrozen() const {
-	return data.frozen;
-	//getFlag(RS2::FlagFrozen);
+    return _data.frozen;
+    //getFlag(RS2::FlagFrozen);
 }
 
 /**
@@ -87,14 +82,14 @@ bool RS_Layer::isFrozen() const {
  * @retval false the layer still needs to be converted
  */
 bool RS_Layer::isConverted() const {
-	return data.converted;
+    return _data.converted;
 }
 
 /**
  * Sets the converted flag
  */
 void RS_Layer::setConverted(bool c) {
-	data.converted = c;
+    _data.converted = c;
 }
 
 /**
@@ -102,8 +97,8 @@ void RS_Layer::setConverted(bool c) {
  * Freezes the layer if it's not frozen, thaws the layer otherwise
  */
 void RS_Layer::toggle() {
-	//toggleFlag(RS2::FlagFrozen);
-	data.frozen = !data.frozen;
+    //toggleFlag(RS2::FlagFrozen);
+    _data.frozen = !_data.frozen;
 }
 
 /**
@@ -112,29 +107,29 @@ void RS_Layer::toggle() {
  * @param freeze true: freeze, false: defreeze
  */
 void RS_Layer::freeze(bool freeze) {
-	data.frozen = freeze;
+    _data.frozen = freeze;
 }
 
 /**
  * Toggles the lock of this layer.
  */
 void RS_Layer::toggleLock() {
-	//toggleFlag(RS2::FlagFrozen);
-	data.locked = !data.locked;
+    //toggleFlag(RS2::FlagFrozen);
+    _data.locked = !_data.locked;
 }
 
 /**
  * Toggles printing of this layer on / off.
  */
 void RS_Layer::togglePrint() {
-	data.print = !data.print;
+    _data.print = !_data.print;
 }
 
 /**
  * Toggles construction attribute of this layer on / off.
  */
 void RS_Layer::toggleConstruction() {
-	data.construction = !data.construction;
+    _data.construction = !_data.construction;
 }
 
 /**
@@ -143,14 +138,14 @@ void RS_Layer::toggleConstruction() {
  * @param l true: lock, false: unlock
  */
 void RS_Layer::lock(bool l) {
-	data.locked = l;
+    _data.locked = l;
 }
 
 /**
  * return the LOCK state of the Layer
  */
-bool RS_Layer::isLocked() const{
-	return data.locked;
+bool RS_Layer::isLocked() const {
+    return _data.locked;
 }
 
 /**
@@ -159,14 +154,14 @@ bool RS_Layer::isLocked() const{
  * @param l true: visible, false: invisible
  */
 void RS_Layer::visibleInLayerList(bool l) {
-	data.visibleInLayerList = l;
+    _data.visibleInLayerList = l;
 }
 
 /**
  * return the visibility of the Layer in layer list
  */
-bool RS_Layer::isVisibleInLayerList() const{
-	return data.visibleInLayerList;
+bool RS_Layer::isVisibleInLayerList() const {
+    return _data.visibleInLayerList;
 }
 
 /**
@@ -175,14 +170,14 @@ bool RS_Layer::isVisibleInLayerList() const{
  * @param val true: selected, false: deselected
  */
 void RS_Layer::selectedInLayerList(bool val) {
-	data.selectedInLayerList = val;
+    _data.selectedInLayerList = val;
 }
 
 /**
  * return selection state of the layer in layer list
  */
 bool RS_Layer::isSelectedInLayerList() const {
-	return data.selectedInLayerList;
+    return _data.selectedInLayerList;
 }
 
 /**
@@ -190,15 +185,15 @@ bool RS_Layer::isSelectedInLayerList() const {
  *
  * @param print true: print layer, false: don't print layer
  */
-bool RS_Layer::setPrint( const bool print) {
-	return data.print = print;
+bool RS_Layer::setPrint(const bool print) {
+    return _data.print = print;
 }
 
 /**
  * return the PRINT state of the Layer
  */
-bool RS_Layer::isPrint() const{
-	return data.print;
+bool RS_Layer::isPrint() const {
+    return _data.print;
 }
 
 /**
@@ -206,8 +201,8 @@ bool RS_Layer::isPrint() const{
  * The construction layer property is stored
  * in extended data in the DXF layer table
  */
-bool RS_Layer::isConstruction() const{
-	return data.construction;
+bool RS_Layer::isConstruction() const {
+    return _data.construction;
 }
 
 /**
@@ -215,20 +210,20 @@ bool RS_Layer::isConstruction() const{
  *
  * @param construction true: infinite lines, false: normal layer
  */
-bool RS_Layer::setConstruction( const bool construction){
-	data.construction = construction;
-	return construction;
+bool RS_Layer::setConstruction(const bool construction) {
+    _data.construction = construction;
+    return construction;
 }
 
 /**
  * Dumps the layers data to stdout.
  */
-std::ostream& operator << (std::ostream& os, const RS_Layer& l) {
+std::ostream &operator<<(std::ostream &os, const RS_Layer &l) {
     os << " name: " << l.getName().toLatin1().data()
-    << " pen: " << l.getPen()
-    << " frozen: " << (int)l.isFrozen()
-    << " address: " << &l
-    << std::endl;
+       << " pen: " << l.getPen()
+       << " frozen: " << (int) l.isFrozen()
+       << " address: " << &l
+       << std::endl;
     return os;
 }
 
