@@ -109,7 +109,7 @@ public:
      * Identify all entities as undoable entities.
      * @return RS2::UndoableEntity
      */
-    virtual RS2::UndoableType undoRtti() const override {
+    RS2::UndoableType undoRtti() const override {
         return RS2::UndoableEntity;
     }
 
@@ -228,8 +228,6 @@ public:
 
     bool isParentSelected() const;
 
-    virtual bool isProcessed() const;
-
     virtual void setProcessed(bool on);
 
     bool isInWindow(RS_Vector v1, RS_Vector v2) const;
@@ -250,7 +248,7 @@ public:
 
     void undoStateChanged(bool undone) override;
 
-    virtual bool isUndone() const;
+    bool isUndone() const override;
 
     /**
      * Can be implemented by child classes to update the entities
@@ -294,8 +292,6 @@ public:
     void addGraphicVariable(const QString &key, double val, int code);
 
     void addGraphicVariable(const QString &key, int val, int code);
-
-    void addGraphicVariable(const QString &key, const QString &val, int code);
 
     double getGraphicVariableDouble(const QString &key, double def);
 
@@ -343,7 +339,7 @@ public:
      * @return The closest endpoint.
      */
     virtual RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                         double *dist = nullptr) const = 0;
+                                         double *dist) const = 0;
 
     /**
      * Must be overwritten to get the closest coordinate to the
@@ -357,8 +353,8 @@ public:
      * @return The closest coordinate.
      */
     virtual RS_Vector getNearestPointOnEntity(const RS_Vector & /*coord*/,
-                                              bool onEntity = true, double *dist = nullptr,
-                                              RS_Entity **entity = nullptr) const = 0;
+                                              bool onEntity, double *dist,
+                                              RS_Entity **entity) const = 0;
 
     /**
      * Must be overwritten to get the (nearest) center point to the
@@ -373,7 +369,7 @@ public:
      * @return The closest center point.
      */
     virtual RS_Vector getNearestCenter(const RS_Vector &coord,
-                                       double *dist = nullptr) const = 0;
+                                       double *dist) const = 0;
 
     /**
      * Must be overwritten to get the (nearest) middle point to the
@@ -387,14 +383,9 @@ public:
      *
      * @return The closest middle point.
      */
-    virtual RS_Vector getMiddlePoint() const {
-        return RS_Vector(false);
-    }
+    virtual RS_Vector getMiddlePoint() const { return RS_Vector(false); }
 
-    virtual RS_Vector getNearestMiddle(const RS_Vector &coord,
-                                       double *dist = nullptr,
-                                       int middlePoints = 1
-    ) const = 0;
+    virtual RS_Vector getNearestMiddle(const RS_Vector &coord, double *dist, int middlePoints) const = 0;
 
     /**
      * Must be overwritten to get the nearest point with a given
@@ -409,9 +400,7 @@ public:
      *
      * @return The closest point with the given distance to the endpoint.
      */
-    virtual RS_Vector getNearestDist(double distance,
-                                     const RS_Vector &coord,
-                                     double *dist = nullptr) const = 0;
+    virtual RS_Vector getNearestDist(double distance, const RS_Vector &coord, double *dist) const = 0;
 
     /**
      * Must be overwritten to get the point with a given
@@ -438,8 +427,7 @@ public:
      *
      * @return The closest point with the given distance to the endpoint.
      */
-    virtual RS_Vector getNearestRef(const RS_Vector &coord,
-                                    double *dist = nullptr) const;
+    virtual RS_Vector getNearestRef(const RS_Vector &coord, double *dist) const;
 
     /**
      * Gets the nearest reference point of this entity if it is selected.
@@ -455,7 +443,7 @@ public:
      * @return The closest point with the given distance to the endpoint.
      */
     virtual RS_Vector getNearestSelectedRef(const RS_Vector &coord,
-                                            double *dist = nullptr) const;
+                                            double *dist) const;
 
     /**
      * Must be overwritten to get the shortest distance between this
@@ -473,15 +461,15 @@ public:
      */
     virtual RS_Vector getNearestOrthTan(const RS_Vector & /*coord*/,
                                         const RS_Line & /*normal*/,
-                                        bool onEntity = false) const;
+                                        bool onEntity) const;
 
     virtual double getDistanceToPoint(const RS_Vector &coord,
-                                      RS_Entity **entity = nullptr,
-                                      RS2::ResolveLevel level = RS2::ResolveNone,
-                                      double solidDist = RS_MAXDOUBLE) const;
+                                      RS_Entity **entity,
+                                      RS2::ResolveLevel level,
+                                      double solidDist) const;
 
     virtual bool isPointOnEntity(const RS_Vector &coord,
-                                 double tolerance = 20. * RS_TOLERANCE) const;
+                                 double tolerance) const;
 
     /**
      * Implementations must offset the entity by the given direction and distance.
@@ -493,7 +481,7 @@ public:
      * used to generate tangential circles
      */
     virtual std::vector<RS_Entity *> offsetTwoSides(const double & /*distance*/) const {
-        return std::vector<RS_Entity *>();
+        return {};
     }
 
     /**
@@ -545,18 +533,14 @@ public:
          * (sub-)entities that are very close to ref by offset.
          */
     virtual void moveRef(const RS_Vector & /*ref*/,
-                         const RS_Vector & /*offset*/) {
-        return;
-    }
+                         const RS_Vector & /*offset*/) {}
 
     /**
          * Implementations must drag the reference point(s) of selected
          * (sub-)entities that are very close to ref by offset.
          */
     virtual void moveSelectedRef(const RS_Vector & /*ref*/,
-                                 const RS_Vector & /*offset*/) {
-        return;
-    }
+                                 const RS_Vector & /*offset*/) {}
 
 
     /** whether the entity's bounding box intersects with visible portion of graphic view */
@@ -568,16 +552,6 @@ public:
     virtual void draw(RS_Painter *painter, RS_GraphicView *view,
                       double &patternOffset) = 0;
 
-    double getStyleFactor(RS_GraphicView *view);
-
-    QString getUserDefVar(const QString &key) const;
-
-    std::vector<QString> getAllKeys() const;
-
-    void setUserDefVar(QString key, QString val);
-
-    void delUserDefVar(QString key);
-
     friend std::ostream &operator<<(std::ostream &os, RS_Entity &e);
 
     /** Recalculates the borders of this entity. */
@@ -586,7 +560,7 @@ public:
     //! constructionLayer contains entities of infinite length, constructionLayer doesn't show up in print
     bool isConstruction(bool typeCheck = false) const; // ignore certain entity types for constructionLayer check
     //! whether printing is enabled or disabled for the entity's layer
-    bool isPrint(void) const;
+    bool isPrint() const;
 
     /** return the equation of the entity
 for quadratic,
