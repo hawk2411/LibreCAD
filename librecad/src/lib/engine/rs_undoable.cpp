@@ -25,7 +25,6 @@
 **********************************************************************/
 
 #include "rs_undoable.h"
-#include "rs_undocycle.h"
 
 /**
  * The undoable thing gets activated if it was undone and 

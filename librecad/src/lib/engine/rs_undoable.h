@@ -39,6 +39,7 @@
  */
 class RS_Undoable : public RS_Flags {
 public:
+    virtual ~RS_Undoable() = default;
 	/**
      * Runtime type identification for undoables.
      * Note that this is voluntarily. The default implementation 
