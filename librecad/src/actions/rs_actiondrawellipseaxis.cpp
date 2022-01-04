@@ -154,7 +154,7 @@ void RS_ActionDrawEllipseAxis::mouseMoveEvent(QMouseEvent* e) {
 		if (pPoints->center.valid && pPoints->m_vMajorP.valid) {
             deletePreview();
 			RS_Line line{pPoints->center-pPoints->m_vMajorP, pPoints->center+pPoints->m_vMajorP};
-            double d = line.getDistanceToPoint(mouse);
+            double d = line.getDistanceToPoint(mouse, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
 			pPoints->ratio = d/(line.getLength()/2);
 			preview->addEntity(new RS_Ellipse{preview.get(),
 											  {pPoints->center, pPoints->m_vMajorP, pPoints->ratio, 0., pPoints->isArc?2.*M_PI:0.
@@ -247,7 +247,7 @@ void RS_ActionDrawEllipseAxis::coordinateEvent(RS_CoordinateEvent* e) {
 
     case SetMinor: {
 			RS_Line line{pPoints->center-pPoints->m_vMajorP, pPoints->center+pPoints->m_vMajorP};
-            double d = line.getDistanceToPoint(mouse);
+            double d = line.getDistanceToPoint(mouse, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
 			pPoints->ratio = d/(line.getLength()/2);
 			if (!pPoints->isArc) {
                 trigger();

@@ -2288,7 +2288,7 @@ bool RS_Modification::trimAmount(const RS_Vector& trimCoord,
     }
 
     // trim trim entity
-    RS_Vector is = trimmed->getNearestDist(-dist, trimCoord);
+    RS_Vector is = trimmed->getNearestDist(-dist, trimCoord, nullptr);
     if (trimCoord.distanceTo(trimmed->getStartpoint()) <
             trimCoord.distanceTo(trimmed->getEndpoint())) {
         trimmed->trimStartpoint(is);
@@ -2831,8 +2831,8 @@ bool RS_Modification::round(const RS_Vector& coord,
 
     // there might be two intersections: choose the closest:
     RS_Vector is = sol.getClosest(coord);
-    RS_Vector p1 = entity1->getNearestPointOnEntity(is, false);
-    RS_Vector p2 = entity2->getNearestPointOnEntity(is, false);
+    RS_Vector p1 = entity1->getNearestPointOnEntity(is, false, nullptr, nullptr);
+    RS_Vector p2 = entity2->getNearestPointOnEntity(is, false, nullptr, nullptr);
     double ang1 = is.angleTo(p1);
     double ang2 = is.angleTo(p2);
     bool reversed = (RS_Math::getAngleDifference(ang1, ang2)>M_PI);

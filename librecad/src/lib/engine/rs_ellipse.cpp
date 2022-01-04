@@ -903,7 +903,7 @@ bool	RS_Ellipse::createInscribeQuadrilateral(const std::vector<RS_Line*>& lines)
 			return false;
 		//symmetric
 		RS_DEBUG->print("RS_Ellipse::createInscribeQuadrilateral(): symmetric trapezoid detected\n");
-		double d=l0->getDistanceToPoint(centerPoint);
+		double d=l0->getDistanceToPoint(centerPoint, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
 		double l=((l0->getLength()+l1->getLength()))*0.25;
 		double k= 4.*d/fabs(l0->getLength()-l1->getLength());
 		double theta=d/(l*k);

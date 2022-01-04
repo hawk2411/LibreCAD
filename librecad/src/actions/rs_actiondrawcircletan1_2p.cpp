@@ -233,7 +233,7 @@ bool RS_ActionDrawCircleTan1_2P::getCenters(){
             if( fabs(ds - (ds0 + circle->getRadius())) > RS_TOLERANCE && fabs(ds - fabs(ds0 - circle->getRadius())) > RS_TOLERANCE ) continue;
         }else{
             double ds=0.;
-            circle->getNearestPointOnEntity(vp, false,&ds);
+            circle->getNearestPointOnEntity(vp, false,&ds, nullptr);
             //condition for tangential to the given straight line
             if( fabs(ds - ds0)>RS_TOLERANCE) continue;
         }

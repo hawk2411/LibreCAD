@@ -200,16 +200,6 @@ void RS_Entity::setProcessed(bool on) {
 }
 
 
-
-/**
- * @return True if the processed flag is set.
- */
-bool RS_Entity::isProcessed() const {
-    return getFlag(RS2::FlagProcessed);
-}
-
-
-
 /**
  * Called when the undo state changed.
  *
@@ -316,7 +306,7 @@ bool RS_Entity::isVisibleInWindow(RS_GraphicView* view) const
  */
 bool RS_Entity::isPointOnEntity(const RS_Vector& coord,
                                 double tolerance) const {
-	double dist = getDistanceToPoint(coord, nullptr, RS2::ResolveNone);
+	double dist = getDistanceToPoint(coord, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
     return (dist<=fabs(tolerance));
 }
 
@@ -612,23 +602,6 @@ void RS_Entity::addGraphicVariable(const QString& key, int val, int code) {
 }
 
 
-
-/**
- * Sets a variable value for the parent graphic object.
- *
- * @param key Variable name (e.g. "$DIMASZ")
- * @param val Default value
- */
-void RS_Entity::addGraphicVariable(const QString& key,
-                                   const QString& val, int code) {
-    RS_Graphic* graphic = getGraphic();
-    if (graphic) {
-        graphic->addVariable(key, val, code);
-    }
-}
-
-
-
 /**
  * A safe member function to return the given variable.
  *
@@ -895,64 +868,6 @@ void RS_Entity::stretch(const RS_Vector& firstCorner,
 }
 
 
-
-/**
- * @return Factor for scaling the line styles considering the current
- * paper scaling and the fact that styles are stored in Millimeter.
- */
-double RS_Entity::getStyleFactor(RS_GraphicView* view) {
-    double styleFactor = 1.0;
-	if (!view) return styleFactor;
-
-
-	if (view->isPrinting()==false && view->isDraftMode()) {
-		styleFactor = 1.0/view->getFactor().x;
-	} else {
-		//styleFactor = getStyleFactor();
-		// the factor caused by the unit:
-		RS2::Unit unit = RS2::None;
-		RS_Graphic* g = getGraphic();
-		if (g) {
-			unit = g->getUnit();
-			//double scale = g->getPaperScale();
-			styleFactor = RS_Units::convert(1.0, RS2::Millimeter, unit);
-			// / scale;
-		}
-
-		// the factor caused by the line width:
-		if (((int)getPen(true).getWidth())>0) {
-			styleFactor *= ((double)getPen(true).getWidth()/100.0);
-		} else if (((int)getPen(true).getWidth())==0) {
-			styleFactor *= 0.01;
-		}
-	}
-
-	if (view->isPrinting() || view->isPrintPreview() || view->isDraftMode()==false) {
-		RS_Graphic* graphic = getGraphic();
-		if (graphic && graphic->getPaperScale()>1.0e-6) {
-			styleFactor /= graphic->getPaperScale();
-		}
-	}
-
-	//RS_DEBUG->print("stylefactor: %f", styleFactor);
-	//RS_DEBUG->print("viewfactor: %f", view->getFactor().x);
-
-	if (styleFactor*view->getFactor().x<0.2) {
-		styleFactor = -1.0;
-	}
-
-	return styleFactor;
-}
-
-
-/**
- * @return User defined variable connected to this entity or nullptr if not found.
- */
-QString RS_Entity::getUserDefVar(const QString& key) const {
-	auto it=_varList.find(key);
-	if(it == _varList.end()) return nullptr;
-	return _varList.at(key);
-}
 /*
  * @coord
  * @normal
@@ -965,31 +880,6 @@ RS_Vector RS_Entity::getNearestOrthTan(const RS_Vector& /*coord*/,
         return RS_Vector(false);
 }
 
-
-/**
- * Add a user defined variable to this entity.
- */
-void RS_Entity::setUserDefVar(QString key, QString val) {
-	_varList.insert(std::make_pair(key, val));
-}
-
-/**
- * Deletes the given user defined variable.
- */
-void RS_Entity::delUserDefVar(QString key) {
-	_varList.erase(key);
-}
-
-/**
- * @return A list of all keys connected to this entity.
- */
-std::vector<QString> RS_Entity::getAllKeys() const{
-	std::vector<QString> ret(0);
-	for(auto const& v: _varList){
-		ret.push_back(v.first);
-	}
-	return ret;
-}
 
 //! constructionLayer contains entities of infinite length, constructionLayer doesn't show up in print
 bool RS_Entity::isConstruction(bool typeCheck) const{

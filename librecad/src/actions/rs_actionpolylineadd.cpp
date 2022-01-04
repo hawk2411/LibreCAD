@@ -59,7 +59,7 @@ void RS_ActionPolylineAdd::trigger() {
         RS_DEBUG->print("RS_ActionPolylineAdd::trigger()");
 
 		if (addEntity && addSegment->isAtomic() && addCoord->valid &&
-				addSegment->isPointOnEntity(*addCoord)) {
+				addSegment->isPointOnEntity(*addCoord, RS_DEFAULT_TOLERANCE)) {
 
                 addEntity->setHighlighted(false);
                 graphicView->drawEntity(addEntity);

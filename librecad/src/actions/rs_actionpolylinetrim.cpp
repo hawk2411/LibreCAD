@@ -124,7 +124,7 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                                 GetDialogFactory()->commandMessage(tr("No Entity found."));
                         } else if (!cPoint.valid) {
                                 GetDialogFactory()->commandMessage(tr("Specifying point is invalid."));
-                        } else if (!delEntity->isPointOnEntity(cPoint)) {
+                        } else if (!delEntity->isPointOnEntity(cPoint, RS_DEFAULT_TOLERANCE)) {
                                 GetDialogFactory()->commandMessage(
                                         tr("No Segment found on entity."));
                         }else{
@@ -143,7 +143,7 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                                 GetDialogFactory()->commandMessage(tr("No Entity found."));
                         } else if (!cPoint.valid) {
                                 GetDialogFactory()->commandMessage(tr("Specifying point is invalid."));
-                        } else if (!delEntity->isPointOnEntity(cPoint)) {
+                        } else if (!delEntity->isPointOnEntity(cPoint, RS_DEFAULT_TOLERANCE)) {
                                 GetDialogFactory()->commandMessage(
                                         tr("No Segment found on entity."));
                         }else{

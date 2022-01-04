@@ -327,7 +327,7 @@ double RS_Image::getDistanceToPoint(const RS_Vector& coord,
 	for (size_t i = 0; i < corners.size(); ++i){
 		size_t const j = (i+1)%corners.size();
 		RS_Line const l{corners.get(i), corners.get(j)};
-		double const dist = l.getDistanceToPoint(coord, nullptr);
+		double const dist = l.getDistanceToPoint(coord, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
 		minDist = std::min(minDist, dist);
 	}
 

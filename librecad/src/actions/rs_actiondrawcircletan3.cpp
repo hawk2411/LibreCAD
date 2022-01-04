@@ -255,7 +255,7 @@ bool RS_ActionDrawCircleTan3::getData(){
 		for(int j=1;j<=2;j++){
 			if(pPoints->circles[(i+j)%3]->rtti() == RS2::EntityCircle){
 				pPoints->circles[i]->getNearestPointOnEntity(pPoints->circles[(i+j)%3]->getCenter(),
-						false,&d);
+						false, &d, nullptr);
 				if(d<RS_TOLERANCE) {
 					LC_Quadratic lc2(pPoints->circles[i],pPoints->circles[(i+j)%3], true);
 					sol.push_back(LC_Quadratic::getIntersection(lc2,lc1));
@@ -272,7 +272,7 @@ bool RS_ActionDrawCircleTan3::getData(){
 		}
 
 		for(auto const& v: sol1){
-			pPoints->circles[i]->getNearestPointOnEntity(v,false,&d);
+			pPoints->circles[i]->getNearestPointOnEntity(v, false, &d, nullptr);
 			auto data = std::make_shared<RS_CircleData>(v,d);
 			if(pPoints->circles[(i+1)%3]->isTangent(*data)==false) continue;
 			if(pPoints->circles[(i+2)%3]->isTangent(*data)==false) continue;

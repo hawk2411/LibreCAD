@@ -142,7 +142,7 @@ void RS_ActionDefault::mouseMoveEvent(QMouseEvent* e) {
                     RS_DEBUG->print("RS_ActionDefault::mouseMoveEvent: "
                                     "moving entity");
                     setStatus(Moving);
-					RS_Vector vp= en->getNearestRef(pPoints->v1);
+					RS_Vector vp= en->getNearestRef(pPoints->v1, nullptr);
 					if(vp.valid) pPoints->v1=vp;
 
                     //graphicView->moveRelativeZero(v1);

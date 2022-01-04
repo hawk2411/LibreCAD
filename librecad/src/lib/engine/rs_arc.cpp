@@ -958,7 +958,6 @@ void RS_Arc::drawVisible(RS_Painter* painter, RS_GraphicView* view,
     RS_Vector cp=view->toGui(getCenter());
     double ra=getRadius()*view->getFactor().x;
     double length=getLength()*view->getFactor().x;
-    //double styleFactor = getStyleFactor();
     patternOffset -= length;
 
     bool drawAsSelected = isSelected() && !(view->isPrinting() || view->isPrintPreview());
@@ -973,14 +972,6 @@ void RS_Arc::drawVisible(RS_Painter* painter, RS_GraphicView* view,
                          isReversed());
         return;
     }
-//    double styleFactor = getStyleFactor(view);
-    //        if (styleFactor<0.0) {
-    //            painter->drawArc(cp,
-    //                             ra,
-    //                             getAngle1(), getAngle2(),
-    //                             isReversed());
-    //            return;
-    //        }
 
     // Pattern:
     const RS_LineTypePattern* pat;

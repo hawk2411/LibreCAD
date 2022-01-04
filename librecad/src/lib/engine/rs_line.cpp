@@ -703,8 +703,6 @@ void RS_Line::draw(RS_Painter* painter, RS_GraphicView* view, double& patternOff
         painter->drawLine(pStart,pEnd);
         return;
     }
-    //    double styleFactor = getStyleFactor(view);
-
 
     // Pattern:
     const RS_LineTypePattern* pat;

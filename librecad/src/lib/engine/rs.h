@@ -34,6 +34,7 @@ const double RS_MAXDOUBLE = 1.0E+10;
 const double RS_MINDOUBLE = -1.0E+10;
 //tolerance
 const double RS_TOLERANCE = 1.0e-10;
+const double RS_DEFAULT_TOLERANCE = 20. * RS_TOLERANCE;
 //squared tolerance
 const double RS_TOLERANCE15 = 1.5e-15;
 const double RS_TOLERANCE2 = 1.0e-20;

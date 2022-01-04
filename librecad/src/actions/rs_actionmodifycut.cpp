@@ -55,7 +55,7 @@ void RS_ActionModifyCut::trigger() {
     RS_DEBUG->print("RS_ActionModifyCut::trigger()");
 
 	if (cutEntity && cutEntity->isAtomic() && cutCoord->valid &&
-			cutEntity->isPointOnEntity(*cutCoord)) {
+			cutEntity->isPointOnEntity(*cutCoord, RS_DEFAULT_TOLERANCE)) {
 
         cutEntity->setHighlighted(false);
         graphicView->drawEntity(cutEntity);
@@ -115,7 +115,7 @@ void RS_ActionModifyCut::mouseReleaseEvent(QMouseEvent* e) {
                 GetDialogFactory()->commandMessage(tr("No Entity found."));
 			} else if (!cutCoord->valid) {
                 GetDialogFactory()->commandMessage(tr("Cutting point is invalid."));
-			} else if (!cutEntity->isPointOnEntity(*cutCoord)) {
+			} else if (!cutEntity->isPointOnEntity(*cutCoord, RS_DEFAULT_TOLERANCE)) {
                 GetDialogFactory()->commandMessage(
                     tr("Cutting point is not on entity."));
             } else {

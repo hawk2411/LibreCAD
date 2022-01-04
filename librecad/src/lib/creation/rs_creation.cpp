@@ -91,9 +91,9 @@ RS_Entity* RS_Creation::createParallelThrough(const RS_Vector& coord,
 		RS_ConstructionLine cl(nullptr,
                                RS_ConstructionLineData(l->getStartpoint(),
                                                        l->getEndpoint()));
-        dist = cl.getDistanceToPoint(coord);
+        dist = cl.getDistanceToPoint(coord, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
     } else {
-        dist = e->getDistanceToPoint(coord);
+        dist = e->getDistanceToPoint(coord, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
     }
 
     if (dist<RS_MAXDOUBLE) {
@@ -194,8 +194,8 @@ RS_Line* RS_Creation::createParallelLine(const RS_Vector& coord,
         p2 += e->getEndpoint();
 		RS_Line parallel2{p1, p2};
 
-        double dist1 = parallel1.getDistanceToPoint(coord);
-        double dist2 = parallel2.getDistanceToPoint(coord);
+        double dist1 = parallel1.getDistanceToPoint(coord, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
+        double dist2 = parallel2.getDistanceToPoint(coord, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
         double minDist = std::min(dist1, dist2);
 
         if (minDist<RS_MAXDOUBLE) {
@@ -790,7 +790,7 @@ RS_Line* RS_Creation::createLineRelAngle(const RS_Vector& coord,
 		break;
 	}
 
-	auto const vp = entity->getNearestPointOnEntity(coord, false);
+	auto const vp = entity->getNearestPointOnEntity(coord, false, nullptr, nullptr);
 
 	double const a1 = angle + entity->getTangentDirection(vp).angle();
 

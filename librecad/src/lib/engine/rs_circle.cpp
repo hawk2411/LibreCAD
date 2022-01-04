@@ -266,7 +266,7 @@ bool RS_Circle::createInscribe(const RS_Vector& coord, const std::vector<RS_Line
     sol=RS_Information::getIntersectionLineLine(&line0,&line1);
     if(sol.getNumber() == 0 ) return false;
 
-	bool ret=createFromCR(sol.get(0),tri[1]->getDistanceToPoint(sol.get(0)));
+	bool ret=createFromCR(sol.get(0),tri[1]->getDistanceToPoint(sol.get(0), nullptr, RS2::ResolveNone, RS_MAXDOUBLE));
 	if(!ret) return false;
 	for(auto p: lines){
 		if(! p->isTangent(data)) return false;

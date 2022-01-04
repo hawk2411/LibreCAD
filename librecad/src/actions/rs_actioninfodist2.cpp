@@ -65,7 +65,7 @@ void RS_ActionInfoDist2::trigger() {
     RS_DEBUG->print("RS_ActionInfoDist2::trigger()");
 
 	if (point->valid && entity) {
-		double dist = entity->getDistanceToPoint(*point);
+		double dist = entity->getDistanceToPoint(*point, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
 		QString str = RS_Units::formatLinear(dist, graphic->getUnit(),
 											 graphic->getLinearFormat(), graphic->getLinearPrecision());
         GetDialogFactory()->commandMessage(tr("Distance: %1").arg(str));

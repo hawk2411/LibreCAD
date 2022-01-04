@@ -59,7 +59,7 @@ void RS_ActionPolylineDel::trigger() {
     RS_DEBUG->print("RS_ActionPolylineDel::trigger()");
 
 		if (delEntity && delPoint->valid &&
-			delEntity->isPointOnEntity(*delPoint)) {
+			delEntity->isPointOnEntity(*delPoint, RS_DEFAULT_TOLERANCE)) {
 
                 delEntity->setHighlighted(false);
                 graphicView->drawEntity(delEntity);
@@ -127,7 +127,7 @@ void RS_ActionPolylineDel::mouseReleaseEvent(QMouseEvent* e) {
                                 GetDialogFactory()->commandMessage(tr("No Entity found."));
 					} else if (!delPoint->valid) {
                                 GetDialogFactory()->commandMessage(tr("Deleting point is invalid."));
-					} else if (!delEntity->isPointOnEntity(*delPoint)) {
+					} else if (!delEntity->isPointOnEntity(*delPoint, RS_DEFAULT_TOLERANCE)) {
                                 GetDialogFactory()->commandMessage(
                                     tr("Deleting point is not on entity."));
                     } else {
