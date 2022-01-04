@@ -172,7 +172,7 @@ public:
 
     void setLayer(const QString &name);
 
-    void setLayer(RS_Layer *l);
+    void setLayer(RS_Layer *layer);
 
     void setLayerToActive();
 
@@ -289,11 +289,11 @@ public:
      */
     RS_Vector getSize() const;
 
-    void addGraphicVariable(const QString &key, double val, int code);
+    void addGraphicVariable(const QString &key, double val, int code) const;
 
-    void addGraphicVariable(const QString &key, int val, int code);
+    void addGraphicVariable(const QString &key, int val, int code) const;
 
-    double getGraphicVariableDouble(const QString &key, double def);
+    double getGraphicVariableDouble(const QString &key, double def) const;
 
     int getGraphicVariableInt(const QString &key, int def) const;
 
@@ -621,6 +621,12 @@ protected:
 
 private:
     std::map<QString, QString> _varList;
+
+    void setPenColorByBlock(RS_Pen &pen) const;
+
+    void setPenWidthByBlock(RS_Pen &pen) const;
+
+    void setPenLineWidthByBlock(RS_Pen &pen) const;
 };
 
 #endif
