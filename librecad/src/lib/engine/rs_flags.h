@@ -34,10 +34,8 @@
 struct RS_Flags {
 	//! \{Constructor with initialisation to the given flags.
 	//! Default sets all flags to 0
-	RS_Flags(unsigned f = 0);
+	explicit RS_Flags(unsigned f = 0);
 	//! \}
-
-	virtual ~RS_Flags() = default;
 
 	unsigned getFlags() const;
 
@@ -54,7 +52,7 @@ struct RS_Flags {
 	bool getFlag(unsigned f) const;
 
 private:
-	unsigned flags = 0;
+	unsigned _flags = 0;
 };
 
 #endif

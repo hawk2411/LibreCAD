@@ -28,37 +28,36 @@
 #include "rs_flags.h"
 
 /** Constructor with initialisation to the given flags. */
-RS_Flags::RS_Flags(unsigned f):
-	flags(f)
-{
+RS_Flags::RS_Flags(unsigned f) :
+        _flags(f) {
 }
 
 
 unsigned RS_Flags::getFlags() const {
-	return flags;
+    return _flags;
 }
 
 void RS_Flags::resetFlags() {
-	flags=0;
+    _flags = 0;
 }
 
 void RS_Flags::setFlags(unsigned f) {
-	flags=f;
+    _flags = f;
 }
 
 void RS_Flags::setFlag(unsigned f) {
-	flags |= f;
+    _flags |= f;
 }
 
 void RS_Flags::delFlag(unsigned f) {
-	flags &= ~f;
+    _flags &= ~f;
 }
 
 void RS_Flags::toggleFlag(unsigned f) {
-	flags ^= f;
+    _flags ^= f;
 }
 
 bool RS_Flags::getFlag(unsigned f) const {
-	return flags&f;
+    return _flags & f;
 }
 
