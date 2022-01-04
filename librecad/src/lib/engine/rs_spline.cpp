@@ -206,8 +206,8 @@ void RS_Spline::update() {
 			addEntity(line);
 		}
 		prev = vp;
-		minV = RS_Vector::minimum(prev, minV);
-		maxV = RS_Vector::maximum(prev, maxV);
+        _minV = RS_Vector::minimum(prev, _minV);
+        _maxV = RS_Vector::maximum(prev, _maxV);
 	}
 }
 

@@ -97,7 +97,7 @@ void RS_Insert::update() {
 //        RS_DEBUG->print("RS_Insert::update: insertionPoint: %f/%f",
 //                data.insertionPoint.x, data.insertionPoint.y);
 
-        if (updateEnabled==false) {
+        if (_updateEnabled == false) {
                 return;
         }
 

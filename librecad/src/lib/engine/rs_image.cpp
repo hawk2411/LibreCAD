@@ -177,11 +177,11 @@ void RS_Image::update() {
 void RS_Image::calculateBorders() {
 
     RS_VectorSolutions sol = getCorners();
-        minV =  RS_Vector::minimum(
+    _minV =  RS_Vector::minimum(
                 RS_Vector::minimum(sol.get(0), sol.get(1)),
                 RS_Vector::minimum(sol.get(2), sol.get(3))
                     );
-        maxV =  RS_Vector::maximum(
+    _maxV =  RS_Vector::maximum(
                 RS_Vector::maximum(sol.get(0), sol.get(1)),
                 RS_Vector::maximum(sol.get(2), sol.get(3))
                     );

@@ -52,7 +52,7 @@ RS_Block::RS_Block(RS_EntityContainer* parent,
                    const RS_BlockData& d)
         : RS_Document(parent), data(d) {
 
-    pen = RS_Pen(RS_Color(128,128,128), RS2::Width01, RS2::SolidLine);
+    _pen = RS_Pen(RS_Color(128, 128, 128), RS2::Width01, RS2::SolidLine);
 }
 
 

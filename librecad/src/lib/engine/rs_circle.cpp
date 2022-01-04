@@ -86,8 +86,8 @@ RS_Entity* RS_Circle::clone() const {
 
 void RS_Circle::calculateBorders() {
 	RS_Vector r(data.radius,data.radius);
-	minV = data.center - r;
-	maxV = data.center + r;
+    _minV = data.center - r;
+    _maxV = data.center + r;
 }
 
 

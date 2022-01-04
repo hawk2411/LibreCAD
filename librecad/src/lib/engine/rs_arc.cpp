@@ -273,8 +273,8 @@ void RS_Arc::calculateBorders() {
         maxX = data.center.x + data.radius;
     }
 
-    minV.set(minX, minY);
-    maxV.set(maxX, maxY);
+    _minV.set(minX, minY);
+    _maxV.set(maxX, maxY);
 }
 
 

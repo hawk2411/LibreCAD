@@ -214,8 +214,8 @@ void RS_Ellipse::calculateBorders() {
         maxY= data.center.y+vp.magnitude();
     }
 
-    minV.set(minX, minY);
-	maxV.set(maxX, maxY);
+    _minV.set(minX, minY);
+	_maxV.set(maxX, maxY);
 }
 
 
@@ -402,7 +402,7 @@ RS_Vector RS_Ellipse::getNearestDist(double distance,
 
     if(getRatio()<RS_TOLERANCE) {
         //treat the ellipse as a line
-		RS_Line line{e.minV,e.maxV};
+		RS_Line line{e._minV, e._maxV};
 		return line.getNearestDist(distance, coord, dist);
     }
     double x1=e.getAngle1();
@@ -1562,7 +1562,7 @@ bool RS_Ellipse::isVisibleInWindow(RS_GraphicView* view) const
         if( RS_Information::getIntersection(&e0, &line, true).size()>0) return true;
     }
     //is startpoint within viewport
-    QRectF ellipseRect(minV.x, minV.y, maxV.x - minV.x, maxV.y - minV.y);
+    QRectF ellipseRect(_minV.x, _minV.y, _maxV.x - _minV.x, _maxV.y - _minV.y);
     return ellipseRect.intersects(visualRect);
 }
 
@@ -1779,7 +1779,7 @@ void RS_Ellipse::drawVisible(RS_Painter* painter, RS_GraphicView* view, double& 
     double ra(getMajorRadius()*view->getFactor().x);
     double rb(getRatio()*ra);
 	if(std::min(ra, rb) < RS_TOLERANCE) {//ellipse too small
-        painter->drawLine(view->toGui(minV),view->toGui(maxV));
+        painter->drawLine(view->toGui(_minV), view->toGui(_maxV));
         return;
     }
 

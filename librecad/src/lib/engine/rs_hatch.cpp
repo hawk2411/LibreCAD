@@ -163,7 +163,7 @@ void RS_Hatch::update() {
         return;
     }
 
-    if (updateEnabled==false) {
+    if (_updateEnabled == false) {
         RS_DEBUG->print(RS_Debug::D_NOTICE, "RS_Hatch::update: skip hatch forbidden to update");
         return;
     }

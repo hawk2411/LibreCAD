@@ -48,7 +48,7 @@ RS2::EntityType RS_Point::rtti() const
 }
 
 void RS_Point::calculateBorders () {
-    minV = maxV = data.pos;
+    _minV = _maxV = data.pos;
 }
 
 RS_VectorSolutions RS_Point::getRefPoints() const

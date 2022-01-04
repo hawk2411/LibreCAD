@@ -136,8 +136,8 @@ void RS_Solid::calculateBorders()
 
     for (int i = RS_SolidData::FirstCorner; i < RS_SolidData::MaxCorners; ++i) {
         if (data.corner[i].valid) {
-            minV = RS_Vector::minimum( minV, data.corner[i]);
-            maxV = RS_Vector::maximum( maxV, data.corner[i]);
+            _minV = RS_Vector::minimum(_minV, data.corner[i]);
+            _maxV = RS_Vector::maximum(_maxV, data.corner[i]);
         }
     }
 }
@@ -325,7 +325,7 @@ RS_Vector RS_Solid::getNearestPointOnEntity(const RS_Vector& coord,
     }
 
     //verify this part
-    if (onEntity && !ret.isInWindowOrdered( minV, maxV)) {
+    if (onEntity && !ret.isInWindowOrdered(_minV, _maxV)) {
         // projection point not within range, find the nearest endpoint
         ret = getNearestEndpoint( coord, dist);
         currDist = ret.distanceTo( coord);

@@ -81,8 +81,8 @@ RS_Entity* RS_Line::clone() const {
 
 
 void RS_Line::calculateBorders() {
-    minV = RS_Vector::minimum(data.startpoint, data.endpoint);
-    maxV = RS_Vector::maximum(data.startpoint, data.endpoint);
+    _minV = RS_Vector::minimum(data.startpoint, data.endpoint);
+    _maxV = RS_Vector::maximum(data.startpoint, data.endpoint);
 }
 
 

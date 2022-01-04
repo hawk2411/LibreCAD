@@ -69,8 +69,8 @@ RS_Entity* RS_ConstructionLine::clone() const {
 }
 
 void RS_ConstructionLine::calculateBorders() {
-    minV = RS_Vector::minimum(data.point1, data.point2);
-    maxV = RS_Vector::maximum(data.point1, data.point2);
+    _minV = RS_Vector::minimum(data.point1, data.point2);
+    _maxV = RS_Vector::maximum(data.point1, data.point2);
 }
 
 RS_Vector RS_ConstructionLine::getNearestEndpoint(const RS_Vector& coord,

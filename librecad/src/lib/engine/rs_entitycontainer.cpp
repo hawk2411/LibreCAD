@@ -521,8 +521,8 @@ void RS_EntityContainer::adjustBorders(RS_Entity* entity) {
         // make sure a container is not empty (otherwise the border
         //   would get extended to 0/0):
         if (!entity->isContainer() || entity->count()>0) {
-            minV = RS_Vector::minimum(entity->getMin(),minV);
-            maxV = RS_Vector::maximum(entity->getMax(),maxV);
+            _minV = RS_Vector::minimum(entity->getMin(), _minV);
+            _maxV = RS_Vector::maximum(entity->getMax(), _maxV);
         }
 
         // Notify parents. The border for the parent might
@@ -558,17 +558,17 @@ void RS_EntityContainer::calculateBorders() {
                     getSize().x, getSize().y);
 
     // needed for correcting corrupt data (PLANS.dxf)
-    if (minV.x>maxV.x || minV.x>RS_MAXDOUBLE || maxV.x>RS_MAXDOUBLE
-            || minV.x<RS_MINDOUBLE || maxV.x<RS_MINDOUBLE) {
+    if (_minV.x > _maxV.x || _minV.x > RS_MAXDOUBLE || _maxV.x > RS_MAXDOUBLE
+        || _minV.x < RS_MINDOUBLE || _maxV.x < RS_MINDOUBLE) {
 
-        minV.x = 0.0;
-        maxV.x = 0.0;
+        _minV.x = 0.0;
+        _maxV.x = 0.0;
     }
-    if (minV.y>maxV.y || minV.y>RS_MAXDOUBLE || maxV.y>RS_MAXDOUBLE
-            || minV.y<RS_MINDOUBLE || maxV.y<RS_MINDOUBLE) {
+    if (_minV.y > _maxV.y || _minV.y > RS_MAXDOUBLE || _maxV.y > RS_MAXDOUBLE
+        || _minV.y < RS_MINDOUBLE || _maxV.y < RS_MINDOUBLE) {
 
-        minV.y = 0.0;
-        maxV.y = 0.0;
+        _minV.y = 0.0;
+        _maxV.y = 0.0;
     }
 
     RS_DEBUG->print("RS_EntityContainer::calculateBorders: size: %f,%f",
@@ -611,17 +611,17 @@ void RS_EntityContainer::forcedCalculateBorders() {
     }
 
     // needed for correcting corrupt data (PLANS.dxf)
-    if (minV.x>maxV.x || minV.x>RS_MAXDOUBLE || maxV.x>RS_MAXDOUBLE
-            || minV.x<RS_MINDOUBLE || maxV.x<RS_MINDOUBLE) {
+    if (_minV.x > _maxV.x || _minV.x > RS_MAXDOUBLE || _maxV.x > RS_MAXDOUBLE
+        || _minV.x < RS_MINDOUBLE || _maxV.x < RS_MINDOUBLE) {
 
-        minV.x = 0.0;
-        maxV.x = 0.0;
+        _minV.x = 0.0;
+        _maxV.x = 0.0;
     }
-    if (minV.y>maxV.y || minV.y>RS_MAXDOUBLE || maxV.y>RS_MAXDOUBLE
-            || minV.y<RS_MINDOUBLE || maxV.y<RS_MINDOUBLE) {
+    if (_minV.y > _maxV.y || _minV.y > RS_MAXDOUBLE || _maxV.y > RS_MAXDOUBLE
+        || _minV.y < RS_MINDOUBLE || _maxV.y < RS_MINDOUBLE) {
 
-        minV.y = 0.0;
-        maxV.y = 0.0;
+        _minV.y = 0.0;
+        _maxV.y = 0.0;
     }
 
     //RS_DEBUG->print("  borders: %f/%f %f/%f", minV.x, minV.y, maxV.x, maxV.y);
@@ -1912,7 +1912,7 @@ std::ostream& operator << (std::ostream& os, RS_EntityContainer& ec) {
 
     os << tab << "EntityContainer[" << id << "]: \n";
     os << tab << "Borders[" << id << "]: "
-       << ec.minV << " - " << ec.maxV << "\n";
+       << ec._minV << " - " << ec._maxV << "\n";
     //os << tab << "Unit[" << id << "]: "
     //<< RS_Units::unit2string (ec.unit) << "\n";
 	if (ec.getLayer()) {

@@ -610,14 +610,14 @@ void LC_SplinePoints::UpdateQuadExtent(const RS_Vector& x1, const RS_Vector& c1,
 		}
 	}
 
-    minV = RS_Vector::minimum(locMinV, minV);
-    maxV = RS_Vector::maximum(locMaxV, maxV);
+    _minV = RS_Vector::minimum(locMinV, _minV);
+    _maxV = RS_Vector::maximum(locMaxV, _maxV);
 }
 
 void LC_SplinePoints::calculateBorders()
 {
-	minV = RS_Vector(false);
-	maxV = RS_Vector(false);
+    _minV = RS_Vector(false);
+    _maxV = RS_Vector(false);
 
 	size_t const n = data.controlPoints.size();
 	if(n < 1) return;
@@ -649,8 +649,8 @@ void LC_SplinePoints::calculateBorders()
 	else
 	{
 		vStart = data.controlPoints.at(0);
-		minV = vStart;
-		maxV = vStart;
+        _minV = vStart;
+        _maxV = vStart;
 
 		if(n < 2) return;
 
@@ -658,8 +658,8 @@ void LC_SplinePoints::calculateBorders()
 
 		if(n < 3)
 		{
-			minV = RS_Vector::minimum(vEnd, minV);
-			maxV = RS_Vector::maximum(vEnd, maxV);
+            _minV = RS_Vector::minimum(vEnd, _minV);
+            _maxV = RS_Vector::maximum(vEnd, _maxV);
 			return;
 		}
 
@@ -3713,7 +3713,7 @@ LC_SplinePoints* LC_SplinePoints::cut(const RS_Vector& pos)
 		data.controlPoints.push_back(vPoint);
 		newData.controlPoints.insert(newData.controlPoints.begin(), vPoint);
 
-		ret = new LC_SplinePoints(parent, newData);
+		ret = new LC_SplinePoints(_parent, newData);
 		ret->initId();
 
 		data.cut = true;

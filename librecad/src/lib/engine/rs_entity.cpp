@@ -58,7 +58,7 @@
  */
 RS_Entity::RS_Entity(RS_EntityContainer* parent) {
 
-    this->parent = parent;
+    this->_parent = parent;
     init();
 }
 
@@ -86,7 +86,7 @@ void RS_Entity::init() {
     setFlag(RS2::FlagVisible);
 	//layer = nullptr;
     //pen = RS_Pen();
-        updateEnabled = true;
+        _updateEnabled = true;
     setLayerToActive();
     setPenToActive();
     initId();
@@ -108,18 +108,18 @@ void RS_Entity::resetBorders() {
     double maxd = RS_MAXDOUBLE;
     double mind = RS_MINDOUBLE;
 
-    minV.set(maxd, maxd);
-    maxV.set(mind, mind);
+    _minV.set(maxd, maxd);
+    _maxV.set(mind, mind);
 }
 
 
 void RS_Entity::moveBorders(const RS_Vector& offset){
-	minV.move(offset);
-	maxV.move(offset);
+	_minV.move(offset);
+	_maxV.move(offset);
 }
 void RS_Entity::scaleBorders(const RS_Vector& center, const RS_Vector& factor){
-	minV.scale(center,factor);
-	maxV.scale(center,factor);
+	_minV.scale(center, factor);
+	_maxV.scale(center, factor);
 }
 
 
@@ -229,11 +229,11 @@ void RS_Entity::undoStateChanged(bool undone)
  * @return true if this entity or any parent entities are undone.
  */
 bool RS_Entity::isUndone() const {
-		if (!parent) {
+		if (!_parent) {
                 return RS_Undoable::isUndone();
         }
         else {
-                return RS_Undoable::isUndone() || parent->isUndone();
+                return RS_Undoable::isUndone() || _parent->isUndone();
         }
 }
 
@@ -304,7 +304,7 @@ bool RS_Entity::isVisibleInWindow(RS_GraphicView* view) const
 		RS_Line const line{vps.at(i),vps.at((i+1)%4)};
 		if( RS_Information::getIntersection(this, &line, true).size()>0) return true;
     }
-    if( minV.isInWindowOrdered(vpMin,vpMax)||maxV.isInWindowOrdered(vpMin,vpMax)) return true;
+    if(_minV.isInWindowOrdered(vpMin, vpMax) || _maxV.isInWindowOrdered(vpMin, vpMax)) return true;
     return false;
 }
 
@@ -376,16 +376,16 @@ bool RS_Entity::isVisible() const{
         return true;
     }
 
-    if (layer /*&& layer->getName()!="ByBlock"*/) {
+    if (_layer /*&& layer->getName()!="ByBlock"*/) {
 
-        if (!layer->isFrozen()) {
+        if (!_layer->isFrozen()) {
             return true;
         } else {
             return false;
         }
     }
 
-	if (!layer /*&& getLayer()->getName()!="ByBlock"*/) {
+	if (!_layer /*&& getLayer()->getName()!="ByBlock"*/) {
 		if (!getLayer()) {
             return true;
         } else {
@@ -461,7 +461,7 @@ bool RS_Entity::isHighlighted() const{
 
 
 RS_Vector RS_Entity::getSize() const {
-	return maxV-minV;
+	return _maxV - _minV;
 }
 
 /**
@@ -489,10 +489,10 @@ RS_Graphic* RS_Entity::getGraphic() const{
     if (rtti()==RS2::EntityGraphic) {
 		RS_Graphic const* ret=static_cast<RS_Graphic const*>(this);
 		return const_cast<RS_Graphic*>(ret);
-	} else if (!parent) {
+	} else if (!_parent) {
 		return nullptr;
 	}
-	return parent->getGraphic();
+	return _parent->getGraphic();
 }
 
 
@@ -506,10 +506,10 @@ RS_Block* RS_Entity::getBlock() const{
     if (rtti()==RS2::EntityBlock) {
 		RS_Block const* ret=static_cast<RS_Block const*>(this);
 		return const_cast<RS_Block*>(ret);
-	} else if (!parent) {
+	} else if (!_parent) {
 		return nullptr;
 	}
-	return parent->getBlock();
+	return _parent->getBlock();
 }
 
 
@@ -537,10 +537,10 @@ RS_Insert* RS_Entity::getInsert() const
     if (rtti()==RS2::EntityInsert) {
 		RS_Insert const* ret=static_cast<RS_Insert const*>(this);
 		return const_cast<RS_Insert*>(ret);
-	} else if (!parent) {
+	} else if (!_parent) {
 		return nullptr;
     } else {
-        return parent->getInsert();
+        return _parent->getInsert();
     }
 }
 
@@ -558,8 +558,8 @@ RS_Entity* RS_Entity::getBlockOrInsert() const
 		ret=const_cast<RS_Entity*>(this);
 		break;
 	default:
-		if(parent) {
-			return parent->getBlockOrInsert();
+		if(_parent) {
+			return _parent->getBlockOrInsert();
 		}
 	}
 	return ret;
@@ -575,10 +575,10 @@ RS_Document* RS_Entity::getDocument() const{
 	if (isDocument()) {
 		RS_Document const* ret=static_cast<RS_Document const*>(this);
 		return const_cast<RS_Document*>(ret);
-	} else if (!parent) {
+	} else if (!_parent) {
 		return nullptr;
 	}
-	return parent->getDocument();
+	return _parent->getDocument();
 }
 
 
@@ -723,9 +723,9 @@ RS_Layer* RS_Entity::getLayer(bool resolve) const {
     if (resolve) {
         // we have no layer but a parent that might have one.
         // return parent's layer instead:
-		if (!layer /*|| layer->getName()=="ByBlock"*/) {
-            if (parent) {
-                return parent->getLayer(true);
+		if (!_layer /*|| layer->getName()=="ByBlock"*/) {
+            if (_parent) {
+                return _parent->getLayer(true);
             } else {
 				return nullptr;
             }
@@ -733,7 +733,7 @@ RS_Layer* RS_Entity::getLayer(bool resolve) const {
     }
 
 	// return our layer. might still be nullptr:
-    return layer;
+    return _layer;
 }
 
 
@@ -744,9 +744,9 @@ RS_Layer* RS_Entity::getLayer(bool resolve) const {
 void RS_Entity::setLayer(const QString& name) {
     RS_Graphic* graphic = getGraphic();
     if (graphic) {
-        layer = graphic->findLayer(name);
+        _layer = graphic->findLayer(name);
     } else {
-		layer = nullptr;
+        _layer = nullptr;
     }
 }
 
@@ -756,7 +756,7 @@ void RS_Entity::setLayer(const QString& name) {
  * Sets the layer of this entity to the layer given.
  */
 void RS_Entity::setLayer(RS_Layer* l) {
-    layer = l;
+    _layer = l;
 }
 
 
@@ -770,9 +770,9 @@ void RS_Entity::setLayerToActive() {
     RS_Graphic* graphic = getGraphic();
 
     if (graphic) {
-        layer = graphic->getActiveLayer();
+        _layer = graphic->getActiveLayer();
     } else {
-		layer = nullptr;
+        _layer = nullptr;
     }
 }
 
@@ -792,42 +792,42 @@ void RS_Entity::setLayerToActive() {
 RS_Pen RS_Entity::getPen(bool resolve) const {
 
     if (!resolve) {
-        return pen;
+        return _pen;
     } else {
 
-        RS_Pen p = pen;
+        RS_Pen p = _pen;
         RS_Layer* l = getLayer(true);
 
         // use parental attributes (e.g. vertex of a polyline, block
         // entities when they are drawn in block documents):
-        if (parent) {
+        if (_parent) {
             //if pen is invalid gets all from parent
             if (!p.isValid() ) {
-                p = parent->getPen();
+                p = _parent->getPen();
             }
             //pen is valid, verify byBlock parts
-            RS_EntityContainer* ep = parent;
+            RS_EntityContainer* ep = _parent;
             //If parent is byblock check parent.parent (nested blocks)
             while (p.getColor().isByBlock()){
                 if (ep) {
-                    p.setColor(parent->getPen().getColor());
-                    ep = ep->parent;
+                    p.setColor(_parent->getPen().getColor());
+                    ep = ep->_parent;
                 } else
                     break;
             }
-            ep = parent;
+            ep = _parent;
             while (p.getWidth()==RS2::WidthByBlock){
                 if (ep) {
-                    p.setWidth(parent->getPen().getWidth());
-                    ep = ep->parent;
+                    p.setWidth(_parent->getPen().getWidth());
+                    ep = ep->_parent;
                 } else
                     break;
             }
-            ep = parent;
+            ep = _parent;
             while (p.getLineType()==RS2::LineByBlock){
                 if (ep) {
-                    p.setLineType(parent->getPen().getLineType());
-                    ep = ep->parent;
+                    p.setLineType(_parent->getPen().getLineType());
+                    ep = ep->_parent;
                 } else
                     break;
             }
@@ -865,7 +865,7 @@ RS_Pen RS_Entity::getPen(bool resolve) const {
 void RS_Entity::setPenToActive() {
     RS_Document* doc = getDocument();
     if (doc) {
-        pen = doc->getActivePen();
+        _pen = doc->getActivePen();
     } else {
         //RS_DEBUG->print(RS_Debug::D_WARNING, "RS_Entity::setPenToActive(): "
         //                "No document / active pen linked to this entity.");
@@ -949,9 +949,9 @@ double RS_Entity::getStyleFactor(RS_GraphicView* view) {
  * @return User defined variable connected to this entity or nullptr if not found.
  */
 QString RS_Entity::getUserDefVar(const QString& key) const {
-	auto it=varList.find(key);
-	if(it==varList.end()) return nullptr;
-	return varList.at(key);
+	auto it=_varList.find(key);
+	if(it == _varList.end()) return nullptr;
+	return _varList.at(key);
 }
 /*
  * @coord
@@ -970,14 +970,14 @@ RS_Vector RS_Entity::getNearestOrthTan(const RS_Vector& /*coord*/,
  * Add a user defined variable to this entity.
  */
 void RS_Entity::setUserDefVar(QString key, QString val) {
-	varList.insert(std::make_pair(key, val));
+	_varList.insert(std::make_pair(key, val));
 }
 
 /**
  * Deletes the given user defined variable.
  */
 void RS_Entity::delUserDefVar(QString key) {
-	varList.erase(key);
+	_varList.erase(key);
 }
 
 /**
@@ -985,7 +985,7 @@ void RS_Entity::delUserDefVar(QString key) {
  */
 std::vector<QString> RS_Entity::getAllKeys() const{
 	std::vector<QString> ret(0);
-	for(auto const& v: varList){
+	for(auto const& v: _varList){
 		ret.push_back(v.first);
 	}
 	return ret;
@@ -999,13 +999,13 @@ bool RS_Entity::isConstruction(bool typeCheck) const{
             // do not expand entities on construction layers, except lines
             return false;
     }
-	if (layer) return layer->isConstruction();
+	if (_layer) return _layer->isConstruction();
     return false;
 }
 
 //! whether printing is enabled or disabled for the entity's layer
 bool RS_Entity::isPrint(void) const{
-    if (nullptr != layer) return layer->isPrint();
+    if (nullptr != _layer) return _layer->isPrint();
     return true;
 }
 
@@ -1053,8 +1053,8 @@ std::ostream& operator << (std::ostream& os, RS_Entity& e) {
     //return os;
 
     os << " {Entity id: " << e.id;
-	if (e.parent) {
-        os << " | parent id: " << e.parent->getId() << "\n";
+	if (e._parent) {
+        os << " | parent id: " << e._parent->getId() << "\n";
     } else {
         os << " | no parent\n";
     }
@@ -1064,17 +1064,17 @@ std::ostream& operator << (std::ostream& os, RS_Entity& e) {
     os << (e.getFlag(RS2::FlagSelected) ? " RS2::FlagSelected" : "");
     os << "\n";
 
-	if (!e.layer) {
+	if (!e._layer) {
 		os << " layer: nullptr ";
     } else {
-        os << " layer: " << e.layer->getName().toLatin1().data() << " ";
-        os << " layer address: " << e.layer << " ";
+        os << " layer: " << e._layer->getName().toLatin1().data() << " ";
+        os << " layer address: " << e._layer << " ";
     }
 
-    os << e.pen << "\n";
+    os << e._pen << "\n";
 
         os << "variable list:\n";
-	for(auto const& v: e.varList){
+	for(auto const& v: e._varList){
 		os << v.first.toLatin1().data()<< ": "
 		   << v.second.toLatin1().data()
 			   << ", ";
