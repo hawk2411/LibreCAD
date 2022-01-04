@@ -144,7 +144,7 @@ void RS_ActionDrawCircleTan1_2P::mouseMoveEvent(QMouseEvent* e) {
         case RS2::EntityLine:
         {
             RS_Line* line=static_cast<RS_Line*>(circle);
-			RS_Vector&& vp=line->getNearestPointOnEntity(pPoints->points[0],false);
+			RS_Vector&& vp=line->getNearestPointOnEntity(pPoints->points[0],false, nullptr, nullptr);
             if(vp.valid){
 				pPoints->cData.center=(vp+pPoints->points[0])*0.5;
 				pPoints->cData.radius=vp.distanceTo(pPoints->cData.center);

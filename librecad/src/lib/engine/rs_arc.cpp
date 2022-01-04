@@ -173,11 +173,11 @@ bool RS_Arc::createFrom2PDirectionAngle(const RS_Vector& startPoint,
 	l0.rotate(startPoint, halfA);
 
 	double d0;
-	RS_Vector vEnd0 = l0.getNearestPointOnEntity(endPoint, false, &d0);
+	RS_Vector vEnd0 = l0.getNearestPointOnEntity(endPoint, false, &d0, nullptr);
 	RS_Line l1 = l0;
 	l1.rotate(startPoint, -angleLength);
 	double d1;
-	RS_Vector vEnd1 = l1.getNearestPointOnEntity(endPoint, false, &d1);
+	RS_Vector vEnd1 = l1.getNearestPointOnEntity(endPoint, false, &d1, nullptr);
 	if (d1 < d0) {
 		vEnd0 = vEnd1;
 		l0 = l1;

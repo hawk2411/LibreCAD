@@ -488,7 +488,7 @@ void RS_Hatch::update() {
 			RS_Line* line = static_cast<RS_Line*>(e);
             middlePoint = line->getMiddlePoint();
             middlePoint2 = line->getNearestDist(line->getLength()/2.1,
-                                                line->getStartpoint());
+                                                line->getStartpoint(), nullptr);
         } else if (e->rtti()==RS2::EntityArc) {
 			RS_Arc* arc = static_cast<RS_Arc*>(e);
             middlePoint = arc->getMiddlePoint();

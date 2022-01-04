@@ -241,7 +241,7 @@ RS_Vector RS_Image::getNearestPointOnEntity(const RS_Vector& coord,
 	for (size_t i=0; i < corners.size(); ++i){
 		size_t const j = (i+1)%corners.size();
 		RS_Line const l{corners.at(i), corners.at(j)};
-		RS_Vector const vp = l.getNearestPointOnEntity(coord, onEntity);
+		RS_Vector const vp = l.getNearestPointOnEntity(coord, onEntity, nullptr, nullptr);
 		points.push_back(vp);
 	}
 

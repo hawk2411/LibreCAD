@@ -385,7 +385,7 @@ RS_VectorSolutions RS_Information::getIntersectionLineArc(RS_Line* line,
 
     double dist=0.0;
     RS_Vector nearest;
-    nearest = line->getNearestPointOnEntity(arc->getCenter(), false, &dist);
+    nearest = line->getNearestPointOnEntity(arc->getCenter(), false, &dist, nullptr);
 
     // special case: arc touches line (tangent):
     if (nearest.valid && fabs(dist - arc->getRadius()) < 1.0e-4) {
@@ -425,7 +425,7 @@ RS_VectorSolutions RS_Information::getIntersectionLineArc(RS_Line* line,
         if( term1 < RS_TOLERANCE * d2 ) {
             //tangential;
 //            ret=RS_VectorSolutions(p - d*(a1/d2));
-			ret=RS_VectorSolutions({line->getNearestPointOnEntity(c, false)});
+			ret=RS_VectorSolutions({line->getNearestPointOnEntity(c, false, nullptr, nullptr)});
             ret.setTangent(true);
 //        std::cout<<"Tangential point: "<<ret<<std::endl;
             return ret;
@@ -693,7 +693,7 @@ RS_VectorSolutions RS_Information::getIntersectionEllipseLine(RS_Line* line,
     double rx = ellipse->getMajorRadius();
     if(rx<RS_TOLERANCE) {
         //zero radius ellipse
-        RS_Vector vp(line->getNearestPointOnEntity(ellipse->getCenter(), true));
+        RS_Vector vp(line->getNearestPointOnEntity(ellipse->getCenter(), true, nullptr, nullptr));
         if((vp-ellipse->getCenter()).squared() <RS_TOLERANCE2){
             //center on line
             ret.push_back(vp);
@@ -968,7 +968,7 @@ RS_VectorSolutions RS_Information::createQuadrilateral(const RS_EntityContainer&
 			std::vector<std::vector<RS_Vector>::iterator> left;
 			std::vector<std::vector<RS_Vector>::iterator> right;
 			for(auto it=vertices.begin(); it != vertices.end(); ++it){
-				RS_Vector const& dir=*it - pl->getNearestPointOnEntity(*it, false);
+				RS_Vector const& dir=*it - pl->getNearestPointOnEntity(*it, false, nullptr, nullptr);
 				if(dir.squared()<RS_TOLERANCE15) continue;
 //				std::cout<<"angle="<<remainder(dir.angle() - a0, 2.*M_PI)<<std::endl;
 				if(remainder(dir.angle() - a0, 2.*M_PI) > 0.)

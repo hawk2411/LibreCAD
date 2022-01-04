@@ -159,7 +159,7 @@ LC_Quadratic::LC_Quadratic(const RS_AtomicEntity* circle, const RS_Vector& point
             m_bValid=false;
             return;
         }
-        RS_Vector projection=line->getNearestPointOnEntity(point,false);
+        RS_Vector projection=line->getNearestPointOnEntity(point,false, nullptr, nullptr);
 //        DEBUG_HEADER
 //        std::cout<<"projection="<<projection<<std::endl;
         double p2=(projection-point).squared();
@@ -312,7 +312,7 @@ LC_Quadratic::LC_Quadratic(const RS_AtomicEntity* circle0,
         const RS_Line* line1=static_cast<const RS_Line*>(circle1);
         RS_Vector normal=line1->getNormalVector()*circle0->getRadius();
         RS_Vector disp=line1->getNearestPointOnEntity(circle0->getCenter(),
-                                                           false)-circle0->getCenter();
+                                                           false, nullptr, nullptr)-circle0->getCenter();
 	if(normal.dotP(disp)>0.) normal *= -1.;
     if(mirror) normal *= -1.;
 							   
