@@ -121,7 +121,7 @@ void RS_ActionDrawLineAngle::trigger() {
         document->endUndoCycle();
     }
 
-	graphicView->moveRelativeZero(pPoints->data.startpoint);
+	graphicView->moveRelativeZero(pPoints->data._startpoint);
         graphicView->redraw(RS2::RedrawDrawing);
     RS_DEBUG->print("RS_ActionDrawLineAngle::trigger(): line added: %d",
                     line->getId());

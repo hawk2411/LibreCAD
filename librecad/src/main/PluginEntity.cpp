@@ -82,10 +82,10 @@ void PluginEntity::getData(QHash<int, QVariant> *data) {
         case RS2::EntityLine: {
             data->insert(DPI::ETYPE, DPI::LINE);
             RS_LineData d = static_cast<RS_Line *>(entity)->getData();
-            data->insert(DPI::STARTX, d.startpoint.x);
-            data->insert(DPI::STARTY, d.startpoint.y);
-            data->insert(DPI::ENDX, d.endpoint.x);
-            data->insert(DPI::ENDY, d.endpoint.y);
+            data->insert(DPI::STARTX, d._startpoint.x);
+            data->insert(DPI::STARTY, d._startpoint.y);
+            data->insert(DPI::ENDX, d._endpoint.x);
+            data->insert(DPI::ENDY, d._endpoint.y);
             break;
         }
         case RS2::EntityPoint: {

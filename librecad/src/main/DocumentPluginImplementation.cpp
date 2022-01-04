@@ -194,18 +194,18 @@ void DocumentPluginImplementation::addLines(std::vector<QPointF> const &points, 
         RS_LineData data;
 
         LC_UndoSection undo(doc);
-        data.endpoint = RS_Vector(points.front().x(), points.front().y());
+        data._endpoint = RS_Vector(points.front().x(), points.front().y());
 
         for (size_t i = 1; i < points.size(); ++i) {
-            data.startpoint = data.endpoint;
-            data.endpoint = RS_Vector(points[i].x(), points[i].y());
+            data._startpoint = data._endpoint;
+            data._endpoint = RS_Vector(points[i].x(), points[i].y());
             auto *line = new RS_Line(doc, data);
             doc->addEntity(line);
             undo.addUndoable(line);
         }
         if (closed) {
-            data.startpoint = data.endpoint;
-            data.endpoint = RS_Vector(points.front().x(), points.front().y());
+            data._startpoint = data._endpoint;
+            data._endpoint = RS_Vector(points.front().x(), points.front().y());
             auto *line = new RS_Line(doc, data);
             doc->addEntity(line);
             undo.addUndoable(line);

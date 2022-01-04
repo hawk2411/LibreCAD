@@ -44,9 +44,9 @@
 #endif
 
 std::ostream& operator << (std::ostream& os, const RS_LineData& ld) {
-	os << "RS_LINE: ((" << ld.startpoint <<
-		  ")(" << ld.endpoint <<
-		  "))";
+	os << "RS_LINE: ((" << ld._startpoint <<
+       ")(" << ld._endpoint <<
+       "))";
 	return os;
 }
 
@@ -55,19 +55,19 @@ std::ostream& operator << (std::ostream& os, const RS_LineData& ld) {
  */
 RS_Line::RS_Line(RS_EntityContainer* parent,
                  const RS_LineData& d)
-    :RS_AtomicEntity(parent), data(d) {
+    : RS_AtomicEntity(parent), _lineData(d) {
     calculateBorders();
 }
 
 ////construct a line from two endpoints
 RS_Line::RS_Line(RS_EntityContainer* parent, const RS_Vector& pStart, const RS_Vector& pEnd)
-	:RS_AtomicEntity(parent), data({pStart,pEnd}) {
+	: RS_AtomicEntity(parent), _lineData({pStart, pEnd}) {
     calculateBorders();
 }
 
 ////construct a line from two endpoints, to be used for construction
 RS_Line::RS_Line(const RS_Vector& pStart, const RS_Vector& pEnd)
-	:RS_AtomicEntity(nullptr), data({pStart,pEnd}) {
+	: RS_AtomicEntity(nullptr), _lineData({pStart, pEnd}) {
     calculateBorders();
 }
 
@@ -81,33 +81,33 @@ RS_Entity* RS_Line::clone() const {
 
 
 void RS_Line::calculateBorders() {
-    _minV = RS_Vector::minimum(data.startpoint, data.endpoint);
-    _maxV = RS_Vector::maximum(data.startpoint, data.endpoint);
+    _minV = RS_Vector::minimum(_lineData._startpoint, _lineData._endpoint);
+    _maxV = RS_Vector::maximum(_lineData._startpoint, _lineData._endpoint);
 }
 
 
 
 RS_VectorSolutions RS_Line::getRefPoints() const
 {
-	return RS_VectorSolutions({data.startpoint, data.endpoint});
+	return RS_VectorSolutions({_lineData._startpoint, _lineData._endpoint});
 }
 
 
 RS_Vector RS_Line::getNearestEndpoint(const RS_Vector& coord,
                                       double* dist)const {
-    double dist1((data.startpoint-coord).squared());
-    double dist2((data.endpoint-coord).squared());
+    double dist1((_lineData._startpoint - coord).squared());
+    double dist2((_lineData._endpoint - coord).squared());
 
     if (dist2<dist1) {
 		if (dist) {
             *dist = sqrt(dist2);
         }
-        return data.endpoint;
+        return _lineData._endpoint;
     } else {
 		if (dist) {
             *dist = sqrt(dist1);
         }
-        return data.startpoint;
+        return _lineData._startpoint;
     }
 
 }
@@ -123,8 +123,8 @@ RS_Vector RS_Line::getNearestEndpoint(const RS_Vector& coord,
  */
 double RS_Line::getProjectionValueAlongLine(const RS_Vector& coord) const
 {
-    RS_Vector direction {data.endpoint - data.startpoint};
-    RS_Vector vpc {coord - data.startpoint};
+    RS_Vector direction {_lineData._endpoint - _lineData._startpoint};
+    RS_Vector vpc {coord - _lineData._startpoint};
     double direction_magnitude {direction.magnitude()};
     double v = 0.0;
 
@@ -145,8 +145,8 @@ RS_Vector RS_Line::getNearestPointOnEntity(const RS_Vector& coord,
         *entity = const_cast<RS_Line*>(this);
     }
 
-    RS_Vector direction {data.endpoint - data.startpoint};
-    RS_Vector vpc {coord - data.startpoint};
+    RS_Vector direction {_lineData._endpoint - _lineData._startpoint};
+    RS_Vector vpc {coord - _lineData._startpoint};
     double a {direction.squared()};
 
     if( a < RS_TOLERANCE2) {
@@ -164,7 +164,7 @@ RS_Vector RS_Line::getNearestPointOnEntity(const RS_Vector& coord,
             return getNearestEndpoint( coord, dist);
         }
 
-        vpc = data.startpoint + direction * t;
+        vpc = _lineData._startpoint + direction * t;
     }
 
     if (dist) {
@@ -292,10 +292,10 @@ RS_Vector RS_Line::getNearestDist(double distance,
     RS_Vector ret;
 
     if (startp) {
-        ret = data.startpoint + dv;
+        ret = _lineData._startpoint + dv;
     }
     else {
-        ret = data.endpoint - dv;
+        ret = _lineData._endpoint - dv;
     }
 
     return ret;
@@ -339,17 +339,17 @@ m0 x + m1 y + m2 =0
 LC_Quadratic RS_Line::getQuadratic() const
 {
     std::vector<double> ce(3,0.);
-	auto dvp=data.endpoint - data.startpoint;
+	auto dvp= _lineData._endpoint - _lineData._startpoint;
     RS_Vector normal(-dvp.y,dvp.x);
     ce[0]=normal.x;
     ce[1]=normal.y;
-    ce[2]= -normal.dotP(data.endpoint);
+    ce[2]= -normal.dotP(_lineData._endpoint);
     return LC_Quadratic(ce);
 }
 
 double RS_Line::areaLineIntegral() const
 {
-    return 0.5*(data.endpoint.y - data.startpoint.y)*(data.startpoint.x + data.endpoint.x);
+    return 0.5 * (_lineData._endpoint.y - _lineData._startpoint.y) * (_lineData._startpoint.x + _lineData._endpoint.x);
 }
 
 
@@ -358,14 +358,14 @@ RS_Vector  RS_Line::getTangentDirection(const RS_Vector& /*point*/)const{
 }
 
 void RS_Line::moveStartpoint(const RS_Vector& pos) {
-    data.startpoint = pos;
+    _lineData._startpoint = pos;
     calculateBorders();
 }
 
 
 
 void RS_Line::moveEndpoint(const RS_Vector& pos) {
-    data.endpoint = pos;
+    _lineData._endpoint = pos;
     calculateBorders();
 }
 
@@ -413,7 +413,7 @@ RS2::Ending RS_Line::getTrimPoint(const RS_Vector& trimCoord,
 
 
 void RS_Line::reverse() {
-    std::swap(data.startpoint, data.endpoint);
+    std::swap(_lineData._startpoint, _lineData._endpoint);
 }
 
 
@@ -422,8 +422,8 @@ bool RS_Line::hasEndpointsWithinWindow(const RS_Vector& firstCorner, const RS_Ve
     RS_Vector vLow( std::min(firstCorner.x, secondCorner.x), std::min(firstCorner.y, secondCorner.y));
     RS_Vector vHigh( std::max(firstCorner.x, secondCorner.x), std::max(firstCorner.y, secondCorner.y));
 
-    return data.startpoint.isInWindowOrdered(vLow, vHigh)
-            || data.endpoint.isInWindowOrdered(vLow, vHigh);
+    return _lineData._startpoint.isInWindowOrdered(vLow, vHigh)
+           || _lineData._endpoint.isInWindowOrdered(vLow, vHigh);
 
 }
 
@@ -460,7 +460,7 @@ bool RS_Line::isTangent(const RS_CircleData&  circleData) const{
 
 RS_Vector RS_Line::getNormalVector() const
 {
-    RS_Vector vp=data.endpoint  - data.startpoint; //direction vector
+    RS_Vector vp= _lineData._endpoint - _lineData._startpoint; //direction vector
 	double r=vp.magnitude();
 	if (r< RS_TOLERANCE) return RS_Vector{false};
 	return RS_Vector{-vp.y,vp.x}/r;
@@ -470,8 +470,8 @@ std::vector<RS_Entity* > RS_Line::offsetTwoSides(const double& distance) const
 {
 	std::vector<RS_Entity*> ret(0);
 	RS_Vector const& vp=getNormalVector()*distance;
-	ret.push_back(new RS_Line{data.startpoint+vp,data.endpoint+vp});
-	ret.push_back(new RS_Line{data.startpoint-vp,data.endpoint-vp});
+	ret.push_back(new RS_Line{_lineData._startpoint + vp, _lineData._endpoint + vp});
+	ret.push_back(new RS_Line{_lineData._startpoint - vp, _lineData._endpoint - vp});
 	return ret;
 }
 
@@ -479,7 +479,7 @@ std::vector<RS_Entity* > RS_Line::offsetTwoSides(const double& distance) const
   * revert the direction of line
   */
 void RS_Line::revertDirection(){
-    std::swap(data.startpoint,data.endpoint);
+    std::swap(_lineData._startpoint, _lineData._endpoint);
 }
 
 void RS_Line::move(const RS_Vector& offset) {
@@ -489,8 +489,8 @@ void RS_Line::move(const RS_Vector& offset) {
 
 //    RS_DEBUG->print("RS_Line::move1: offset: %f/%f", offset.x, offset.y);
 
-    data.startpoint.move(offset);
-    data.endpoint.move(offset);
+    _lineData._startpoint.move(offset);
+    _lineData._endpoint.move(offset);
     moveBorders(offset);
 //    RS_DEBUG->print("RS_Line::move2: sp: %f/%f, ep: %f/%f",
 //                    data.startpoint.x, data.startpoint.y,
@@ -503,8 +503,8 @@ void RS_Line::rotate(const double& angle) {
 //                    data.startpoint.x, data.startpoint.y,
 //                    data.endpoint.x, data.endpoint.y);
     RS_Vector rvp(angle);
-    data.startpoint.rotate(rvp);
-    data.endpoint.rotate(rvp);
+    _lineData._startpoint.rotate(rvp);
+    _lineData._endpoint.rotate(rvp);
 //    RS_DEBUG->print("RS_Line::rotate2: sp: %f/%f, ep: %f/%f",
 //                    data.startpoint.x, data.startpoint.y,
 //                    data.endpoint.x, data.endpoint.y);
@@ -520,8 +520,8 @@ void RS_Line::rotate(const RS_Vector& center, const double& angle) {
 //                    data.startpoint.x, data.startpoint.y,
 //                    data.endpoint.x, data.endpoint.y);
     RS_Vector rvp(angle);
-    data.startpoint.rotate(center, rvp);
-    data.endpoint.rotate(center, rvp);
+    _lineData._startpoint.rotate(center, rvp);
+    _lineData._endpoint.rotate(center, rvp);
 //    RS_DEBUG->print("RS_Line::rotate2: sp: %f/%f, ep: %f/%f",
 //                    data.startpoint.x, data.startpoint.y,
 //                    data.endpoint.x, data.endpoint.y);
@@ -530,8 +530,8 @@ void RS_Line::rotate(const RS_Vector& center, const double& angle) {
 }
 
 void RS_Line::rotate(const RS_Vector& center, const RS_Vector& angleVector) {
-    data.startpoint.rotate(center, angleVector);
-    data.endpoint.rotate(center, angleVector);
+    _lineData._startpoint.rotate(center, angleVector);
+    _lineData._endpoint.rotate(center, angleVector);
     calculateBorders();
 }
 
@@ -542,8 +542,8 @@ void RS_Line::scale(const RS_Vector& factor) {
 //    RS_DEBUG->print("RS_Line::scale1: sp: %f/%f, ep: %f/%f",
 //                    data.startpoint.x, data.startpoint.y,
 //                    data.endpoint.x, data.endpoint.y);
-    data.startpoint.scale(factor);
-    data.endpoint.scale(factor);
+    _lineData._startpoint.scale(factor);
+    _lineData._endpoint.scale(factor);
 //    RS_DEBUG->print("RS_Line::scale2: sp: %f/%f, ep: %f/%f",
 //                    data.startpoint.x, data.startpoint.y,
 //                    data.endpoint.x, data.endpoint.y);
@@ -555,8 +555,8 @@ void RS_Line::scale(const RS_Vector& center, const RS_Vector& factor) {
 //    RS_DEBUG->print("RS_Line::scale1: sp: %f/%f, ep: %f/%f",
 //                    data.startpoint.x, data.startpoint.y,
 //                    data.endpoint.x, data.endpoint.y);
-    data.startpoint.scale(center, factor);
-    data.endpoint.scale(center, factor);
+    _lineData._startpoint.scale(center, factor);
+    _lineData._endpoint.scale(center, factor);
 //    RS_DEBUG->print("RS_Line::scale2: sp: %f/%f, ep: %f/%f",
 //                    data.startpoint.x, data.startpoint.y,
 //                    data.endpoint.x, data.endpoint.y);
@@ -566,8 +566,8 @@ void RS_Line::scale(const RS_Vector& center, const RS_Vector& factor) {
 
 
 void RS_Line::mirror(const RS_Vector& axisPoint1, const RS_Vector& axisPoint2) {
-    data.startpoint.mirror(axisPoint1, axisPoint2);
-    data.endpoint.mirror(axisPoint1, axisPoint2);
+    _lineData._startpoint.mirror(axisPoint1, axisPoint2);
+    _lineData._endpoint.mirror(axisPoint1, axisPoint2);
     calculateBorders();
 }
 
@@ -597,13 +597,13 @@ void RS_Line::stretch(const RS_Vector& firstCorner,
 
 
 void RS_Line::moveRef(const RS_Vector& ref, const RS_Vector& offset) {
-    if(  fabs(data.startpoint.x -ref.x)<1.0e-4 &&
-         fabs(data.startpoint.y -ref.y)<1.0e-4 ) {
-        moveStartpoint(data.startpoint+offset);
+    if(fabs(_lineData._startpoint.x - ref.x) < 1.0e-4 &&
+       fabs(_lineData._startpoint.y - ref.y) < 1.0e-4 ) {
+        moveStartpoint(_lineData._startpoint + offset);
     }
-    if(  fabs(data.endpoint.x -ref.x)<1.0e-4 &&
-         fabs(data.endpoint.y -ref.y)<1.0e-4 ) {
-        moveEndpoint(data.endpoint+offset);
+    if(fabs(_lineData._endpoint.x - ref.x) < 1.0e-4 &&
+       fabs(_lineData._endpoint.y - ref.y) < 1.0e-4 ) {
+        moveEndpoint(_lineData._endpoint + offset);
     }
 }
 

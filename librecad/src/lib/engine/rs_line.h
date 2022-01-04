@@ -37,18 +37,18 @@ class LC_Quadratic;
  */
 struct RS_LineData {
     RS_LineData() :
-        startpoint( false),
-        endpoint( false)
+            _startpoint(false),
+            _endpoint(false)
     {}
 
     RS_LineData(const RS_Vector& point1,
                 const RS_Vector& point2) :
-        startpoint( point1),
-        endpoint( point2)
+            _startpoint(point1),
+            _endpoint(point2)
     {}
 
-    RS_Vector startpoint;
-    RS_Vector endpoint;
+    RS_Vector _startpoint;
+    RS_Vector _endpoint;
 };
 
 std::ostream& operator << (std::ostream& os, const RS_LineData& ld);
@@ -79,27 +79,27 @@ public:
 
     /** @return Copy of data that defines the line. */
     RS_LineData getData() const{
-        return data;
+        return _lineData;
     }
 
     RS_VectorSolutions getRefPoints() const override;
 
     /** @return Start point of the entity */
     RS_Vector getStartpoint() const override{
-        return data.startpoint;
+        return _lineData._startpoint;
     }
     /** @return End point of the entity */
     RS_Vector getEndpoint() const override{
-        return data.endpoint;
+        return _lineData._endpoint;
     }
     /** Sets the startpoint */
     void setStartpoint(RS_Vector s) {
-        data.startpoint = s;
+        _lineData._startpoint = s;
         calculateBorders();
     }
     /** Sets the endpoint */
     void setEndpoint(RS_Vector e) {
-        data.endpoint = e;
+        _lineData._endpoint = e;
         calculateBorders();
     }
     /**
@@ -127,12 +127,12 @@ public:
     void reverse() override;
     /** Sets the y coordinate of the startpoint */
     void setStartpointY(double val) {
-        data.startpoint.y = val;
+        _lineData._startpoint.y = val;
         calculateBorders();
     }
     /** Sets the y coordinate of the endpoint */
     void setEndpointY(double val) {
-        data.endpoint.y = val;
+        _lineData._endpoint.y = val;
         calculateBorders();
     }
     bool hasEndpointsWithinWindow(const RS_Vector& v1, const RS_Vector& v2) override;
@@ -141,21 +141,21 @@ public:
      * @return The length of the line.
      */
     double getLength() const override{
-        return data.startpoint.distanceTo(data.endpoint);
+        return _lineData._startpoint.distanceTo(_lineData._endpoint);
     }
 
     /**
      * @return The angle of the line (from start to endpoint).
      */
     double getAngle1() const{
-        return data.startpoint.angleTo(data.endpoint);
+        return _lineData._startpoint.angleTo(_lineData._endpoint);
     }
 
     /**
      * @return The angle of the line (from end to startpoint).
      */
     double getAngle2() const{
-        return data.endpoint.angleTo(data.startpoint);
+        return _lineData._endpoint.angleTo(_lineData._startpoint);
     }
     bool isTangent(const RS_CircleData&  circleData) const override;
 
@@ -227,8 +227,8 @@ public:
      */
     double areaLineIntegral() const override;
 
-protected:
-    RS_LineData data;
+private:
+    RS_LineData _lineData;
 };
 
 #endif
