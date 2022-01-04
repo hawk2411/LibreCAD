@@ -45,7 +45,7 @@ class QString;
 struct RS_LayerData {
     RS_LayerData() = default;
 
-    RS_LayerData(const QString& name,
+    RS_LayerData(QString  name,
                  const RS_Pen& pen,
                  bool frozen,
                  bool locked);
@@ -174,7 +174,7 @@ public:
      *
      * @param print true: print layer, false: don't print layer
      */
-	bool setPrint( const bool print);
+	bool setPrint( bool print);
 
     /**
      * return the PRINT state of the Layer
@@ -193,7 +193,7 @@ public:
      *
      * @param construction true: infinite lines, false: normal layer
      */
-	bool setConstruction( const bool construction);
+	bool setConstruction( bool construction);
 
     friend std::ostream& operator << (std::ostream& os, const RS_Layer& l);
 

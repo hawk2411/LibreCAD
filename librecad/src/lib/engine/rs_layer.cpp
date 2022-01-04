@@ -27,13 +27,14 @@
 
 #include <iostream>
 #include <QString>
+#include <utility>
 #include "rs_layer.h"
 
-RS_LayerData::RS_LayerData(const QString& name,
+RS_LayerData::RS_LayerData(QString  name,
 						   const RS_Pen& pen,
 						   bool frozen,
 						   bool locked):
-	name(name)
+	name(std::move(name))
   ,pen(pen)
   ,frozen(frozen)
   ,locked(locked)
