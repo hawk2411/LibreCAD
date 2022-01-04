@@ -51,7 +51,7 @@ public:
 
 	void changeUndoState();
 	void setUndoState(bool undone);
-	bool isUndone() const;
+	virtual bool isUndone() const;
 
 	/**
 	 * Can be overwritten by the implementing class to be notified
