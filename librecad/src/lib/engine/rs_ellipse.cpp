@@ -1358,7 +1358,6 @@ void RS_Ellipse::scale(const RS_Vector& center, const RS_Vector& factor) {
     double st2=1.0 - ct2; // sin^2 angle
     double kx2= factor.x * factor.x;
     double ky2= factor.y * factor.y;
-//    double a=getMajorRadius();
     double b=getRatio()*a;
     double cA=0.5*a*a*(kx2*ct2+ky2*st2);
     double cB=0.5*b*b*(kx2*st2+ky2*ct2);

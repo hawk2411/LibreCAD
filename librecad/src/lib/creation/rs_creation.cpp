@@ -744,7 +744,7 @@ std::vector<RS_Entity *> RS_Creation::createCircleTangent2(RS_Entity *circle1, R
     if (c > 1. + RS_TOLERANCE) {
         //not circle in circle, there's a hyperbola path
         c = (e1->getRadius() - e2->getRadius()) / dist;
-        ret.push_back(new LC_Hyperbola(nullptr, LC_HyperbolaData(cp, vp * c, sqrt(1. - c * c), 0., 0., false)));
+        ret.push_back(new LC_Hyperbola(nullptr, LC_HyperbolaData{cp, vp * c, sqrt(1. - c * c), 0., 0., false}));
         return ret;
     }
     ret.push_back(new RS_Line{cp, {cp.x - vp.y, cp.y + vp.x}});

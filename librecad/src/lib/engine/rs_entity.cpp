@@ -63,20 +63,6 @@ RS_Entity::RS_Entity(RS_EntityContainer *parent) : _layer(nullptr), id(0), _upda
 
 
 /**
- * Copy constructor.
- */
-/*RS_Entity::RS_Entity(const RS_Entity& e) : RS_Flags(e.getFlags()) {
-        cout << "copy constructor called\n";
-        init();
-        parent = e.parent;
-        layer = e.layer;
-        //setFlag(e.getFlags());
-    minV = e.minV;
-    maxV = e.maxV;
-    pen = e.pen;
-}*/
-
-/**
  * Initialisation. Called from all constructors.
  */
 void RS_Entity::init() {
