@@ -97,7 +97,7 @@ private:
     LC_SplinePointsData data;
 
 public:
-    LC_SplinePoints(RS_EntityContainer *parent, const LC_SplinePointsData &d);
+    LC_SplinePoints(RS_EntityContainer *parent, LC_SplinePointsData d);
 
     RS_Entity *clone() const override;
 
@@ -185,8 +185,7 @@ public:
 
     RS_Vector getTangentDirection(const RS_Vector &point) const override;
 
-    RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                 double *dist = nullptr) const override;
+    RS_Vector getNearestEndpoint(const RS_Vector &coord, double *dist) const override;
 
     /**
      * @brief getNearestPointOnEntity
@@ -196,23 +195,14 @@ public:
      * @param entity
      * @return
      */
-    RS_Vector getNearestPointOnEntity(const RS_Vector &coord,
-                                      bool onEntity = true, double *dist = nullptr,
-                                      RS_Entity **entity = nullptr) const override;
+    RS_Vector getNearestPointOnEntity(const RS_Vector &coord, bool onEntity, double *dist,
+                                                                    RS_Entity **entity) const override;
 
-//	RS_Vector getNearestCenter(const RS_Vector& coord,
-//		double* dist = nullptr) const;
-    RS_Vector getNearestMiddle(const RS_Vector &coord,
-                               double *dist = nullptr, int middlePoints = 1) const override;
+    RS_Vector getNearestMiddle(const RS_Vector &coord, double *dist, int middlePoints) const override;
 
-    RS_Vector getNearestDist(double distance,
-                             const RS_Vector &coord, double *dist = nullptr) const override;
+    RS_Vector getNearestDist(double distance, const RS_Vector &coord, double *dist) const override;
 
-    //RS_Vector getNearestRef(const RS_Vector& coord,
-    //                                 double* dist = nullptr);
-    double getDistanceToPoint(const RS_Vector &coord,
-                              RS_Entity **entity = nullptr, RS2::ResolveLevel level = RS2::ResolveNone,
-                              double solidDist = RS_MAXDOUBLE) const override;
+    double getDistanceToPoint(const RS_Vector &coord, RS_Entity **entity, RS2::ResolveLevel level, double solidDist) const override;
 
     bool addPoint(const RS_Vector &v);
 
@@ -252,7 +242,7 @@ public:
 
     static RS_VectorSolutions getIntersection(RS_Entity const *e1, RS_Entity const *e2);
 
-    RS_VectorSolutions getLineIntersect(const RS_Vector &x1, const RS_Vector &x2);
+    RS_VectorSolutions getLineIntersect(const RS_Vector &startPoint, const RS_Vector &endPoint);
 
     void addQuadIntersect(RS_VectorSolutions *pVS, const RS_Vector &x1,
                           const RS_Vector &c1, const RS_Vector &x2);
@@ -261,11 +251,9 @@ public:
 
     RS_VectorSolutions getQuadraticIntersect(RS_Entity const *e1);
 
-    // we will not enable trimming, maybe in the future
-    //void trimStartpoint(const RS_Vector& pos) override;
-    //void trimEndpoint(const RS_Vector& pos) override;
-
     LC_SplinePoints *cut(const RS_Vector &pos);
+
+    void calculateBordersLocal();
 };
 
 #endif
