@@ -46,9 +46,9 @@ class RS_BlockList;
 class RS_Document : public RS_EntityContainer,
                     public RS_Undo {
 public:
-    RS_Document(RS_EntityContainer *parent = nullptr);
+    explicit RS_Document(RS_EntityContainer *parent = nullptr);
 
-    virtual ~RS_Document() = default;
+    ~RS_Document() override = default;
 
     virtual RS_LayerList *getLayerList() = 0;
 
@@ -68,7 +68,7 @@ public:
     /**
      * @return true for all document entities (e.g. Graphics or Blocks).
      */
-    virtual bool isDocument() const {
+    bool isDocument() const override {
         return true;
     }
 

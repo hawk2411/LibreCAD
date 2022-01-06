@@ -33,6 +33,7 @@
 #include <vector>
 
 class RS_UndoCycle;
+
 class RS_Undoable;
 
 /**
@@ -44,20 +45,22 @@ class RS_Undoable;
  */
 class RS_Undo {
 public:
-	virtual ~RS_Undo() = default;
+    virtual ~RS_Undo() = default;
 
     virtual bool undo();
+
     virtual bool redo();
 
-//	virtual std::shared_ptr<RS_UndoCycle> getUndoCycle();
-//	virtual std::shared_ptr<RS_UndoCycle> getRedoCycle();
-
     virtual int countUndoCycles();
+
     virtual int countRedoCycles();
+
     virtual bool hasUndoable();
 
     virtual void startUndoCycle();
-    virtual void addUndoable(RS_Undoable* u);
+
+    virtual void addUndoable(RS_Undoable *u);
+
     virtual void endUndoCycle();
 
     /**
@@ -65,23 +68,25 @@ public:
      * the given Undoable (unrecoverable). This method is called
      * for Undoables that are no longer in the undo buffer.
      */
-    virtual void removeUndoable(RS_Undoable* u) = 0;
+    virtual void removeUndoable(RS_Undoable *u) = 0;
 
     /**
 	  *\brief enable/disable redo/undo buttons in main application window
 	  *\author: Dongxu Li
       **/
-	void setGUIButtons() const;
+    void setGUIButtons() const;
 
-    friend std::ostream& operator << (std::ostream& os, RS_Undo& a);
+    friend std::ostream &operator<<(std::ostream &os, RS_Undo &a);
 
+#ifdef RS_TEST
     static bool test();
-
+#endif
 private:
 
-	void addUndoCycle(std::shared_ptr<RS_UndoCycle> const& i);
+    void addUndoCycle(std::shared_ptr<RS_UndoCycle> const &i);
+
     //! List of undo list items. every item is something that can be undone.
-	std::vector<std::shared_ptr<RS_UndoCycle>> undoList;
+    std::vector<std::shared_ptr<RS_UndoCycle>> undoList;
 
     /**
      * Index that points to the current position in the undo list.
@@ -89,14 +94,14 @@ private:
      * The item after will be redone (if there is an item) when redo
      * is called.
      */
-	int undoPointer = -1;
+    int undoPointer = -1;
 
     /**
      * Current undo cycle.
      */
-    std::shared_ptr<RS_UndoCycle> currentCycle {nullptr};
+    std::shared_ptr<RS_UndoCycle> currentCycle{nullptr};
 
-    int refCount {0}; ///< reference counter for nested start/end calls
+    int refCount{0}; ///< reference counter for nested start/end calls
 };
 
 
