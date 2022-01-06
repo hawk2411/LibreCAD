@@ -85,59 +85,59 @@ public:
 
     /** @return Copy of data that defines the arc. **/
     RS_ArcData getData() const {
-        return data;
+        return _data;
     }
 
     RS_VectorSolutions getRefPoints() const override;
 
     /** Sets new arc parameters. **/
     void setData(RS_ArcData d) {
-        data = d;
+        _data = d;
     }
 
     /** @return The center point (x) of this arc */
     RS_Vector getCenter() const override {
-        return data.center;
+        return _data.center;
     }
 
     /** Sets new center. */
     void setCenter(const RS_Vector &c) {
-        data.center = c;
+        _data.center = c;
     }
 
     /** @return The radius of this arc */
     double getRadius() const override {
-        return data.radius;
+        return _data.radius;
     }
 
     /** Sets new radius. */
     void setRadius(double r) {
-        data.radius = r;
+        _data.radius = r;
     }
 
     /** @return The start angle of this arc */
     double getAngle1() const {
-        return data.angle1;
+        return _data.angle1;
     }
 
     /** Sets new start angle. */
     void setAngle1(double a1) {
-        data.angle1 = a1;
+        _data.angle1 = a1;
     }
 
     /** @return The end angle of this arc */
     double getAngle2() const {
-        return data.angle2;
+        return _data.angle2;
     }
 
     /** Sets new end angle. */
     void setAngle2(double a2) {
-        data.angle2 = a2;
+        _data.angle2 = a2;
     }
 
     /** get angle relative arc center*/
-    double getArcAngle(const RS_Vector &vp) {
-        return (vp - data.center).angle();
+    double getArcAngle(const RS_Vector &vp) const {
+        return (vp - _data.center).angle();
     }
 
     /**
@@ -157,12 +157,12 @@ public:
      * @retval false otherwise
      */
     bool isReversed() const {
-        return data.reversed;
+        return _data.reversed;
     }
 
     /** sets the reversed status. */
     void setReversed(bool r) {
-        data.reversed = r;
+        _data.reversed = r;
     }
 
     /** @return Start point of the entity. */
@@ -219,34 +219,35 @@ public:
                            double bulge);
 
     RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                 double *dist = nullptr) const override;
+                                 double *dist) const override;
 
     RS_Vector getNearestPointOnEntity(const RS_Vector &coord,
-                                      bool onEntity = true,
-                                      double *dist = nullptr,
-                                      RS_Entity **entity = nullptr) const override;
+                                      bool onEntity,
+                                      double *dist,
+                                      RS_Entity **entity) const override;
 
     RS_Vector getNearestCenter(const RS_Vector &coord,
-                               double *dist = nullptr) const override;
+                               double *dist) const override;
 
     RS_Vector getNearestMiddle(const RS_Vector &coord,
-                               double *dist = nullptr,
-                               int middlePoints = 1
+                               double *dist,
+                               int middlePoints
     ) const override;
 
     RS_Vector getNearestDist(double distance,
                              const RS_Vector &coord,
-                             double *dist = nullptr) const override;
+                             double *dist) const override;
 
     RS_Vector getNearestDist(double distance,
                              bool startp) const override;
 
     RS_Vector getNearestOrthTan(const RS_Vector &coord,
                                 const RS_Line &normal,
-                                bool onEntity = false) const override;
+                                bool onEntity) const override;
 
-    RS_VectorSolutions
-    getTangentPoint(const RS_Vector &point) const override;//find the tangential points seeing from given point
+    //find the tangential points seeing from given point
+    RS_VectorSolutions getTangentPoint(const RS_Vector &point) const override;
+
     RS_Vector getTangentDirection(const RS_Vector &point) const override;
 
     void move(const RS_Vector &offset) override;
@@ -273,7 +274,7 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const RS_Arc &a);
 
-    virtual void calculateBorders() override;
+    void calculateBorders() override;
 
     /** return the equation of the entity
 for quadratic,
@@ -284,7 +285,7 @@ m0 x^2 + m1 xy + m2 y^2 + m3 x + m4 y + m5 =0
 for linear:
 m0 x + m1 y + m2 =0
 **/
-    virtual LC_Quadratic getQuadratic() const override;
+    LC_Quadratic getQuadratic() const override;
 
     /**
      * @brief areaLineIntegral, line integral for contour area calculation by Green's Theorem
@@ -292,10 +293,11 @@ m0 x + m1 y + m2 =0
      * @return line integral \oint x dy along the entity
      * \oint x dy = c_x r \sin t + \frac{1}{4}r^2\sin 2t +  \frac{1}{2}r^2 t
      */
-    virtual double areaLineIntegral() const override;
+    double areaLineIntegral() const override;
 
-protected:
-    RS_ArcData data;
+private:
+    void calculateBordersLocal();
+    RS_ArcData _data;
 };
 
 #endif

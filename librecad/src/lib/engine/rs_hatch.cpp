@@ -493,7 +493,7 @@ void RS_Hatch::update() {
 			RS_Arc* arc = static_cast<RS_Arc*>(e);
             middlePoint = arc->getMiddlePoint();
             middlePoint2 = arc->getNearestDist(arc->getLength()/2.1,
-                                               arc->getStartpoint());
+                                               arc->getStartpoint(), nullptr);
         } else {
 			middlePoint = RS_Vector{false};
 			middlePoint2 = RS_Vector{false};

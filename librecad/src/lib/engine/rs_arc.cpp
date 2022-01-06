@@ -28,7 +28,6 @@
 #include "rs_arc.h"
 
 #include "rs_line.h"
-#include "rs_constructionline.h"
 #include "rs_linetypepattern.h"
 #include "rs_information.h"
 #include "rs_math.h"
@@ -77,12 +76,12 @@ std::ostream &operator<<(std::ostream &os, const RS_ArcData &ad) {
  */
 RS_Arc::RS_Arc(RS_EntityContainer *parent,
                const RS_ArcData &d)
-        : RS_AtomicEntity(parent), data(d) {
-    calculateBorders();
+        : RS_AtomicEntity(parent), _data(d) {
+    calculateBordersLocal();
 }
 
 RS_Entity *RS_Arc::clone() const {
-    RS_Arc *a = new RS_Arc(*this);
+    auto *a = new RS_Arc(*this);
     a->initId();
     return a;
 }
@@ -107,13 +106,13 @@ bool RS_Arc::createFrom3P(const RS_Vector &p1, const RS_Vector &p2,
         return false;
     }
     crossp = 1. / crossp;
-    data.center.set((ra2 * vrb.y - rb2 * vra.y) * crossp, (rb2 * vra.x - ra2 * vrb.x) * crossp);
-    data.radius = data.center.magnitude();
-    data.center += p1;
-    data.angle1 = data.center.angleTo(p1);
-    data.angle2 = data.center.angleTo(p3);
-    data.reversed = RS_Math::isAngleBetween(data.center.angleTo(p2),
-                                            data.angle1, data.angle2, true);
+    _data.center.set((ra2 * vrb.y - rb2 * vra.y) * crossp, (rb2 * vra.x - ra2 * vrb.x) * crossp);
+    _data.radius = _data.center.magnitude();
+    _data.center += p1;
+    _data.angle1 = _data.center.angleTo(p1);
+    _data.angle2 = _data.center.angleTo(p3);
+    _data.reversed = RS_Math::isAngleBetween(_data.center.angleTo(p2),
+                                             _data.angle1, _data.angle2, true);
     return true;
 }
 
@@ -134,19 +133,19 @@ bool RS_Arc::createFrom2PDirectionRadius(const RS_Vector &startPoint,
     RS_Vector center2 = startPoint - ortho;
 
     if (center1.distanceTo(endPoint) < center2.distanceTo(endPoint)) {
-        data.center = center1;
+        _data.center = center1;
     } else {
-        data.center = center2;
+        _data.center = center2;
     }
 
-    data.radius = radius;
-    data.angle1 = data.center.angleTo(startPoint);
-    data.angle2 = data.center.angleTo(endPoint);
-    data.reversed = false;
+    _data.radius = radius;
+    _data.angle1 = _data.center.angleTo(startPoint);
+    _data.angle2 = _data.center.angleTo(endPoint);
+    _data.reversed = false;
 
     double diff = RS_Math::correctAngle(getDirection1() - direction1);
     if (fabs(diff - M_PI) < 1.0e-1) {
-        data.reversed = true;
+        _data.reversed = true;
     }
     calculateBorders();
 
@@ -186,18 +185,18 @@ bool RS_Arc::createFrom2PDirectionAngle(const RS_Vector &startPoint,
     auto const sol = RS_Information::getIntersection(&l0, &l1, false);
     if (sol.size() == 0) return false;
 
-    data.center = sol.at(0);
+    _data.center = sol.at(0);
 
-    data.radius = data.center.distanceTo(startPoint);
-    data.angle1 = data.center.angleTo(startPoint);
-    data.reversed = false;
+    _data.radius = _data.center.distanceTo(startPoint);
+    _data.angle1 = _data.center.angleTo(startPoint);
+    _data.reversed = false;
 
     double diff = RS_Math::correctAngle(getDirection1() - direction1);
     if (fabs(diff - M_PI) < 1.0e-1) {
-        data.angle2 = RS_Math::correctAngle(data.angle1 - angleLength);
-        data.reversed = true;
+        _data.angle2 = RS_Math::correctAngle(_data.angle1 - angleLength);
+        _data.reversed = true;
     } else {
-        data.angle2 = RS_Math::correctAngle(data.angle1 + angleLength);
+        _data.angle2 = RS_Math::correctAngle(_data.angle1 + angleLength);
     }
     calculateBorders();
 
@@ -210,16 +209,16 @@ bool RS_Arc::createFrom2PDirectionAngle(const RS_Vector &startPoint,
  */
 bool RS_Arc::createFrom2PBulge(const RS_Vector &startPoint, const RS_Vector &endPoint,
                                double bulge) {
-    data.reversed = (bulge < 0.0);
+    _data.reversed = (bulge < 0.0);
     double alpha = atan(bulge) * 4.0;
 
     RS_Vector middle = (startPoint + endPoint) / 2.0;
     double dist = startPoint.distanceTo(endPoint) / 2.0;
 
     // alpha can't be 0.0 at this point
-    data.radius = fabs(dist / sin(alpha / 2.0));
+    _data.radius = fabs(dist / sin(alpha / 2.0));
 
-    double wu = fabs(RS_Math::pow(data.radius, 2.0) - RS_Math::pow(dist, 2.0));
+    double wu = fabs(RS_Math::pow(_data.radius, 2.0) - RS_Math::pow(dist, 2.0));
     double h = sqrt(wu);
     double angle = startPoint.angleTo(endPoint);
 
@@ -233,10 +232,10 @@ bool RS_Arc::createFrom2PBulge(const RS_Vector &startPoint, const RS_Vector &end
         h *= -1.0;
     }
 
-    data.center.setPolar(h, angle);
-    data.center += middle;
-    data.angle1 = data.center.angleTo(startPoint);
-    data.angle2 = data.center.angleTo(endPoint);
+    _data.center.setPolar(h, angle);
+    _data.center += middle;
+    _data.angle1 = _data.center.angleTo(startPoint);
+    _data.angle2 = _data.center.angleTo(endPoint);
 
     calculateBorders();
 
@@ -244,54 +243,29 @@ bool RS_Arc::createFrom2PBulge(const RS_Vector &startPoint, const RS_Vector &end
 }
 
 void RS_Arc::calculateBorders() {
-    RS_Vector const startpoint = data.center + RS_Vector::polar(data.radius, data.angle1);
-    RS_Vector const endpoint = data.center + RS_Vector::polar(data.radius, data.angle2);
-    LC_Rect const rect{startpoint, endpoint};
-
-    double minX = rect.lowerLeftCorner().x;
-    double minY = rect.lowerLeftCorner().y;
-    double maxX = rect.upperRightCorner().x;
-    double maxY = rect.upperRightCorner().y;
-
-    double a1 = isReversed() ? data.angle2 : data.angle1;
-    double a2 = isReversed() ? data.angle1 : data.angle2;
-    if (RS_Math::isAngleBetween(0.5 * M_PI, a1, a2, false)) {
-        maxY = data.center.y + data.radius;
-    }
-    if (RS_Math::isAngleBetween(1.5 * M_PI, a1, a2, false)) {
-        minY = data.center.y - data.radius;
-    }
-    if (RS_Math::isAngleBetween(M_PI, a1, a2, false)) {
-        minX = data.center.x - data.radius;
-    }
-    if (RS_Math::isAngleBetween(0., a1, a2, false)) {
-        maxX = data.center.x + data.radius;
-    }
-
-    _minV.set(minX, minY);
-    _maxV.set(maxX, maxY);
+    calculateBordersLocal();
 }
 
 
 RS_Vector RS_Arc::getStartpoint() const {
-    return data.center + RS_Vector::polar(data.radius, data.angle1);
+    return _data.center + RS_Vector::polar(_data.radius, _data.angle1);
 }
 
 /** @return End point of the entity. */
 RS_Vector RS_Arc::getEndpoint() const {
-    return data.center + RS_Vector::polar(data.radius, data.angle2);
+    return _data.center + RS_Vector::polar(_data.radius, _data.angle2);
 }
 
 RS_VectorSolutions RS_Arc::getRefPoints() const {
     //order: start, end, center
-    return {getStartpoint(), getEndpoint(), data.center};
+    return {getStartpoint(), getEndpoint(), _data.center};
 }
 
 double RS_Arc::getDirection1() const {
-    if (!data.reversed) {
-        return RS_Math::correctAngle(data.angle1 + M_PI_2);
+    if (!_data.reversed) {
+        return RS_Math::correctAngle(_data.angle1 + M_PI_2);
     } else {
-        return RS_Math::correctAngle(data.angle1 - M_PI_2);
+        return RS_Math::correctAngle(_data.angle1 - M_PI_2);
     }
 }
 
@@ -300,10 +274,10 @@ double RS_Arc::getDirection1() const {
  * the endpoint.
  */
 double RS_Arc::getDirection2() const {
-    if (!data.reversed) {
-        return RS_Math::correctAngle(data.angle2 - M_PI_2);
+    if (!_data.reversed) {
+        return RS_Math::correctAngle(_data.angle2 - M_PI_2);
     } else {
-        return RS_Math::correctAngle(data.angle2 + M_PI_2);
+        return RS_Math::correctAngle(_data.angle2 + M_PI_2);
     }
 }
 
@@ -370,7 +344,7 @@ RS_Vector RS_Arc::getTangentDirection(const RS_Vector &point) const {
 //        //inside point, no tangential point
 //        return RS_Vector(false);
 //    }
-    return RS_Vector(-vp.y, vp.x);
+    return {-vp.y, vp.x};
 
 }
 
@@ -382,17 +356,16 @@ RS_Vector RS_Arc::getNearestPointOnEntity(const RS_Vector &coord,
         *entity = const_cast<RS_Arc *>(this);
     }
 
-    double angle = (coord - data.center).angle();
+    double angle = (coord - _data.center).angle();
     if (!onEntity || RS_Math::isAngleBetween(angle,
-                                             data.angle1, data.angle2, isReversed())) {
-        vec.setPolar(data.radius, angle);
-        vec += data.center;
+                                             _data.angle1, _data.angle2, isReversed())) {
+        vec.setPolar(_data.radius, angle);
+        vec += _data.center;
     } else {
-        return vec = getNearestEndpoint(coord, dist);
+        return getNearestEndpoint(coord, dist);
     }
     if (dist) {
         *dist = vec.distanceTo(coord);
-//        RS_DEBUG->print(RS_Debug::D_ERROR, "distance to (%g, %g)=%g\n", coord.x,coord.y,*dist);
     }
 
     return vec;
@@ -402,9 +375,9 @@ RS_Vector RS_Arc::getNearestPointOnEntity(const RS_Vector &coord,
 RS_Vector RS_Arc::getNearestCenter(const RS_Vector &coord,
                                    double *dist) const {
     if (dist) {
-        *dist = coord.distanceTo(data.center);
+        *dist = coord.distanceTo(_data.center);
     }
-    return data.center;
+    return _data.center;
 }
 
 /*
@@ -440,10 +413,10 @@ RS_Vector RS_Arc::getNearestMiddle(const RS_Vector &coord,
     if (da < RS_TOLERANCE) {
         da = 2. * M_PI; // whole circle
     }
-    RS_Vector vp(getNearestPointOnEntity(coord, true, dist));
+    RS_Vector vp(getNearestPointOnEntity(coord, true, dist, nullptr));
     double angle = getCenter().angleTo(vp);
     int counts = middlePoints + 1;
-    int i(static_cast<int>(fmod(angle - amin + 2. * M_PI, 2. * M_PI) / da * counts + 0.5));
+    int i(static_cast<int>(lround(fmod(angle - amin + 2. * M_PI, 2. * M_PI) / da * counts + 0.5)));
     if (!i) i++; // remove end points
     if (i == counts) i--;
     angle = amin + da * (double(i) / double(counts));
@@ -461,14 +434,14 @@ RS_Vector RS_Arc::getNearestDist(double distance,
                                  const RS_Vector &coord,
                                  double *dist) const {
 
-    if (data.radius < RS_TOLERANCE) {
+    if (_data.radius < RS_TOLERANCE) {
         if (dist)
             *dist = RS_MAXDOUBLE;
 
         return {};
     }
 
-    double aDist = distance / data.radius;
+    double aDist = distance / _data.radius;
     if (isReversed()) aDist = -aDist;
     double a;
 
@@ -477,7 +450,7 @@ RS_Vector RS_Arc::getNearestDist(double distance,
     else
         a = getAngle2() - aDist;
 
-    RS_Vector ret = RS_Vector::polar(data.radius, a);
+    RS_Vector ret = RS_Vector::polar(_data.radius, a);
     ret += getCenter();
 
     return ret;
@@ -487,29 +460,29 @@ RS_Vector RS_Arc::getNearestDist(double distance,
 RS_Vector RS_Arc::getNearestDist(double distance,
                                  bool startp) const {
 
-    if (data.radius < RS_TOLERANCE) {
+    if (_data.radius < RS_TOLERANCE) {
         return {};
     }
 
     double a;
-    double aDist = distance / data.radius;
+    double aDist = distance / _data.radius;
 
     if (isReversed()) {
         if (startp) {
-            a = data.angle1 - aDist;
+            a = _data.angle1 - aDist;
         } else {
-            a = data.angle2 + aDist;
+            a = _data.angle2 + aDist;
         }
     } else {
         if (startp) {
-            a = data.angle1 + aDist;
+            a = _data.angle1 + aDist;
         } else {
-            a = data.angle2 - aDist;
+            a = _data.angle2 - aDist;
         }
     }
 
-    RS_Vector p = RS_Vector::polar(data.radius, a);
-    p += data.center;
+    RS_Vector p = RS_Vector::polar(_data.radius, a);
+    p += _data.center;
 
     return p;
 }
@@ -609,30 +582,30 @@ std::vector<RS_Entity *> RS_Arc::offsetTwoSides(const double &distance) const {
       * implementations must revert the direction of an atomic entity
       */
 void RS_Arc::revertDirection() {
-    std::swap(data.angle1, data.angle2);
-    data.reversed = !data.reversed;
+    std::swap(_data.angle1, _data.angle2);
+    _data.reversed = !_data.reversed;
 }
 
 /**
  * make sure angleLength() is not more than 2*M_PI
  */
 void RS_Arc::correctAngles() {
-    double *pa1 = &data.angle1;
-    double *pa2 = &data.angle2;
+    double *pa1 = &_data.angle1;
+    double *pa2 = &_data.angle2;
     if (isReversed()) std::swap(pa1, pa2);
     *pa2 = *pa1 + fmod(*pa2 - *pa1, 2. * M_PI);
     if (fabs(getAngleLength()) < RS_TOLERANCE_ANGLE) *pa2 += 2. * M_PI;
 }
 
 void RS_Arc::trimStartpoint(const RS_Vector &pos) {
-    data.angle1 = data.center.angleTo(pos);
+    _data.angle1 = _data.center.angleTo(pos);
     correctAngles(); // make sure angleLength is no more than 2*M_PI
     calculateBorders();
 }
 
 
 void RS_Arc::trimEndpoint(const RS_Vector &pos) {
-    data.angle2 = data.center.angleTo(pos);
+    _data.angle2 = _data.center.angleTo(pos);
     correctAngles(); // make sure angleLength is no more than 2*M_PI
     calculateBorders();
 }
@@ -645,9 +618,9 @@ RS2::Ending RS_Arc::getTrimPoint(const RS_Vector &trimCoord,
                                  const RS_Vector & /*trimPoint*/) {
 
     //double angEl = data.center.angleTo(trimPoint);
-    double angMouse = data.center.angleTo(trimCoord);
+    double angMouse = _data.center.angleTo(trimCoord);
 //    double angTrim = data.center.angleTo(trimPoint);
-    if (fabs(remainder(angMouse - data.angle1, 2. * M_PI)) < fabs(remainder(angMouse - data.angle2, 2. * M_PI)))
+    if (fabs(remainder(angMouse - _data.angle1, 2. * M_PI)) < fabs(remainder(angMouse - _data.angle2, 2. * M_PI)))
         return RS2::EndingStart;
     else
         return RS2::EndingEnd;
@@ -756,33 +729,33 @@ RS_Vector RS_Arc::prepareTrim(const RS_Vector &trimCoord,
 
 
 void RS_Arc::reverse() {
-    std::swap(data.angle1, data.angle2);
-    data.reversed = !data.reversed;
+    std::swap(_data.angle1, _data.angle2);
+    _data.reversed = !_data.reversed;
 //    calculateBorders();
 }
 
 
 void RS_Arc::move(const RS_Vector &offset) {
-    data.center.move(offset);
+    _data.center.move(offset);
     moveBorders(offset);
 }
 
 
 void RS_Arc::rotate(const RS_Vector &center, const double &angle) {
     RS_DEBUG->print("RS_Arc::rotate");
-    data.center.rotate(center, angle);
-    data.angle1 = RS_Math::correctAngle(data.angle1 + angle);
-    data.angle2 = RS_Math::correctAngle(data.angle2 + angle);
+    _data.center.rotate(center, angle);
+    _data.angle1 = RS_Math::correctAngle(_data.angle1 + angle);
+    _data.angle2 = RS_Math::correctAngle(_data.angle2 + angle);
     calculateBorders();
     RS_DEBUG->print("RS_Arc::rotate: OK");
 }
 
 void RS_Arc::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
     RS_DEBUG->print("RS_Arc::rotate");
-    data.center.rotate(center, angleVector);
+    _data.center.rotate(center, angleVector);
     double angle(angleVector.angle());
-    data.angle1 = RS_Math::correctAngle(data.angle1 + angle);
-    data.angle2 = RS_Math::correctAngle(data.angle2 + angle);
+    _data.angle1 = RS_Math::correctAngle(_data.angle1 + angle);
+    _data.angle2 = RS_Math::correctAngle(_data.angle2 + angle);
     calculateBorders();
     RS_DEBUG->print("RS_Arc::rotate: OK");
 }
@@ -791,24 +764,24 @@ void RS_Arc::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
 void RS_Arc::scale(const RS_Vector &center, const RS_Vector &factor) {
     // negative scaling: mirroring
     if (factor.x < 0.0) {
-        mirror(data.center, data.center + RS_Vector(0.0, 1.0));
+        mirror(_data.center, _data.center + RS_Vector(0.0, 1.0));
         //factor.x*=-1;
     }
     if (factor.y < 0.0) {
-        mirror(data.center, data.center + RS_Vector(1.0, 0.0));
+        mirror(_data.center, _data.center + RS_Vector(1.0, 0.0));
         //factor.y*=-1;
     }
 
-    data.center.scale(center, factor);
-    data.radius *= factor.x;
-    data.radius = fabs(data.radius);
+    _data.center.scale(center, factor);
+    _data.radius *= factor.x;
+    _data.radius = fabs(_data.radius);
     //todo, does this handle negative factors properly?
     calculateBorders();
 }
 
 
 void RS_Arc::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) {
-    data.center.mirror(axisPoint1, axisPoint2);
+    _data.center.mirror(axisPoint1, axisPoint2);
     setReversed(!isReversed());
     double a = (axisPoint2 - axisPoint1).angle() * 2;
     setAngle1(RS_Math::correctAngle(a - getAngle1()));
@@ -885,7 +858,7 @@ void RS_Arc::draw(RS_Painter *painter, RS_GraphicView *view,
     std::vector<RS_Vector> vertex(0);
     for (unsigned short i = 0; i < 4; i++) {
         const QPointF &vp(visualBox.at(i));
-        vertex.push_back(RS_Vector(vp.x(), vp.y()));
+        vertex.emplace_back(vp.x(), vp.y());
     }
     /** angles at cross points */
     std::vector<double> crossPoints(0);
@@ -932,7 +905,7 @@ void RS_Arc::drawVisible(RS_Painter *painter, RS_GraphicView *view,
 
     if (!(painter && view)) return;
     //visible in graphic view
-    if (isVisibleInWindow(view) == false) return;
+    if (!isVisibleInWindow(view)) return;
 
     RS_Vector cp = view->toGui(getCenter());
     double ra = getRadius() * view->getFactor().x;
@@ -993,7 +966,7 @@ void RS_Arc::drawVisible(RS_Painter *painter, RS_GraphicView *view,
     std::vector<double> da(pat->num);
     double patternSegmentLength(pat->totalLength);
     double ira = 1. / ra;
-    double dpmm = static_cast<RS_PainterQt *>(painter)->getDpmm();
+    double dpmm = dynamic_cast<RS_PainterQt *>(painter)->getDpmm();
     for (size_t i = 0; i < pat->num; i++) {
         //        da[j] = pat->pattern[i++] * styleFactor;
         //fixme, stylefactor needed
@@ -1016,11 +989,10 @@ void RS_Arc::drawVisible(RS_Painter *painter, RS_GraphicView *view,
         if (a2 < a1 + RS_TOLERANCE_ANGLE) a2 += 2. * M_PI;
         total = a1 + total * ira; //in angle
     }
-    double limit(fabs(a1 - a2));
-    double t2;
-
-    for (int j = 0; fabs(total - a1) < limit; j = (j + 1) % pat->num) {
-        t2 = total + da[j];
+    const double limit = fabs(a1 - a2);
+    double condition = fabs(total - a1);
+    for (int j = 0;  condition < limit; j = (j + 1) % static_cast<int>(pat->num)) {
+        double t2 = total + da[j];
 
         if (pat->pattern[j] > 0.0 && fabs(t2 - a2) < limit) {
             double a11 = (fabs(total - a2) < limit) ? total : a1;
@@ -1029,6 +1001,7 @@ void RS_Arc::drawVisible(RS_Painter *painter, RS_GraphicView *view,
         }
 
         total = t2;
+        condition = fabs(total - a1)
     }
 }
 
@@ -1073,7 +1046,7 @@ double RS_Arc::getAngleLength() const {
  * @return Length of the arc.
  */
 double RS_Arc::getLength() const {
-    return getAngleLength() * data.radius;
+    return getAngleLength() * _data.radius;
 }
 
 
@@ -1101,9 +1074,9 @@ LC_Quadratic RS_Arc::getQuadratic() const {
     std::vector<double> ce(6, 0.);
     ce[0] = 1.;
     ce[2] = 1.;
-    ce[5] = -data.radius * data.radius;
+    ce[5] = -_data.radius * _data.radius;
     LC_Quadratic ret(ce);
-    ret.move(data.center);
+    ret.move(_data.center);
     return ret;
 }
 
@@ -1114,12 +1087,12 @@ LC_Quadratic RS_Arc::getQuadratic() const {
  * \oint x dy = c_x r \sin t + \frac{1}{4}r^2\sin 2t +  \frac{1}{2}r^2 t
  */
 double RS_Arc::areaLineIntegral() const {
-    const double &r = data.radius;
-    const double &a0 = data.angle1;
-    const double &a1 = data.angle2;
+    const double &r = _data.radius;
+    const double &a0 = _data.angle1;
+    const double &a1 = _data.angle2;
     const double r2 = 0.25 * r * r;
-    const double fStart = data.center.x * r * sin(a0) + r2 * sin(a0 + a0);
-    const double fEnd = data.center.x * r * sin(a1) + r2 * sin(a1 + a1);
+    const double fStart = _data.center.x * r * sin(a0) + r2 * sin(a0 + a0);
+    const double fEnd = _data.center.x * r * sin(a1) + r2 * sin(a1 + a1);
     return (isReversed() ? fStart - fEnd : fEnd - fStart) + 2. * r2 * getAngleLength();
 }
 
@@ -1127,7 +1100,35 @@ double RS_Arc::areaLineIntegral() const {
  * Dumps the point's data to stdout.
  */
 std::ostream &operator<<(std::ostream &os, const RS_Arc &a) {
-    os << " Arc: " << a.data << "\n";
+    os << " Arc: " << a._data << "\n";
     return os;
 }
 
+void RS_Arc::calculateBordersLocal() {
+    RS_Vector const startpoint = _data.center + RS_Vector::polar(_data.radius, _data.angle1);
+    RS_Vector const endpoint = _data.center + RS_Vector::polar(_data.radius, _data.angle2);
+    LC_Rect const rect{startpoint, endpoint};
+
+    double minX = rect.lowerLeftCorner().x;
+    double minY = rect.lowerLeftCorner().y;
+    double maxX = rect.upperRightCorner().x;
+    double maxY = rect.upperRightCorner().y;
+
+    double a1 = isReversed() ? _data.angle2 : _data.angle1;
+    double a2 = isReversed() ? _data.angle1 : _data.angle2;
+    if (RS_Math::isAngleBetween(0.5 * M_PI, a1, a2, false)) {
+        maxY = _data.center.y + _data.radius;
+    }
+    if (RS_Math::isAngleBetween(1.5 * M_PI, a1, a2, false)) {
+        minY = _data.center.y - _data.radius;
+    }
+    if (RS_Math::isAngleBetween(M_PI, a1, a2, false)) {
+        minX = _data.center.x - _data.radius;
+    }
+    if (RS_Math::isAngleBetween(0., a1, a2, false)) {
+        maxX = _data.center.x + _data.radius;
+    }
+
+    _minV.set(minX, minY);
+    _maxV.set(maxX, maxY);
+}
