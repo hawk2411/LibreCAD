@@ -96,14 +96,14 @@ public:
      * @return Name of this block (the name is an Id for this block).
      */
     QString getName() const {
-		return data.name;
+		return _blockData.name;
     }
 
     /**
      * @return base point of this block.
      */
     RS_Vector getBasePoint() const {
-        return data.basePoint;
+        return _blockData.basePoint;
     }
 
     virtual RS_LayerList* getLayerList();
@@ -145,7 +145,7 @@ public:
 	 * assure that block names stay unique.
 	 */
     void setName(const QString& n) {
-		data.name = n;
+        _blockData.name = n;
     }
     
 	/**
@@ -153,7 +153,7 @@ public:
      * @retval false if this block isn't frozen (visible)
      */
     bool isFrozen() const {
-        return data.frozen;
+        return _blockData.frozen;
     }
 
     /**
@@ -161,7 +161,7 @@ public:
      * Freezes the block if it's not frozen, thaws the block otherwise
      */
     void toggle() {
-		data.frozen = !data.frozen;
+        _blockData.frozen = !_blockData.frozen;
     }
 
     /**
@@ -170,7 +170,7 @@ public:
      * @param freeze true: freeze, false: defreeze
      */
     void freeze(bool freeze) {
-		data.frozen = freeze;
+        _blockData.frozen = freeze;
     }
 	
     /**
@@ -219,9 +219,9 @@ public:
      */
     QStringList findNestedInsert(const QString& bName);
 
-protected:
+private:
 	//! Block data
-	RS_BlockData data;
+	RS_BlockData _blockData;
 };
 
 

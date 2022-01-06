@@ -30,17 +30,14 @@
 #include "rs_graphic.h"
 #include "rs_insert.h"
 
-RS_BlockData::RS_BlockData(const QString& _name,
-						   const RS_Vector& _basePoint,
-						   bool _frozen):
-	name(_name)
-  ,basePoint(_basePoint)
-  ,frozen(_frozen)
-{
+RS_BlockData::RS_BlockData(const QString &_name,
+                           const RS_Vector &_basePoint,
+                           bool _frozen) :
+        name(_name), basePoint(_basePoint), frozen(_frozen) {
 }
 
-bool RS_BlockData::isValid() const{
-	return (!name.isEmpty() && basePoint.valid);
+bool RS_BlockData::isValid() const {
+    return (!name.isEmpty() && basePoint.valid);
 }
 
 /**
@@ -48,16 +45,16 @@ bool RS_BlockData::isValid() const{
  * @param name The name of the block used as an identifier.
  * @param basePoint Base point (offset) of the block.
  */
-RS_Block::RS_Block(RS_EntityContainer* parent,
-                   const RS_BlockData& d)
-        : RS_Document(parent), data(d) {
+RS_Block::RS_Block(RS_EntityContainer *parent,
+                   const RS_BlockData &d)
+        : RS_Document(parent), _blockData(d) {
 
     _pen = RS_Pen(RS_Color(128, 128, 128), RS2::Width01, RS2::SolidLine);
 }
 
 
-RS_Entity* RS_Block::clone() const {
-    RS_Block* blk = new RS_Block(*this);
+RS_Entity *RS_Block::clone() const {
+    RS_Block *blk = new RS_Block(*this);
     blk->setOwner(isOwner());
     blk->detach();
     blk->initId();
@@ -65,9 +62,8 @@ RS_Entity* RS_Block::clone() const {
 }
 
 
-
-RS_LayerList* RS_Block::getLayerList() {
-    RS_Graphic* g = getGraphic();
+RS_LayerList *RS_Block::getLayerList() {
+    RS_Graphic *g = getGraphic();
     if (g) {
         return g->getLayerList();
     } else {
@@ -76,9 +72,8 @@ RS_LayerList* RS_Block::getLayerList() {
 }
 
 
-
-RS_BlockList* RS_Block::getBlockList() {
-    RS_Graphic* g = getGraphic();
+RS_BlockList *RS_Block::getBlockList() {
+    RS_Graphic *g = getGraphic();
     if (g) {
         return g->getBlockList();
     } else {
@@ -88,7 +83,7 @@ RS_BlockList* RS_Block::getBlockList() {
 
 
 bool RS_Block::save(bool isAutoSave) {
-    RS_Graphic* g = getGraphic();
+    RS_Graphic *g = getGraphic();
     if (g) {
         return g->save(isAutoSave);
     } else {
@@ -97,8 +92,8 @@ bool RS_Block::save(bool isAutoSave) {
 }
 
 
-bool RS_Block::saveAs(const QString& filename, RS2::FormatType type, bool force) {
-    RS_Graphic* g = getGraphic();
+bool RS_Block::saveAs(const QString &filename, RS2::FormatType type, bool force) {
+    RS_Graphic *g = getGraphic();
     if (g) {
         return g->saveAs(filename, type, force);
     } else {
@@ -107,12 +102,11 @@ bool RS_Block::saveAs(const QString& filename, RS2::FormatType type, bool force)
 }
 
 
-
 /**
  * Sets the parent documents modified status to 'm'.
  */
 void RS_Block::setModified(bool m) {
-    RS_Graphic* p = getGraphic();
+    RS_Graphic *p = getGraphic();
     if (p) {
         p->setModified(m);
     }
@@ -126,7 +120,7 @@ void RS_Block::setModified(bool m) {
  * @param v true: visible, false: invisible
  */
 void RS_Block::visibleInBlockList(bool v) {
-    data.visibleInBlockList = v;
+    _blockData.visibleInBlockList = v;
 }
 
 
@@ -134,7 +128,7 @@ void RS_Block::visibleInBlockList(bool v) {
  * Returns the visibility of the Block in block list
  */
 bool RS_Block::isVisibleInBlockList() const {
-    return data.visibleInBlockList;
+    return _blockData.visibleInBlockList;
 }
 
 
@@ -144,14 +138,14 @@ bool RS_Block::isVisibleInBlockList() const {
  * @param v true: selected, false: deselected
  */
 void RS_Block::selectedInBlockList(bool v) {
-    data.selectedInBlockList = v;
+    _blockData.selectedInBlockList = v;
 }
 
 /**
  * Returns selection state of the block in block list
  */
 bool RS_Block::isSelectedInBlockList() const {
-    return data.selectedInBlockList;
+    return _blockData.selectedInBlockList;
 }
 
 /**
@@ -163,26 +157,26 @@ bool RS_Block::isSelectedInBlockList() const {
  *
  * @return block name chain to the block that contain searched insert
  */
-QStringList RS_Block::findNestedInsert(const QString& bName) {
+QStringList RS_Block::findNestedInsert(const QString &bName) {
 
     QStringList bnChain;
 
-    for (RS_Entity* e: entities) {
-        if (e->rtti()==RS2::EntityInsert) {
-            RS_Insert* i = ((RS_Insert*)e);
+    for (RS_Entity *e: entities) {
+        if (e->rtti() == RS2::EntityInsert) {
+            RS_Insert *i = ((RS_Insert *) e);
             QString iName = i->getName();
             if (iName == bName) {
-                bnChain << data.name;
+                bnChain << _blockData.name;
                 break;
             } else {
-                RS_BlockList* bList = getBlockList();
+                RS_BlockList *bList = getBlockList();
                 if (bList) {
-                    RS_Block* nestedBlock = bList->find(iName);
+                    RS_Block *nestedBlock = bList->find(iName);
                     if (nestedBlock) {
                         QStringList nestedChain;
                         nestedChain = nestedBlock->findNestedInsert(bName);
                         if (!nestedChain.empty()) {
-                            bnChain << data.name;
+                            bnChain << _blockData.name;
                             bnChain << nestedChain;
                             break;
                         }
@@ -195,8 +189,8 @@ QStringList RS_Block::findNestedInsert(const QString& bName) {
     return bnChain;
 }
 
-std::ostream& operator << (std::ostream& os, const RS_Block& b) {
+std::ostream &operator<<(std::ostream &os, const RS_Block &b) {
     os << " name: " << b.getName().toLatin1().data() << "\n";
-    os << " entities: " << (RS_EntityContainer&)b << "\n";
+    os << " entities: " << (RS_EntityContainer &) b << "\n";
     return os;
 }
