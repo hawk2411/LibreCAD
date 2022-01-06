@@ -55,35 +55,35 @@ public:
      */
     enum Flags {
         /** Flag for Undoables. */
-        FlagUndone      = 1<<0,
+        FlagUndone = 1 << 0,
         /** Entity Visibility. */
-        FlagVisible     = 1<<1,
+        FlagVisible = 1 << 1,
         /** Entity attribute (e.g. color) is defined by layer. */
-        FlagByLayer     = 1<<2,
+        FlagByLayer = 1 << 2,
         /** Entity attribute (e.g. color) defined by block. */
-        FlagByBlock     = 1<<3,
+        FlagByBlock = 1 << 3,
         /** Layer frozen. */
-        FlagFrozen      = 1<<4,
+        FlagFrozen = 1 << 4,
         /** Layer frozen by default. */
-        FlagDefFrozen   = 1<<5,
+        FlagDefFrozen = 1 << 5,
         /** Layer locked. */
-        FlagLocked      = 1<<6,
+        FlagLocked = 1 << 6,
         /** Used for invalid pens. */
-        FlagInvalid     = 1<<7,
+        FlagInvalid = 1 << 7,
         /** Entity in current selection. */
-        FlagSelected    = 1<<8,
+        FlagSelected = 1 << 8,
         /** Polyline closed? */
-        FlagClosed      = 1<<9,
+        FlagClosed = 1 << 9,
         /** Flag for temporary entities (e.g. hatch) */
-        FlagTemp        = 1<<10,
+        FlagTemp = 1 << 10,
         /** Flag for processed entities (optcontour) */
-        FlagProcessed   = 1<<11,
+        FlagProcessed = 1 << 11,
         /** Startpoint selected */
-        FlagSelected1   = 1<<12,
+        FlagSelected1 = 1 << 12,
         /** Endpoint selected */
-        FlagSelected2   = 1<<13,
-                /** Entity is highlighted temporarily (as a user action feedback) */
-                FlagHighlighted = 1<<14
+        FlagSelected2 = 1 << 13,
+        /** Entity is highlighted temporarily (as a user action feedback) */
+        FlagHighlighted = 1 << 14
     };
 
     /**
@@ -314,8 +314,8 @@ public:
         ActionModifyMirrorNoSelect,
         ActionModifyMoveRotate,
         ActionModifyMoveRotateNoSelect,
-		ActionModifyRevertDirection,
-		ActionModifyRevertDirectionNoSelect,
+        ActionModifyRevertDirection,
+        ActionModifyRevertDirectionNoSelect,
         ActionModifyRotate2,
         ActionModifyRotate2NoSelect,
         ActionModifyEntity,
@@ -416,7 +416,7 @@ public:
     enum UpdateMode {
         NoUpdate,       /**< No automatic updates. */
         Update,         /**< Always update automatically when modified. */
-                PreviewUpdate   /**< Update automatically but only for previews (quick update) */
+        PreviewUpdate   /**< Update automatically but only for previews (quick update) */
     };
 
     /**
@@ -544,17 +544,17 @@ public:
         Up, Left, Right, Down
     };
 
-	enum SubWindowMode {
-		CurrentMode = -1, Maximized, Cascade, Tile, TileVertical, TileHorizontal
-	};
+    enum SubWindowMode {
+        CurrentMode = -1, Maximized, Cascade, Tile, TileVertical, TileHorizontal
+    };
 
-	enum TabShape {
-		AnyShape = -1, Rounded, Triangular
-	};
+    enum TabShape {
+        AnyShape = -1, Rounded, Triangular
+    };
 
-	enum TabPosition {
-		AnyPosition = -1, North, South, West, East
-	};
+    enum TabPosition {
+        AnyPosition = -1, North, South, West, East
+    };
 
     /**
      * Vertical alignments.
@@ -663,7 +663,7 @@ public:
         DotLineX2 = 5,        /**< Dotted line large. */
 
         DashLine = 6,         /**< Dashed line. */
-        DashLineTiny=7,       /**< Dashed line tiny */
+        DashLineTiny = 7,       /**< Dashed line tiny */
         DashLine2 = 8,        /**< Dashed line small. */
         DashLineX2 = 9,       /**< Dashed line large. */
 
@@ -687,7 +687,7 @@ public:
         BorderLine2 = 24,     /**< dash, dash, dot small. */
         BorderLineX2 = 25,    /**< dash, dash, dot large. */
 
-        LineTypeUnchanged=26      /**< Line type defined by block not entity */
+        LineTypeUnchanged = 26      /**< Line type defined by block not entity */
     };
 
     /**
@@ -794,7 +794,7 @@ public:
     /**
      * Wrapper for Qt
      */
-	static LineWidth intToLineWidth(int w);
+    static LineWidth intToLineWidth(int w);
 
     /**
      * Enum of cursor types.
@@ -828,7 +828,7 @@ public:
     /**
      * Wrapper for Qt.
      */
-	/*
+    /*
     static Qt::CursorShape rsToQtCursorType(RS2::CursorType t) {
         switch (t) {
         case ArrowCursor:
@@ -915,31 +915,31 @@ public:
         NPageFormat
     };
 
-        /**
-         * Items that can be put on a overlay, the items are rendered in this order. Best is to leave snapper as last so
-         * it always shows up
-         */
-        enum OverlayGraphics {
-                ActionPreviewEntity, // Action Entities
-                Snapper // Snapper
-        };
+    /**
+     * Items that can be put on a overlay, the items are rendered in this order. Best is to leave snapper as last so
+     * it always shows up
+     */
+    enum OverlayGraphics {
+        ActionPreviewEntity, // Action Entities
+        Snapper // Snapper
+    };
 
-        //Different re-draw methods to speed up rendering of the screen
-        enum RedrawMethod {
-                RedrawNone = 0,
-                RedrawGrid = 1,
-                RedrawOverlay = 2,
-                RedrawDrawing = 4,
-                RedrawAll = 0xffff
-        };
+    //Different re-draw methods to speed up rendering of the screen
+    enum RedrawMethod {
+        RedrawNone = 0,
+        RedrawGrid = 1,
+        RedrawOverlay = 2,
+        RedrawDrawing = 4,
+        RedrawAll = 0xffff
+    };
 
-        /**
-         * Text drawing direction.
-         */
-        enum TextLocaleDirection {
-            locLeftToRight,     /** Left to right **/
-            locRightToLeft      /** Right to Left **/
-        };
+    /**
+     * Text drawing direction.
+     */
+    enum TextLocaleDirection {
+        locLeftToRight,     /** Left to right **/
+        locRightToLeft      /** Right to Left **/
+    };
 
 };
 
