@@ -255,6 +255,8 @@ private:
     RS_LineData _lineData;
 
     void calcBorder();
+
+    bool calcCoordsInConstructionMode(RS_GraphicView *view, RS_Vector &startPoint, RS_Vector &endPoint, RS_Vector &direction);
 };
 
 #endif

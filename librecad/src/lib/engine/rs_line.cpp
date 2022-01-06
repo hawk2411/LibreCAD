@@ -375,7 +375,7 @@ RS_Vector RS_Line::prepareTrim(const RS_Vector &trimCoord,
     //searching for intersection in the direction of the closer end point
     auto dvp1 = vp1 - trimCoord;
     RS_VectorSolutions sol1;
-    for (const auto & sol : trimSol) {
+    for (const auto &sol: trimSol) {
         auto dvp2 = sol - trimCoord;
         if (RS_Vector::dotP(dvp1, dvp2) > RS_TOLERANCE) {
             sol1.push_back(sol);
@@ -595,13 +595,9 @@ void RS_Line::draw(RS_Painter *painter, RS_GraphicView *view, double &patternOff
         return;
     }
 
-    auto viewportRect = view->getViewRect();
     RS_VectorSolutions endPoints(0);
     endPoints.push_back(getStartpoint());
     endPoints.push_back(getEndpoint());
-
-    RS_EntityContainer ec(nullptr);
-    ec.addRectangle(viewportRect.minP(), viewportRect.maxP());
 
     if ((endPoints[0] - getStartpoint()).squared() >
         (endPoints[1] - getStartpoint()).squared()) {
@@ -613,39 +609,9 @@ void RS_Line::draw(RS_Painter *painter, RS_GraphicView *view, double &patternOff
     RS_Vector direction = pEnd - pStart;
 
     if (isConstruction(true) && direction.squared() > RS_TOLERANCE) {
-        //extend line on a construction layer to fill the whole view
-        RS_VectorSolutions vpIts;
-        for (auto p: ec) {
-            auto const sol = RS_Information::getIntersection(this, p, true);
-            for (auto const &vp: sol) {
-                if (vpIts.getClosestDistance(vp) <= RS_TOLERANCE * 10.)
-                    continue;
-                vpIts.push_back(vp);
-            }
+        if(!calcCoordsInConstructionMode(view, pStart, pEnd, direction) ) {
+            return;
         }
-
-        //draw construction lines up to viewport border
-        switch (vpIts.size()) {
-            case 2:
-                // no need to sort intersections
-                break;
-            case 3:
-            case 4: {
-                // will use the inner two points
-                size_t i{0};
-                for (size_t j = 0; j < vpIts.size(); ++j)
-                    if (viewportRect.inArea(vpIts.at(j), RS_TOLERANCE * 10.))
-                        std::swap(vpIts[j], vpIts[i++]);
-
-            }
-                break;
-            default:
-                //should not happen
-                return;
-        }
-        pStart = view->toGui(vpIts.get(0));
-        pEnd = view->toGui(vpIts.get(1));
-        direction = pEnd - pStart;
     }
 
     bool drawAsSelected = isSelected() && !(view->isPrinting() || view->isPrintPreview());
@@ -741,6 +707,51 @@ std::ostream &operator<<(std::ostream &os, const RS_Line &l) {
 void RS_Line::calcBorder() {
     _minV = RS_Vector::minimum(_lineData._startpoint, _lineData._endpoint);
     _maxV = RS_Vector::maximum(_lineData._startpoint, _lineData._endpoint);
+}
+
+bool RS_Line::calcCoordsInConstructionMode(RS_GraphicView *view, RS_Vector &startPoint, RS_Vector &endPoint,
+                                           RS_Vector &direction) {
+
+    RS_EntityContainer entityContainer(nullptr);
+    auto viewportRect = view->getViewRect();
+    entityContainer.addRectangle(viewportRect.minP(), viewportRect.maxP());
+
+    //extend line on a construction layer to fill the whole view
+    RS_VectorSolutions vpIts;
+    for (auto entity: entityContainer) {
+        auto const intersection = RS_Information::getIntersection(this, entity, true);
+        for (auto const &vector: intersection) {
+            if (vpIts.getClosestDistance(vector) <= RS_TOLERANCE * 10.) {
+                continue;
+            }
+            vpIts.push_back(vector);
+        }
+    }
+
+    //draw construction lines up to viewport border
+    switch (vpIts.size()) {
+        case 2:
+            // no need to sort intersections
+            break;
+        case 3:
+        case 4: {
+            // will use the inner two points
+            size_t i{0};
+            for (size_t j = 0; j < vpIts.size(); ++j)
+                if (viewportRect.inArea(vpIts.at(j), RS_TOLERANCE * 10.)) {
+                    std::swap(vpIts[j], vpIts[i++]);
+                }
+        }
+            break;
+        default:
+            //should not happen
+            return false;
+    }
+    startPoint = view->toGui(vpIts.get(0));
+    endPoint = view->toGui(vpIts.get(1));
+    direction = endPoint - startPoint;
+
+    return true;
 }
 
 
