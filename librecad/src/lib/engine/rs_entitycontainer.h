@@ -114,9 +114,6 @@ public:
 
     virtual void clear();
 
-    //virtual unsigned long int count() {
-    //	return count(false);
-    //}
     virtual bool isEmpty() const {
         return count() == 0;
     }

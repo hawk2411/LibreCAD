@@ -36,14 +36,14 @@
  * @param parent Parent of the document. Often that's NULL but
  *        for blocks it's the blocklist.
  */
-RS_Document::RS_Document(RS_EntityContainer* parent)
+RS_Document::RS_Document(RS_EntityContainer *parent)
         : RS_EntityContainer(parent), RS_Undo() {
 
     RS_DEBUG->print("RS_Document::RS_Document() ");
 
     filename = "";
     autosaveFilename = "Unnamed";
-	formatType = RS2::FormatUnknown;
+    formatType = RS2::FormatUnknown;
     setModified(false);
     RS_Color col(RS2::FlagByLayer);
     activePen = RS_Pen(col, RS2::WidthByLayer, RS2::LineByLayer);
@@ -54,8 +54,7 @@ RS_Document::RS_Document(RS_EntityContainer* parent)
 /**
  * Overwritten to set modified flag when undo cycle finished with undoable(s).
  */
-void RS_Document::endUndoCycle()
-{
+void RS_Document::endUndoCycle() {
     if (hasUndoable()) {
         setModified(true);
     }
