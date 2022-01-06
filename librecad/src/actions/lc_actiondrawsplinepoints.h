@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef LC_ACTIONDRAWSPLINEPOINTS_H
 #define LC_ACTIONDRAWSPLINEPOINTS_H
 
+#include <lc_splinepoints.h>
 #include "rs_previewactioninterface.h"
 #include "rs_actiondrawspline.h"
 
@@ -74,10 +75,26 @@ public:
 	void setDegree(int /*deg*/) override{}
 
 private:
+    struct Points {
+        /**
+        * Spline data defined so far.
+        */
+        LC_SplinePointsData _data;
+
+        /**
+        * Spline used.
+        */
+        std::unique_ptr<LC_SplinePoints> _spline;
+
+        /**
+        * Point history (for undo)
+        */
+        std::vector<RS_Vector> _undoBuffer;
+    };
+
 	void redo();
 
-	struct Points;
-	std::unique_ptr<Points> pPoints;
+	std::unique_ptr<Points> _points;
 
 };
 
