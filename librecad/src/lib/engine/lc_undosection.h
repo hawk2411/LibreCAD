@@ -27,6 +27,7 @@
 #define LC_UNDOSECTION_H
 
 class RS_Document;
+
 class RS_Undoable;
 
 /** \brief This class is a wrapper for RS_Undo methods
@@ -40,17 +41,17 @@ class RS_Undoable;
  * This way the balance is guaranteed.
  * It simplifies undo handling specially in RS_Creation and RS_Modification classes
 */
-class LC_UndoSection
-{
+class LC_UndoSection {
 public:
-    LC_UndoSection(RS_Document * doc, const bool handleUndo = true);
+    explicit LC_UndoSection(RS_Document *doc, bool handleUndo = true);
+
     ~LC_UndoSection();
 
-    void addUndoable(RS_Undoable * undoable);
+    void addUndoable(RS_Undoable *undoable);
 
 private:
-    RS_Document *document {nullptr};
-    bool valid {true};
+    RS_Document *_document{nullptr};
+    bool _valid{true};
 };
 
 #endif // LC_UNDOSECTION_H

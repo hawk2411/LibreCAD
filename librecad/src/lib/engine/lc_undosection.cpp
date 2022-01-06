@@ -26,25 +26,25 @@
 #include "lc_undosection.h"
 #include "rs_document.h"
 
-LC_UndoSection::LC_UndoSection(RS_Document *doc, const bool handleUndo /*= true*/) :
-    document( doc),
-    valid( handleUndo && nullptr != doc)
-{
-    if (valid) {
-        document->startUndoCycle();
+LC_UndoSection::LC_UndoSection(RS_Document *doc, bool handleUndo) :
+        _document(doc),
+        _valid(handleUndo) {
+    if (_valid && (_document != nullptr)) {
+        _document->startUndoCycle();
+    } else {
+        _valid = false;
+    }
+
+}
+
+LC_UndoSection::~LC_UndoSection() {
+    if (_valid) {
+        _document->endUndoCycle();
     }
 }
 
-LC_UndoSection::~LC_UndoSection()
-{
-    if (valid) {
-        document->endUndoCycle();
-    }
-}
-
-void LC_UndoSection::addUndoable(RS_Undoable *undoable)
-{
-    if (valid) {
-        document->addUndoable( undoable);
+void LC_UndoSection::addUndoable(RS_Undoable *undoable) {
+    if (_valid) {
+        _document->addUndoable(undoable);
     }
 }
