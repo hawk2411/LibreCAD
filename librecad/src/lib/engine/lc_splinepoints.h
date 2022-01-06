@@ -234,11 +234,6 @@ public:
 	//void trimEndpoint(const RS_Vector& pos) override;
 
     LC_SplinePoints* cut(const RS_Vector& pos);
-    //! \{ getBoundingRect find bounding rectangle for the bezier segment
-    //! \param x1,c1,x2 first/center/last control points
-    //! \return rectangle as a polygon
-    static QPolygonF getBoundingRect(const RS_Vector& x1, const RS_Vector& c1, const RS_Vector& x2);
-    //! \}
 };
 
 #endif
