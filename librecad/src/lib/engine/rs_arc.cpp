@@ -1001,7 +1001,7 @@ void RS_Arc::drawVisible(RS_Painter *painter, RS_GraphicView *view,
         }
 
         total = t2;
-        condition = fabs(total - a1)
+        condition = fabs(total - a1);
     }
 }
 

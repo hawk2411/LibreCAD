@@ -44,7 +44,7 @@ public:
     /**
      * Constructor.
      */
-    RS_AtomicEntity(RS_EntityContainer *parent = nullptr);
+    explicit RS_AtomicEntity(RS_EntityContainer *parent = nullptr);
 
     /**
      * @return false because entities made from subclasses are
@@ -118,16 +118,6 @@ public:
     virtual void setEndpointSelected(bool select);
 
     virtual bool isTangent(const RS_CircleData & /* circleData */) const;
-
-    /**
-     * @return True if the entities startpoint is selected.
-     */
-    bool isStartpointSelected() const;
-
-    /**
-     * @return True if the entities endpoint is selected.
-     */
-    bool isEndpointSelected() const;
 
     void revertDirection() override;
 

@@ -130,20 +130,6 @@ bool RS_AtomicEntity::isTangent(const RS_CircleData & /* circleData */) const {
     return false;
 }
 
-/**
- * @return True if the entities startpoint is selected.
- */
-bool RS_AtomicEntity::isStartpointSelected() const {
-    return getFlag(RS2::FlagSelected1);
-}
-
-/**
- * @return True if the entities endpoint is selected.
- */
-bool RS_AtomicEntity::isEndpointSelected() const {
-    return getFlag(RS2::FlagSelected2);
-}
-
 void RS_AtomicEntity::revertDirection() {}
 
 /**
