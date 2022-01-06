@@ -353,7 +353,7 @@ void RS_Polyline::setEndpoint(RS_Vector const& v) {
 void RS_Polyline::setLayer(const QString& name) {
     RS_Entity::setLayer(name);
     // set layer for sub-entities
-    for (auto *e : entities) {
+    for (auto *e : _entities) {
         e->setLayer(_layer);
     }
 }
@@ -361,7 +361,7 @@ void RS_Polyline::setLayer(const QString& name) {
 void RS_Polyline::setLayer(RS_Layer* l) {
     _layer = l;
     // set layer for sub-entities
-    for (auto *e : entities) {
+    for (auto *e : _entities) {
         e->setLayer(_layer);
     }
 }
@@ -402,7 +402,7 @@ void RS_Polyline::setClosed(bool cl) {
  * Sets the polylines start and endpoint to match the first and last vertex.
  */
 void RS_Polyline::updateEndpoints() {
-        RS_Entity* e1 = firstEntity();
+        RS_Entity* e1 = firstEntity(RS2::ResolveNone);
 		if (e1 && e1->isAtomic()) {
 				RS_Vector const& v = e1->getStartpoint();
                 setStartpoint(v);
@@ -410,7 +410,7 @@ void RS_Polyline::updateEndpoints() {
 
 		RS_Entity const* e2 = last();
         if (isClosed()) {
-                e2 = prevEntity();
+                e2 = prevEntity(RS2::ResolveNone);
         }
 		if (e2 && e2->isAtomic()) {
 				RS_Vector const& v = e2->getEndpoint();

@@ -95,7 +95,7 @@ void RS_ActionModifyRound::trigger() {
         setStatus(SetEntity1);
 
 		GetDialogFactory()->updateSelectionWidget(
-					container->countSelected(),
+					container->countSelected(true, {}),
 					container->totalSelectedLength());
     }
 }

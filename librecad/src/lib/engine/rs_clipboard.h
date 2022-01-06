@@ -89,11 +89,11 @@ public:
 		return graphic.entityAt(i);
 	}
 	RS_Entity* firstEntity() {
-		return graphic.firstEntity();
+		return graphic.firstEntity( RS2::ResolveNone);
 	}
 	
 	RS_Entity* nextEntity() {
-		return graphic.nextEntity();
+		return graphic.nextEntity(RS2::ResolveNone);
 	}
 
 	RS_Graphic* getGraphic() {

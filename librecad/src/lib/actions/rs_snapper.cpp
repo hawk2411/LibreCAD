@@ -572,7 +572,7 @@ RS_Entity *RS_Snapper::catchEntity(QMouseEvent *e, const EntityTypeList &enTypeL
 //            }
             }
             if (ec.count() > 0) {
-                ec.getDistanceToPoint(coord, &pten, RS2::ResolveNone);
+                ec.getDistanceToPoint(coord, &pten, RS2::ResolveNone, RS_MAXDOUBLE);
                 return pten;
             }
         }

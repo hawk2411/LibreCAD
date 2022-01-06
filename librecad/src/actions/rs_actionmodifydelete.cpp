@@ -60,7 +60,7 @@ void RS_ActionModifyDelete::trigger() {
     finish(false);
 
 	GetDialogFactory()->updateSelectionWidget(
-				container->countSelected(), container->totalSelectedLength());
+				container->countSelected(true, {}), container->totalSelectedLength());
 }
 
 

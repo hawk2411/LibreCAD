@@ -236,7 +236,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
 
                 RS_Selection s((RS_EntityContainer &) *document, view);
                 s.selectAll(false);
-                GetDialogFactory()->updateSelectionWidget(document->countSelected(), document->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(document->countSelected(true, {}), document->totalSelectedLength());
             }
             break;
         case RS2::ActionEditUndo:
@@ -246,7 +246,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionEditUndo(false, *document, *view);
             break;
         case RS2::ActionEditCut:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionEditCutNoSelect);
                 break;
             }
@@ -255,7 +255,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionEditCopy(false, *document, *view);
             break;
         case RS2::ActionEditCopy:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionEditCopyNoSelect);
                 break;
             }
@@ -268,7 +268,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             break;
         case RS2::ActionOrderBottom:
             orderType = RS2::ActionOrderBottom;
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionOrderNoSelect);
             } else {
                 action_interface = new RS_ActionOrder(*document, *view, orderType);
@@ -284,7 +284,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             break;
         case RS2::ActionOrderTop:
             orderType = RS2::ActionOrderTop;
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionOrderNoSelect);
             } else {
                 action_interface = new RS_ActionOrder(*document, *view, orderType);
@@ -533,7 +533,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionDrawText(*document, *view);
             break;
         case RS2::ActionDrawHatch:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionDrawHatchNoSelect);
                 break;
             }
@@ -575,7 +575,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             // Modifying actions:
             //
         case RS2::ActionModifyAttributes:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionModifyAttributesNoSelect);
                 break;
             }
@@ -596,7 +596,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionModifyDeleteFree(*document, *view);
             break;
         case RS2::ActionModifyMove:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionModifyMoveNoSelect);
                 break;
             }
@@ -605,7 +605,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionModifyMove(*document, *view);
             break;
         case RS2::ActionModifyRevertDirection:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view,
                                                        RS2::ActionModifyRevertDirectionNoSelect);
                 break;
@@ -615,7 +615,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionModifyRevertDirection(*document, *view);
             break;
         case RS2::ActionModifyRotate:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionModifyRotateNoSelect);
                 break;
             }
@@ -624,7 +624,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionModifyRotate(*document, *view);
             break;
         case RS2::ActionModifyScale:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionModifyScaleNoSelect);
                 break;
             }
@@ -633,7 +633,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionModifyScale(*document, *view);
             break;
         case RS2::ActionModifyMirror:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionModifyMirrorNoSelect);
                 break;
             }
@@ -642,7 +642,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionModifyMirror(*document, *view);
             break;
         case RS2::ActionModifyMoveRotate:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionModifyMoveRotateNoSelect);
                 break;
             }
@@ -651,7 +651,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionModifyMoveRotate(*document, *view);
             break;
         case RS2::ActionModifyRotate2:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionModifyRotate2NoSelect);
                 break;
             }
@@ -775,7 +775,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionInfoAngle(*document, *view);
             break;
         case RS2::ActionInfoTotalLength:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionInfoTotalLengthNoSelect);
                 break;
             }
@@ -852,7 +852,7 @@ RS_ActionInterface *QG_ActionHandler::setCurrentAction(RS2::ActionType id) {
             action_interface = new RS_ActionBlocksToggleView(*document, *view);
             break;
         case RS2::ActionBlocksCreate:
-            if (!document->countSelected()) {
+            if (!document->countSelected(true, {})) {
                 action_interface = new RS_ActionSelect(this, *document, *view, RS2::ActionBlocksCreateNoSelect);
                 break;
             }

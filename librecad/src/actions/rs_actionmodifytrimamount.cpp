@@ -81,7 +81,7 @@ void RS_ActionModifyTrimAmount::trigger() {
 		trimEntity = nullptr;
         setStatus(ChooseTrimEntity);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
     }
 }
 

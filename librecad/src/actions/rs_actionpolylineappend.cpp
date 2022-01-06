@@ -134,8 +134,8 @@ void RS_ActionPolylineAppend::mouseReleaseEvent(QMouseEvent* e) {
                         } else {
 				snapPoint(e);
 				RS_Polyline* op=static_cast<RS_Polyline*>(originalPolyline);
-				RS_Entity* entFirst = op->firstEntity();
-				RS_Entity* entLast = op->lastEntity();
+				RS_Entity* entFirst = op->firstEntity(RS2::ResolveNone);
+				RS_Entity* entLast = op->lastEntity(RS2::ResolveNone);
 				double dist = graphicView->toGraphDX(snapRange)*0.9;
 				RS_Entity* nearestSegment = originalPolyline->getNearestEntity( RS_Vector(graphicView->toGraphX(e->x()),
 									graphicView->toGraphY(e->y())), &dist, RS2::ResolveNone);

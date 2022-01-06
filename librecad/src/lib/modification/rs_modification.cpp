@@ -783,7 +783,7 @@ bool RS_Modification::splitPolyline(RS_Polyline& polyline,
         return false;
     }
 
-    RS_Entity* firstEntity = polyline.firstEntity();
+    RS_Entity* firstEntity = polyline.firstEntity(RS2::ResolveNone);
     RS_Vector firstPoint(false);
     if (firstEntity->rtti()==RS2::EntityLine) {
         firstPoint = ((RS_Line*)firstEntity)->getStartpoint();
@@ -892,7 +892,7 @@ RS_Polyline* RS_Modification::addPolylineNode(RS_Polyline& polyline,
 
     // copy polyline and add new node:
     bool first = true;
-    RS_Entity* lastEntity = polyline.lastEntity();
+    RS_Entity* lastEntity = polyline.lastEntity(RS2::ResolveNone);
 	for(auto e: polyline){
 
         if (e->isAtomic()) {
@@ -998,7 +998,7 @@ RS_Polyline* RS_Modification::deletePolylineNode(RS_Polyline& polyline,
 
     // check if the polyline is no longer there after deleting the node:
     if (polyline.count()==1) {
-        RS_Entity* e = polyline.firstEntity();
+        RS_Entity* e = polyline.firstEntity(RS2::ResolveNone);
         if (e && e->isAtomic()) {
             RS_AtomicEntity* ae = (RS_AtomicEntity*)e;
             if (node.distanceTo(ae->getStartpoint())<1.0e-6 ||
@@ -1027,7 +1027,7 @@ RS_Polyline* RS_Modification::deletePolylineNode(RS_Polyline& polyline,
     // copy polyline and drop deleted node:
     bool first = true;
     bool lastDropped = false;
-    RS_Entity* lastEntity = polyline.lastEntity();
+    RS_Entity* lastEntity = polyline.lastEntity(RS2::ResolveNone);
 	for(auto e: polyline){
 
         if (e->isAtomic()) {
@@ -1175,16 +1175,16 @@ RS_Polyline* RS_Modification::deletePolylineNodesBetween(RS_Polyline& polyline,
         bool found = false;
         double length1 = 0.0;
         double length2 = 0.0;
-        RS_Entity* e=polyline.firstEntity();
+        RS_Entity* e=polyline.firstEntity(RS2::ResolveNone);
 
         if (startpointInvolved) {
             if (e->isAtomic()) {
                 RS_AtomicEntity* ae = (RS_AtomicEntity*)e;
                 length1+=ae->getLength();
             }
-            e = polyline.nextEntity();
+            e = polyline.nextEntity(RS2::ResolveNone);
         }
-        for (; e; e=polyline.nextEntity()) {
+        for (; e; e=polyline.nextEntity(RS2::ResolveNone)) {
 
             if (e->isAtomic()) {
                 RS_AtomicEntity* ae = (RS_AtomicEntity*)e;
@@ -1225,7 +1225,7 @@ RS_Polyline* RS_Modification::deletePolylineNodesBetween(RS_Polyline& polyline,
     bool removing = deleteStart;
     bool done = false;
     bool nextIsStraight = false;
-    RS_Entity* lastEntity = polyline.lastEntity();
+    RS_Entity* lastEntity = polyline.lastEntity(RS2::ResolveNone);
     int i=0;
 	double bulge = 0.0;
 	for(auto e: polyline){
@@ -1412,7 +1412,7 @@ RS_Polyline* RS_Modification::polylineTrim(RS_Polyline& polyline,
         bool first = true;
         bool removing = false;
         bool nextIsStraight = false;
-		RS_Entity* lastEntity = polyline.lastEntity();
+		RS_Entity* lastEntity = polyline.lastEntity(RS2::ResolveNone);
 		for(auto e: polyline){
 
             if (e->isAtomic()) {
@@ -1486,7 +1486,7 @@ RS_Polyline* RS_Modification::polylineTrim(RS_Polyline& polyline,
         //bool first = true;
         bool removing = true;
         bool nextIsStraight = false;
-		RS_Entity* lastEntity = polyline.lastEntity();
+		RS_Entity* lastEntity = polyline.lastEntity(RS2::ResolveNone);
 		for(auto e: polyline){
 
             if (e->isAtomic()) {

@@ -66,7 +66,7 @@ RS_Entity* RS_Leader::clone() const{
 void RS_Leader::update() {
 
     // find and delete arrow:
-	for(auto e: entities){
+	for(auto e: _entities){
         if (e->rtti()==RS2::EntitySolid) {
             removeEntity(e);
             break;
@@ -77,7 +77,7 @@ void RS_Leader::update() {
                 return;
         }
 
-    RS_Entity* fe = firstEntity();
+    RS_Entity* fe = firstEntity(RS2::ResolveNone);
     if (fe && fe->isAtomic()) {
         RS_Vector p1 = ((RS_AtomicEntity*)fe)->getStartpoint();
         RS_Vector p2 = ((RS_AtomicEntity*)fe)->getEndpoint();

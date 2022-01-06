@@ -60,7 +60,7 @@ void RS_ActionModifyRotate2::trigger() {
 
     finish(false);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
 }
 
 void RS_ActionModifyRotate2::mouseMoveEvent(QMouseEvent* e) {

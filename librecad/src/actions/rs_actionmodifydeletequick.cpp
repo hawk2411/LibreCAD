@@ -66,7 +66,7 @@ void RS_ActionModifyDeleteQuick::trigger() {
             }
         }
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
     } else {
         RS_DEBUG->print("RS_ActionModifyDeleteQuick::mousePressEvent:"
                         " Entity is NULL\n");

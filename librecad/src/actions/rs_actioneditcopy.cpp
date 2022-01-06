@@ -67,7 +67,7 @@ void RS_ActionEditCopy::trigger() {
     finish(false);
     graphicView->killSelectActions();
     //init(getStatus()-1);
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
 }
 
 void RS_ActionEditCopy::mouseMoveEvent(QMouseEvent* e) {

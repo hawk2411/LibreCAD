@@ -73,7 +73,7 @@ void RS_ActionEditUndo::trigger()
     document->updateInserts();
     graphicView->redraw(RS2::RedrawDrawing);
     finish(false);
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(),
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),
                                             container->totalSelectedLength());
 }
 // EOF

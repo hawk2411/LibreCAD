@@ -183,7 +183,7 @@ void RS_Preview::draw(RS_Painter* painter, RS_GraphicView* view,
         return;
     }
 
-    foreach (auto e, entities)
+    foreach (auto e, _entities)
     {
         e->draw(painter, view, patternOffset);
     }

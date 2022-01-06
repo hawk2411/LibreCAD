@@ -53,14 +53,14 @@ RS_ActionModifyOffset::~RS_ActionModifyOffset() = default;
 void RS_ActionModifyOffset::init(int status) {
     RS_ActionInterface::init(status);
     //finish, if nothing selected
-    if(container->countSelected()==0) finish();
+    if(container->countSelected(true, {})==0) finish();
 
 }
 
 void RS_ActionModifyOffset::trigger() {
     RS_Modification m(*container, graphicView);
 	m.offset(*data);
-	GetDialogFactory()->updateSelectionWidget(container->countSelected(),
+	GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),
 											container->totalSelectedLength());
 	finish(false);
 }

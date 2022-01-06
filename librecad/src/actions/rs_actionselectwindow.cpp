@@ -80,7 +80,7 @@ void RS_ActionSelectWindow::trigger() {
             RS_Selection s(*container, graphicView);
 			s.selectWindow(pPoints->v1, pPoints->v2, select, cross);
 
-            GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+            GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
 
             init();
         }

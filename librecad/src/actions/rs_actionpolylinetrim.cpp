@@ -67,7 +67,7 @@ void RS_ActionPolylineTrim::trigger() {
                 Segment1 = Segment2 = NULL;
                 setStatus(SetSegment1);
 
-                GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
         graphicView->redraw();

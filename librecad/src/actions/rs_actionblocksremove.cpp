@@ -109,7 +109,7 @@ void RS_ActionBlocksRemove::trigger() {
     bl->activate(nullptr);
 
 	finish(false);
-	GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+	GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
 }
 
 

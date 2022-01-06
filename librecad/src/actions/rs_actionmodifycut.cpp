@@ -67,7 +67,7 @@ void RS_ActionModifyCut::trigger() {
 		*cutCoord = RS_Vector(false);
         setStatus(ChooseCutEntity);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
     }
 }
 

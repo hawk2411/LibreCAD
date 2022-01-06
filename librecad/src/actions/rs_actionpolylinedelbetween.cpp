@@ -78,7 +78,7 @@ void RS_ActionPolylineDelBetween::trigger() {
 				pPoints->nodePoint1 = pPoints->nodePoint2 = RS_Vector(false);
                 setStatus(SetNodePoint1);
 
-                GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
                 graphicView->redraw();

@@ -87,7 +87,7 @@ bool RS_Hatch::validate() {
         bool ret = true;
 
     // loops:
-		for(auto l: entities){
+		for(auto l: _entities){
 
         if (l->rtti()==RS2::EntityContainer) {
             RS_EntityContainer* loop = (RS_EntityContainer*)l;
@@ -359,7 +359,7 @@ void RS_Hatch::update() {
         // getting all intersections of this pattern line with the contour:
 		QList<RS_Vector> is;
 
-		for(auto loop: entities){
+		for(auto loop: _entities){
 
             if (loop->isContainer()) {
 				for(auto p: * static_cast<RS_EntityContainer*>(loop)){
@@ -536,7 +536,7 @@ void RS_Hatch::update() {
  */
 void RS_Hatch::activateContour(bool on) {
         RS_DEBUG->print("RS_Hatch::activateContour: %d", (int)on);
-		for(auto e: entities){
+		for(auto e: _entities){
         if (!e->isUndone()) {
             if (!e->getFlag(RS2::FlagTemp)) {
                                 RS_DEBUG->print("RS_Hatch::activateContour: set visible");
@@ -560,7 +560,7 @@ void RS_Hatch::activateContour(bool on) {
 void RS_Hatch::draw(RS_Painter* painter, RS_GraphicView* view, double& /*patternOffset*/) {
 
     if (!data.solid) {
-        foreach (auto se, entities){
+        foreach (auto se, _entities){
 
             view->drawEntity(painter,se);
         }
@@ -575,7 +575,7 @@ void RS_Hatch::draw(RS_Painter* painter, RS_GraphicView* view, double& /*pattern
 
     // loops:
     if (needOptimization==true) {
-        foreach (auto l, entities){
+        foreach (auto l, _entities){
 
             if (l->rtti()==RS2::EntityContainer) {
                 RS_EntityContainer* loop = (RS_EntityContainer*)l;
@@ -587,7 +587,7 @@ void RS_Hatch::draw(RS_Painter* painter, RS_GraphicView* view, double& /*pattern
     }
 
     // loops:
-    foreach (auto l, entities){
+    foreach (auto l, _entities){
         l->setLayer(getLayer());
 
         if (l->rtti()==RS2::EntityContainer) {
@@ -725,7 +725,7 @@ double RS_Hatch::getTotalArea() {
     double totalArea=0.;
 
     // loops:
-	for(auto l: entities){
+	for(auto l: _entities){
 
         if (l!=hatch && l->rtti()==RS2::EntityContainer) {
             totalArea += l->areaLineIntegral();

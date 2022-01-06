@@ -51,7 +51,7 @@ void RS_ActionSelectContour::trigger() {
             RS_Selection s(*container, graphicView);
             s.selectContour(en);
 
-			GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+			GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
 		} else
 			GetDialogFactory()->commandMessage(
 						tr("Entity must be an Atomic Entity."));

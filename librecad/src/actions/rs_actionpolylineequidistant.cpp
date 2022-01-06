@@ -213,7 +213,7 @@ bool RS_ActionPolylineEquidistant::makeContour() {
                 }
                 //check if the entity are reverted
                 if (fabs(remainder(prevEntity->getStartpoint().angleTo(prevEntity->getEndpoint())- startAngle, 2.*M_PI)) > 0.785){
-                    prevEntity = newPolyline->lastEntity();
+                    prevEntity = newPolyline->lastEntity(RS2::ResolveNone);
                     RS_Vector v0 = calculateIntersection(prevEntity, currEntity);
                     if (prevEntity->rtti()==RS2::EntityArc) {
                         ((RS_Arc*)prevEntity)->setAngle2(arcFirst.getCenter().angleTo(v0));
@@ -289,7 +289,7 @@ void RS_ActionPolylineEquidistant::trigger() {
                 bRightSide = false;
                 setStatus(ChooseEntity);
 
-                GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
                 graphicView->redraw();

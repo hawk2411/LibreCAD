@@ -63,7 +63,7 @@ void RS_ActionModifyEntity::trigger() {
 
                 document->endUndoCycle();
             }
-            GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+            GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
         } else {
             delete clone;
         }

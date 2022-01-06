@@ -77,7 +77,7 @@ void RS_ActionSelectIntersected::trigger() {
             RS_Selection s(*container, graphicView);
 			s.selectIntersected(pPoints->v1, pPoints->v2, select);
 
-			GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+			GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
 
             init();
         }

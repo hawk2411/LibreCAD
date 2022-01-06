@@ -65,7 +65,7 @@ void RS_ActionPolylineSegment::init(int status) {
 			convertPolyline(targetEntity, true);
 			GetDialogFactory()->commandMessage(tr("Polyline created"));
 			graphicView->redraw();
-			GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+			GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
 			finish(false);
 			return;
 		}
@@ -268,7 +268,7 @@ void RS_ActionPolylineSegment::trigger() {
 		targetEntity = nullptr;
         setStatus(ChooseEntity);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
     }
 ////////////////////////////////////////2006/06/15
                 graphicView->redraw();

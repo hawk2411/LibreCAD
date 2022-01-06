@@ -262,7 +262,7 @@ void RS_ActionDefault::mousePressEvent(QMouseEvent* e) {
             m.move(data);
             setStatus(Neutral);
             GetDialogFactory()->updateSelectionWidget(
-                        container->countSelected(),container->totalSelectedLength());
+                        container->countSelected(true, {}),container->totalSelectedLength());
             deleteSnapper();
         }
             break;
@@ -281,7 +281,7 @@ void RS_ActionDefault::mousePressEvent(QMouseEvent* e) {
             //container->moveSelectedRef(v1, v2-v2);
             setStatus(Neutral);
             GetDialogFactory()->updateSelectionWidget(
-                        container->countSelected(),container->totalSelectedLength());
+                        container->countSelected(true, {}),container->totalSelectedLength());
         }
             break;
 
@@ -314,7 +314,7 @@ void RS_ActionDefault::mouseReleaseEvent(QMouseEvent* e) {
                 s.selectSingle(en);
 
                 GetDialogFactory()->updateSelectionWidget(
-                            container->countSelected(),container->totalSelectedLength());
+                            container->countSelected(true, {}),container->totalSelectedLength());
 
                 e->accept();
 
@@ -339,7 +339,7 @@ void RS_ActionDefault::mouseReleaseEvent(QMouseEvent* e) {
 			s.selectWindow(pPoints->v1, pPoints->v2, select, cross);
 
             GetDialogFactory()->updateSelectionWidget(
-                        container->countSelected(),container->totalSelectedLength());
+                        container->countSelected(true, {}),container->totalSelectedLength());
 
             setStatus(Neutral);
             e->accept();

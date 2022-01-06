@@ -2411,8 +2411,8 @@ void RS_FilterJWW::writeEntityContainer(DL_WriterA& dw, RS_EntityContainer* con,
 
         RS_Block* blk = new RS_Block(graphic, blkdata);
 
-		for (RS_Entity* e1 = con->firstEntity(); e1 ;
-                        e1 = con->nextEntity() ) {
+		for (RS_Entity* e1 = con->firstEntity(RS2::ResolveNone); e1 ;
+                        e1 = con->nextEntity(RS2::ResolveNone) ) {
                 blk->addEntity(e1);
         }
         writeBlock(dw, blk);

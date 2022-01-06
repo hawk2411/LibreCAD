@@ -865,7 +865,7 @@ void QC_ApplicationWindow::slotKillAllActions() {
         RS_Selection s((RS_EntityContainer &) *m->getDocument(), gv);
         s.selectAll(false);
         GetDialogFactory()->updateSelectionWidget(
-                m->getDocument()->countSelected(),
+                m->getDocument()->countSelected(true, {}),
                 m->getDocument()->totalSelectedLength()
         );
 

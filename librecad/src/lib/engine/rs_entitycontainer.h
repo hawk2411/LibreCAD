@@ -40,7 +40,7 @@
 class RS_EntityContainer : public RS_Entity {
 public:
 
-    RS_EntityContainer(RS_EntityContainer *parent = nullptr, bool owner = true);
+    explicit RS_EntityContainer(RS_EntityContainer *parent = nullptr, bool owner = true);
 
     //RS_EntityContainer(const RS_EntityContainer& ec);
     ~RS_EntityContainer() override;
@@ -76,18 +76,16 @@ public:
 
     void setVisible(bool v) override;
 
-    bool setSelected(bool select = true) override;
+    bool setSelected(bool select) override;
 
     bool toggleSelected() override;
 
     virtual void selectWindow(RS_Vector v1, RS_Vector v2,
-                              bool select = true, bool cross = false);
+                              bool select, bool cross);
 
     virtual void addEntity(RS_Entity *entity);
 
     virtual void appendEntity(RS_Entity *entity);
-
-    virtual void prependEntity(RS_Entity *entity);
 
     virtual void moveEntity(int index, QList<RS_Entity *> &entList);
 
@@ -102,20 +100,17 @@ public:
     //!
     void addRectangle(RS_Vector const &v0, RS_Vector const &v1);
 
-    virtual RS_Entity *firstEntity(RS2::ResolveLevel level = RS2::ResolveNone);
+    virtual RS_Entity *firstEntity(RS2::ResolveLevel level);
 
-    virtual RS_Entity *lastEntity(RS2::ResolveLevel level = RS2::ResolveNone);
+    virtual RS_Entity *lastEntity(RS2::ResolveLevel level);
 
-    virtual RS_Entity *nextEntity(RS2::ResolveLevel level = RS2::ResolveNone);
+    virtual RS_Entity *nextEntity(RS2::ResolveLevel level);
 
-    virtual RS_Entity *prevEntity(RS2::ResolveLevel level = RS2::ResolveNone);
+    virtual RS_Entity *prevEntity(RS2::ResolveLevel level);
 
     virtual RS_Entity *entityAt(int index);
 
-    virtual void setEntityAt(int index, RS_Entity *en);
-
-//RLZ unused	virtual int entityAt();
-    virtual int findEntity(RS_Entity const *const entity);
+    virtual int findEntity(const RS_Entity *entity);
 
     virtual void clear();
 
@@ -134,7 +129,7 @@ public:
     * @param deep count sub-containers, if true
     * @param types if is not empty, only counts by types listed
     */
-    virtual unsigned countSelected(bool deep = true, std::initializer_list<RS2::EntityType> const &types = {});
+    virtual unsigned countSelected(bool deep, const std::initializer_list<RS2::EntityType> &types);
 
     virtual double totalSelectedLength();
 
@@ -143,7 +138,7 @@ public:
      * and additions. By default this is turned on.
      */
     virtual void setAutoUpdateBorders(bool enable) {
-        autoUpdateBorders = enable;
+        _autoUpdateBorders = enable;
     }
 
     virtual void adjustBorders(RS_Entity *entity);
@@ -164,7 +159,7 @@ public:
                                const QString &newName);
 
     RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                 double *dist = nullptr) const override;
+                                 double *dist) const override;
 
     RS_Vector getNearestEndpoint(const RS_Vector &coord,
                                  double *dist, RS_Entity **pEntity) const;
@@ -174,21 +169,20 @@ public:
                                 RS2::ResolveLevel level = RS2::ResolveAll) const;
 
     RS_Vector getNearestPointOnEntity(const RS_Vector &coord,
-                                      bool onEntity = true,
-                                      double *dist = nullptr,
-                                      RS_Entity **entity = nullptr) const override;
+                                      bool onEntity,
+                                      double *dist,
+                                      RS_Entity **entity) const override;
 
     RS_Vector getNearestCenter(const RS_Vector &coord,
-                               double *dist = nullptr) const override;
+                               double *dist) const override;
 
     RS_Vector getNearestMiddle(const RS_Vector &coord,
-                               double *dist = nullptr,
-                               int middlePoints = 1
-    ) const override;
+                               double *dist,
+                               int middlePoints) const override;
 
     RS_Vector getNearestDist(double distance,
                              const RS_Vector &coord,
-                             double *dist = nullptr) const override;
+                             double *dist ) const override;
 
     RS_Vector getNearestIntersection(const RS_Vector &coord,
                                      double *dist = nullptr);
@@ -198,15 +192,15 @@ public:
                                             double *dist);
 
     RS_Vector getNearestRef(const RS_Vector &coord,
-                            double *dist = nullptr) const override;
+                            double *dist) const override;
 
     RS_Vector getNearestSelectedRef(const RS_Vector &coord,
-                                    double *dist = nullptr) const override;
+                                    double *dist) const override;
 
     double getDistanceToPoint(const RS_Vector &coord,
                               RS_Entity **entity,
-                              RS2::ResolveLevel level = RS2::ResolveNone,
-                              double solidDist = RS_MAXDOUBLE) const override;
+                              RS2::ResolveLevel level,
+                              double solidDist) const override;
 
     virtual bool optimizeContours();
 
@@ -237,9 +231,9 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, RS_EntityContainer &ec);
 
-    bool isOwner() const { return autoDelete; }
+    bool isOwner() const { return _autoDelete; }
 
-    void setOwner(bool owner) { autoDelete = owner; }
+    void setOwner(bool owner) { _autoDelete = owner; }
 
     /**
      * @brief areaLineIntegral, line integral for contour area calculation by Green's Theorem
@@ -247,7 +241,7 @@ public:
      * @return line integral \oint x dy along the entity
      * returns absolute value
      */
-    virtual double areaLineIntegral() const override;
+    double areaLineIntegral() const override;
 
     /**
 	 * @brief ignoreForModification ignore this entity for entity catch for certain actions
@@ -281,26 +275,28 @@ public:
 protected:
 
     /** entities in the container */
-    QList<RS_Entity *> entities;
+    QList<RS_Entity *> _entities;
 
     /** sub container used only temporarily for iteration. */
-    RS_EntityContainer *subContainer;
+    RS_EntityContainer *_subContainer;
 
     /**
      * Automatically update the borders of the container when entities
      * are added or removed.
      */
-    static bool autoUpdateBorders;
+    static bool _autoUpdateBorders;
 
 private:
+    static bool hasEntitiesInArea(RS_EntityContainer *entityContainer, const RS_Vector &vec1, const RS_Vector &vec2);
     /**
      * @brief ignoredSnap whether snapping is ignored
      * @return true when entity of this container won't be considered for snapping points
      */
     bool ignoredSnap() const;
 
-    int entIdx;
-    bool autoDelete;
+    int _entIdx;
+    bool _autoDelete;
+
 };
 
 #endif

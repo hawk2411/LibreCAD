@@ -69,7 +69,7 @@ void RS_ActionPolylineDel::trigger() {
 
 				*delPoint = RS_Vector(false);
 
-            GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+            GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
     }
 ////////////////////////////////////////2006/06/15
                 graphicView->redraw();

@@ -73,7 +73,7 @@ void RS_ActionModifyAttributes::trigger() {
 
     graphicView->killSelectActions();
 
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
     finish(false);
 }
 

@@ -213,12 +213,12 @@ void RS_Spline::update() {
 
 RS_Vector RS_Spline::getStartpoint() const {
    if (data.closed) return RS_Vector(false);
-   return static_cast<RS_Line*>(const_cast<RS_Spline*>(this)->firstEntity())->getStartpoint();
+   return static_cast<RS_Line*>(const_cast<RS_Spline*>(this)->firstEntity(RS2::ResolveNone))->getStartpoint();
 }
 
 RS_Vector RS_Spline::getEndpoint() const {
    if (data.closed) return RS_Vector(false);
-   return static_cast<RS_Line*>(const_cast<RS_Spline*>(this)->lastEntity())->getEndpoint();
+   return static_cast<RS_Line*>(const_cast<RS_Spline*>(this)->lastEntity(RS2::ResolveNone))->getEndpoint();
 }
 
 

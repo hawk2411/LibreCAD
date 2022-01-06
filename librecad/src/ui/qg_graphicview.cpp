@@ -395,7 +395,7 @@ void QG_GraphicView::tabletEvent(QTabletEvent* e) {
                     mouseReleaseEvent(&ev);
                     a->finish();
 
-                    if (container->countSelected()>0) {
+                    if (container->countSelected(true, {})>0) {
                         setCurrentAction(
                             new RS_ActionModifyDelete(*container, *this));
                     }

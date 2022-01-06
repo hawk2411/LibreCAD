@@ -493,7 +493,7 @@ double RS_MText::updateAddLine(RS_EntityContainer* textLine, int lineCounter) {
     textLine->move(RS_Vector(0.0, -9.0 * lineCounter
                              * data.lineSpacingFactor * ls));
 
-    if( ! RS_EntityContainer::autoUpdateBorders) {
+    if( ! RS_EntityContainer::_autoUpdateBorders) {
         //only update borders when needed
         textLine->forcedCalculateBorders();
     }
@@ -682,7 +682,7 @@ void RS_MText::draw(RS_Painter* painter, RS_GraphicView* view, double& /*pattern
         }
     }
 
-    foreach (auto e, entities)
+    foreach (auto e, _entities)
     {
         view->drawEntity(painter, e);
     }

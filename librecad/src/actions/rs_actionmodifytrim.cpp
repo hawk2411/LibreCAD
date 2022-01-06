@@ -92,7 +92,7 @@ void RS_ActionModifyTrim::trigger() {
             setStatus(ChooseTrimEntity);
         }
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
     }
 }
 

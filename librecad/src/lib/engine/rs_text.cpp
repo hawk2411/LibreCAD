@@ -323,7 +323,7 @@ void RS_Text::update() {
         }
     }
 
-    if( ! RS_EntityContainer::autoUpdateBorders) {
+    if( ! RS_EntityContainer::_autoUpdateBorders) {
         //only update borders when needed
         forcedCalculateBorders();
     }
@@ -551,7 +551,7 @@ void RS_Text::draw(RS_Painter* painter, RS_GraphicView* view, double& /*patternO
         }
     }
 
-    foreach (auto e, entities)
+    foreach (auto e, _entities)
     {
         view->drawEntity(painter, e);
     }

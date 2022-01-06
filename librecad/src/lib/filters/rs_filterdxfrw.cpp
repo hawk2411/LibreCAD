@@ -1104,8 +1104,8 @@ void RS_FilterDXFRW::addHatch(const DRW_Hatch *data) {
 			for (auto const& vert: pline->vertlist)
 				polyline.addVertex(RS_Vector{vert->x, vert->y}, vert->bulge);
 
-			for (RS_Entity* e=polyline.firstEntity(); e;
-					e=polyline.nextEntity()) {
+			for (RS_Entity* e=polyline.firstEntity(RS2::ResolveNone); e;
+					e=polyline.nextEntity(RS2::ResolveNone)) {
                 RS_Entity* tmp = e->clone();
                 tmp->reparent(hatchLoop);
 				tmp->setLayer(nullptr);

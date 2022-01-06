@@ -64,7 +64,7 @@ void RS_ActionModifyScale::trigger() {
         RS_Modification m(*container, graphicView);
 		m.scale(pPoints->data);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
     }
 }
 

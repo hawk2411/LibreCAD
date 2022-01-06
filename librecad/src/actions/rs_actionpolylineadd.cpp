@@ -72,7 +72,7 @@ void RS_ActionPolylineAdd::trigger() {
 
 				*addCoord = {};
 
-                GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
                 graphicView->redraw(RS2::RedrawDrawing);

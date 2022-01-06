@@ -83,7 +83,7 @@ void RS_ActionModifyBevel::trigger() {
         entity2 = nullptr;
         setStatus(SetEntity1);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
     }
 }
 

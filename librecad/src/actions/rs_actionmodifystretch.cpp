@@ -72,7 +72,7 @@ void RS_ActionModifyStretch::trigger() {
 
     setStatus(SetFirstCorner);
 
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
 }
 
 

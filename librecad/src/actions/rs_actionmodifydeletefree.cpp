@@ -96,7 +96,7 @@ void RS_ActionModifyDeleteFree::trigger() {
                     init();
 
                     GetDialogFactory()->updateSelectionWidget(
-                        container->countSelected(),container->totalSelectedLength());
+                        container->countSelected(true, {}),container->totalSelectedLength());
                 } else {
                                 GetDialogFactory()->commandMessage(tr("Entities not in the same polyline."));
                 }

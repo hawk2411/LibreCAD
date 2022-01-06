@@ -64,7 +64,7 @@ void RS_ActionModifyMirror::trigger() {
     RS_Modification m(*container, graphicView);
     m.mirror(pPoints->data);
 
-    GetDialogFactory()->updateSelectionWidget( container->countSelected(),
+    GetDialogFactory()->updateSelectionWidget( container->countSelected(true, {}),
                                              container->totalSelectedLength());
 }
 

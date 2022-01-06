@@ -70,7 +70,7 @@ void RS_ActionSelect::mouseReleaseEvent(QMouseEvent* e) {
 
 
 int RS_ActionSelect::countSelected() {
-        int ret=container->countSelected();
+        int ret=container->countSelected(true, {});
 		if (ret==0) {
             GetDialogFactory()->commandMessage(tr("No entity selected!"));
         }

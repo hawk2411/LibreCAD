@@ -55,7 +55,7 @@ void RS_ActionLayersRemove::trigger() {
         }
     }
     finish(false);
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
 }
 
 void RS_ActionLayersRemove::init(int status) {

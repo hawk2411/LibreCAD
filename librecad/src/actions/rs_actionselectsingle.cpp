@@ -56,7 +56,7 @@ void RS_ActionSelectSingle::trigger() {
         RS_Selection s(*container, graphicView);
         s.selectSingle(en);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
     } else {
         RS_DEBUG->print("RS_ActionSelectSingle::trigger: Entity is NULL\n");
     }
@@ -71,7 +71,7 @@ void RS_ActionSelectSingle::keyPressEvent(QKeyEvent* e)
         actionSelect->keyPressEvent(e);
     }
 
-    if (container->countSelected() > 0 && e->key()==Qt::Key_Enter)
+    if (container->countSelected(true, {}) > 0 && e->key()==Qt::Key_Enter)
     {
         finish(false);
         actionSelect->keyPressEvent(e);

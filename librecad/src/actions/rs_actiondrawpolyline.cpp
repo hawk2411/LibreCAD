@@ -198,7 +198,7 @@ double RS_ActionDrawPolyline::solveBulge(RS_Vector mouse) {
 //        break;
      case Tangential:
 		if (pPoints->polyline){
-			lastentity = static_cast<RS_AtomicEntity*>(pPoints->polyline->lastEntity());
+			lastentity = static_cast<RS_AtomicEntity*>(pPoints->polyline->lastEntity(RS2::ResolveNone));
             direction = RS_Math::correctAngle(
                 lastentity->getDirection2()+M_PI);
 			line.setStartpoint(pPoints->point);
@@ -233,7 +233,7 @@ double RS_ActionDrawPolyline::solveBulge(RS_Vector mouse) {
         // fall-through
      case TanRad:
 		if (pPoints->polyline){
-			lastentity = static_cast<RS_AtomicEntity*>(pPoints->polyline->lastEntity());
+			lastentity = static_cast<RS_AtomicEntity*>(pPoints->polyline->lastEntity(RS2::ResolveNone));
             direction = RS_Math::correctAngle(
                 lastentity->getDirection2()+M_PI);
 			suc = arc.createFrom2PDirectionRadius(pPoints->point, mouse,
