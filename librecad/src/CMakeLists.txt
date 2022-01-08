@@ -16,6 +16,7 @@ add_compile_definitions(QC_APPDIR="\"librecad\"")
 set(LC_VERSION "2.2.0-alpha")
 set(VERSION ${LC_VERSION})
 
+find_package(GTest REQUIRED)
 find_package(Qt5 REQUIRED PrintSupport Widgets Svg )
 #find_package(Qt5Core REQUIRED)
 #find_package(Qt5Gui REQUIRED)
@@ -307,7 +308,7 @@ set(SOURCES
         lib/engine/rs.cpp
         lib/printing/lc_printing.cpp
         actions/lc_actiondrawlinepolygon3.cpp
-        main/lc_application.cpp
+
         actions/rs_actionblocksadd.cpp
         actions/rs_actionblocksattributes.cpp
         actions/rs_actionblockscreate.cpp
@@ -443,11 +444,14 @@ set(SOURCES
         actions/rs_actionzoomscroll.cpp
         actions/rs_actionzoomwindow.cpp
         cmd/rs_commands.cpp
+        plugins/intern/qc_actiongetpoint.cpp
+        plugins/intern/qc_actiongetselect.cpp
+        plugins/intern/qc_actiongetent.cpp
+        main/lc_application.cpp
         main/qc_applicationwindow.cpp
         main/qc_dialogfactory.cpp
         main/qc_mdiwindow.cpp
         main/DocumentPluginImplementation.cpp
-        main/main.cpp
         main/mainwindowx.cpp
         main/ConvertLine.cpp
         main/ConvertLine.h
@@ -455,10 +459,12 @@ set(SOURCES
         main/PluginEntity.h
         main/console_dxf2pdf/console_dxf2pdf.cpp
         main/console_dxf2pdf/pdf_print_loop.cpp
-        plugins/intern/qc_actiongetpoint.cpp
-        plugins/intern/qc_actiongetselect.cpp
-        plugins/intern/qc_actiongetent.cpp
+
         )
+set(TEST_SOURCES
+        test/test.cpp
+        )
+
 set(TRANSLATION_DIR ${CMAKE_SOURCE_DIR}/librecad/ts)
 set( TRANSLATIONS ${TRANSLATION_DIR}/librecad_ar.ts
     ${TRANSLATION_DIR}/librecad_ca.ts 
@@ -530,13 +536,54 @@ set( resources ${resources} ../res/extui/extui.qrc ../res/actions/actions.qrc ..
         ../../licenses/licenses.qrc
         )
 
-add_executable(librecad ${SOURCES} ${resources})
+add_executable(librecad main/main.cpp ${SOURCES} ${resources})
+add_executable(test_librecad ${TEST_SOURCES} ${SOURCES})
 ## Store intermedia stuff somewhere else
 #GENERATED_DIR = ../../generated/librecad
 # Use common project definitions.
 #include(../../common.pri)
 #include(./boost.pri)
 #include(./muparser.pri)
+
+include_directories(test_librecad
+        ${GTEST_INCLUDE_DIRS}
+        ../../libraries/libdxfrw/src
+        ../../libraries/jwwlib/src
+        ../../libraries/muparser/include
+        cmd
+        lib/actions
+        lib/creation
+        lib/debug
+        lib/engine
+        lib/fileio
+        lib/filters
+        lib/generators
+        lib/gui
+        lib/information
+        lib/math
+        lib/modification
+        lib/printing
+        actions
+        main
+        main/console_dxf2pdf
+        test
+        plugins
+        ui
+        ui/forms
+        ui/generic
+        ../res
+        )
+
+target_link_libraries(test_librecad
+        PRIVATE
+        Qt5::Core
+        Qt5::Gui
+        Qt5::PrintSupport
+        Qt5::Svg
+        Qt5::Widgets
+        dxfrw
+        jwwlib
+        muparser GTest::gtest GTest::gtest_main)
 
 target_link_libraries(librecad
         PRIVATE
