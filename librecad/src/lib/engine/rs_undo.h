@@ -51,9 +51,9 @@ public:
 
     virtual bool redo();
 
-    virtual int countUndoCycles();
+    virtual std::size_t countUndoCycles();
 
-    virtual int countRedoCycles();
+    virtual std::size_t countRedoCycles();
 
     virtual bool hasUndoable();
 
@@ -83,18 +83,26 @@ public:
 #endif
 private:
 
-    void addUndoCycle(std::shared_ptr<RS_UndoCycle> const &i);
+    void addUndoCycle(std::shared_ptr<RS_UndoCycle> const &cycle);
 
     //! List of undo list items. every item is something that can be undone.
     std::vector<std::shared_ptr<RS_UndoCycle>> undoList;
 
+//    /**
+//     * Index that points to the current position in the undo list.
+//     * The item it points on will be undone the next time undo is called.
+//     * The item after will be redone (if there is an item) when redo
+//     * is called.
+//     */
+//    int undoPointer = -1;
+
     /**
-     * Index that points to the current position in the undo list.
-     * The item it points on will be undone the next time undo is called.
-     * The item after will be redone (if there is an item) when redo
-     * is called.
-     */
-    int undoPointer = -1;
+ * Index that points to the current position in the undo list.
+ * The item it points on will be undone the next time undo is called.
+ * The item after will be redone (if there is an item) when redo
+ * is called.
+ */
+    std::vector<std::shared_ptr<RS_UndoCycle>>::const_iterator newUndoPointer {undoList.cend()};
 
     /**
      * Current undo cycle.

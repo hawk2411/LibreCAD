@@ -33,66 +33,58 @@
  * Adds an Undoable to this Undo Cycle. Every Cycle can contain one or
  * more Undoables.
  */
-void RS_UndoCycle::addUndoable(RS_Undoable* u) {
+void RS_UndoCycle::addUndoable(RS_Undoable *u) {
     if (!u)
         return;
 
-    undoables.insert(u);
+    _undoables.insert(u);
 }
 
 /**
  * Removes an undoable from the list.
  */
-void RS_UndoCycle::removeUndoable(RS_Undoable* u) {
+void RS_UndoCycle::removeUndoable(RS_Undoable *u) {
     if (!u)
         return;
 
-    undoables.erase(u);
+    _undoables.erase(u);
 }
 
 /**
  * Return number of undoables in cycle
  */
-size_t RS_UndoCycle::size()
-{
-    return undoables.size();
+size_t RS_UndoCycle::size() const {
+    return _undoables.size();
 }
 
-void RS_UndoCycle::changeUndoState()
-{
-	for (RS_Undoable* u: undoables)
-		u->changeUndoState();
+bool RS_UndoCycle::empty() const {
+    return _undoables.empty();
 }
 
-std::set<RS_Undoable*> const& RS_UndoCycle::getUndoables() const
-{
-    return undoables;
+void RS_UndoCycle::changeUndoState() {
+    for (RS_Undoable *u: _undoables)
+        u->changeUndoState();
 }
 
-
-std::ostream& operator << (std::ostream& os,
-								  RS_UndoCycle& uc) {
-	os << " Undo item: " << "\n";
-	//os << "   Type: ";
-	/*switch (i.type) {
-	case RS2::UndoAdd:
-		os << "RS2::UndoAdd";
-		break;
-	case RS2::UndoDel:
-		os << "RS2::UndoDel";
-		break;
-}*/
-	os << "   Undoable ids: ";
-	for (auto u: uc.undoables) {
-		if (u->undoRtti()==RS2::UndoableEntity) {
-			RS_Entity* e = (RS_Entity*)u;
-			os << e->getId() << (u->isUndone() ? "*" : "") << " ";
-		} else {
-			os << "|";
-		}
-
-	}
-
-	return os;
+std::set<RS_Undoable *> const &RS_UndoCycle::getUndoables() const {
+    return _undoables;
 }
+
+std::ostream &operator<<(std::ostream &os,
+                         RS_UndoCycle &uc) {
+    os << " Undo item: " << "\n";
+    os << "   Undoable ids: ";
+    for (auto u: uc._undoables) {
+        if (u->undoRtti() == RS2::UndoableEntity) {
+            auto *e = (RS_Entity *) u;
+            os << e->getId() << (u->isUndone() ? "*" : "") << " ";
+        } else {
+            os << "|";
+        }
+
+    }
+
+    return os;
+}
+
 

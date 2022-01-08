@@ -53,39 +53,38 @@ public:
     /**
      * @param type Type of undo item.
      */
-	RS_UndoCycle(/*RS2::UndoType type*/)=default;
+    RS_UndoCycle(/*RS2::UndoType type*/) = default;
 
     /**
      * Adds an Undoable to this Undo Cycle. Every Cycle can contain one or
      * more Undoables.
      */
-    void addUndoable(RS_Undoable* u);
+    void addUndoable(RS_Undoable *u);
 
     /**
      * Removes an undoable from the list.
      */
-    void removeUndoable(RS_Undoable* u);
+    void removeUndoable(RS_Undoable *u);
 
     /**
      * Return number of undoables in cycle
      */
-    size_t size(void);
+    size_t size() const;
 
+    bool empty() const;
 
     //! change undo state of all undoable in the current cycle
     void changeUndoState();
 
-    friend std::ostream& operator << (std::ostream& os, RS_UndoCycle& uc);
+    friend std::ostream &operator<<(std::ostream &os, RS_UndoCycle &uc);
 
     friend class RS_Undo;
 
-    std::set<RS_Undoable*> const& getUndoables() const;
+    std::set<RS_Undoable *> const &getUndoables() const;
 
 private:
-    //! Undo type:
-    //RS2::UndoType type;
     //! List of entity id's that were affected by this action
-    std::set<RS_Undoable*> undoables;
+    std::set<RS_Undoable*> _undoables;
 };
 
 #endif
