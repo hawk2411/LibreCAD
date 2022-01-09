@@ -47,38 +47,28 @@ class QG_LayerWidget;
  */
 class RS_Graphic : public RS_Document {
 public:
-    RS_Graphic(RS_EntityContainer *parent = nullptr);
+    explicit RS_Graphic(RS_EntityContainer *parent = nullptr);
 
-    virtual ~RS_Graphic();
-
-    //virtual RS_Entity* clone() {
-    //	return new RS_Graphic(*this);
-    //}
+    ~RS_Graphic() override;
 
     /** @return RS2::EntityGraphic */
-    virtual RS2::EntityType rtti() const {
+    RS2::EntityType rtti() const override {
         return RS2::EntityGraphic;
     }
 
-    virtual unsigned long int countLayerEntities(RS_Layer *layer);
+    RS_LayerList *getLayerList() override { return &layerList; }
 
-    virtual RS_LayerList *getLayerList() {
-        return &layerList;
-    }
+    RS_BlockList *getBlockList() override { return &blockList; }
 
-    virtual RS_BlockList *getBlockList() {
-        return &blockList;
-    }
+    void newDoc() override;
 
-    virtual void newDoc();
+    bool save(bool isAutoSave) override;
 
-    virtual bool save(bool isAutoSave = false);
+    bool saveAs(const QString &filename, RS2::FormatType type, bool force) override;
 
-    virtual bool saveAs(const QString &filename, RS2::FormatType type, bool force = false);
+    bool open(const QString &filename, RS2::FormatType type) override;
 
-    virtual bool open(const QString &filename, RS2::FormatType type);
-
-    bool loadTemplate(const QString &filename, RS2::FormatType type);
+    bool loadTemplate(const QString &filename, RS2::FormatType type) override;
 
     // Wrappers for Layer functions:
     void clearLayers() {
@@ -109,7 +99,7 @@ public:
         layerList.add(layer);
     }
 
-    virtual void addEntity(RS_Entity *entity);
+    void addEntity(RS_Entity *entity) override;
 
     virtual void removeLayer(RS_Layer *layer);
 
@@ -119,10 +109,6 @@ public:
 
     RS_Layer *findLayer(const QString &name) {
         return layerList.find(name);
-    }
-
-    void toggleLayer(const QString &name) {
-        layerList.toggle(name);
     }
 
     void toggleLayer(RS_Layer *layer) {
@@ -153,11 +139,6 @@ public:
         layerList.addListener(listener);
     }
 
-    void removeLayerListListener(RS_LayerListListener *listener) {
-        layerList.removeListener(listener);
-    }
-
-
     // Wrapper for block functions:
     void clearBlocks() {
         blockList.clear();
@@ -171,19 +152,11 @@ public:
         return blockList.at(i);
     }
 
-    void activateBlock(const QString &name) {
-        blockList.activate(name);
-    }
-
-    void activateBlock(RS_Block *block) {
-        blockList.activate(block);
-    }
-
     RS_Block *getActiveBlock() {
         return blockList.getActive();
     }
 
-    virtual bool addBlock(RS_Block *block, bool notify = true) {
+    virtual bool addBlock(RS_Block *block, bool notify)/* notify = true */ {
         return blockList.add(block, notify);
     }
 
@@ -199,14 +172,6 @@ public:
         return blockList.find(name);
     }
 
-    QString newBlockName() {
-        return blockList.newName();
-    }
-
-    void toggleBlock(const QString &name) {
-        blockList.toggle(name);
-    }
-
     void toggleBlock(RS_Block *block) {
         blockList.toggle(block);
     }
@@ -219,17 +184,9 @@ public:
         blockList.addListener(listener);
     }
 
-    void removeBlockListListener(RS_BlockListListener *listener) {
-        blockList.removeListener(listener);
-    }
-
     // Wrappers for variable functions:
     void clearVariables() {
         variableDict.clear();
-    }
-
-    int countVariables() {
-        return variableDict.count();
     }
 
     void addVariable(const QString &key, const RS_Vector &value, int code) {
@@ -262,10 +219,6 @@ public:
 
     double getVariableDouble(const QString &key, double def) {
         return variableDict.getDouble(key, def);
-    }
-
-    void removeVariable(const QString &key) {
-        variableDict.remove(key);
     }
 
     QHash<QString, RS_Variable> &getVariableDict() {
@@ -316,21 +269,6 @@ public:
 
     RS2::CrosshairType getCrosshairType();
 
-    bool isDraftOn();
-
-    void setDraftOn(bool on);
-
-    /** Sets the unit of this graphic's dimensions to 'u' */
-    /*virtual void setDimensionUnit(RS2::Unit u) {
-            addVariable("$INSUNITS", (int)u, 70);
-    dimensionUnit = u;
-    }*/
-
-    /** Gets the unit of this graphic's dimension */
-    /*virtual RS2::Unit getDimensionUnit() {
-    return dimensionUnit;
-    }*/
-
     void centerToPage();
 
     bool fitToPage();
@@ -341,21 +279,17 @@ public:
      * @retval true The document has been modified since it was last saved.
      * @retval false The document has not been modified since it was last saved.
      */
-    virtual bool isModified() const {
+    bool isModified() const override {
         return _modified || layerList.isModified() || blockList.isModified();
     }
 
     /**
      * Sets the documents modified status to 'm'.
      */
-    virtual void setModified(bool m) {
+    void setModified(bool m) override {
         _modified = m;
         layerList.setModified(m);
         blockList.setModified(m);
-    }
-
-    virtual QDateTime getModifyTime(void) {
-        return modifiedTime;
     }
 
     //if set to true, will refuse to modify paper scale
@@ -363,7 +297,7 @@ public:
         paperScaleFixed = fixed;
     }
 
-    bool getPaperScaleFixed() {
+    bool getPaperScaleFixed() const {
         return paperScaleFixed;
     }
 
@@ -413,11 +347,11 @@ public:
 
     void setPagesNum(const QString &horizXvert);
 
-    int getPagesNumHoriz() {
+    int getPagesNumHoriz() const {
         return pagesNumH;
     }
 
-    int getPagesNumVert() {
+    int getPagesNumVert() const {
         return pagesNumV;
     }
 

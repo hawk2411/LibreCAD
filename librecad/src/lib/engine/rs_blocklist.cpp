@@ -63,7 +63,7 @@ void RS_BlockList::clear() {
  * Listeners are notified.
  */
 void RS_BlockList::activate(const QString& name) {
-    RS_DEBUG->print("RS_BlockList::activateBlock");
+    RS_DEBUG->print("RS_BlockList::activate");
 
     activate(find(name));
 }
@@ -73,7 +73,7 @@ void RS_BlockList::activate(const QString& name) {
  * Listeners are notified.
  */
 void RS_BlockList::activate(RS_Block* block) {
-    RS_DEBUG->print("RS_BlockList::activateBlock");
+    RS_DEBUG->print("RS_BlockList::activate");
 	activeBlock = block;
 }
 
@@ -298,26 +298,6 @@ void RS_BlockList::freezeAll(bool freeze) {
 		l->blockToggled(nullptr);
 	}
 }
-
-
-/**
- * Switches on / off the given block. 
- * Listeners are notified.
- */
-/*
-void RS_BlockList::toggleBlock(const QString& name) {
-	RS_Block* block = findBlock(name);
-	block->toggle();
-	
-    // Notify listeners:
-    for (unsigned i=0; i<blockListListeners.count(); ++i) {
-		RS_BlockListListener* l = blockListListeners.at(i);
- 
-		l->blockToggled(block);
-	}
-}
-*/
-
 
 /**
  * adds a BlockListListener to the list of listeners. Listeners

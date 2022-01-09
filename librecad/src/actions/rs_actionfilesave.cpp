@@ -40,7 +40,7 @@ void RS_ActionFileSave::trigger() {
     RS_DEBUG->print("RS_ActionFileSave::trigger");
 
     if (graphic) {
-        graphic->save();
+        graphic->save(false);
     }
     finish(false);
 }

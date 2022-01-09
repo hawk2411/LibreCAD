@@ -40,7 +40,7 @@ void RS_ActionFileSaveAs::trigger() {
 
     QString fileName; // = GetDialogFactory()->requestFileSaveAsDialog();
     if (graphic && !fileName.isEmpty()) {
-        graphic->saveAs(fileName, RS2::FormatUnknown);
+        graphic->saveAs(fileName, RS2::FormatUnknown, false);
     }
     finish(false);
 }

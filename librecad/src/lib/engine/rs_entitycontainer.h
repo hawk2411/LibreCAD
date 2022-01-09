@@ -120,7 +120,7 @@ public:
     unsigned count() const override;
 
     unsigned countDeep() const override;
-    //virtual unsigned long int countLayerEntities(RS_Layer* layer);
+
     /** \brief countSelected number of selected
     * @param deep count sub-containers, if true
     * @param types if is not empty, only counts by types listed

@@ -80,7 +80,7 @@ public:
 
     friend class RS_Undo;
 
-    std::set<RS_Undoable *> const &getUndoables() const;
+    const std::set<RS_Undoable *>& getUndoables() const;
 
 private:
     //! List of entity id's that were affected by this action

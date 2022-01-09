@@ -50,9 +50,9 @@ void RS_ActionBlocksAdd::trigger() {
 			if (d.isValid()) {
                 // Block cannot contain blocks.
                 if (container->rtti() == RS2::EntityBlock) {
-                    graphic->addBlock(new RS_Block(container->getParent(), d));
+                    graphic->addBlock(new RS_Block(container->getParent(), d), true);
                 } else {
-                    graphic->addBlock(new RS_Block(container, d));
+                    graphic->addBlock(new RS_Block(container, d), true);
                 }
 			}
 		}

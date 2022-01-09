@@ -547,7 +547,7 @@ void LC_SimpleTests::slotTestInsertBlock() {
 		block->addEntity(circle);
 
 
-		graphic->addBlock(block);
+		graphic->addBlock(block, true);
 
 
 

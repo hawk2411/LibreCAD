@@ -100,27 +100,6 @@ RS_Graphic::~RS_Graphic() = default;
 
 
 /**
- * Counts the entities on the given layer.
- */
-unsigned long int RS_Graphic::countLayerEntities(RS_Layer *layer) {
-
-    int c = 0;
-
-    if (layer) {
-        for (auto t: _entities) {
-
-            if (t->getLayer() &&
-                t->getLayer()->getName() == layer->getName()) {
-                c += t->countDeep();
-            }
-        }
-    }
-
-    return c;
-}
-
-
-/**
  * Removes the given layer and undoes all entities on it.
  */
 void RS_Graphic::removeLayer(RS_Layer *layer) {
@@ -438,7 +417,7 @@ bool RS_Graphic::saveAs(const QString &filename, RS2::FormatType type, bool forc
     if (!fn_is_same || force)
         setModified(true);
 
-    ret = save();        //	Save file.
+    ret = save(false);        //	Save file.
 
     if (ret) {
         // Save was successful, remove old autosave file.
@@ -577,8 +556,6 @@ void RS_Graphic::setUnit(RS2::Unit u) {
     setPaperSize(RS_Units::convert(getPaperSize(), getUnit(), u));
 
     addVariable("$INSUNITS", (int) u, 70);
-
-    //unit = u;
 }
 
 
@@ -598,31 +575,6 @@ RS2::Unit RS_Graphic::getUnit() {
 RS2::LinearFormat RS_Graphic::getLinearFormat() {
     int lunits = getVariableInt("$LUNITS", 2);
     return getLinearFormat(lunits);
-/* changed by RS2::LinearFormat getLinearFormat(int f)
-    switch (lunits) {
-    default:
-    case 2:
-        return RS2::Decimal;
-        break;
-
-    case 1:
-        return RS2::Scientific;
-        break;
-
-    case 3:
-        return RS2::Engineering;
-        break;
-
-    case 4:
-        return RS2::Architectural;
-        break;
-
-    case 5:
-        return RS2::Fractional;
-        break;
-    }
-
-    return RS2::Decimal;*/
 }
 
 /**

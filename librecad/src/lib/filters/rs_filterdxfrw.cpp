@@ -335,7 +335,7 @@ void RS_FilterDXFRW::addBlock(const DRW_Block& data) {
                 new RS_Block(graphic, RS_BlockData(name, bp, false ));
             //block->setFlags(flags);
 
-            if (graphic->addBlock(block)) {
+            if (graphic->addBlock(block, true)) {
                 currentContainer = block;
                 blockHash.insert(data.parentHandle, currentContainer);
             } else

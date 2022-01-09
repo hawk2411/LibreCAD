@@ -520,7 +520,7 @@ void RS_Modification::paste(const RS_PasteData& data, RS_Graphic* source) {
     RS_BlockData db = RS_BlockData(name_new, RS_Vector(0.0, 0.0), false);
     RS_Block* b = new RS_Block(graphic, db);
     b->reparent(graphic);
-    graphic->addBlock(b);
+    graphic->addBlock(b, true);
 
     // create insert object for the paste block
     RS_InsertData di = RS_InsertData(b->getName(), ip, vfactor, data.angle, 1, 1, RS_Vector(0.0,0.0));
@@ -656,7 +656,7 @@ bool RS_Modification::pasteContainer(RS_Entity* entity, RS_EntityContainer* cont
     RS_BlockData db = RS_BlockData(name_new, RS_Vector(0.0, 0.0), false);
     RS_Block* bc = new RS_Block(graphic, db);
     bc->reparent(graphic);
-    graphic->addBlock(bc);
+    graphic->addBlock(bc, true);
     // create insert for the new block
     RS_InsertData di = RS_InsertData(name_new, insertionPoint, RS_Vector(1.0, 1.0), i->getAngle(), 1, 1, RS_Vector(0.0,0.0));
     RS_Insert* ic = new RS_Insert(container, di);

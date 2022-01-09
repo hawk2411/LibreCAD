@@ -218,7 +218,7 @@ void RS_FilterJWW::addBlock(const DL_BlockData& data) {
                                                          RS_BlockData(blName, bp, false));
                         //block->setFlags(flags);
 
-                        if (graphic->addBlock(block)) {
+                        if (graphic->addBlock(block, true)) {
                                 currentContainer = block;
                         }
 #ifndef RS_NO_COMPLEX_ENTITIES
