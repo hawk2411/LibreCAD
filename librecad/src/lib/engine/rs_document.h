@@ -56,7 +56,7 @@ public:
 
     virtual void newDoc() = 0;
 
-    virtual bool save(bool isAutoSave = false) = 0;
+    virtual bool save(bool isAutoSave) = 0;     //false is default
 
     virtual bool saveAs(const QString &filename, RS2::FormatType type, bool force) = 0;
 
@@ -76,9 +76,9 @@ public:
      * Removes an entity from the entiy container. Implementation
      * from RS_Undo.
      */
-    virtual void removeUndoable(RS_Undoable *u) {
+    void removeUndoable(RS_Undoable *u) override {
         if (u && u->undoRtti() == RS2::UndoableEntity && u->isUndone()) {
-            removeEntity(static_cast<RS_Entity *>(u));
+            removeEntity(dynamic_cast<RS_Entity *>(u));
         }
     }
 
@@ -92,7 +92,7 @@ public:
     /**
      * Sets the currently active drawing pen to p.
      */
-    void setActivePen(RS_Pen p) {
+    void setActivePen(const RS_Pen &p) {
         activePen = p;
     }
 
@@ -101,29 +101,28 @@ public:
      * Note, that the default file name is empty.
      */
     QString getFilename() const {
-        return filename;
+        return _filename;
     }
 
     /**
      * @return Auto-save file name of the document currently loaded.
      */
     QString getAutoSaveFilename() const {
-        return autosaveFilename;
+        return _autosaveFilename;
     }
 
     /**
      * Sets file name for the document currently loaded.
      */
     void setFilename(const QString &fn) {
-        filename = fn;
+        _filename = fn;
     }
 
     /**
      * Sets the documents modified status to 'm'.
      */
     virtual void setModified(bool m) {
-        //std::cout << "RS_Document::setModified: %d" << (int)m << std::endl;
-        modified = m;
+        _modified = m;
     }
 
     /**
@@ -131,30 +130,30 @@ public:
      * @retval false The document has not been modified since it was last saved.
      */
     virtual bool isModified() const {
-        return modified;
+        return _modified;
     }
 
     /**
      * Overwritten to set modified flag when undo cycle finished with undoable(s).
      */
-    virtual void endUndoCycle() override;
+    void endUndoCycle() override;
 
-    void setGraphicView(RS_GraphicView *g) { gv = g; }
+    void setGraphicView(RS_GraphicView *g) { _gv = g; }
 
-    RS_GraphicView *getGraphicView() { return gv; }
+    RS_GraphicView *getGraphicView() { return _gv; }
 
 protected:
     /** Flag set if the document was modified and not yet saved. */
-    bool modified;
+    bool _modified;
     /** Active pen. */
     RS_Pen activePen;
     /** File name of the document or empty for a new document. */
-    QString filename;
+    QString _filename;
     /** Auto-save file name of document. */
-    QString autosaveFilename;
+    QString _autosaveFilename;
     /** Format type */
-    RS2::FormatType formatType;
-    RS_GraphicView *gv;//used to read/save current view
+    RS2::FormatType _formatType;
+    RS_GraphicView* _gv;//used to read/save current view
 
 };
 

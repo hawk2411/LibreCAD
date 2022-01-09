@@ -24,16 +24,17 @@
 **
 **********************************************************************/
 
-#include<iostream>
+#include <iostream>
+#include <utility>
 #include "rs_block.h"
 
 #include "rs_graphic.h"
 #include "rs_insert.h"
 
-RS_BlockData::RS_BlockData(const QString &_name,
+RS_BlockData::RS_BlockData(QString _name,
                            const RS_Vector &_basePoint,
                            bool _frozen) :
-        name(_name), basePoint(_basePoint), frozen(_frozen) {
+        name(std::move(_name)), basePoint(_basePoint), frozen(_frozen) {
 }
 
 bool RS_BlockData::isValid() const {
@@ -46,15 +47,15 @@ bool RS_BlockData::isValid() const {
  * @param basePoint Base point (offset) of the block.
  */
 RS_Block::RS_Block(RS_EntityContainer *parent,
-                   const RS_BlockData &d)
-        : RS_Document(parent), _blockData(d) {
+                   RS_BlockData d)
+        : RS_Document(parent), _blockData(std::move(d)) {
 
     _pen = RS_Pen(RS_Color(128, 128, 128), RS2::Width01, RS2::SolidLine);
 }
 
 
 RS_Entity *RS_Block::clone() const {
-    RS_Block *blk = new RS_Block(*this);
+    auto *blk = new RS_Block(*this);
     blk->setOwner(isOwner());
     blk->detach();
     blk->initId();
@@ -67,7 +68,7 @@ RS_LayerList *RS_Block::getLayerList() {
     if (g) {
         return g->getLayerList();
     } else {
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -77,7 +78,7 @@ RS_BlockList *RS_Block::getBlockList() {
     if (g) {
         return g->getBlockList();
     } else {
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -110,7 +111,7 @@ void RS_Block::setModified(bool m) {
     if (p) {
         p->setModified(m);
     }
-    modified = m;
+    _modified = m;
 }
 
 

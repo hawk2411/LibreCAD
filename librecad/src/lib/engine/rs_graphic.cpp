@@ -313,13 +313,13 @@ bool RS_Graphic::save(bool isAutoSave)
 		QString actualName;
         RS2::FormatType	actualType;
 
-        actualType	= formatType;
+        actualType	= _formatType;
 
 		if (isAutoSave)
         {
-			actualName = autosaveFilename;
+			actualName = _autosaveFilename;
 
-            if (formatType == RS2::FormatUnknown)
+            if (_formatType == RS2::FormatUnknown)
                 actualType = RS2::FormatDXFRW;
 		} else {
 			//	- This is not an AutoSave operation.  This is a manual
@@ -327,7 +327,7 @@ bool RS_Graphic::save(bool isAutoSave)
 			//		- Set working file name to the drawing file name.
 			//		- Backup drawing file (if necessary).
 			//	------------------------------------------------------
-			QFileInfo	finfo(filename);
+			QFileInfo	finfo(_filename);
 			QDateTime m=finfo.lastModified();
             //bug#3414993
             //modifiedTime should only be used for the same filename
@@ -338,17 +338,17 @@ bool RS_Graphic::save(bool isAutoSave)
 //            qDebug()<<"modifiedTime.isValid()="<<modifiedTime.isValid();
 //            qDebug()<<"Previous timestamp: "<<modifiedTime;
 //            qDebug()<<"Current timestamp: "<<m;
-            if ( currentFileName == QString(filename)
+            if ( currentFileName == QString(_filename)
                  && modifiedTime.isValid() && m != modifiedTime ) {
                 //file modified by others
 //            qDebug()<<"detected on disk change";
-                GetDialogFactory()->commandMessage(QObject::tr("File on disk modified. Please save to another file to avoid data loss! File modified: %1").arg(filename));
+                GetDialogFactory()->commandMessage(QObject::tr("File on disk modified. Please save to another file to avoid data loss! File modified: %1").arg(_filename));
                 return false;
             }
 
-			actualName = filename;
+			actualName = _filename;
             if (RS_SETTINGS->readNumEntry("/AutoBackupDocument", 1)!=0)
-                BackupDrawingFile(filename);
+                BackupDrawingFile(_filename);
         }
 
         /*	Save drawing file if able to created associated object.
@@ -374,7 +374,7 @@ bool RS_Graphic::save(bool isAutoSave)
         {
             /*	Autosave file object.
                          *	*/
-			QFile	qf_file(autosaveFilename);
+			QFile	qf_file(_autosaveFilename);
 
 			/*	Tell that drawing file is no more modified.
 						 *	------------------------------------------- */
@@ -387,8 +387,8 @@ bool RS_Graphic::save(bool isAutoSave)
 						 *	------------------------------------------------------------ */
 			if (qf_file.exists())
 			{
-				RS_DEBUG->print(	"RS_Graphic::save: Removing old autosave file %s",
-									autosaveFilename.toLatin1().data());
+				RS_DEBUG->print("RS_Graphic::save: Removing old autosave file %s",
+                                _autosaveFilename.toLatin1().data());
 				qf_file.remove();
 			}
 
@@ -436,20 +436,20 @@ bool RS_Graphic::saveAs(const QString &filename, RS2::FormatType type, bool forc
 
 	// Check/memorize if file name we want to use as new file
 	// name is the same as the actual file name.
-	bool fn_is_same	= filename == this->filename;
-	auto const filenameSaved=this->filename;
-	auto const autosaveFilenameSaved=this->autosaveFilename;
-	auto const formatTypeSaved=this->formatType;
+	bool fn_is_same	= filename == this->_filename;
+	auto const filenameSaved=this->_filename;
+	auto const autosaveFilenameSaved=this->_autosaveFilename;
+	auto const formatTypeSaved=this->_formatType;
 
-	this->filename = filename;
-	this->formatType	= type;
+	this->_filename = filename;
+	this->_formatType	= type;
 
 	// QString	const oldAutosaveName = this->autosaveFilename;
 	QFileInfo	finfo(filename);
 
 	// Construct new autosave filename by prepending # to the filename
 	// part, using the same directory as the destination file.
-	this->autosaveFilename = finfo.path() + "/#" + finfo.fileName();
+	this->_autosaveFilename = finfo.path() + "/#" + finfo.fileName();
 
 	// When drawing is saved using a different name than the actual
 	// drawing file name, make LibreCAD think that drawing file
@@ -471,9 +471,9 @@ bool RS_Graphic::saveAs(const QString &filename, RS2::FormatType type, bool forc
 
 	}else{
 		//do not modify filenames:
-		this->filename=filenameSaved;
-		this->autosaveFilename=autosaveFilenameSaved;
-		this->formatType=formatTypeSaved;
+		this->_filename=filenameSaved;
+		this->_autosaveFilename=autosaveFilenameSaved;
+		this->_formatType=formatTypeSaved;
 	}
 
 	return ret;
@@ -490,7 +490,7 @@ bool RS_Graphic::loadTemplate(const QString &filename, RS2::FormatType type) {
 
     // Construct new autosave filename by prepending # to the filename part,
     // using system temporary dir.
-    this->autosaveFilename = QDir::tempPath () + "/#" + "Unnamed.dxf";
+    this->_autosaveFilename = QDir::tempPath () + "/#" + "Unnamed.dxf";
 
     // clean all:
     newDoc();
@@ -517,11 +517,11 @@ bool RS_Graphic::open(const QString &filename, RS2::FormatType type) {
 
         bool ret = false;
 
-    this->filename = filename;
+    this->_filename = filename;
         QFileInfo finfo(filename);
         // Construct new autosave filename by prepending # to the filename
         // part, using the same directory as the destination file.
-        this->autosaveFilename = finfo.path() + "/#" + finfo.fileName();
+        this->_autosaveFilename = finfo.path() + "/#" + finfo.fileName();
 
     // clean all:
     newDoc();

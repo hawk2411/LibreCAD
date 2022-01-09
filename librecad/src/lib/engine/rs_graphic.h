@@ -46,7 +46,7 @@ class QG_LayerWidget;
  */
 class RS_Graphic : public RS_Document {
 public:
-    RS_Graphic(RS_EntityContainer* parent=NULL);
+    RS_Graphic(RS_EntityContainer* parent=nullptr);
     virtual ~RS_Graphic();
 
     //virtual RS_Entity* clone() {
@@ -278,14 +278,14 @@ public:
      * @retval false The document has not been modified since it was last saved.
      */
     virtual bool isModified() const {
-        return modified || layerList.isModified() || blockList.isModified();
+        return _modified || layerList.isModified() || blockList.isModified();
     }
 
     /**
      * Sets the documents modified status to 'm'.
      */
     virtual void setModified(bool m) {
-        modified = m;
+        _modified = m;
         layerList.setModified(m);
         blockList.setModified(m);
     }

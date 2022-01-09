@@ -34,29 +34,28 @@
  * Holds the data that defines a block.
  */
 struct RS_BlockData {
-	RS_BlockData() = default;
+    RS_BlockData() = default;
 
-	RS_BlockData(const QString& name,
-	           const RS_Vector& basePoint,
-			   bool frozen);
+    RS_BlockData(QString name,
+                 const RS_Vector &basePoint,
+                 bool frozen);
 
-	bool isValid() const;
+    bool isValid() const;
 
-	/**
-	 * Block name. Acts as an id.
-	 */
-	QString name;
-	/**
-	 * Base point of the Block. Usually 0/0 since blocks can be moved around
-	 * using the insertion point of Insert entities.
-	 */
-	RS_Vector basePoint;
+    /**
+     * Block name. Acts as an id.
+     */
+    QString name;
+    /**
+     * Base point of the Block. Usually 0/0 since blocks can be moved around
+     * using the insertion point of Insert entities.
+     */
+    RS_Vector basePoint;
 
-	bool frozen {false};              //!< Frozen flag
-	bool visibleInBlockList {true};   //!< Visible in block list
-	bool selectedInBlockList {false}; //!< selected in block list
+    bool frozen{false};              //!< Frozen flag
+    bool visibleInBlockList{true};   //!< Visible in block list
+    bool selectedInBlockList{false}; //!< selected in block list
 };
-
 
 
 /**
@@ -74,29 +73,27 @@ struct RS_BlockData {
  */
 class RS_Block : public RS_Document {
 
-	friend class RS_BlockList;
+    friend class RS_BlockList;
 
 public:
     /**
      * @param parent The graphic this block belongs to.
      * @param blockData defining data of the block.
      */
-    RS_Block(RS_EntityContainer* parent, const RS_BlockData& d);
+    RS_Block(RS_EntityContainer *parent, RS_BlockData d);
 
-	virtual ~RS_Block() = default;
-	
-	virtual RS_Entity* clone() const;
+    ~RS_Block() override = default;
+
+    RS_Entity *clone() const override;
 
     /** @return RS2::EntityBlock */
-    virtual RS2::EntityType rtti() const {
-        return RS2::EntityBlock;
-    }
+    RS2::EntityType rtti() const override { return RS2::EntityBlock; }
 
     /**
      * @return Name of this block (the name is an Id for this block).
      */
     QString getName() const {
-		return _blockData.name;
+        return _blockData.name;
     }
 
     /**
@@ -106,49 +103,51 @@ public:
         return _blockData.basePoint;
     }
 
-    virtual RS_LayerList* getLayerList();
-    virtual RS_BlockList* getBlockList();
+    RS_LayerList *getLayerList() override;
+
+    RS_BlockList *getBlockList() override;
 
     /**
      * Reimplementation from RS_Document. Does nothing.
      */
-    virtual void newDoc() {
+    void newDoc() override {
         // do nothing
     }
 
     /**
      * Reimplementation from RS_Document. Saves the parent graphic document.
      */
-    virtual bool save(bool isAutoSave = false);
+    bool save(bool isAutoSave) override;
 
     /**
      * Reimplementation from RS_Document. Does nothing.
      */
-    virtual bool saveAs(const QString& filename, RS2::FormatType type, bool force = false);
+    bool saveAs(const QString &filename, RS2::FormatType type, bool force) override; //force = false
 
     /**
      * Reimplementation from RS_Document. Does nothing.
      */
-    virtual bool open(const QString& , RS2::FormatType) {
-        // do nothing
-        return false;
-    }
-    virtual bool loadTemplate(const QString& , RS2::FormatType) {
+    bool open(const QString &, RS2::FormatType) override {
         // do nothing
         return false;
     }
 
-    friend std::ostream& operator << (std::ostream& os, const RS_Block& b);
+    bool loadTemplate(const QString &, RS2::FormatType) override {
+        // do nothing
+        return false;
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const RS_Block &b);
 
     /** 
 	 * sets a new name for the block. Only called by blocklist to
 	 * assure that block names stay unique.
 	 */
-    void setName(const QString& n) {
+    void setName(const QString &n) {
         _blockData.name = n;
     }
-    
-	/**
+
+    /**
      * @retval true if this block is frozen (invisible)
      * @retval false if this block isn't frozen (visible)
      */
@@ -172,17 +171,17 @@ public:
     void freeze(bool freeze) {
         _blockData.frozen = freeze;
     }
-	
+
     /**
      * Sets the parent documents modified status to 'm'.
      */
-	virtual void setModified(bool m);
+    void setModified(bool m) override;
 
     /**
      * Sets only this block modified status to 'm'
      * without touching parent document.
      */
-    void setModifiedFlag(bool m) { modified = m; }
+    void setModifiedFlag(bool m) { _modified = m; }
 
     /**
      * Sets the visibility of the Block in block list
@@ -217,11 +216,11 @@ public:
      *
      * @return block name chain to the block that contain searched insert
      */
-    QStringList findNestedInsert(const QString& bName);
+    QStringList findNestedInsert(const QString &bName);
 
 private:
-	//! Block data
-	RS_BlockData _blockData;
+    //! Block data
+    RS_BlockData _blockData;
 };
 
 

@@ -379,7 +379,7 @@ bool QC_MDIWindow::fileSave(bool &cancelled, bool isAutoSave) {
                 if (!info.isWritable())
                     return false;
                 QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-                ret = document->save();
+                ret = document->save(false);
                 QApplication::restoreOverrideCursor();
             }
         }

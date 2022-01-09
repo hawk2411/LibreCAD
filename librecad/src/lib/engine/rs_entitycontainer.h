@@ -42,7 +42,6 @@ public:
 
     explicit RS_EntityContainer(RS_EntityContainer *parent = nullptr, bool owner = true);
 
-    //RS_EntityContainer(const RS_EntityContainer& ec);
     ~RS_EntityContainer() override;
 
     RS_Entity *clone() const override;

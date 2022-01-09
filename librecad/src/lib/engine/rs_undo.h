@@ -86,7 +86,7 @@ private:
     void addUndoCycle(std::shared_ptr<RS_UndoCycle> const &cycle);
 
     //! List of undo list items. every item is something that can be undone.
-    std::vector<std::shared_ptr<RS_UndoCycle>> undoList;
+    std::vector<std::shared_ptr<RS_UndoCycle>> _undoList;
 
 //    /**
 //     * Index that points to the current position in the undo list.
@@ -102,14 +102,14 @@ private:
  * The item after will be redone (if there is an item) when redo
  * is called.
  */
-    std::vector<std::shared_ptr<RS_UndoCycle>>::const_iterator newUndoPointer {undoList.cend()};
+    std::vector<std::shared_ptr<RS_UndoCycle>>::const_iterator _undoPointer {_undoList.cend()};
 
     /**
      * Current undo cycle.
      */
-    std::shared_ptr<RS_UndoCycle> currentCycle{nullptr};
+    std::shared_ptr<RS_UndoCycle> _currentCycle{nullptr};
 
-    int refCount{0}; ///< reference counter for nested start/end calls
+    int _refCount{0}; ///< reference counter for nested start/end calls
 };
 
 
