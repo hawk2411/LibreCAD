@@ -88,21 +88,13 @@ private:
     //! List of undo list items. every item is something that can be undone.
     std::vector<std::shared_ptr<RS_UndoCycle>> _undoList;
 
-//    /**
-//     * Index that points to the current position in the undo list.
-//     * The item it points on will be undone the next time undo is called.
-//     * The item after will be redone (if there is an item) when redo
-//     * is called.
-//     */
-//    int undoPointer = -1;
-
     /**
- * Index that points to the current position in the undo list.
- * The item it points on will be undone the next time undo is called.
- * The item after will be redone (if there is an item) when redo
- * is called.
- */
-    std::vector<std::shared_ptr<RS_UndoCycle>>::const_iterator _undoPointer {_undoList.cend()};
+  * Index that points to the current position in the undo list.
+  * The item it points on will be undone the next time undo is called.
+  * The item after will be redone (if there is an item) when redo
+  * is called.
+  */
+    std::vector<std::shared_ptr<RS_UndoCycle>>::const_iterator _undoPointer{_undoList.cend()};
 
     /**
      * Current undo cycle.
