@@ -36,14 +36,9 @@
  */
 class RS_BlockListListener {
 public:
-    RS_BlockListListener() {}
+    RS_BlockListListener() = default;
 
-    virtual ~RS_BlockListListener() {}
-
-    /**
-     * Called when the active block changes.
-     */
-    virtual void blockActivated(RS_Block *) {}
+    virtual ~RS_BlockListListener() = default;
 
     /**
      * Called when a new block is added to the list.
@@ -53,12 +48,7 @@ public:
     /**
      * Called when a block is removed from the list.
      */
-    virtual void blockRemoved(RS_Block *) {}
-
-    /**
-     * Called when a block's attributes are modified.
-     */
-    virtual void blockEdited(RS_Block *) {}
+    virtual void blockRemoved(RS_Block *) {};
 
     /**
      * Called when a block's visibility is toggled. 

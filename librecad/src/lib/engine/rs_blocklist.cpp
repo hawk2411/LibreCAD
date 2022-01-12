@@ -169,24 +169,6 @@ bool RS_BlockList::rename(RS_Block *block, const QString &name) {
     return false;
 }
 
-
-/**
- * Changes a block's attributes. The attributes of block 'block'
- * are copied from block 'source'.
- * Listeners are notified.
- */
-/*
-void RS_BlockList::editBlock(RS_Block* block, const RS_Block& source) {
-	*block = source;
-	
-    for (unsigned i=0; i<blockListListeners.count(); ++i) {
-		RS_BlockListListener* l = blockListListeners.at(i);
- 
-		l->blockEdited(block);
-	}
-}
-*/
-
 /**
  * @return Pointer to the block with the given name or
  * \p nullptr if no such block was found.

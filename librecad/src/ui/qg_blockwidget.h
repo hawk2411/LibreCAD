@@ -99,9 +99,6 @@ public:
 
     virtual void blockAdded(RS_Block*);
 
-    virtual void blockEdited(RS_Block*) {
-        update();
-    }
     virtual void blockRemoved(RS_Block*) {
         update();
     }
