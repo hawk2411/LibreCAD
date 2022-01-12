@@ -50,10 +50,10 @@
  */
 class RS_UndoCycle {
 public:
-    /**
-     * @param type Type of undo item.
-     */
-    RS_UndoCycle(/*RS2::UndoType type*/) = default;
+//    /**
+//     * @param type Type of undo item.
+//     */
+//    RS_UndoCycle(/*RS2::UndoType type*/) = default;
 
     /**
      * Adds an Undoable to this Undo Cycle. Every Cycle can contain one or
@@ -78,7 +78,7 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, RS_UndoCycle &uc);
 
-    friend class RS_Undo;
+    //friend class RS_Undo;
 
     const std::set<RS_Undoable *>& getUndoables() const;
 

@@ -70,9 +70,9 @@ void RS_ActionDrawLineTangent2::trigger() {
 
         // upd. undo list:
         if (document) {
-            document->startUndoCycle();
-            document->addUndoable(newEntity);
-            document->endUndoCycle();
+            auto undoCycle = document->startUndoCycle();
+            undoCycle->addUndoable(newEntity);
+            document->endUndoCycle(std::move(undoCycle));
 		}
 		clearHighlighted();
 

@@ -80,9 +80,9 @@ void RS_ActionDrawEllipseCenter3Points::trigger() {
 
     // upd. undo list:
     if (document) {
-        document->startUndoCycle();
-        document->addUndoable(ellipse);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(ellipse);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
     graphicView->moveRelativeZero(ellipse->getCenter());

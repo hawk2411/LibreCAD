@@ -136,7 +136,7 @@ public:
     /**
      * Overwritten to set modified flag when undo cycle finished with undoable(s).
      */
-    void endUndoCycle() override;
+    void endUndoCycle(std::unique_ptr<RS_UndoCycle> undoCycle) override;
 
     void setGraphicView(RS_GraphicView *g) { _gv = g; }
 

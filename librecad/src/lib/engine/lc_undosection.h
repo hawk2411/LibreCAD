@@ -26,6 +26,9 @@
 #ifndef LC_UNDOSECTION_H
 #define LC_UNDOSECTION_H
 
+#include <memory>
+#include "rs_undocycle.h"
+
 class RS_Document;
 
 class RS_Undoable;
@@ -51,6 +54,7 @@ public:
 
 private:
     RS_Document *_document{nullptr};
+    std::unique_ptr<RS_UndoCycle> _undoCycle;
     bool _valid{true};
 };
 

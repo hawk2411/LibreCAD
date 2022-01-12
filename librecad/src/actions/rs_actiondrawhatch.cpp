@@ -138,9 +138,9 @@ void RS_ActionDrawHatch::trigger() {
 		container->addEntity(hatch.get());
 
 		if (document) {
-			document->startUndoCycle();
-			document->addUndoable(hatch.get());
-			document->endUndoCycle();
+			auto undoCycle = document->startUndoCycle();
+			undoCycle->addUndoable(hatch.get());
+			document->endUndoCycle(std::move(undoCycle));
 		}
 		hatch->update();
 

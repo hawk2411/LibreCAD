@@ -52,9 +52,9 @@ void RS_ActionDrawPoint::trigger() {
         container->addEntity(point);
 
         if (document) {
-            document->startUndoCycle();
-            document->addUndoable(point);
-            document->endUndoCycle();
+            auto undoCycle = document->startUndoCycle();
+            undoCycle->addUndoable(point);
+            document->endUndoCycle(std::move(undoCycle));
         }
 
 		graphicView->moveRelativeZero(*pt);

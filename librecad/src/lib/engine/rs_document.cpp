@@ -54,11 +54,11 @@ RS_Document::RS_Document(RS_EntityContainer *parent)
 /**
  * Overwritten to set modified flag when undo cycle finished with undoable(s).
  */
-void RS_Document::endUndoCycle() {
-    if (hasUndoable()) {
+void RS_Document::endUndoCycle(std::unique_ptr<RS_UndoCycle> undoCycle) {
+    if (hasUndoable(undoCycle.get())) {
         setModified(true);
     }
 
-    RS_Undo::endUndoCycle();
+    RS_Undo::endUndoCycle(std::move(undoCycle));
 }
 

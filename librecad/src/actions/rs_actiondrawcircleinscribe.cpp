@@ -92,9 +92,9 @@ void RS_ActionDrawCircleInscribe::trigger() {
 
     // upd. undo list:
 	if (document) {
-        document->startUndoCycle();
-        document->addUndoable(circle);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(circle);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
 	clearLines(false);

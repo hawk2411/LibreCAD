@@ -85,9 +85,9 @@ void RS_ActionDimDiametric::trigger() {
 
         // upd. undo list:
         if (document) {
-            document->startUndoCycle();
-            document->addUndoable(newEntity);
-            document->endUndoCycle();
+            auto undoCycle = document->startUndoCycle();
+            undoCycle->addUndoable(newEntity);
+            document->endUndoCycle(std::move(undoCycle));
         }
         RS_Vector rz = graphicView->getRelativeZero();
 		graphicView->redraw(RS2::RedrawDrawing);

@@ -75,9 +75,9 @@ void RS_ActionDrawEllipse4Points::trigger() {
     deletePreview();
     container->addEntity(en);
     if (document) {
-        document->startUndoCycle();
-        document->addUndoable(en);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(en);
+        document->endUndoCycle(std::move(undoCycle));
     }
     RS_Vector rz = graphicView->getRelativeZero();
     graphicView->redraw(RS2::RedrawDrawing);

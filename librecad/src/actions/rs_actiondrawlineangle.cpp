@@ -116,9 +116,9 @@ void RS_ActionDrawLineAngle::trigger() {
 
     // upd. undo list:
     if (document) {
-        document->startUndoCycle();
-        document->addUndoable(line);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(line);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
 	graphicView->moveRelativeZero(pPoints->data._startpoint);

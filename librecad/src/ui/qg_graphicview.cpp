@@ -901,9 +901,7 @@ void QG_GraphicView::layerActivated(RS_Layer *layer) {
     RS_Graphic* graphic = this->getGraphic();
     QList<RS_Entity*> clones;
 
-    if (graphic) {
-        graphic->startUndoCycle();
-    }
+    auto undoCycle = (graphic)? graphic->startUndoCycle() : std::unique_ptr<RS_UndoCycle>{nullptr};
 
     for (auto en: *container) {
         if (!en) continue;
@@ -916,23 +914,23 @@ void QG_GraphicView::layerActivated(RS_Layer *layer) {
         cl->setSelected(false);
         clones << cl;
 
-        if (!graphic) continue;
+        if (!undoCycle) continue;
 
         en->setUndoState(true);
-        graphic->addUndoable(en);
+        undoCycle->addUndoable(en);
     }
 
     for (auto cl: clones) {
         container->addEntity(cl);
         this->drawEntity(cl);
 
-        if (!graphic) continue;
+        if (!undoCycle) continue;
 
-        graphic->addUndoable(cl);
+        undoCycle->addUndoable(cl);
     }
 
     if (graphic) {
-        graphic->endUndoCycle();
+        graphic->endUndoCycle(std::move(undoCycle));
         graphic->updateInserts();
     }
 

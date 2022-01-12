@@ -89,9 +89,9 @@ void RS_ActionDrawEllipseInscribe::trigger() {
 
     // upd. undo list:
     if (document) {
-        document->startUndoCycle();
-        document->addUndoable(ellipse);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(ellipse);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
 	for(RS_Line*const p: pPoints->lines) {

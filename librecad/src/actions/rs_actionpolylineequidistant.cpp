@@ -138,9 +138,9 @@ bool RS_ActionPolylineEquidistant::makeContour() {
     if (entities.isEmpty()) {
         return false;
     }
-	if (document) {
-        document->startUndoCycle();
-    }
+
+    auto undoCycle = (document != nullptr) ? document->startUndoCycle() :std::unique_ptr<RS_UndoCycle>(nullptr);
+
     double neg = 1.0;
     if(bRightSide)
         neg = -1.0;
@@ -261,10 +261,10 @@ bool RS_ActionPolylineEquidistant::makeContour() {
         }
         if (!newPolyline->isEmpty()) {
             container->addEntity(newPolyline);
-			if (document) document->addUndoable(newPolyline);
+			if (undoCycle) undoCycle->addUndoable(newPolyline);
         }
     }
-	if (document) document->endUndoCycle();
+	if (document) document->endUndoCycle(std::move(undoCycle));
 
 	if (graphicView) {
         graphicView->redraw();

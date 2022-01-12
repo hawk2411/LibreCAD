@@ -76,9 +76,9 @@ void RS_ActionDrawCircle::trigger() {
 
     // upd. undo list:
     if (document) {
-        document->startUndoCycle();
-        document->addUndoable(circle);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(circle);
+        document->endUndoCycle(std::move(undoCycle));
     }
         graphicView->redraw(RS2::RedrawDrawing);
     graphicView->moveRelativeZero(circle->getCenter());

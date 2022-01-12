@@ -75,9 +75,9 @@ void LC_ActionDrawSplinePoints::trigger()
 	// upd. undo list:
 	if (document)
 	{
-		document->startUndoCycle();
-		document->addUndoable(s);
-		document->endUndoCycle();
+		auto undoCycle = document->startUndoCycle();
+		undoCycle->addUndoable(s);
+		document->endUndoCycle(std::move(undoCycle));
 	}
 
 	// upd view

@@ -31,8 +31,8 @@
 
 #include <memory>
 #include <vector>
+#include "rs_undocycle.h"
 
-class RS_UndoCycle;
 
 class RS_Undoable;
 
@@ -55,13 +55,13 @@ public:
 
     virtual std::size_t countRedoCycles();
 
-    virtual bool hasUndoable();
+    virtual bool hasUndoable(const RS_UndoCycle *undoCycle);
 
-    virtual void startUndoCycle();
+    virtual std::unique_ptr<RS_UndoCycle> startUndoCycle();
 
-    virtual void addUndoable(RS_Undoable *u);
+    //virtual void addUndoable(RS_Undoable *u);
 
-    virtual void endUndoCycle();
+    virtual void endUndoCycle(std::unique_ptr<RS_UndoCycle> undoCycle);
 
     /**
      * Must be overwritten by the implementing class and delete
@@ -99,7 +99,7 @@ private:
     /**
      * Current undo cycle.
      */
-    std::shared_ptr<RS_UndoCycle> _currentCycle{nullptr};
+    //std::shared_ptr<RS_UndoCycle> _currentCycle{nullptr};
 
     int _refCount{0}; ///< reference counter for nested start/end calls
 };

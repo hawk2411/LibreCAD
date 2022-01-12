@@ -132,9 +132,9 @@ void RS_ActionDrawLine::trigger()
 
     // update undo list
     if (document) {
-        document->startUndoCycle();
-        document->addUndoable(line);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(line);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
     graphicView->redraw(RS2::RedrawDrawing);

@@ -78,9 +78,9 @@ void RS_ActionDimAligned::trigger() {
 
     // upd. undo list:
     if (document) {
-        document->startUndoCycle();
-        document->addUndoable(dim);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(dim);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
     RS_Vector rz = graphicView->getRelativeZero();

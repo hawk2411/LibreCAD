@@ -196,7 +196,7 @@ bool RS_ActionPolylineSegment::convertPolyline(RS_Entity* selectedEntity, bool u
 
     bool closed = false;
     if (document) {
-        document->startUndoCycle();
+        auto undoCycle = document->startUndoCycle();
 
         bool revert = false;
         double bulge = 0.0;
@@ -212,7 +212,7 @@ bool RS_ActionPolylineSegment::convertPolyline(RS_Entity* selectedEntity, bool u
         while (!completed.isEmpty()) {
             RS_Entity* e2= completed.takeFirst();
             e2->setUndoState(true);
-            document->addUndoable(e2);
+            undoCycle->addUndoable(e2);
             if (e2->getStartpoint().distanceTo(end) < 1.0e-4) {
                 revert = false;
                 start = e2->getStartpoint();
@@ -247,8 +247,8 @@ bool RS_ActionPolylineSegment::convertPolyline(RS_Entity* selectedEntity, bool u
                 graphicView->drawEntity(newPolyline);
         }
 
-        document->addUndoable(newPolyline);
-        document->endUndoCycle();
+        undoCycle->addUndoable(newPolyline);
+        document->endUndoCycle(std::move(undoCycle));
     }
     RS_DEBUG->print("RS_ActionPolylineSegment::convertPolyline: OK");
     return closed;

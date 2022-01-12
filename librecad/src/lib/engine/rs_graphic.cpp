@@ -116,13 +116,13 @@ void RS_Graphic::removeLayer(RS_Layer *layer) {
         }
         // remove all entities on that layer:
         if (toRemove.size()) {
-            startUndoCycle();
+            auto undoCycle = startUndoCycle();
             for (auto e: toRemove) {
                 e->setUndoState(true);
                 e->setLayer("0");
-                addUndoable(e);
+                undoCycle->addUndoable(e);
             }
-            endUndoCycle();
+            endUndoCycle(std::move(undoCycle));
         }
 
         toRemove.clear();

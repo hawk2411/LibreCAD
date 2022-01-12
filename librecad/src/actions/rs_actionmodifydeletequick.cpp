@@ -60,9 +60,9 @@ void RS_ActionModifyDeleteQuick::trigger() {
             en->changeUndoState();
 
             if (document) {
-                document->startUndoCycle();
-                document->addUndoable(en);
-                document->endUndoCycle();
+                auto undoCycle = document->startUndoCycle();
+                undoCycle->addUndoable(en);
+                document->endUndoCycle(std::move(undoCycle));
             }
         }
 

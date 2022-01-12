@@ -88,9 +88,9 @@ void RS_ActionDrawArc::trigger() {
 
     // upd. undo list:
 	if (document) {
-        document->startUndoCycle();
-        document->addUndoable(arc);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(arc);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
         graphicView->redraw(RS2::RedrawDrawing);

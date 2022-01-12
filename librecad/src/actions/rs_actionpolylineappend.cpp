@@ -94,12 +94,12 @@ void RS_ActionPolylineAppend::trigger() {
 
 	// upd. undo list:
 	if (document) {
-		document->startUndoCycle();
+		auto u = document->startUndoCycle();
                 // RVT_PORT need to decide on how to handle undo cycles
                 originalPolyline->setUndoState(true);
-		document->addUndoable(originalPolyline);
-		document->addUndoable(pPoints->polyline);
-                document->endUndoCycle();
+		u->addUndoable(originalPolyline);
+		u->addUndoable(pPoints->polyline);
+                document->endUndoCycle(std::move(u));
 	}
 
 	// upd view

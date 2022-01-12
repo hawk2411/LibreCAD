@@ -79,36 +79,6 @@ void RS_ActionDrawLineRelAngle::trigger() {
                                 entity,
                                 angle,
                                 length);
-
-    /*
-       if (line) {
-		   RS_Entity* newEntity = nullptr;
-
-           newEntity = new RS_Line(container,
-                                   line->getData());
-
-           if (newEntity) {
-               newEntity->setLayerToActive();
-               newEntity->setPenToActive();
-               container->addEntity(newEntity);
-
-               // upd. undo list:
-               if (document) {
-                   document->startUndoCycle();
-                   document->addUndoable(newEntity);
-                   document->endUndoCycle();
-               }
-               graphicView->drawEntity(newEntity);
-               setStatus(SetEntity);
-           }
-           //reset();
-           delete line;
-		   line = nullptr;
-       } else {
-           RS_DEBUG->print("RS_ActionDrawLineRelAngle::trigger:"
-						   " Line is nullptr\n");
-       }
-    */
 }
 
 

@@ -56,9 +56,9 @@ void RS_ActionDrawLineFree::trigger() {
 			RS_Entity* ent=polyline->clone();
 			container->addEntity(ent);
 			if (document) {
-				document->startUndoCycle();
-				document->addUndoable(ent);
-				document->endUndoCycle();
+				auto undoCycle = document->startUndoCycle();
+				undoCycle->addUndoable(ent);
+				document->endUndoCycle(std::move(undoCycle));
 			}
 			graphicView->redraw(RS2::RedrawDrawing);
 			RS_DEBUG->print("RS_ActionDrawLineFree::trigger():"

@@ -30,7 +30,8 @@ LC_UndoSection::LC_UndoSection(RS_Document *doc, bool handleUndo) :
         _document(doc),
         _valid(handleUndo) {
     if (_valid && (_document != nullptr)) {
-        _document->startUndoCycle();
+        _undoCycle = _document->startUndoCycle();
+        _valid = (_undoCycle == nullptr);
     } else {
         _valid = false;
     }
@@ -39,12 +40,12 @@ LC_UndoSection::LC_UndoSection(RS_Document *doc, bool handleUndo) :
 
 LC_UndoSection::~LC_UndoSection() {
     if (_valid) {
-        _document->endUndoCycle();
+        _document->endUndoCycle(std::move(_undoCycle));
     }
 }
 
 void LC_UndoSection::addUndoable(RS_Undoable *undoable) {
     if (_valid) {
-        _document->addUndoable(undoable);
+        _undoCycle->addUndoable(undoable);
     }
 }

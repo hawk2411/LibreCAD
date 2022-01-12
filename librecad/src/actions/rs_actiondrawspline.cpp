@@ -102,9 +102,9 @@ void RS_ActionDrawSpline::trigger() {
 
     // upd. undo list:
     if (document) {
-        document->startUndoCycle();
-		document->addUndoable(pPoints->spline);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+		undoCycle->addUndoable(pPoints->spline);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
         // upd view

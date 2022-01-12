@@ -61,8 +61,8 @@ std::size_t RS_Undo::countRedoCycles() {
 /**
  * @return true, when current undo cycle has at least one undoable
  */
-bool RS_Undo::hasUndoable() {
-    return ((_currentCycle) && (!_currentCycle->empty()));
+bool RS_Undo::hasUndoable(const RS_UndoCycle *undoCycle) {
+    return ((undoCycle) && (!undoCycle->empty()));
 }
 
 
@@ -90,22 +90,22 @@ void RS_Undo::addUndoCycle(std::shared_ptr<RS_UndoCycle> const &cycle) {
  * Starts a new cycle for one undo step. Every undoable that is
  * added after calling this method goes into this cycle.
  */
-void RS_Undo::startUndoCycle() {
+std::unique_ptr<RS_UndoCycle> RS_Undo::startUndoCycle() {
     if (1 < ++_refCount) {
         // only the first fresh top call starts a new cycle
-        return;
+        return {nullptr};
     }
 
     // alloc new undoCycle
-    _currentCycle = std::make_shared<RS_UndoCycle>();
+    auto currentCycle = std::make_unique<RS_UndoCycle>();
 
     if (_undoPointer == _undoList.cend()) {
-        return;
+        return currentCycle;
     }
 
     auto removePointer = std::next(_undoPointer);
     if (removePointer == _undoList.cend()) {
-        return;
+        return currentCycle;
     }
 
     // if there are undo cycles behind undoPointer
@@ -143,30 +143,31 @@ void RS_Undo::startUndoCycle() {
     while (std::prev(_undoList.cend()) != _undoPointer) {
         _undoList.pop_back();
     }
+    return currentCycle;
 }
 
 
 /**
  * Adds an undoable to the current undo cycle.
  */
-void RS_Undo::addUndoable(RS_Undoable *u) {
-    RS_DEBUG->print("RS_Undo::%s(): begin", __func__);
-
-    if (_currentCycle == nullptr) {
-        RS_DEBUG->print(RS_Debug::D_CRITICAL, "RS_Undo::%s(): invalid currentCycle, possibly missing startUndoCycle()",
-                        __func__);
-        return;
-    }
-
-    _currentCycle->addUndoable(u);
-    RS_DEBUG->print("RS_Undo::%s(): end", __func__);
-}
+//void RS_Undo::addUndoable(RS_Undoable *u) {
+//    RS_DEBUG->print("RS_Undo::%s(): begin", __func__);
+//
+//    if (_currentCycle == nullptr) {
+//        RS_DEBUG->print(RS_Debug::D_CRITICAL, "RS_Undo::%s(): invalid currentCycle, possibly missing startUndoCycle()",
+//                        __func__);
+//        return;
+//    }
+//
+//    _currentCycle->addUndoable(u);
+//    RS_DEBUG->print("RS_Undo::%s(): end", __func__);
+//}
 
 
 /**
  * Ends the current undo cycle.
  */
-void RS_Undo::endUndoCycle() {
+void RS_Undo::endUndoCycle(std::unique_ptr<RS_UndoCycle> undoCycle) {
     if (_refCount > 0) {
         // compensate nested calls of start-/endUndoCycle()
         _refCount--;
@@ -180,13 +181,13 @@ void RS_Undo::endUndoCycle() {
         return;
     }
 
-    if (hasUndoable()) {
+    if (hasUndoable(undoCycle.get())) {
         // only keep the undoCycle, when it contains undoables
-        addUndoCycle(_currentCycle);
+
+        addUndoCycle(std::move(undoCycle));
     }
 
     setGUIButtons();
-    _currentCycle = nullptr; // invalidate currentCycle for next startUndoCycle()
 }
 
 

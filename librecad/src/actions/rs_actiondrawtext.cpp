@@ -115,9 +115,9 @@ void RS_ActionDrawText::trigger() {
         container->addEntity(text);
 
         if (document) {
-            document->startUndoCycle();
-            document->addUndoable(text);
-            document->endUndoCycle();
+            auto undoCycle = document->startUndoCycle();
+            undoCycle->addUndoable(text);
+            document->endUndoCycle(std::move(undoCycle));
         }
 
                 graphicView->redraw(RS2::RedrawDrawing);

@@ -104,9 +104,9 @@ void RS_ActionDrawCircleTan2_1P::trigger() {
 
     // upd. undo list:
     if (document) {
-        document->startUndoCycle();
-        document->addUndoable(c);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(c);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
 

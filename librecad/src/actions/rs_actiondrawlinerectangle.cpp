@@ -79,9 +79,9 @@ void RS_ActionDrawLineRectangle::trigger() {
 
     // upd. undo list:
     if (document) {
-        document->startUndoCycle();
-		document->addUndoable(polyline);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+		undoCycle->addUndoable(polyline);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
     // upd. view

@@ -26,16 +26,16 @@ TEST(UndoTest, Bla) {
     MyUndoImplementation rsUndo;
     MyUndoable undoable[2];
 
-    rsUndo.startUndoCycle();
+    auto undoCycle = rsUndo.startUndoCycle();
     ASSERT_EQ(rsUndo.countUndoCycles(), 0) << "Should be 0";
     ASSERT_EQ(rsUndo.countRedoCycles(), 0) << "Should be 0";
-    rsUndo.addUndoable(&undoable[0]);
-    rsUndo.endUndoCycle();
+    undoCycle->addUndoable(&undoable[0]);
+    rsUndo.endUndoCycle(std::move(undoCycle));
     ASSERT_EQ(rsUndo.countUndoCycles(), 1) << "Should be 1";
     ASSERT_EQ(rsUndo.countRedoCycles(), 0) << "Should be 0";
-    rsUndo.startUndoCycle();
-    rsUndo.addUndoable(&undoable[1]);
-    rsUndo.endUndoCycle();
+    undoCycle = rsUndo.startUndoCycle();
+    undoCycle->addUndoable(&undoable[1]);
+    rsUndo.endUndoCycle(std::move(undoCycle));
     ASSERT_EQ(rsUndo.countUndoCycles(), 2) << "Should be 2";
     ASSERT_EQ(rsUndo.countRedoCycles(), 0) << "Should be 0";
 
@@ -43,11 +43,11 @@ TEST(UndoTest, Bla) {
     ASSERT_EQ(rsUndo.countUndoCycles(), 1) << "Should be 1";
     ASSERT_EQ(rsUndo.countRedoCycles(), 1) << "Should be 1";
 
-    rsUndo.startUndoCycle();
+    undoCycle = rsUndo.startUndoCycle();
     ASSERT_EQ(rsUndo.countUndoCycles(), 1) << "Should be 1";
     ASSERT_EQ(rsUndo.countRedoCycles(), 0) << "Should be 0";
-    rsUndo.addUndoable(&undoable[1]);
-    rsUndo.endUndoCycle();
+    undoCycle->addUndoable(&undoable[1]);
+    rsUndo.endUndoCycle(std::move(undoCycle));
     ASSERT_EQ(rsUndo.countUndoCycles(), 2) << "Should be 2";
     ASSERT_EQ(rsUndo.countRedoCycles(), 0) << "Should be 0";
 

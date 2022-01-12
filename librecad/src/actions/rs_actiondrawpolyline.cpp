@@ -124,9 +124,9 @@ void RS_ActionDrawPolyline::trigger() {
 
     // upd. undo list:
     if (document) {
-        document->startUndoCycle();
-		document->addUndoable(pPoints->polyline);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+		undoCycle->addUndoable(pPoints->polyline);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
         // upd view

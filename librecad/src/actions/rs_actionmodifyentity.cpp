@@ -55,13 +55,13 @@ void RS_ActionModifyEntity::trigger() {
             graphicView->drawEntity(clone);
 
             if (document) {
-                document->startUndoCycle();
+                auto undoCycle = document->startUndoCycle();
 
-                document->addUndoable(clone);
+                undoCycle->addUndoable(clone);
                 en->setUndoState(true);
-                document->addUndoable(en);
+                undoCycle->addUndoable(en);
 
-                document->endUndoCycle();
+                document->endUndoCycle(std::move(undoCycle));
             }
             GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
         } else {

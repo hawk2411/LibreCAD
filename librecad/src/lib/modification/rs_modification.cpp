@@ -175,24 +175,24 @@ bool RS_Modification::changeAttributes(
         if (!en->isSelected()) continue;
 
         if (data.applyBlockDeep && en->rtti() == RS2::EntityInsert) {
-            RS_Block* bl = static_cast<RS_Insert*>(en)->getBlockForInsert();
+            RS_Block* bl = dynamic_cast<RS_Insert*>(en)->getBlockForInsert();
             blocks << bl;
         }
 
         RS_Entity* cl = en->clone();
         RS_Pen pen = cl->getPen(false);
 
-        if (data.changeLayer==true) {
+        if (data.changeLayer) {
             cl->setLayer(data.layer);
         }
 
-        if (data.changeColor==true) {
+        if (data.changeColor) {
             pen.setColor(data.pen.getColor());
         }
-        if (data.changeLineType==true) {
+        if (data.changeLineType) {
             pen.setLineType(data.pen.getLineType());
         }
-        if (data.changeWidth==true) {
+        if (data.changeWidth) {
             pen.setWidth(data.pen.getWidth());
         }
         cl->setPen(pen);
@@ -207,9 +207,8 @@ bool RS_Modification::changeAttributes(
         clones << cl;
 
         if (!graphic) continue;
-
         en->setUndoState(true);
-        graphic->addUndoable(en);
+        undo.addUndoable(en);
     }
 
     for (auto bl: blocks.values()) {
@@ -228,7 +227,7 @@ bool RS_Modification::changeAttributes(
         }
 
         if (graphic) {
-            graphic->addUndoable(cl);
+            undo.addUndoable(cl);
         }
     }
 

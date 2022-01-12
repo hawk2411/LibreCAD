@@ -62,7 +62,7 @@ void RS_ActionBlocksRemove::trigger() {
         containerList.push_back(bl->at(bi));
 	}
 
-    document->startUndoCycle();
+    auto undoCycle = document->startUndoCycle();
 
 	for (auto block: blocks) {
         if (nullptr == block) {
@@ -78,7 +78,7 @@ void RS_ActionBlocksRemove::trigger() {
 					if (e->rtti()==RS2::EntityInsert) {
 						RS_Insert* ins = (RS_Insert*)e;
 						if (ins->getName()==block->getName() && !ins->isUndone()) {
-                            document->addUndoable(ins);
+                            undoCycle->addUndoable(ins);
                             ins->setUndoState(true);
 							done = false;
 							break;
@@ -99,9 +99,9 @@ void RS_ActionBlocksRemove::trigger() {
 
         // Now remove block from the block list, but do not delete:
         block->setUndoState(true);
-        document->addUndoable(block);
+        undoCycle->addUndoable(block);
     }
-    document->endUndoCycle();
+    document->endUndoCycle(std::move(undoCycle));
 
     graphic->addBlockNotification();
 	graphic->updateInserts();

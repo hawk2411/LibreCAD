@@ -85,9 +85,9 @@ void RS_ActionDimLeader::trigger() {
 
         // upd. undo list:
 		if (document) {
-            document->startUndoCycle();
-            document->addUndoable(leader);
-            document->endUndoCycle();
+            auto undoCycle = document->startUndoCycle();
+            undoCycle->addUndoable(leader);
+            document->endUndoCycle(std::move(undoCycle));
         }
 
         deletePreview();

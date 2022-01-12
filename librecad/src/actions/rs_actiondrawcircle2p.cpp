@@ -88,9 +88,9 @@ void RS_ActionDrawCircle2P::trigger() {
 
         // upd. undo list:
         if (document) {
-            document->startUndoCycle();
-            document->addUndoable(circle);
-            document->endUndoCycle();
+            auto undoCycle =document->startUndoCycle();
+            undoCycle->addUndoable(circle);
+            document->endUndoCycle(std::move(undoCycle));
         }
 
         RS_Vector rz = graphicView->getRelativeZero();

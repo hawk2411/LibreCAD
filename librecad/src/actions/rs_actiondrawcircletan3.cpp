@@ -97,9 +97,9 @@ void RS_ActionDrawCircleTan3::trigger() {
 
 	// upd. undo list:
 	if (document) {
-		document->startUndoCycle();
-		document->addUndoable(circle);
-		document->endUndoCycle();
+		auto undoCycle = document->startUndoCycle();
+		undoCycle->addUndoable(circle);
+		document->endUndoCycle(std::move(undoCycle));
 	}
 
 	for(RS_AtomicEntity* const pc: pPoints->circles)

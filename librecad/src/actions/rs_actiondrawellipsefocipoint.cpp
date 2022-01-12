@@ -89,9 +89,9 @@ void RS_ActionDrawEllipseFociPoint::trigger() {
 
     // upd. undo list:
     if (document) {
-        document->startUndoCycle();
-        document->addUndoable(ellipse);
-        document->endUndoCycle();
+        auto undoCycle = document->startUndoCycle();
+        undoCycle->addUndoable(ellipse);
+        document->endUndoCycle(std::move(undoCycle));
     }
 
 //    RS_Vector rz = graphicView->getRelativeZero();
