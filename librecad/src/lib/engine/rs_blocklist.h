@@ -32,7 +32,9 @@
 #include <QList>
 
 class QString;
+
 class RS_Block;
+
 class RS_BlockListListener;
 
 /**
@@ -44,73 +46,91 @@ class RS_BlockListListener;
  */
 class RS_BlockList {
 public:
-    RS_BlockList(bool owner=false);
-	virtual ~RS_BlockList() = default;
+    explicit RS_BlockList(bool owner = false);
+
+    virtual ~RS_BlockList() = default;
 
     void clear();
+
     /**
      * @return Number of blocks available.
      */
-	int count() const;
+    int count() const;
 
     /**
      * @return Block at given position or NULL if i is out of range.
      */
-	RS_Block* at(int i);
-	RS_Block* at(int i) const;
-	//! \{ \brief range based loop
-	QList<RS_Block*>::iterator begin();
-	QList<RS_Block*>::iterator end();
-	QList<RS_Block*>::const_iterator begin()const;
-	QList<RS_Block*>::const_iterator end()const;
-	//! \}
+    RS_Block *at(int i);
 
-    void activate(const QString& name);
-    void activate(RS_Block* block);
+    RS_Block *at(int i) const;
+
+    //! \{ \brief range based loop
+    QList<RS_Block *>::iterator begin();
+
+    QList<RS_Block *>::iterator end();
+
+    QList<RS_Block *>::const_iterator begin() const;
+
+    QList<RS_Block *>::const_iterator end() const;
+    //! \}
+
+    void activate(const QString &name);
+
+    void activate(RS_Block *block);
+
     //! @return The active block of NULL if no block is activated.
-	RS_Block* getActive();
+    RS_Block *getActive();
 
-    virtual bool add(RS_Block* block, bool notify=true);
+    virtual bool add(RS_Block *block, bool notify); //notify = true
     virtual void addNotification();
-    virtual void remove(RS_Block* block);
-    virtual bool rename(RS_Block* block, const QString& name);
+
+    virtual void remove(RS_Block *block);
+
+    virtual bool rename(RS_Block *block, const QString &name);
+
     //virtual void editBlock(RS_Block* block, const RS_Block& source);
-    RS_Block* find(const QString& name);
-    QString newName(const QString& suggestion = "");
-    void toggle(const QString& name);
-    void toggle(RS_Block* block);
+    RS_Block *find(const QString &name);
+
+    QString newName(const QString &suggestion = "");
+
+    void toggle(const QString &name);
+
+    void toggle(RS_Block *block);
+
     void freezeAll(bool freeze);
 
-    void addListener(RS_BlockListListener* listener);
-    void removeListener(RS_BlockListListener* listener);
+    void addListener(RS_BlockListListener *listener);
 
-    bool isOwner() const {return owner;}
-    void setOwner(bool ow) {owner = ow;}
+    void removeListener(RS_BlockListListener *listener);
+
+    bool isOwner() const { return _owner; }
+
+    void setOwner(bool ow) { _owner = ow; }
 
     /**
      * Sets the block list modified status to 'm'.
      */
-	void setModified(bool m);
+    void setModified(bool m);
 
     /**
      * @retval true The block list has been modified.
      * @retval false The block list has not been modified.
      */
-	bool isModified() const;
+    bool isModified() const;
 
-    friend std::ostream& operator << (std::ostream& os, RS_BlockList& b);
+    friend std::ostream &operator<<(std::ostream &os, RS_BlockList &b);
 
 private:
     //! Is the list owning the blocks?
-    bool owner;
+    bool _owner;
     //! Blocks in the graphic
-    QList<RS_Block*> blocks;
+    QList<RS_Block *> _blocks;
     //! List of registered BlockListListeners
-    QList<RS_BlockListListener*> blockListListeners;
+    QList<RS_BlockListListener *> _blockListListeners;
     //! Currently active block
-    RS_Block* activeBlock;
+    RS_Block *_activeBlock;
     /** Flag set if the block list was modified and not yet saved. */
-    bool modified;
+    bool _modified;
 };
 
 #endif
