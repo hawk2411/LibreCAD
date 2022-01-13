@@ -48,18 +48,17 @@ class RS_Entity;
  */
 class RS_Clipboard {
 protected:
-    RS_Clipboard() {
-    }
+    RS_Clipboard() = default;
 
 public:
     /**
      * @return Instance to the unique clipboard object.
      */
     static RS_Clipboard *instance() {
-        if (uniqueInstance == NULL) {
-            uniqueInstance = new RS_Clipboard();
+        if (_uniqueInstance == nullptr) {
+            _uniqueInstance = new RS_Clipboard();
         }
-        return uniqueInstance;
+        return _uniqueInstance;
     }
 
     void clear();
@@ -68,54 +67,42 @@ public:
 
     bool hasBlock(const QString &name);
 
-    int countBlocks() {
-        return graphic.countBlocks();
-    }
-
     RS_Block *blockAt(int i) {
-        return graphic.blockAt(i);
+        return _graphic.blockAt(i);
     }
 
     void addLayer(RS_Layer *l);
 
     bool hasLayer(const QString &name);
 
-    int countLayers() {
-        return graphic.countLayers();
-    }
-
     RS_Layer *layerAt(int i) {
-        return graphic.layerAt(i);
+        return _graphic.layerAt(i);
     }
 
     void addEntity(RS_Entity *e);
 
     unsigned count() {
-        return graphic.count();
-    }
-
-    RS_Entity *entityAt(unsigned i) {
-        return graphic.entityAt(i);
+        return _graphic.count();
     }
 
     RS_Entity *firstEntity() {
-        return graphic.firstEntity(RS2::ResolveNone);
+        return _graphic.firstEntity(RS2::ResolveNone);
     }
 
     RS_Entity *nextEntity() {
-        return graphic.nextEntity(RS2::ResolveNone);
+        return _graphic.nextEntity(RS2::ResolveNone);
     }
 
     RS_Graphic *getGraphic() {
-        return &graphic;
+        return &_graphic;
     }
 
     friend std::ostream &operator<<(std::ostream &os, RS_Clipboard &cb);
 
-protected:
-    static RS_Clipboard *uniqueInstance;
+private:
+    static RS_Clipboard *_uniqueInstance;
 
-    RS_Graphic graphic;
+    RS_Graphic _graphic;
 };
 
 #endif

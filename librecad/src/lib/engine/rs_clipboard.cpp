@@ -30,47 +30,45 @@
 #include "rs_layer.h"
 #include "rs_entity.h"
 
-RS_Clipboard *RS_Clipboard::uniqueInstance = NULL;
+RS_Clipboard *RS_Clipboard::_uniqueInstance = nullptr;
 
 
 void RS_Clipboard::clear() {
-    graphic.clear();
-    graphic.clearBlocks();
-    graphic.clearLayers();
-    graphic.clearVariables();
+    _graphic.clear();
+    _graphic.clearBlocks();
+    _graphic.clearLayers();
+    _graphic.clearVariables();
 }
 
 
 void RS_Clipboard::addBlock(RS_Block *b) {
     if (b) {
-        graphic.addBlock(b, false);
+        _graphic.addBlock(b, false);
     }
 }
 
 
 bool RS_Clipboard::hasBlock(const QString &name) {
-    return (graphic.findBlock(name));
+    return (_graphic.findBlock(name));
 }
 
 
 void RS_Clipboard::addLayer(RS_Layer *l) {
     if (l) {
-        //graphic.addLayer(l->clone());
-        graphic.addLayer(l);
+        _graphic.addLayer(l);
     }
 }
 
 
 bool RS_Clipboard::hasLayer(const QString &name) {
-    return (graphic.findLayer(name));
+    return (_graphic.findLayer(name));
 }
 
 
 void RS_Clipboard::addEntity(RS_Entity *e) {
     if (e) {
-        //graphic.addEntity(e->clone());
-        graphic.addEntity(e);
-        e->reparent(&graphic);
+        _graphic.addEntity(e);
+        e->reparent(&_graphic);
     }
 }
 
@@ -78,7 +76,7 @@ void RS_Clipboard::addEntity(RS_Entity *e) {
  * Dumps the clipboard contents to stdout.
  */
 std::ostream &operator<<(std::ostream &os, RS_Clipboard &cb) {
-    os << "Clipboard: " << cb.graphic << "\n";
+    os << "Clipboard: " << cb._graphic << "\n";
 
     return os;
 }
