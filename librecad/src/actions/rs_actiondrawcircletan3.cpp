@@ -303,7 +303,7 @@ bool RS_ActionDrawCircleTan3::preparePreview(){
 
 		preview->addEntity(new RS_Point(preview.get(), RS_PointData(pPoints->candidates.at(i)->center)));
 		double d;
-		RS_Circle(nullptr, *pPoints->candidates.at(i)).getNearestPointOnEntity(pPoints->coord,false,&d);
+        RS_Circle(nullptr, *pPoints->candidates.at(i)).getNearestPointOnEntity(pPoints->coord, false, &d, nullptr);
 		double dCenter=pPoints->coord.distanceTo(pPoints->candidates.at(i)->center);
 		d=std::min(d,dCenter);
 		if(d<dist){

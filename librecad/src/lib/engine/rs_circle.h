@@ -47,7 +47,7 @@ struct RS_CircleData {
     bool operator==(RS_CircleData const &) const;
 
     RS_Vector center;
-    double radius;
+    double radius{0.0};
 };
 
 std::ostream &operator<<(std::ostream &os, const RS_CircleData &ad);
@@ -62,9 +62,9 @@ public:
     RS_Circle() = default;
 
     RS_Circle(RS_EntityContainer *parent,
-              const RS_CircleData &d);
+              const RS_CircleData &circleData);
 
-    ~RS_Circle() = default;
+    ~RS_Circle() override = default;
 
     RS_Entity *clone() const override;
 
@@ -80,18 +80,11 @@ public:
 
     /** @return Copy of data that defines the circle. **/
     const RS_CircleData &getData() const {
-        return data;
+        return _data;
     }
 
     RS_VectorSolutions getRefPoints() const override;
 
-    //no start/end point for whole circle
-    //        RS_Vector getStartpoint() const {
-    //                return data.center + RS_Vector(data.radius, 0.0);
-    //        }
-    //        RS_Vector getEndpoint() const {
-    //                return data.center + RS_Vector(data.radius, 0.0);
-    //        }
     /**
          * @return Direction 1. The angle at which the arc starts at
          * the startpoint.
@@ -116,8 +109,6 @@ public:
     /** Sets new radius. */
     void setRadius(double r);
 
-    double getAngleLength() const;
-
     double getLength() const override;
 
     bool isTangent(const RS_CircleData &circleData) const override;
@@ -135,8 +126,6 @@ public:
 
     std::vector<RS_Entity *> offsetTwoSides(const double &distance) const override;
 
-    RS_VectorSolutions createTan1_2P(const RS_AtomicEntity *circle, const std::vector<RS_Vector> &points);
-
     static RS_VectorSolutions createTan2(const std::vector<RS_AtomicEntity *> &circles, const double &r);
 
     /** solve one of the eight Appollonius Equations
@@ -145,36 +134,36 @@ with Cx the center of the common tangent circle, Rx the radius. Ci and Ri are th
 **/
     static std::vector<RS_Circle> solveAppolloniusSingle(const std::vector<RS_Circle> &circles);
 
-    std::vector<RS_Circle> createTan3(const std::vector<RS_AtomicEntity *> &circles);
+    static std::vector<RS_Circle> createTan3(const std::vector<RS_AtomicEntity *> &circles);
 
-    bool testTan3(const std::vector<RS_AtomicEntity *> &circles);
+    bool testTan3(const std::vector<RS_AtomicEntity *> &circles) const;
 
-    RS_Vector getMiddlePoint(void) const override;
+    RS_Vector getMiddlePoint() const override;
 
     RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                 double *dist = nullptr) const override;
+                                 double *dist) const override;
 
     RS_Vector getNearestPointOnEntity(const RS_Vector &coord,
-                                      bool onEntity = true, double *dist = NULL,
-                                      RS_Entity **entity = NULL) const override;
+                                      bool onEntity, double *dist,
+                                      RS_Entity **entity) const override;
 
     RS_Vector getNearestCenter(const RS_Vector &coord,
-                               double *dist = NULL) const override;
+                               double *dist) const override;
 
     RS_Vector getNearestMiddle(const RS_Vector &coord,
-                               double *dist = nullptr,
-                               int middlePoints = 1) const override;
+                               double *dist,
+                               int middlePoints) const override;
 
     RS_Vector getNearestDist(double distance,
                              const RS_Vector &coord,
-                             double *dist = NULL) const override;
+                             double *dist) const override;
 
     RS_Vector getNearestDist(double distance,
                              bool startp) const override;
 
     RS_Vector getNearestOrthTan(const RS_Vector &coord,
                                 const RS_Line &normal,
-                                bool onEntity = false) const override;
+                                bool onEntity) const override;
 
     bool offset(const RS_Vector &coord, const double &distance) override;
 
@@ -222,8 +211,13 @@ m0 x + m1 y + m2 =0
 
     void calculateBorders() override;
 
-protected:
-    RS_CircleData data;
+private:
+
+    void calcBorders();
+
+    RS_CircleData _data;
+
+
 };
 
 #endif

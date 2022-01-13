@@ -201,15 +201,6 @@ void RS_ActionDrawCircleTan1_2P::mouseMoveEvent(QMouseEvent* e) {
     RS_DEBUG->print("RS_ActionDrawCircleTan1_2P::mouseMoveEvent end");
 }
 
-//void RS_ActionDrawCircleTan1_2P::setRadius(const double& r)
-//{
-//    cData.radius=r;
-//    if(getStatus() == SetPoint2){
-//        RS_Circle c(nullptr,cData);
-//        centers=c.createTan1_2P(circle,cData.radius);
-//    }
-//}
-
 bool RS_ActionDrawCircleTan1_2P::getCenters(){
 	pPoints->centers.clear();
     if(getStatus() < SetPoint2) return false;
