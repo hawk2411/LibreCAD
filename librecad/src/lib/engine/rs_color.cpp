@@ -40,7 +40,7 @@ int RS_Color::toIntColor(void) const {
 //    int tmp2 = green() << 8;
 //    int tmp3 = tmp1+tmp2+blue();
     int cd = (red() << 16) + (green() << 8) + blue();
-        return cd;
+    return cd;
 
 }
 
@@ -73,22 +73,22 @@ void RS_Color::fromIntColor(int co) {
  * @return Distance between colors in percent, value ranging from 0 (identical)
  *         to 100 (maximum difference)
  */
-int RS_Color::colorDistance(const RS_Color& c) const {
+int RS_Color::colorDistance(const RS_Color &c) const {
 
-    int myRed {red()};
-    int otherRed {c.red()};
-    int redMean {(myRed + otherRed) / 2};
+    int myRed{red()};
+    int otherRed{c.red()};
+    int redMean{(myRed + otherRed) / 2};
 
     // Convert difference value to percentage using maximum color difference (764.834 / 100)
-    return std::lround( std::sqrt( std::pow(otherRed - myRed, 2) * (512 + redMean) / 256
-                                   + std::pow(c.green() - green(), 2) * 4
-                                   + std::pow(c.blue() - blue(), 2) * (767 - redMean) / 256)
-                        / 7.64834);
+    return std::lround(std::sqrt(std::pow(otherRed - myRed, 2) * (512 + redMean) / 256
+                                 + std::pow(c.green() - green(), 2) * 4
+                                 + std::pow(c.blue() - blue(), 2) * (767 - redMean) / 256)
+                       / 7.64834);
 }
 
-std::ostream& operator << (std::ostream& os, const RS_Color& c) {
-       os << " color: " << c.name().toLatin1().data()
+std::ostream &operator<<(std::ostream &os, const RS_Color &c) {
+    os << " color: " << c.name().toLatin1().data()
        << " flags: " << (c.getFlag(RS2::FlagByLayer) ? "RS2::FlagByLayer " : "")
        << (c.getFlag(RS2::FlagByBlock) ? "RS2::FlagByBlock " : "");
-       return os;
+    return os;
 }
