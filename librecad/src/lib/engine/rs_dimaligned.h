@@ -86,7 +86,7 @@ public:
 
     QString getMeasuredLabel() override;
 
-    void updateDim(bool autoText = false) override;
+    void updateDim(bool autoText) override;
 
     RS_Vector const &getExtensionPoint1() const;
 
@@ -119,9 +119,11 @@ public:
     friend std::ostream &operator<<(std::ostream &os,
                                     const RS_DimAligned &d);
 
-protected:
+private:
     /** Extended data. */
-    RS_DimAlignedData edata;
+    RS_DimAlignedData _edata;
+
+    void calcDimData();
 };
 
 #endif

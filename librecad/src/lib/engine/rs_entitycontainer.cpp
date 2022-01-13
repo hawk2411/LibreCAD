@@ -494,6 +494,7 @@ void RS_EntityContainer::adjustBorders(RS_Entity *entity) {
 }
 
 
+
 /**
  * Recalculates the borders of this entity container.
  */

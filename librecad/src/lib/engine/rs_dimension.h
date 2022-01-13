@@ -125,10 +125,10 @@ public:
      * to update the subentities which make up the dimension entity.
      */
 	void update() override{
-            updateDim();
+            updateDim(false);
         }
 
-    virtual void updateDim(bool autoText=false) = 0;
+    virtual void updateDim(bool autoText) = 0;
 
     void updateCreateDimensionLine(const RS_Vector& p1, const RS_Vector& p2,
                   bool arrow1=true, bool arrow2=true, bool autoText=false);
