@@ -226,7 +226,7 @@ void RS_DimAligned::updateDimPoint(){
 	RS_ConstructionLine tmpLine( nullptr,
         RS_ConstructionLineData(edata.extensionPoint1, edata.extensionPoint2));
 
-	RS_Vector tmpP1 = tmpLine.getNearestPointOnEntity(data.definitionPoint);
+	RS_Vector tmpP1 = tmpLine.getNearestPointOnEntity(data.definitionPoint, true, nullptr, nullptr);
 	data.definitionPoint += edata.extensionPoint2 - tmpP1;
 }
 
@@ -328,7 +328,7 @@ void RS_DimAligned::moveRef(const RS_Vector& ref, const RS_Vector& offset) {
 				RS_ConstructionLine l(nullptr,
                         RS_ConstructionLineData(edata.extensionPoint1,
                                 edata.extensionPoint2));
-				double d = l.getDistanceToPoint(data.definitionPoint+offset);
+				double d = l.getDistanceToPoint(data.definitionPoint+offset, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
 				double a = edata.extensionPoint2.angleTo(data.definitionPoint);
                 double ad = RS_Math::getAngleDifference(a,
 						edata.extensionPoint2.angleTo(data.definitionPoint+offset));

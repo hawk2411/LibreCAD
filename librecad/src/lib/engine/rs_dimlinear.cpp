@@ -109,8 +109,8 @@ QString RS_DimLinear::getMeasuredLabel() {
 								RS_ConstructionLineData(data.definitionPoint,
 														data.definitionPoint + dirDim));
 
-    RS_Vector dimP1 = dimLine.getNearestPointOnEntity(edata.extensionPoint1);
-    RS_Vector dimP2 = dimLine.getNearestPointOnEntity(edata.extensionPoint2);
+    RS_Vector dimP1 = dimLine.getNearestPointOnEntity(edata.extensionPoint1, true, nullptr, nullptr);
+    RS_Vector dimP2 = dimLine.getNearestPointOnEntity(edata.extensionPoint2, true, nullptr, nullptr);
 
     // Definitive dimension line:
     double dist = dimP1.distanceTo(dimP2) * getGeneralFactor();
@@ -180,8 +180,8 @@ void RS_DimLinear::updateDim(bool autoText) {
 		RS_ConstructionLineData(data.definitionPoint,
 								data.definitionPoint + dirDim));
 
-    RS_Vector dimP1 = dimLine.getNearestPointOnEntity(edata.extensionPoint1);
-    RS_Vector dimP2 = dimLine.getNearestPointOnEntity(edata.extensionPoint2);
+    RS_Vector dimP1 = dimLine.getNearestPointOnEntity(edata.extensionPoint1, true, nullptr, nullptr);
+    RS_Vector dimP2 = dimLine.getNearestPointOnEntity(edata.extensionPoint2, true, nullptr, nullptr);
 
     // Definitive dimension line:
     updateCreateDimensionLine(dimP1, dimP2, true, true, autoText);

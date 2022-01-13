@@ -104,7 +104,7 @@ void RS_ActionDimAligned::preparePreview() {
 							   edata->extensionPoint2+dirV));
 
     data->definitionPoint =
-        cl.getNearestPointOnEntity(data->definitionPoint);
+        cl.getNearestPointOnEntity(data->definitionPoint, true, nullptr, nullptr);
 }
 
 
