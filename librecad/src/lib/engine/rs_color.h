@@ -52,22 +52,24 @@ public:
 
     RS_Color(int r, int g, int b, int a) : QColor(r, g, b, a), RS_Flags() {}
 
+    //NOLINTNEXTLINE
     RS_Color(const QColor &c) : QColor(c), RS_Flags() {}
 
+    //NOLINTNEXTLINE
     RS_Color(const Qt::GlobalColor color) : QColor(color), RS_Flags() {}
 
-    RS_Color(const RS_Color &c) : QColor(c), RS_Flags() {
+    RS_Color(const RS_Color &c) : QColor(c), RS_Flags(c) {
         setFlags(c.getFlags());
     }
 
-    RS_Color(unsigned int f) : QColor(), RS_Flags(f) {}
+    explicit RS_Color(unsigned int f) : QColor(), RS_Flags(f) {}
 
-    RS_Color(QString name) : QColor(name), RS_Flags() {}
+    explicit RS_Color(const QString& name) : QColor(name), RS_Flags() {}
 
 
     /** @return A copy of this color without flags. */
     RS_Color stripFlags() const {
-        return RS_Color(red(), green(), blue());
+        return {red(), green(), blue()};
     }
 
     /** @return true if the color is defined by layer. */
@@ -80,18 +82,18 @@ public:
         return getFlag(RS2::FlagByBlock);
     }
 
-    QColor toQColor(void) const {
+    QColor toQColor() const {
         QColor c0;
         c0.setRgb(red(), green(), blue());
         return c0;
     }
 
     //These 3 methods are used for plugins
-    int toIntColor(void) const;
+    int toIntColor() const;
 
     void fromIntColor(int co);
 
-    int colorDistance(const RS_Color &c) const;
+    long colorDistance(const RS_Color &c) const;
 
     enum {
         Black = 0,

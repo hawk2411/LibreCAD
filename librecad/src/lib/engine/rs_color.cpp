@@ -73,7 +73,7 @@ void RS_Color::fromIntColor(int co) {
  * @return Distance between colors in percent, value ranging from 0 (identical)
  *         to 100 (maximum difference)
  */
-int RS_Color::colorDistance(const RS_Color &c) const {
+long RS_Color::colorDistance(const RS_Color &c) const {
 
     int myRed{red()};
     int otherRed{c.red()};
