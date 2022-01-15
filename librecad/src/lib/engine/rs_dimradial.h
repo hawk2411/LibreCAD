@@ -89,7 +89,7 @@ public:
 
 	void updateDim(bool autoText=false) override;
 
-    RS_Vector getDefinitionPoint() {
+    RS_Vector getDefinitionPoint() const override {
         return edata.definitionPoint;
     }
     double getLeader() {

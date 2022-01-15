@@ -133,7 +133,7 @@ public:
     void updateCreateDimensionLine(const RS_Vector& p1, const RS_Vector& p2,
                   bool arrow1=true, bool arrow2=true, bool autoText=false);
 
-    RS_Vector getDefinitionPoint() {
+    virtual RS_Vector getDefinitionPoint() const {
 		return data.definitionPoint;
     }
 
