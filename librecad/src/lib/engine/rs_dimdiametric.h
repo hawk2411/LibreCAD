@@ -85,7 +85,7 @@ public:
 
 	RS_VectorSolutions getRefPoints() const override;
 
-	QString getMeasuredLabel() override;
+	QString getMeasuredLabel() const override;
 
 	void updateDim(bool autoText=false) override;
 

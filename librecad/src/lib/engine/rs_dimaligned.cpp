@@ -125,7 +125,7 @@ RS_VectorSolutions RS_DimAligned::getRefPoints() const {
  * @return Automatically created label for the default
  * measurement of this dimension.
  */
-QString RS_DimAligned::getMeasuredLabel() {
+QString RS_DimAligned::getMeasuredLabel() const {
     double dist = _edata.extensionPoint1.distanceTo(_edata.extensionPoint2) * getGeneralFactor();
 
     RS_Graphic *graphic = getGraphic();

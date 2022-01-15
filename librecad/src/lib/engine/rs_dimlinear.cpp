@@ -100,7 +100,7 @@ void RS_DimLinear::setAngle(double a) {
  * @return Automatically created label for the default
  * measurement of this dimension.
  */
-QString RS_DimLinear::getMeasuredLabel() {
+QString RS_DimLinear::getMeasuredLabel() const {
     // direction of dimension line
 	RS_Vector dirDim = RS_Vector::polar(100.0, edata.angle);
 

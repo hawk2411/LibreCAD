@@ -35,9 +35,6 @@
  * Holds the data that defines a angular dimension entity.
  */
 struct RS_DimAngularData {
-    RS_DimAngularData();
-
-    RS_DimAngularData(const RS_DimAngularData &ed);
 
     /**
      * Constructor with initialisation.
@@ -63,36 +60,34 @@ std::ostream &operator<<(std::ostream &os, const RS_DimAngularData &dd);
  * Holds the DXF variables that defines a angular dimension entity.
  */
 struct LC_DimAngularVars {
-    explicit LC_DimAngularVars(const double _dimscale,
-                               const double _dimexo,
-                               const double _dimexe,
-                               const double _dimtxt,
-                               const double _dimgap,
-                               const double _arrowSize);
+    explicit LC_DimAngularVars(double _dimscale,
+                               double _dimexo,
+                               double _dimexe,
+                               double _dimtxt,
+                               double _dimgap,
+                               double _arrowSize);
 
-    explicit LC_DimAngularVars(const LC_DimAngularVars &av);
-
-    double scale(void) const {
+    double scale() const {
         return dimscale;
     }
 
-    double exo(void) const {
+    double exo() const {
         return dimexo;
     }
 
-    double exe(void) const {
+    double exe() const {
         return dimexe;
     }
 
-    double txt(void) const {
+    double txt() const {
         return dimtxt;
     }
 
-    double gap(void) const {
+    double gap() const {
         return dimgap;
     }
 
-    double arrow(void) const {
+    double arrow() const {
         return arrowSize;
     }
 
@@ -132,29 +127,29 @@ public:
      * @see getData()
      */
     RS_DimAngularData getEData() const {
-        return edata;
+        return _edata;
     }
 
-    QString getMeasuredLabel() override;
+    QString getMeasuredLabel() const override;
 
     RS_Vector getCenter() const override;
 
-    void updateDim(bool autoText = false) override;
+    void updateDim(bool autoText) override;
 
-    RS_Vector getDefinitionPoint1() {
-        return edata.definitionPoint1;
+    RS_Vector getDefinitionPoint1() const {
+        return _edata.definitionPoint1;
     }
 
-    RS_Vector getDefinitionPoint2() {
-        return edata.definitionPoint2;
+    RS_Vector getDefinitionPoint2() const {
+        return _edata.definitionPoint2;
     }
 
-    RS_Vector getDefinitionPoint3() {
-        return edata.definitionPoint3;
+    RS_Vector getDefinitionPoint3() const {
+        return _edata.definitionPoint3;
     }
 
-    RS_Vector getDefinitionPoint4() {
-        return edata.definitionPoint4;
+    RS_Vector getDefinitionPoint4() const {
+        return _edata.definitionPoint4;
     }
 
     void update() override;
@@ -169,14 +164,13 @@ public:
 
     void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
 
-protected:
-    /** Extended data. */
-    RS_DimAngularData edata;
-
 private:
-    void calcDimension(void);
+    /** Extended data. */
+    RS_DimAngularData _edata;
 
-    void fixDimension(void);
+    void calcDimension();
+
+    void fixDimension();
 
     void extensionLine(const RS_ConstructionLine &dimLine,
                        const RS_Vector &dimPoint,
@@ -186,24 +180,24 @@ private:
                        const RS_Pen &pen);
 
     void arrow(const RS_Vector &point,
-               const double angle,
-               const double direction,
-               const bool outsideArrows,
+               double angle,
+               double direction,
+               bool outsideArrows,
                const LC_DimAngularVars &av,
                const RS_Pen &pen);
 
-    RS_Vector dimDir1s;
-    RS_Vector dimDir1e;
-    RS_Vector dimDir2s;
-    RS_Vector dimDir2e;
-    RS_Vector dimDirRad;
-    RS_ConstructionLine dimLine1;
-    RS_ConstructionLine dimLine2;
-    double dimRadius{0.0};
-    double dimAngleL1{0.0};
-    double dimAngleL2{0.0};
-    double dimAngle{0.0};     ///< angle to dimension in rad
-    RS_Vector dimCenter;          ///< intersection point of the dimension lines
+    RS_Vector _dimDir1s;
+    RS_Vector _dimDir1e;
+    RS_Vector _dimDir2s;
+    RS_Vector _dimDir2e;
+    RS_Vector _dimDirRad;
+    RS_ConstructionLine _dimLine1;
+    RS_ConstructionLine _dimLine2;
+    double _dimRadius{0.0};
+    double _dimAngleL1{0.0};
+    double _dimAngleL2{0.0};
+    double _dimAngle{0.0};     ///< angle to dimension in rad
+    RS_Vector _dimCenter;          ///< intersection point of the dimension lines
 };
 
 #endif

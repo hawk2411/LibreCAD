@@ -118,7 +118,7 @@ public:
      * Needs to be implemented by the dimension class to return the
      * measurement of the dimension (e.g. 10.5 or 15'14").
      */
-    virtual QString getMeasuredLabel() = 0;
+    virtual QString getMeasuredLabel() const = 0;
 
     /**
      * Must be overwritten by implementing dimension entity class
@@ -169,7 +169,7 @@ public:
         return data.angle;
     }
 
-    double getGeneralFactor();
+    double getGeneralFactor() const;
     double getGeneralScale();
     double getArrowSize();
     double getTickSize();
@@ -187,7 +187,7 @@ public:
     RS_Color getTextColor();
     QString getTextStyle();
 
-        double getGraphicVariable(const QString& key, double defMM, int code);
+        double getGraphicVariable(const QString& key, double defMM, int code) const;
         static QString stripZerosAngle(QString angle, int zeros=0);
         static QString stripZerosLinear(QString linear, int zeros=1);
 

@@ -93,7 +93,7 @@ public:
 
 	virtual RS_VectorSolutions getRefPoints() const;
 
-    virtual QString getMeasuredLabel();
+    virtual QString getMeasuredLabel() const;
 
     virtual void updateDim(bool autoText=false);
 

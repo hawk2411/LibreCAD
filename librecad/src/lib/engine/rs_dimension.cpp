@@ -614,7 +614,7 @@ void RS_Dimension::updateCreateDimensionLine(const RS_Vector& p1,
 /**
  * @return general factor for linear dimensions.
  */
-double RS_Dimension::getGeneralFactor() {
+double RS_Dimension::getGeneralFactor() const {
     return getGraphicVariable("$DIMLFAC", 1.0, 40);
 }
 
@@ -764,7 +764,7 @@ QString RS_Dimension::getTextStyle() {
  * value converted to the local unit.
  */
 double RS_Dimension::getGraphicVariable(const QString& key, double defMM,
-                                        int code) {
+                                        int code) const {
 
     double v = getGraphicVariableDouble(key, RS_MINDOUBLE);
     if (v<=RS_MINDOUBLE) {

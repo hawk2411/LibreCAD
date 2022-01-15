@@ -83,7 +83,7 @@ RS_Entity* RS_DimDiametric::clone() const {
  * @return Automatically created label for the default
  * measurement of this dimension.
  */
-QString RS_DimDiametric::getMeasuredLabel() {
+QString RS_DimDiametric::getMeasuredLabel() const {
 
     // Definitive dimension line:
 	double dist = data.definitionPoint.distanceTo(edata.definitionPoint) * getGeneralFactor();

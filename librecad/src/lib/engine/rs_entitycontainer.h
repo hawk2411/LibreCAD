@@ -270,6 +270,9 @@ public:
 
 protected:
 
+
+    void calcBorders();
+
     /** entities in the container */
     QList<RS_Entity *> _entities;
 
