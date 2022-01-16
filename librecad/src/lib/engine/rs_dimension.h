@@ -67,27 +67,27 @@ struct RS_DimensionData : public RS_Flags {
                      double angle);
 
     /** Definition point */
-    RS_Vector definitionPoint;
+    RS_Vector _definitionPoint;
     /** Middle point of dimension text */
-    RS_Vector middleOfText;
+    RS_Vector _middleOfText;
     /** Vertical alignment */
-    RS_MTextData::VAlign valign;
+    RS_MTextData::VAlign _valign;
     /** Horizontal alignment */
-    RS_MTextData::HAlign halign;
+    RS_MTextData::HAlign _halign;
     /** Line spacing style */
-    RS_MTextData::MTextLineSpacingStyle lineSpacingStyle;
+    RS_MTextData::MTextLineSpacingStyle _lineSpacingStyle;
     /** Line spacing factor */
-    double lineSpacingFactor;
+    double _lineSpacingFactor;
     /**
     * Text string entered explicitly by user or null
     * or "<>" for the actual measurement or " " (one blank space)
     * for suppressing the text.
     */
-    QString text;
+    QString _text;
     /** Dimension style name */
-    QString style;
+    QString _style;
     /** Rotation angle of dimension text away from default orientation */
-    double angle;
+    double _angle;
 };
 
 std::ostream &operator<<(std::ostream &os,
@@ -101,18 +101,18 @@ std::ostream &operator<<(std::ostream &os,
 class RS_Dimension : public RS_EntityContainer {
 public:
     RS_Dimension(RS_EntityContainer *parent,
-                 const RS_DimensionData &d);
+                 RS_DimensionData d);
 
-    RS_Vector getNearestRef(const RS_Vector &coord, double *dist = nullptr) const override;
+    RS_Vector getNearestRef(const RS_Vector &coord, double *dist) const override;
 
-    RS_Vector getNearestSelectedRef(const RS_Vector &coord, double *dist = nullptr) const override;
+    RS_Vector getNearestSelectedRef(const RS_Vector &coord, double *dist) const override;
 
     /** @return Copy of data that defines the dimension. */
     RS_DimensionData getData() const {
-        return data;
+        return _data;
     }
 
-    QString getLabel(bool resolve = true);
+    QString getLabel(bool resolve = true) const;
 
     void setLabel(const QString &l);
 
@@ -136,74 +136,74 @@ public:
                                    bool arrow1 = true, bool arrow2 = true, bool autoText = false);
 
     virtual RS_Vector getDefinitionPoint() const {
-        return data.definitionPoint;
+        return _data._definitionPoint;
     }
 
-    RS_Vector getMiddleOfText() {
-        return data.middleOfText;
+    RS_Vector getMiddleOfText() const {
+        return _data._middleOfText;
     }
 
-    RS_MTextData::VAlign getVAlign() {
-        return data.valign;
+    RS_MTextData::VAlign getVAlign() const {
+        return _data._valign;
     }
 
-    RS_MTextData::HAlign getHAlign() {
-        return data.halign;
+    RS_MTextData::HAlign getHAlign() const {
+        return _data._halign;
     }
 
-    RS_MTextData::MTextLineSpacingStyle getLineSpacingStyle() {
-        return data.lineSpacingStyle;
+    RS_MTextData::MTextLineSpacingStyle getLineSpacingStyle() const {
+        return _data._lineSpacingStyle;
     }
 
-    double getLineSpacingFactor() {
-        return data.lineSpacingFactor;
+    double getLineSpacingFactor() const {
+        return _data._lineSpacingFactor;
     }
 
-    QString getText() {
-        return data.text;
+    QString getText() const {
+        return _data._text;
     }
 
-    QString getStyle() {
-        return data.style;
+    QString getStyle() const {
+        return _data._style;
     }
 
-    double getAngle() {
-        return data.angle;
+    double getAngle() const {
+        return _data._angle;
     }
 
     double getGeneralFactor() const;
 
-    double getGeneralScale();
+    double getGeneralScale() const;
 
-    double getArrowSize();
+    double getArrowSize() const;
 
-    double getTickSize();
+    double getTickSize() const;
 
-    double getExtensionLineExtension();
+    double getExtensionLineExtension() const;
 
-    double getExtensionLineOffset();
+    double getExtensionLineOffset() const;
 
-    double getDimensionLineGap();
+    double getDimensionLineGap() const;
 
-    double getTextHeight();
+    double getTextHeight() const;
 
     bool getInsideHorizontalText();
 
     bool getFixedLengthOn();
 
-    double getFixedLength();
+    double getFixedLength() const;
 
-    RS2::LineWidth getExtensionLineWidth();
+    RS2::LineWidth getExtensionLineWidth() const;
 
-    RS2::LineWidth getDimensionLineWidth();
+    RS2::LineWidth getDimensionLineWidth() const;
 
-    RS_Color getDimensionLineColor();
+    RS_Color getDimensionLineColor() const;
 
-    RS_Color getExtensionLineColor();
+    RS_Color getExtensionLineColor() const;
 
-    RS_Color getTextColor();
+    RS_Color getTextColor() const;
 
-    QString getTextStyle();
+    QString getTextStyle() const;
 
     double getGraphicVariable(const QString &key, double defMM, int code) const;
 
@@ -239,7 +239,7 @@ private:
 
 protected:
     /** Data common to all dimension entities. */
-    RS_DimensionData data;
+    RS_DimensionData _data;
 };
 
 #endif

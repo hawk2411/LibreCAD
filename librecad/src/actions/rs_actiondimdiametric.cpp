@@ -117,8 +117,8 @@ void RS_ActionDimDiametric::preparePreview() {
         }
 		double angle = center.angleTo(*pos);
 
-		data->definitionPoint.setPolar(radius, angle + M_PI);
-		data->definitionPoint += center;
+		data->_definitionPoint.setPolar(radius, angle + M_PI);
+		data->_definitionPoint += center;
 
 		edata->definitionPoint.setPolar(radius, angle);
 		edata->definitionPoint += center;
@@ -250,7 +250,7 @@ void RS_ActionDimDiametric::commandEvent(RS_CommandEvent* e) {
         double a = RS_Math::eval(c, &ok);
 		if (ok) {
 			pos->setPolar(1.0, RS_Math::deg2rad(a));
-			*pos += data->definitionPoint;
+			*pos += data->_definitionPoint;
             trigger();
             reset();
             setStatus(SetEntity);

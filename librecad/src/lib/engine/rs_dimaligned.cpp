@@ -118,7 +118,7 @@ RS_Entity *RS_DimAligned::clone() const {
 
 RS_VectorSolutions RS_DimAligned::getRefPoints() const {
     return RS_VectorSolutions({_edata.extensionPoint1, _edata.extensionPoint2,
-                               data.definitionPoint, data.middleOfText});
+                               _data._definitionPoint, _data._middleOfText});
 }
 
 /**
@@ -187,9 +187,9 @@ void RS_DimAligned::updateDim(bool autoText) {
     double dimexe = getExtensionLineExtension() * dimscale;
 
     // Angle from extension endpoints towards dimension line
-    double extAngle = _edata.extensionPoint2.angleTo(data.definitionPoint);
+    double extAngle = _edata.extensionPoint2.angleTo(_data._definitionPoint);
     // extension lines length
-    double extLength = _edata.extensionPoint2.distanceTo(data.definitionPoint);
+    double extLength = _edata.extensionPoint2.distanceTo(_data._definitionPoint);
 
     if (getFixedLengthOn()) {
         double dimfxl = getFixedLength() * dimscale;
@@ -241,8 +241,8 @@ void RS_DimAligned::updateDimPoint() {
     RS_ConstructionLine tmpLine(nullptr,
                                 RS_ConstructionLineData(_edata.extensionPoint1, _edata.extensionPoint2));
 
-    RS_Vector tmpP1 = tmpLine.getNearestPointOnEntity(data.definitionPoint, true, nullptr, nullptr);
-    data.definitionPoint += _edata.extensionPoint2 - tmpP1;
+    RS_Vector tmpP1 = tmpLine.getNearestPointOnEntity(_data._definitionPoint, true, nullptr, nullptr);
+    _data._definitionPoint += _edata.extensionPoint2 - tmpP1;
 }
 
 
@@ -302,7 +302,7 @@ void RS_DimAligned::stretch(const RS_Vector &firstCorner,
         move(offset);
     } else {
         //RS_Vector v = data.definitionPoint - edata.extensionPoint2;
-        double len = _edata.extensionPoint2.distanceTo(data.definitionPoint);
+        double len = _edata.extensionPoint2.distanceTo(_data._definitionPoint);
         double ang1 = _edata.extensionPoint1.angleTo(_edata.extensionPoint2)
                       + M_PI_2;
 
@@ -328,7 +328,7 @@ void RS_DimAligned::stretch(const RS_Vector &firstCorner,
         }
 
         RS_Vector v = RS_Vector::polar(len, ang2);
-        data.definitionPoint = _edata.extensionPoint2 + v;
+        _data._definitionPoint = _edata.extensionPoint2 + v;
     }
     updateDim(true);
 }
@@ -336,24 +336,24 @@ void RS_DimAligned::stretch(const RS_Vector &firstCorner,
 
 void RS_DimAligned::moveRef(const RS_Vector &ref, const RS_Vector &offset) {
 
-    if (ref.distanceTo(data.definitionPoint) < 1.0e-4) {
+    if (ref.distanceTo(_data._definitionPoint) < 1.0e-4) {
         RS_ConstructionLine l(nullptr,
                               RS_ConstructionLineData(_edata.extensionPoint1,
                                                       _edata.extensionPoint2));
-        double d = l.getDistanceToPoint(data.definitionPoint + offset, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
-        double a = _edata.extensionPoint2.angleTo(data.definitionPoint);
+        double d = l.getDistanceToPoint(_data._definitionPoint + offset, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
+        double a = _edata.extensionPoint2.angleTo(_data._definitionPoint);
         double ad = RS_Math::getAngleDifference(a,
-                                                _edata.extensionPoint2.angleTo(data.definitionPoint + offset));
+                                                _edata.extensionPoint2.angleTo(_data._definitionPoint + offset));
 
         if (fabs(ad) > M_PI_2 && fabs(ad) < 3.0 / 2.0 * M_PI) {
             a = RS_Math::correctAngle(a + M_PI);
         }
 
         RS_Vector v = RS_Vector::polar(d, a);
-        data.definitionPoint = _edata.extensionPoint2 + v;
+        _data._definitionPoint = _edata.extensionPoint2 + v;
         updateDim(true);
-    } else if (ref.distanceTo(data.middleOfText) < 1.0e-4) {
-        data.middleOfText.move(offset);
+    } else if (ref.distanceTo(_data._middleOfText) < 1.0e-4) {
+        _data._middleOfText.move(offset);
         updateDim(false);
     } else if (ref.distanceTo(_edata.extensionPoint1) < 1.0e-4) {
         double a1 = _edata.extensionPoint2.angleTo(_edata.extensionPoint1);

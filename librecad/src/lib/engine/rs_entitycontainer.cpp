@@ -1314,14 +1314,13 @@ RS_Vector RS_EntityContainer::getNearestRef(const RS_Vector &coord,
                                             double *dist) const {
 
     double minDist = RS_MAXDOUBLE;  // minimum measured distance
-    double curDist;                 // currently measured distance
     RS_Vector closestPoint(false);  // closest found endpoint
-    RS_Vector point;                // endpoint found
 
     for (auto en: _entities) {
 
         if (en->isVisible()) {
-            point = en->getNearestRef(coord, &curDist);
+            double curDist;                 // currently measured distance
+            RS_Vector point = en->getNearestRef(coord, &curDist); // endpoint found
             if (point.valid && curDist < minDist) {
                 closestPoint = point;
                 minDist = curDist;

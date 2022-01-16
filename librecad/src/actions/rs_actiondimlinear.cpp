@@ -113,8 +113,8 @@ void RS_ActionDimLinear::preparePreview() {
 			edata->extensionPoint2,
 			edata->extensionPoint2+dirV));
 
-	data->definitionPoint =
-		cl.getNearestPointOnEntity(data->definitionPoint, true, nullptr, nullptr);
+	data->_definitionPoint =
+		cl.getNearestPointOnEntity(data->_definitionPoint, true, nullptr, nullptr);
 
 }
 
@@ -141,7 +141,7 @@ void RS_ActionDimLinear::mouseMoveEvent(QMouseEvent* e) {
     case SetDefPoint:
 		if (edata->extensionPoint1.valid && edata->extensionPoint2.valid) {
             deletePreview();
-			data->definitionPoint = mouse;
+			data->_definitionPoint = mouse;
 
             preparePreview();
 
@@ -191,7 +191,7 @@ void RS_ActionDimLinear::coordinateEvent(RS_CoordinateEvent* e) {
         break;
 
     case SetDefPoint:
-		data->definitionPoint = pos;
+		data->_definitionPoint = pos;
         trigger();
         reset();
         setStatus(SetExtPoint1);

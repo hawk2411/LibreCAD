@@ -23,9 +23,9 @@
 ** This copyright notice MUST APPEAR in all copies of the script!
 **
 **********************************************************************/
-#include<iostream>
-#include<cmath>
-#include<string>
+#include <iostream>
+#include <cmath>
+#include <utility>
 #include "rs_information.h"
 #include "rs_line.h"
 #include "rs_dimension.h"
@@ -36,15 +36,15 @@
 #include "rs_debug.h"
 
 RS_DimensionData::RS_DimensionData() :
-        definitionPoint(false),
-        middleOfText(false),
-        valign(RS_MTextData::VABottom),
-        halign(RS_MTextData::HALeft),
-        lineSpacingStyle(RS_MTextData::Exact),
-        lineSpacingFactor(0.0),
-        text(""),
-        style(""),
-        angle(0.0) {}
+        _definitionPoint(false),
+        _middleOfText(false),
+        _valign(RS_MTextData::VABottom),
+        _halign(RS_MTextData::HALeft),
+        _lineSpacingStyle(RS_MTextData::Exact),
+        _lineSpacingFactor(0.0),
+        _text(""),
+        _style(""),
+        _angle(0.0) {}
 
 /**
  * Constructor with initialisation.
@@ -62,32 +62,32 @@ RS_DimensionData::RS_DimensionData() :
  * @param angle Rotation angle of dimension text away from
  *         default orientation.
  */
-RS_DimensionData::RS_DimensionData(const RS_Vector &_definitionPoint,
-                                   const RS_Vector &_middleOfText,
-                                   RS_MTextData::VAlign _valign,
-                                   RS_MTextData::HAlign _halign,
-                                   RS_MTextData::MTextLineSpacingStyle _lineSpacingStyle,
-                                   double _lineSpacingFactor,
-                                   QString _text,
-                                   QString _style,
-                                   double _angle) :
-        definitionPoint(_definitionPoint), middleOfText(_middleOfText), valign(_valign), halign(_halign),
-        lineSpacingStyle(_lineSpacingStyle), lineSpacingFactor(_lineSpacingFactor), text(_text), style(_style),
-        angle(_angle) {
+RS_DimensionData::RS_DimensionData(const RS_Vector &definitionPoint,
+                                   const RS_Vector &middleOfText,
+                                   RS_MTextData::VAlign valign,
+                                   RS_MTextData::HAlign halign,
+                                   RS_MTextData::MTextLineSpacingStyle lineSpacingStyle,
+                                   double lineSpacingFactor,
+                                   QString text,
+                                   QString style,
+                                   double angle) :
+        _definitionPoint(definitionPoint), _middleOfText(middleOfText), _valign(valign), _halign(halign),
+        _lineSpacingStyle(lineSpacingStyle), _lineSpacingFactor(lineSpacingFactor), _text(std::move(text)), _style(std::move(style)),
+        _angle(angle) {
 }
 
 std::ostream &operator<<(std::ostream &os,
                          const RS_DimensionData &dd) {
     os << "("
-       << dd.definitionPoint << ','
-       << dd.middleOfText << ','
-       << dd.valign << ','
-       << dd.halign << ','
-       << dd.lineSpacingStyle << ','
-       << dd.lineSpacingFactor << ','
-       << dd.text.toLatin1().data() << ','
-       << dd.style.toLatin1().data() << ','
-       << dd.angle
+       << dd._definitionPoint << ','
+       << dd._middleOfText << ','
+       << dd._valign << ','
+       << dd._halign << ','
+       << dd._lineSpacingStyle << ','
+       << dd._lineSpacingFactor << ','
+       << dd._text.toLatin1().data() << ','
+       << dd._style.toLatin1().data() << ','
+       << dd._angle
        << ")";
     return os;
 }
@@ -96,22 +96,22 @@ std::ostream &operator<<(std::ostream &os,
  * Constructor.
  */
 RS_Dimension::RS_Dimension(RS_EntityContainer *parent,
-                           const RS_DimensionData &d)
-        : RS_EntityContainer(parent), data(d) {
+                           RS_DimensionData d)
+        : RS_EntityContainer(parent), _data(std::move(d)) {
 }
 
 RS_Vector RS_Dimension::getNearestRef(const RS_Vector &coord,
                                       double *dist /*= nullptr*/) const {
     // override the RS_EntityContainer method
     // use RS_Entity instead for refpoint dragging
-    return RS_Entity::getNearestRef(coord, dist);
+    return RS_Entity::getNearestRef(coord, dist);   //NOLINT
 }
 
 RS_Vector RS_Dimension::getNearestSelectedRef(const RS_Vector &coord,
                                               double *dist /*= nullptr*/) const {
     // override the RS_EntityContainer method
     // use RS_Entity instead for refpoint dragging
-    return RS_Entity::getNearestSelectedRef(coord, dist);
+    return RS_Entity::getNearestSelectedRef(coord, dist);   //NOLINT
 }
 
 
@@ -123,26 +123,26 @@ RS_Vector RS_Dimension::getNearestSelectedRef(const RS_Vector &coord,
  *      label if appropriate.
  * @see getMeasuredLabel
  */
-QString RS_Dimension::getLabel(bool resolve) {
+QString RS_Dimension::getLabel(bool resolve) const {
     if (!resolve) {
-        return data.text;
+        return _data._text;
     }
 
     QString ret = "";
 
     // One space suppresses the text:
-    if (data.text == " ") {
+    if (_data._text == " ") {
         ret = "";
     }
 
         // No text prints actual measurement:
-    else if (data.text == "") {
+    else if (_data._text == "") {
         ret = getMeasuredLabel();
     }
 
         // Others print the text (<> is replaced by the measurement)
     else {
-        ret = data.text;
+        ret = _data._text;
         ret = ret.replace(QString("<>"), getMeasuredLabel());
     }
 
@@ -154,7 +154,7 @@ QString RS_Dimension::getLabel(bool resolve) {
  * Sets a new text for the label.
  */
 void RS_Dimension::setLabel(const QString &l) {
-    data.text = l;
+    _data._text = l;
 }
 
 
@@ -183,12 +183,9 @@ RS_VectorSolutions RS_Dimension::getIntersectionsLineContainer(
         for (RS_Entity *e: *c) {
             if (e->isConstruction(true) || e->isPointOnEntity(vp, tol)) {
                 // the intersection is at least on the container, now check the line:
-                if (infiniteLine) {
+                if ( (infiniteLine) ||  (l->isConstruction(true) || l->isPointOnEntity(vp, tol))) {
                     // The line is treated as infinitely long so we don't need to
                     // check if the intersection is on the line.
-                    solutions_filtered.push_back(vp);
-                    break;
-                } else if (l->isConstruction(true) || l->isPointOnEntity(vp, tol)) {
                     solutions_filtered.push_back(vp);
                     break;
                 }
@@ -207,7 +204,7 @@ RS_VectorSolutions RS_Dimension::getIntersectionsLineContainer(
                          < l->getProjectionValueAlongLine(rhs);
               });
 
-    return RS_VectorSolutions(solutions_sorted);
+    return {solutions_sorted};
 }
 
 
@@ -252,16 +249,16 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const RS_Vector &p1,
     RS_MTextData textData;
     RS_Vector textPos;
     double textAngle = 0.0;
-    bool autoText = !data.middleOfText.valid || forceAutoText;
+    bool autoText = !_data._middleOfText.valid || forceAutoText;
 
     if (autoText) {
         textPos = dimensionLine->getMiddlePoint();
 
         //// the next update should still be able to adjust this
         ////   auto text position. leave it invalid
-        data.middleOfText = textPos;
+        _data._middleOfText = textPos;
     } else {
-        textPos = data.middleOfText;
+        textPos = _data._middleOfText;
     }
 
     textData = RS_MTextData(textPos,
@@ -275,12 +272,12 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const RS_Vector &p1,
                             getTextStyle(),
                             textAngle);
 
-    RS_MText *text = new RS_MText(this, textData);
+    auto *text = new RS_MText(this, textData);
     text->setPen(RS_Pen(getTextColor(), RS2::WidthByBlock, RS2::SolidLine));
     text->setLayer(nullptr);
 
     // evaluate intersection between dim line and text
-    double textIntersectionLength = 0.0;
+
     double w = text->getUsedTextWidth() / 2 + dimgap;
     double h = text->getUsedTextHeight() / 2 + dimgap;
     // textCorner variables correspond to the corners of the text bounding box
@@ -293,13 +290,13 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const RS_Vector &p1,
             dimensionLine, &c,
             true  // treat line as infinitely long in both directions
     );
-    textIntersectionLength = sol1.get(0).distanceTo(sol1.get(1));
+    double textIntersectionLength =  sol1.get(0).distanceTo(sol1.get(1));
 
     // determine if we should use outside arrows
     bool outsideArrows = (textIntersectionLength + 3 * arrowSize) > distance;
 
     // add arrows
-    if (outsideArrows == false) {
+    if (!outsideArrows) {
         arrowAngle1 = dimensionLine->getAngle2();
         arrowAngle2 = dimensionLine->getAngle1();
     } else {
@@ -318,7 +315,7 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const RS_Vector &p1,
                            arrowAngle1);
             text->move(distH);
             textPos = text->getInsertionPoint();
-            data.middleOfText = textPos;
+            _data._middleOfText = textPos;
         }
     }
     double dimtsz = getTickSize() * dimscale;
@@ -465,7 +462,7 @@ void RS_Dimension::updateCreateAlignedTextDimensionLine(const RS_Vector &p1,
                RS2::LineByBlock);
 
     // Create dimension line:
-    RS_Line *dimensionLine = new RS_Line{this, p1, p2};
+    auto *dimensionLine = new RS_Line{this, p1, p2};
     dimensionLine->setPen(pen);
     dimensionLine->setLayer(nullptr);
     addEntity(dimensionLine);
@@ -477,8 +474,8 @@ void RS_Dimension::updateCreateAlignedTextDimensionLine(const RS_Vector &p1,
     bool corrected = false;
     double textAngle = RS_Math::makeAngleReadable(dimAngle1, true, &corrected);
 
-    if (data.middleOfText.valid && !forceAutoText) {
-        textPos = data.middleOfText;
+    if (_data._middleOfText.valid && !forceAutoText) {
+        textPos = _data._middleOfText;
     } else {
         textPos = dimensionLine->getMiddlePoint();
 
@@ -492,7 +489,7 @@ void RS_Dimension::updateCreateAlignedTextDimensionLine(const RS_Vector &p1,
 
         //// the next update should still be able to adjust this
         ////   auto text position. leave it invalid
-        data.middleOfText = textPos;
+        _data._middleOfText = textPos;
     }
 
     textData = RS_MTextData(textPos,
@@ -506,7 +503,7 @@ void RS_Dimension::updateCreateAlignedTextDimensionLine(const RS_Vector &p1,
                             getTextStyle(),
                             textAngle);
 
-    RS_MText *text = new RS_MText(this, textData);
+    auto *text = new RS_MText(this, textData);
     text->setPen(RS_Pen(getTextColor(), RS2::WidthByBlock, RS2::SolidLine));
     text->setLayer(nullptr);
 
@@ -521,7 +518,7 @@ void RS_Dimension::updateCreateAlignedTextDimensionLine(const RS_Vector &p1,
     addEntity(text);
 
     // add arrows
-    if (outsideArrows == false) {
+    if (!outsideArrows) {
         arrowAngle1 = dimensionLine->getAngle2();
         arrowAngle2 = dimensionLine->getAngle1();
     } else {
@@ -611,21 +608,21 @@ double RS_Dimension::getGeneralFactor() const {
 /**
  * @return general scale for dimensions.
  */
-double RS_Dimension::getGeneralScale() {
+double RS_Dimension::getGeneralScale() const {
     return getGraphicVariable("$DIMSCALE", 1.0, 40);
 }
 
 /**
  * @return arrow size in drawing units.
  */
-double RS_Dimension::getArrowSize() {
+double RS_Dimension::getArrowSize() const {
     return getGraphicVariable("$DIMASZ", 2.5, 40);
 }
 
 /**
  * @return tick size in drawing units.
  */
-double RS_Dimension::getTickSize() {
+double RS_Dimension::getTickSize() const {
     return getGraphicVariable("$DIMTSZ", 0., 40);
 }
 
@@ -633,7 +630,7 @@ double RS_Dimension::getTickSize() {
 /**
  * @return extension line overlength in drawing units.
  */
-double RS_Dimension::getExtensionLineExtension() {
+double RS_Dimension::getExtensionLineExtension() const {
     return getGraphicVariable("$DIMEXE", 1.25, 40);
 }
 
@@ -641,7 +638,7 @@ double RS_Dimension::getExtensionLineExtension() {
 /**
  * @return extension line offset from entities in drawing units.
  */
-double RS_Dimension::getExtensionLineOffset() {
+double RS_Dimension::getExtensionLineOffset() const {
     return getGraphicVariable("$DIMEXO", 0.625, 40);
 }
 
@@ -649,7 +646,7 @@ double RS_Dimension::getExtensionLineOffset() {
 /**
  * @return extension line gap to text in drawing units.
  */
-double RS_Dimension::getDimensionLineGap() {
+double RS_Dimension::getDimensionLineGap() const {
     return getGraphicVariable("$DIMGAP", 0.625, 40);
 }
 
@@ -657,7 +654,7 @@ double RS_Dimension::getDimensionLineGap() {
 /**
  * @return Dimension labels text height.
  */
-double RS_Dimension::getTextHeight() {
+double RS_Dimension::getTextHeight() const {
     return getGraphicVariable("$DIMTXT", 2.5, 40);
 }
 
@@ -692,7 +689,7 @@ bool RS_Dimension::getFixedLengthOn() {
 /**
  * @return Dimension fixed length for extension lines.
  */
-double RS_Dimension::getFixedLength() {
+double RS_Dimension::getFixedLength() const {
     return getGraphicVariable("$DIMFXL", 1.0, 40);
 }
 
@@ -700,7 +697,7 @@ double RS_Dimension::getFixedLength() {
 /**
  * @return extension line Width.
  */
-RS2::LineWidth RS_Dimension::getExtensionLineWidth() {
+RS2::LineWidth RS_Dimension::getExtensionLineWidth() const {
     return RS2::intToLineWidth(getGraphicVariableInt("$DIMLWE", -2)); //default -2 (RS2::WidthByBlock)
 }
 
@@ -708,14 +705,14 @@ RS2::LineWidth RS_Dimension::getExtensionLineWidth() {
 /**
  * @return dimension line Width.
  */
-RS2::LineWidth RS_Dimension::getDimensionLineWidth() {
+RS2::LineWidth RS_Dimension::getDimensionLineWidth() const {
     return RS2::intToLineWidth(getGraphicVariableInt("$DIMLWD", -2)); //default -2 (RS2::WidthByBlock)
 }
 
 /**
  * @return dimension line Color.
  */
-RS_Color RS_Dimension::getDimensionLineColor() {
+RS_Color RS_Dimension::getDimensionLineColor() const {
     return RS_FilterDXFRW::numberToColor(getGraphicVariableInt("$DIMCLRD", 0));
 }
 
@@ -723,7 +720,7 @@ RS_Color RS_Dimension::getDimensionLineColor() {
 /**
  * @return extension line Color.
  */
-RS_Color RS_Dimension::getExtensionLineColor() {
+RS_Color RS_Dimension::getExtensionLineColor() const {
     return RS_FilterDXFRW::numberToColor(getGraphicVariableInt("$DIMCLRE", 0));
 }
 
@@ -731,7 +728,7 @@ RS_Color RS_Dimension::getExtensionLineColor() {
 /**
  * @return dimension text Color.
  */
-RS_Color RS_Dimension::getTextColor() {
+RS_Color RS_Dimension::getTextColor() const {
     return RS_FilterDXFRW::numberToColor(getGraphicVariableInt("$DIMCLRT", 0));
 }
 
@@ -739,7 +736,7 @@ RS_Color RS_Dimension::getTextColor() {
 /**
  * @return text style for dimensions.
  */
-QString RS_Dimension::getTextStyle() {
+QString RS_Dimension::getTextStyle() const {
     return getGraphicVariableString("$DIMTXSTY", "standard");
 }
 
@@ -844,34 +841,34 @@ QString RS_Dimension::stripZerosLinear(QString linear, int zeros) {
 
 
 void RS_Dimension::move(const RS_Vector &offset) {
-    data.definitionPoint.move(offset);
-    data.middleOfText.move(offset);
+    _data._definitionPoint.move(offset);
+    _data._middleOfText.move(offset);
 }
 
 
 void RS_Dimension::rotate(const RS_Vector &center, const double &angle) {
     RS_Vector angleVector(angle);
-    data.definitionPoint.rotate(center, angleVector);
-    data.middleOfText.rotate(center, angleVector);
-    data.angle = RS_Math::correctAngle(data.angle + angle);
+    _data._definitionPoint.rotate(center, angleVector);
+    _data._middleOfText.rotate(center, angleVector);
+    _data._angle = RS_Math::correctAngle(_data._angle + angle);
 }
 
 void RS_Dimension::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
-    data.definitionPoint.rotate(center, angleVector);
-    data.middleOfText.rotate(center, angleVector);
-    data.angle = RS_Math::correctAngle(data.angle + angleVector.angle());
+    _data._definitionPoint.rotate(center, angleVector);
+    _data._middleOfText.rotate(center, angleVector);
+    _data._angle = RS_Math::correctAngle(_data._angle + angleVector.angle());
 }
 
 
 void RS_Dimension::scale(const RS_Vector &center, const RS_Vector &factor) {
-    data.definitionPoint.scale(center, factor);
-    data.middleOfText.scale(center, factor);
+    _data._definitionPoint.scale(center, factor);
+    _data._middleOfText.scale(center, factor);
 }
 
 
 void RS_Dimension::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) {
-    data.definitionPoint.mirror(axisPoint1, axisPoint2);
-    data.middleOfText.mirror(axisPoint1, axisPoint2);
+    _data._definitionPoint.mirror(axisPoint1, axisPoint2);
+    _data._middleOfText.mirror(axisPoint1, axisPoint2);
 }
 
 // EOF

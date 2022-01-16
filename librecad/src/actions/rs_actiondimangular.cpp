@@ -400,28 +400,28 @@ bool RS_ActionDimAngular::setData(const RS_Vector &dimPos, const bool calcCenter
         edata->definitionPoint1 = line1.getEndpoint();
         edata->definitionPoint2 = line1.getStartpoint();
         edata->definitionPoint3 = line2.getEndpoint();
-        data->definitionPoint   = line2.getStartpoint();
+        data->_definitionPoint   = line2.getStartpoint();
         break;
 
     case 1:
         edata->definitionPoint1 = line2.getEndpoint();
         edata->definitionPoint2 = line2.getStartpoint();
         edata->definitionPoint3 = line1.getStartpoint();
-        data->definitionPoint   = line1.getEndpoint();
+        data->_definitionPoint   = line1.getEndpoint();
         break;
 
     case 2:
         edata->definitionPoint1 = line2.getEndpoint();
         edata->definitionPoint2 = line2.getStartpoint();
         edata->definitionPoint3 = line1.getEndpoint();
-        data->definitionPoint   = line1.getStartpoint();
+        data->_definitionPoint   = line1.getStartpoint();
         break;
 
     case 3:
         edata->definitionPoint1 = line2.getStartpoint();
         edata->definitionPoint2 = line2.getEndpoint();
         edata->definitionPoint3 = line1.getEndpoint();
-        data->definitionPoint   = line1.getStartpoint();
+        data->_definitionPoint   = line1.getStartpoint();
         break;
     }
 

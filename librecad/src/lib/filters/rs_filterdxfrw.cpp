@@ -1036,8 +1036,8 @@ void RS_FilterDXFRW::addDimAngular3P(const DRW_DimAngular3p* data) {
     RS_Vector dp1(data->getFirstLine().x, data->getFirstLine().y);
     RS_Vector dp2(data->getSecondLine().x, data->getSecondLine().y);
     RS_Vector dp3(data->getVertexPoint().x, data->getVertexPoint().y);
-	RS_Vector dp4 = dimensionData.definitionPoint;
-	dimensionData.definitionPoint = RS_Vector(data->getVertexPoint().x, data->getVertexPoint().y);
+	RS_Vector dp4 = dimensionData._definitionPoint;
+	dimensionData._definitionPoint = RS_Vector(data->getVertexPoint().x, data->getVertexPoint().y);
 
     RS_DimAngularData d(dp1, dp2, dp3, dp4);
 
@@ -2659,7 +2659,7 @@ void RS_FilterDXFRW::writeDimension(RS_Dimension* d, dxfWriter* writer) {
         break; }
     case RS2::EntityDimAngular: {
 		RS_DimAngular* da = static_cast<RS_DimAngular*>(d);
-		if (da->getDefinitionPoint3() == da->getData().definitionPoint) {
+		if (da->getDefinitionPoint3() == da->getData()._definitionPoint) {
             DRW_DimAngular3p * dd = new DRW_DimAngular3p();
             dim = dd ;
             dim->type = 5+32;

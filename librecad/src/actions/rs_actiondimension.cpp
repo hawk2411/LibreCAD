@@ -107,8 +107,8 @@ bool RS_ActionDimension::isDimensionAction(RS2::ActionType type) {
 
 
 QString RS_ActionDimension::getText() const {
-	if (!data->text.isEmpty()) {
-		return data->text;
+	if (!data->_text.isEmpty()) {
+		return data->_text;
 	}
 
 	QString l = label;
@@ -130,7 +130,7 @@ QString RS_ActionDimension::getText() const {
 }
 
 void RS_ActionDimension::setText(const QString& t) {
-	data->text = t;
+	data->_text = t;
 }
 
 const QString& RS_ActionDimension::getLabel() const{

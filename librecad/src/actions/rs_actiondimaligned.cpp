@@ -66,7 +66,7 @@ void RS_ActionDimAligned::trigger() {
     RS_ActionDimension::trigger();
 
     preparePreview();
-    graphicView->moveRelativeZero(data->definitionPoint);
+    graphicView->moveRelativeZero(data->_definitionPoint);
 
 		//data->text = getText();
     RS_DimAligned* dim =
@@ -103,8 +103,8 @@ void RS_ActionDimAligned::preparePreview() {
 							   edata->extensionPoint2,
 							   edata->extensionPoint2+dirV));
 
-    data->definitionPoint =
-        cl.getNearestPointOnEntity(data->definitionPoint, true, nullptr, nullptr);
+    data->_definitionPoint =
+        cl.getNearestPointOnEntity(data->_definitionPoint, true, nullptr, nullptr);
 }
 
 
@@ -131,7 +131,7 @@ void RS_ActionDimAligned::mouseMoveEvent(QMouseEvent* e) {
     case SetDefPoint:
 		if (edata->extensionPoint1.valid && edata->extensionPoint2.valid) {
             deletePreview();
-			data->definitionPoint = mouse;
+			data->_definitionPoint = mouse;
 
             preparePreview();
 
@@ -183,7 +183,7 @@ void RS_ActionDimAligned::coordinateEvent(RS_CoordinateEvent* e) {
         break;
 
     case SetDefPoint:
-		data->definitionPoint = pos;
+		data->_definitionPoint = pos;
         trigger();
         reset();
         setStatus(SetExtPoint1);

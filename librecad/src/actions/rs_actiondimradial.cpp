@@ -104,7 +104,7 @@ void RS_ActionDimRadial::trigger() {
 
 void RS_ActionDimRadial::preparePreview() {
     if (entity) {
-		double angle = data->definitionPoint.angleTo(*pos);
+		double angle = data->_definitionPoint.angleTo(*pos);
         double radius=0.0;
         if (entity->rtti()==RS2::EntityArc) {
             radius = ((RS_Arc*)entity)->getRadius();
@@ -113,7 +113,7 @@ void RS_ActionDimRadial::preparePreview() {
         }
 
 		edata->definitionPoint.setPolar(radius, angle);
-		edata->definitionPoint += data->definitionPoint;
+		edata->definitionPoint += data->_definitionPoint;
     }
 }
 
@@ -162,13 +162,13 @@ void RS_ActionDimRadial::mouseReleaseEvent(QMouseEvent* e) {
                             en->rtti()==RS2::EntityCircle) {
                         entity = en;
                         if (entity->rtti()==RS2::EntityArc) {
-							data->definitionPoint =
+							data->_definitionPoint =
 								static_cast<RS_Arc*>(entity)->getCenter();
                         } else if (entity->rtti()==RS2::EntityCircle) {
-							data->definitionPoint =
+							data->_definitionPoint =
 								static_cast<RS_Circle*>(entity)->getCenter();
                         }
-						graphicView->moveRelativeZero(data->definitionPoint);
+						graphicView->moveRelativeZero(data->_definitionPoint);
                         setStatus(SetPos);
                     } else {
                         GetDialogFactory()->commandMessage(tr("Not a circle "
@@ -244,7 +244,7 @@ void RS_ActionDimRadial::commandEvent(RS_CommandEvent* e) {
         double a = RS_Math::eval(c, &ok);
 		if (ok) {
 			pos->setPolar(1.0, RS_Math::deg2rad(a));
-			*pos += data->definitionPoint;
+			*pos += data->_definitionPoint;
             trigger();
             reset();
             setStatus(SetEntity);

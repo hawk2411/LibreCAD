@@ -864,8 +864,8 @@ void RS_FilterJWW::addDimAngular3P(const DL_DimensionData& data,
         RS_Vector dp1(edata.dpx3, edata.dpy3);
         RS_Vector dp2(edata.dpx1, edata.dpy1);
         RS_Vector dp3(edata.dpx3, edata.dpy3);
-        RS_Vector dp4 = dimensionData.definitionPoint;
-        dimensionData.definitionPoint = RS_Vector(edata.dpx2, edata.dpy2);
+        RS_Vector dp4 = dimensionData._definitionPoint;
+        dimensionData._definitionPoint = RS_Vector(edata.dpx2, edata.dpy2);
 
         RS_DimAngularData d(dp1, dp2, dp3, dp4);
 
