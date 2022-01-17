@@ -64,7 +64,7 @@ std::ostream &operator<<(std::ostream &os,
 RS_DimRadial::RS_DimRadial(RS_EntityContainer *parent,
                            const RS_DimensionData &d,
                            const RS_DimRadialData &ed)
-        : RS_Dimension(parent, d), edata(ed) {}
+        : RS_Dimension(parent, d), _edata(ed) {}
 
 RS_Entity *RS_DimRadial::clone() const {
     auto *d = new RS_DimRadial(*this);
@@ -82,7 +82,7 @@ RS_Entity *RS_DimRadial::clone() const {
 QString RS_DimRadial::getMeasuredLabel() const {
 
     // Definitive dimension line:
-    double dist = _data._definitionPoint.distanceTo(edata.definitionPoint) * getGeneralFactor();
+    double dist = _data._definitionPoint.distanceTo(_edata.definitionPoint) * getGeneralFactor();
 
     RS_Graphic *graphic = getGraphic();
 
@@ -109,7 +109,7 @@ QString RS_DimRadial::getMeasuredLabel() const {
 
 
 RS_VectorSolutions RS_DimRadial::getRefPoints() const {
-    return RS_VectorSolutions({edata.definitionPoint,
+    return RS_VectorSolutions({_edata.definitionPoint,
                                _data._definitionPoint, _data._middleOfText});
 }
 
@@ -134,7 +134,7 @@ void RS_DimRadial::updateDim(bool autoText) {
     double dimscale = getGeneralScale();
 
     RS_Vector p1 = _data._definitionPoint;
-    RS_Vector p2 = edata.definitionPoint;
+    RS_Vector p2 = _edata.definitionPoint;
     double angle = p1.angleTo(p2);
 
     // text height (DIMTXT)
@@ -247,7 +247,7 @@ void RS_DimRadial::updateDim(bool autoText) {
 void RS_DimRadial::move(const RS_Vector &offset) {
     RS_Dimension::move(offset);
 
-    edata.definitionPoint.move(offset);
+    _edata.definitionPoint.move(offset);
     update();
 }
 
@@ -260,7 +260,7 @@ void RS_DimRadial::rotate(const RS_Vector &center, const double &angle) {
 void RS_DimRadial::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
     RS_Dimension::rotate(center, angleVector);
 
-    edata.definitionPoint.rotate(center, angleVector);
+    _edata.definitionPoint.rotate(center, angleVector);
     update();
 }
 
@@ -268,8 +268,8 @@ void RS_DimRadial::rotate(const RS_Vector &center, const RS_Vector &angleVector)
 void RS_DimRadial::scale(const RS_Vector &center, const RS_Vector &factor) {
     RS_Dimension::scale(center, factor);
 
-    edata.definitionPoint.scale(center, factor);
-    edata.leader *= factor.x;
+    _edata.definitionPoint.scale(center, factor);
+    _edata.leader *= factor.x;
     update();
 }
 
@@ -277,19 +277,19 @@ void RS_DimRadial::scale(const RS_Vector &center, const RS_Vector &factor) {
 void RS_DimRadial::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) {
     RS_Dimension::mirror(axisPoint1, axisPoint2);
 
-    edata.definitionPoint.mirror(axisPoint1, axisPoint2);
+    _edata.definitionPoint.mirror(axisPoint1, axisPoint2);
     update();
 }
 
 
 void RS_DimRadial::moveRef(const RS_Vector &ref, const RS_Vector &offset) {
 
-    if (ref.distanceTo(edata.definitionPoint) < 1.0e-4) {
-        double d = _data._definitionPoint.distanceTo(edata.definitionPoint);
-        double a = _data._definitionPoint.angleTo(edata.definitionPoint + offset);
+    if (ref.distanceTo(_edata.definitionPoint) < 1.0e-4) {
+        double d = _data._definitionPoint.distanceTo(_edata.definitionPoint);
+        double a = _data._definitionPoint.angleTo(_edata.definitionPoint + offset);
 
         RS_Vector v = RS_Vector::polar(d, a);
-        edata.definitionPoint = _data._definitionPoint + v;
+        _edata.definitionPoint = _data._definitionPoint + v;
         updateDim(true);
     } else if (ref.distanceTo(_data._middleOfText) < 1.0e-4) {
         _data._middleOfText.move(offset);

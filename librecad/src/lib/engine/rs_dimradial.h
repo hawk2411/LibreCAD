@@ -80,7 +80,7 @@ public:
      * @see getData()
      */
     RS_DimRadialData getEData() const {
-        return edata;
+        return _edata;
     }
 
     RS_VectorSolutions getRefPoints() const override;
@@ -90,11 +90,11 @@ public:
     void updateDim(bool autoText) override;
 
     RS_Vector getDefinitionPoint() const override {
-        return edata.definitionPoint;
+        return _edata.definitionPoint;
     }
 
     double getLeader() const {
-        return edata.leader;
+        return _edata.leader;
     }
 
     void move(const RS_Vector &offset) override;
@@ -114,7 +114,7 @@ public:
 
 protected:
     /** Extended data. */
-    RS_DimRadialData edata;
+    RS_DimRadialData _edata;
 };
 
 #endif
