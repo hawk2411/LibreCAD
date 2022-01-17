@@ -75,12 +75,12 @@ public:
                  const RS_DimensionData &d,
                  const RS_DimLinearData &ed);
 
-    virtual ~RS_DimLinear() = default;
+    ~RS_DimLinear() override = default;
 
-    virtual RS_Entity *clone() const;
+    RS_Entity *clone() const override;
 
     /**	@return RS2::EntityDimLinear */
-    virtual RS2::EntityType rtti() const {
+    RS2::EntityType rtti() const override {
         return RS2::EntityDimLinear;
     }
 
@@ -89,57 +89,57 @@ public:
      * @see getData()
      */
     RS_DimLinearData getEData() const {
-        return edata;
+        return _edata;
     }
 
-    virtual RS_VectorSolutions getRefPoints() const;
+    RS_VectorSolutions getRefPoints() const override;
 
-    virtual QString getMeasuredLabel() const;
+    QString getMeasuredLabel() const override;
 
-    virtual void updateDim(bool autoText = false);
+    void updateDim(bool autoText) override;
 
     RS_Vector getExtensionPoint1() const {
-        return edata.extensionPoint1;
+        return _edata.extensionPoint1;
     }
 
     RS_Vector getExtensionPoint2() const {
-        return edata.extensionPoint2;
+        return _edata.extensionPoint2;
     }
 
-    double getAngle() const {
-        return edata.angle;
+    double getAngle()  const override {
+        return _edata.angle;
     }
 
     void setAngle(double a);
 
     double getOblique() const {
-        return edata.oblique;
+        return _edata.oblique;
     }
 
-    virtual void move(const RS_Vector &offset);
+    void move(const RS_Vector &offset) override;
 
-    virtual void rotate(const RS_Vector &center, const double &angle);
+    void rotate(const RS_Vector &center, const double &angle) override;
 
-    virtual void rotate(const RS_Vector &center, const RS_Vector &angleVector);
+    void rotate(const RS_Vector &center, const RS_Vector &angleVector) override;
 
-    virtual void scale(const RS_Vector &center, const RS_Vector &factor);
+    void scale(const RS_Vector &center, const RS_Vector &factor) override;
 
-    virtual void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2);
+    void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
 
-    virtual bool hasEndpointsWithinWindow(const RS_Vector &v1, const RS_Vector &v2);
+    bool hasEndpointsWithinWindow(const RS_Vector &v1, const RS_Vector &v2) override;
 
-    virtual void stretch(const RS_Vector &firstCorner,
+    void stretch(const RS_Vector &firstCorner,
                          const RS_Vector &secondCorner,
-                         const RS_Vector &offset);
+                         const RS_Vector &offset) override;
 
-    virtual void moveRef(const RS_Vector &ref, const RS_Vector &offset);
+    void moveRef(const RS_Vector &ref, const RS_Vector &offset) override;
 
     friend std::ostream &operator<<(std::ostream &os,
                                     const RS_DimLinear &d);
 
-protected:
+private:
     /** Extended data. */
-    RS_DimLinearData edata;
+    RS_DimLinearData _edata;
 };
 
 #endif
