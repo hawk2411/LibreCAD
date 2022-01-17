@@ -67,7 +67,7 @@ RS_DimRadial::RS_DimRadial(RS_EntityContainer *parent,
         : RS_Dimension(parent, d), edata(ed) {}
 
 RS_Entity *RS_DimRadial::clone() const {
-    RS_DimRadial *d = new RS_DimRadial(*this);
+    auto *d = new RS_DimRadial(*this);
     d->setOwner(isOwner());
     d->initId();
     d->detach();
@@ -157,7 +157,7 @@ void RS_DimRadial::updateDim(bool autoText) {
                             getTextStyle(),
                             0.0);
 
-    RS_MText *text = new RS_MText(this, textData);
+    auto *text = new RS_MText(this, textData);
     double textWidth = text->getSize().x;
 
     double tick_size = getTickSize() * dimscale;
@@ -193,7 +193,7 @@ void RS_DimRadial::updateDim(bool autoText) {
     p3 += p1;
 
     // Create dimension line:
-    RS_Line *dimensionLine = new RS_Line{this, p1, p3};
+    auto *dimensionLine = new RS_Line{this, p1, p3};
     dimensionLine->setPen(pen);
     dimensionLine->setLayer(nullptr);
     addEntity(dimensionLine);

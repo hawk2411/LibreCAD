@@ -87,13 +87,13 @@ public:
 
     QString getMeasuredLabel() const override;
 
-    void updateDim(bool autoText = false) override;
+    void updateDim(bool autoText) override;
 
     RS_Vector getDefinitionPoint() const override {
         return edata.definitionPoint;
     }
 
-    double getLeader() {
+    double getLeader() const {
         return edata.leader;
     }
 
