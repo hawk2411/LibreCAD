@@ -193,41 +193,37 @@ public:
     /** : dn[0] x^2 + dn[1] xy + dn[2] y^2 =1 */
     bool createFromQuadratic(const std::vector<double> &dn);
 
-    /** : generic quadratic: A x^2 + C xy + B y^2 + D x + E y + F =0 */
-    bool createFromQuadratic(const LC_Quadratic &q);
-
     //! \}
     bool createInscribeQuadrilateral(const std::vector<RS_Line *> &lines);
 
-    RS_Vector getMiddlePoint(void) const override;
+    RS_Vector getMiddlePoint() const override;
 
     RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                 double *dist = nullptr) const override;
+                                 double *dist) const override;
 
     RS_Vector getNearestPointOnEntity(const RS_Vector &coord,
-                                      bool onEntity = true, double *dist = nullptr,
-                                      RS_Entity **entity = nullptr) const override;
+                                      bool onEntity, double *dist,
+                                      RS_Entity **entity) const override;
 
     RS_Vector getNearestCenter(const RS_Vector &coord,
-                               double *dist = nullptr) const override;
+                               double *dist) const override;
 
     RS_Vector getNearestMiddle(const RS_Vector &coord,
-                               double *dist = nullptr,
-                               int middlePoints = 1
-    ) const override;
+                               double *dist,
+                               int middlePoints) const override;
 
     RS_Vector getNearestDist(double distance,
                              const RS_Vector &coord,
-                             double *dist = nullptr) const override;
+                             double *dist) const override;
 
     RS_Vector getNearestOrthTan(const RS_Vector &coord,
                                 const RS_Line &normal,
-                                bool onEntity = false) const override;
+                                bool onEntity) const override;
 
-    bool switchMajorMinor(void); //switch major minor axes to keep major the longer ellipse radius
+    bool switchMajorMinor(); //switch major minor axes to keep major the longer ellipse radius
     void correctAngles();//make sure angleLength() is not more than 2*M_PI
     bool isPointOnEntity(const RS_Vector &coord,
-                         double tolerance = RS_TOLERANCE) const override;
+                         double tolerance) const override;  // = RS_TOLERANCE
 
     void move(const RS_Vector &offset) override;
 
@@ -284,6 +280,8 @@ public:
 
 protected:
     RS_EllipseData data;
+
+    void calcBorders();
 };
 
 #endif
