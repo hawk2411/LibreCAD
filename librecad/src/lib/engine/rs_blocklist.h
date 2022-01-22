@@ -28,7 +28,7 @@
 #ifndef RS_BLOCKLIST_H
 #define RS_BLOCKLIST_H
 
-
+#include <vector>
 #include <QList>
 
 class QString;
@@ -55,23 +55,23 @@ public:
     /**
      * @return Number of blocks available.
      */
-    int count() const;
+    std::size_t count() const;
 
     /**
      * @return Block at given position or NULL if i is out of range.
      */
-    RS_Block *at(int i);
+    RS_Block *at(std::size_t i);
 
-    RS_Block *at(int i) const;
+    RS_Block *at(std::size_t i) const;
 
     //! \{ \brief range based loop
-    QList<RS_Block *>::iterator begin();
+    std::vector<RS_Block *>::iterator begin();
 
-    QList<RS_Block *>::iterator end();
+    std::vector<RS_Block *>::iterator end();
 
-    QList<RS_Block *>::const_iterator begin() const;
+    std::vector<RS_Block *>::const_iterator begin() const;
 
-    QList<RS_Block *>::const_iterator end() const;
+    std::vector<RS_Block *>::const_iterator end() const;
     //! \}
 
     void activate(const QString &name);
@@ -124,7 +124,7 @@ private:
     //! Is the list owning the blocks?
     bool _owner;
     //! Blocks in the graphic
-    QList<RS_Block *> _blocks;
+    std::vector<RS_Block *> _blocks;
     //! List of registered BlockListListeners
     QList<RS_BlockListListener *> _blockListListeners;
     //! Currently active block

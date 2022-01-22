@@ -75,7 +75,7 @@ void QG_BlockModel::setBlockList(RS_BlockList* bl) {
         endResetModel();
         return;
     }
-    for (int i=0; i<bl->count(); ++i) {
+    for (std::size_t i=0; i<bl->count(); ++i) {
         if ( !bl->at(i)->isUndone() )
             listBlock.append(bl->at(i));
     }
@@ -476,7 +476,7 @@ void QG_BlockWidget::slotUpdateBlockList() {
     rx.setPattern(n);
     rx.setPatternSyntax(QRegExp::WildcardUnix);
 
-    for (int i = 0; i < blockList->count(); i++) {
+    for (std::size_t i = 0; i < blockList->count(); i++) {
         RS_Block* block = blockModel->getBlock(i);
         if (!block) continue;
         s = block->getName();
