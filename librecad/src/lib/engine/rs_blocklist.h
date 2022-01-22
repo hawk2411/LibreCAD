@@ -126,7 +126,7 @@ private:
     //! Blocks in the graphic
     std::vector<RS_Block *> _blocks;
     //! List of registered BlockListListeners
-    QList<RS_BlockListListener *> _blockListListeners;
+    std::vector<RS_BlockListListener *> _blockListListeners;
     //! Currently active block
     RS_Block *_activeBlock;
     /** Flag set if the block list was modified and not yet saved. */

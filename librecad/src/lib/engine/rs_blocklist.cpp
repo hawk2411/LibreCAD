@@ -273,7 +273,7 @@ void RS_BlockList::freezeAll(bool freeze) {
  * are notified when the block list changes.
  */
 void RS_BlockList::addListener(RS_BlockListListener *listener) {
-    _blockListListeners.append(listener);
+    _blockListListeners.push_back(listener);
 }
 
 
@@ -281,7 +281,9 @@ void RS_BlockList::addListener(RS_BlockListListener *listener) {
  * removes a BlockListListener from the list of listeners. 
  */
 void RS_BlockList::removeListener(RS_BlockListListener *listener) {
-    _blockListListeners.removeOne(listener);
+    auto it = std::remove(_blockListListeners.begin(), _blockListListeners.end(), listener);
+    if(it == _blockListListeners.end())
+    {}
 }
 
 std::size_t RS_BlockList::count() const {
