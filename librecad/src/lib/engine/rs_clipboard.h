@@ -67,10 +67,6 @@ public:
 
     bool hasBlock(const QString &name);
 
-    RS_Block *blockAt(int i) {
-        return _graphic.blockAt(i);
-    }
-
     void addLayer(RS_Layer *l);
 
     bool hasLayer(const QString &name);

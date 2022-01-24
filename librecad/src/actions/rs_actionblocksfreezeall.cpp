@@ -46,7 +46,7 @@ RS_ActionBlocksFreezeAll::RS_ActionBlocksFreezeAll(bool freeze,
 void RS_ActionBlocksFreezeAll::trigger() {
     RS_DEBUG->print("RS_ActionBlocksFreezeAll::trigger");
     if (graphic) {
-        graphic->freezeAllBlocks(freeze);
+        graphic->getBlockList()->freezeAll(freeze);
     }
         graphicView->redraw(RS2::RedrawDrawing);
 

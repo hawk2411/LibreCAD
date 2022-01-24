@@ -45,7 +45,7 @@ void RS_ActionBlocksAttributes::trigger() {
     RS_DEBUG->print("editing block attributes");
 
 	if (graphic) {
-        RS_Block* block = graphic->getActiveBlock();
+        RS_Block* block = graphic->getBlockList()->getActive();
         RS_BlockList* blockList = graphic->getBlockList();
         if (blockList && block) {
             QString oldName = block->getName();
@@ -73,7 +73,7 @@ void RS_ActionBlocksAttributes::trigger() {
                 // update the name of all inserts:
                 graphic->renameInserts(oldName, newName);
 
-                graphic->addBlockNotification();
+                graphic->getBlockList()->addNotification();
             }
         }
 

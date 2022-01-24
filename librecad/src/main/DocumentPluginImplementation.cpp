@@ -319,17 +319,17 @@ QString DocumentPluginImplementation::addBlockFromDisk(const QString &fullName) 
             RS_Layer *nl = ll->at(i)->clone();
             docGr->addLayer(nl);
         }
-        RS_BlockList *bl = g.getBlockList();
-        for (std::size_t i = 0; i < bl->count(); i++) {
-            auto *nb = (RS_Block *) bl->at(i)->clone();
-            docGr->addBlock(nb, true);
+        RS_BlockList *block_list = g.getBlockList();
+        for (auto block : *block_list) {
+            auto *nb = dynamic_cast<RS_Block*>(block->clone());
+            docGr->getBlockList()->add(nb, true);
         }
         for (unsigned int i = 0; i < g.count(); i++) {
             RS_Entity *e = g.entityAt(i)->clone();
             e->reparent(b);
             b->addEntity(e);
         }
-        docGr->addBlock(b, true);
+        docGr->getBlockList()->add(b, true);
         return name;
 
     } else {
@@ -410,8 +410,8 @@ QStringList DocumentPluginImplementation::getAllLayer() {
 QStringList DocumentPluginImplementation::getAllBlocks() {
     QStringList listName;
     RS_BlockList *listBlk = doc->getBlockList();
-    for (std::size_t i = 0; i < listBlk->count(); ++i) {
-        listName << listBlk->at(i)->getName();
+    for (auto block : *listBlk) {
+        listName << block->getName();
     }
     return listName;
 }

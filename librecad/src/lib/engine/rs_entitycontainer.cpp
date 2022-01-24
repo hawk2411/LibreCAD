@@ -720,7 +720,7 @@ void RS_EntityContainer::addRectangle(RS_Vector const &v0, RS_Vector const &v1) 
  * @param level
  */
 RS_Entity *RS_EntityContainer::firstEntity(RS2::ResolveLevel level) {
-    RS_Entity *e = nullptr;
+    RS_Entity *entity = nullptr;
     _entIdx = -1;
     switch (level) {
         case RS2::ResolveNone:
@@ -734,54 +734,54 @@ RS_Entity *RS_EntityContainer::firstEntity(RS2::ResolveLevel level) {
             _subContainer = nullptr;
             if (!_entities.isEmpty()) {
                 _entIdx = 0;
-                e = _entities.first();
+                entity = _entities.first();
             }
-            if (e && e->isContainer() && e->rtti() != RS2::EntityInsert) {
-                _subContainer = (RS_EntityContainer *) e;
-                e = ((RS_EntityContainer *) e)->firstEntity(level);
+            if (entity && entity->isContainer() && entity->rtti() != RS2::EntityInsert) {
+                _subContainer = (RS_EntityContainer *) entity;
+                entity = ((RS_EntityContainer *) entity)->firstEntity(level);
                 // empty container:
-                if (!e) {
+                if (!entity) {
                     _subContainer = nullptr;
-                    e = nextEntity(level);
+                    entity = nextEntity(level);
                 }
             }
-            return e;
+            return entity;
         }
         case RS2::ResolveAllButTextImage:
         case RS2::ResolveAllButTexts: {
             _subContainer = nullptr;
             if (!_entities.isEmpty()) {
                 _entIdx = 0;
-                e = _entities.first();
+                entity = _entities.first();
             }
-            if (e && e->isContainer() && e->rtti() != RS2::EntityText && e->rtti() != RS2::EntityMText) {
-                _subContainer = (RS_EntityContainer *) e;
-                e = ((RS_EntityContainer *) e)->firstEntity(level);
+            if (entity && entity->isContainer() && entity->rtti() != RS2::EntityText && entity->rtti() != RS2::EntityMText) {
+                _subContainer = (RS_EntityContainer *) entity;
+                entity = ((RS_EntityContainer *) entity)->firstEntity(level);
                 // empty container:
-                if (!e) {
+                if (!entity) {
                     _subContainer = nullptr;
-                    e = nextEntity(level);
+                    entity = nextEntity(level);
                 }
             }
-            return e;
+            return entity;
         }
 
         case RS2::ResolveAll: {
             _subContainer = nullptr;
             if (!_entities.isEmpty()) {
                 _entIdx = 0;
-                e = _entities.first();
+                entity = _entities.first();
             }
-            if (e && e->isContainer()) {
-                _subContainer = (RS_EntityContainer *) e;
-                e = ((RS_EntityContainer *) e)->firstEntity(level);
+            if (entity && entity->isContainer()) {
+                _subContainer = (RS_EntityContainer *) entity;
+                entity = ((RS_EntityContainer *) entity)->firstEntity(level);
                 // empty container:
-                if (!e) {
+                if (!entity) {
                     _subContainer = nullptr;
-                    e = nextEntity(level);
+                    entity = nextEntity(level);
                 }
             }
-            return e;
+            return entity;
         }
     }
 

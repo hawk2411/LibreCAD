@@ -105,7 +105,7 @@ public:
 
     RS_LayerList *getLayerList() override;
 
-    RS_BlockList *getBlockList() override;
+    RS_BlockList *getBlockList() const override;
 
     /**
      * Reimplementation from RS_Document. Does nothing.

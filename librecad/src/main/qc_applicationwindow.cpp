@@ -1405,7 +1405,7 @@ QC_MDIWindow *QC_ApplicationWindow::slotFileNew(RS_Document *doc) {
         graphic->addLayerListListener(layerWidget);
 
         // Link the block list to the block widget
-        graphic->addBlockListListener(blockWidget);
+        graphic->getBlockList()->addListener(blockWidget);
     }
     // Link the dialog factory to the coordinate widget:
     if (coordinateWidget) {
@@ -2446,7 +2446,7 @@ void QC_ApplicationWindow::slotFilePrintPreview(bool on) {
                     graphic->addLayerListListener(layerWidget);
 
                     // Link the block list to the block widget
-                    graphic->addBlockListListener(blockWidget);
+                    graphic->getBlockList()->addListener(blockWidget);
 
                 }
 

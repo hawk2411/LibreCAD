@@ -58,7 +58,7 @@ public:
 
     RS_LayerList *getLayerList() override { return &layerList; }
 
-    RS_BlockList *getBlockList() override { return &blockList; }
+    RS_BlockList* getBlockList() const override { return blockList.get(); }
 
     void newDoc() override;
 
@@ -137,51 +137,6 @@ public:
 
     void addLayerListListener(RS_LayerListListener *listener) {
         layerList.addListener(listener);
-    }
-
-    // Wrapper for block functions:
-    void clearBlocks() {
-        blockList.clear();
-    }
-
-    unsigned countBlocks() {
-        return blockList.count();
-    }
-
-    RS_Block *blockAt(unsigned i) {
-        return blockList.at(i);
-    }
-
-    RS_Block *getActiveBlock() {
-        return blockList.getActive();
-    }
-
-    virtual bool addBlock(RS_Block *block, bool notify)/* notify = true */ {
-        return blockList.add(block, notify);
-    }
-
-    virtual void addBlockNotification() {
-        blockList.addNotification();
-    }
-
-    virtual void removeBlock(RS_Block *block) {
-        blockList.remove(block);
-    }
-
-    RS_Block *findBlock(const QString &name) {
-        return blockList.find(name);
-    }
-
-    void toggleBlock(RS_Block *block) {
-        blockList.toggle(block);
-    }
-
-    void freezeAllBlocks(bool freeze) {
-        blockList.freezeAll(freeze);
-    }
-
-    void addBlockListListener(RS_BlockListListener *listener) {
-        blockList.addListener(listener);
     }
 
     // Wrappers for variable functions:
@@ -280,7 +235,7 @@ public:
      * @retval false The document has not been modified since it was last saved.
      */
     bool isModified() const override {
-        return _modified || layerList.isModified() || blockList.isModified();
+        return _modified || layerList.isModified() || blockList->isModified();
     }
 
     /**
@@ -289,7 +244,7 @@ public:
     void setModified(bool m) override {
         _modified = m;
         layerList.setModified(m);
-        blockList.setModified(m);
+        blockList->setModified(m);
     }
 
     //if set to true, will refuse to modify paper scale
@@ -366,8 +321,9 @@ private:
     QDateTime modifiedTime;
     QString currentFileName; //keep a copy of filename for the modifiedTime
 
+    RS_BlockList * test;
     RS_LayerList layerList;
-    RS_BlockList blockList;
+    std::unique_ptr<RS_BlockList> blockList = std::make_unique<RS_BlockList>(true);
     RS_VariableDict variableDict;
     RS2::CrosshairType crosshairType; //crosshair type used by isometric grid
     //if set to true, will refuse to modify paper scale

@@ -53,60 +53,56 @@ RS_FilterLFF::RS_FilterLFF() : RS_FilterInterface() {
  * Implementation of the method used for RS_Import to communicate
  * with this filter.
  *
- * @param g The graphic in which the entities from the file
+ * @param graphic The graphic in which the entities from the file
  * will be created or the graphics from which the entities are
  * taken to be stored in a file.
- */
-bool RS_FilterLFF::fileImport(RS_Graphic& g, const QString& file, RS2::FormatType /*type*/) {
+ *
+ * TODO RS_FilterLFF::fileImport and RS_FilterCXF::fileImport look very similar
+   */
+bool RS_FilterLFF::fileImport(RS_Graphic& graphic, const QString& file, RS2::FormatType /*type*/) {
     RS_DEBUG->print("LFF Filter: importing file '%s'...", file.toLatin1().data());
-
-    //this->graphic = &g;
-    bool success = false;
 
     // Load font file as we normally do, but the font doesn't own the
     //  letters (we'll add them to the graphic instead. Hence 'false').
     RS_Font font(file, false);
-    success = font.loadFont();
+    bool success = font.loadFont();
 
-    if (success==false) {
+    if (!success) {
         RS_DEBUG->print(RS_Debug::D_WARNING,
                         "Cannot open LFF file '%s'.", file.toLatin1().data());
 		return false;
     }
 
-    g.addVariable("Names",
-                         font.getNames().join(","), 0);
-    g.addVariable("LetterSpacing", font.getLetterSpacing(), 0);
-    g.addVariable("WordSpacing", font.getWordSpacing(), 0);
-    g.addVariable("LineSpacingFactor", font.getLineSpacingFactor(), 0);
-    g.addVariable("Authors", font.getAuthors().join(","), 0);
-    g.addVariable("License", font.getFileLicense(), 0);
-    g.addVariable("Created", font.getFileCreate(), 0);
+    graphic.addVariable("Names",
+                        font.getNames().join(","), 0);
+    graphic.addVariable("LetterSpacing", font.getLetterSpacing(), 0);
+    graphic.addVariable("WordSpacing", font.getWordSpacing(), 0);
+    graphic.addVariable("LineSpacingFactor", font.getLineSpacingFactor(), 0);
+    graphic.addVariable("Authors", font.getAuthors().join(","), 0);
+    graphic.addVariable("License", font.getFileLicense(), 0);
+    graphic.addVariable("Created", font.getFileCreate(), 0);
     if (!font.getEncoding().isEmpty()) {
-        g.addVariable("Encoding", font.getEncoding(), 0);
+        graphic.addVariable("Encoding", font.getEncoding(), 0);
     }
 
     font.generateAllFonts();
     RS_BlockList* letterList = font.getLetterList();
-    for (unsigned i=0; i<font.countLetters(); ++i) {
-        RS_Block* ch = font.letterAt(i);
+    for(RS_Block* letter : *letterList) {
 
         QString uCode;
-        uCode.setNum(ch->getName().at(0).unicode(), 16);
+        uCode.setNum(letter->getName().at(0).unicode(), 16);
         while (uCode.length()<4) {
-//            uCode.rightJustified(4, '0');
             uCode="0"+uCode;
         }
-        //ch->setName("[" + uCode + "] " + ch->getName());
-        //letterList->rename(ch, QString("[%1]").arg(ch->getName()));
-        letterList->rename(ch,
-                           QString("[%1] %2").arg(uCode).arg(ch->getName().at(0)));
+        letterList->rename(letter,
+                           QString("[%1] %2").arg(uCode).arg(letter->getName().at(0)));
 
-        g.addBlock(ch, false);
-        ch->reparent(&g);
+        graphic.getBlockList()->add(letter, false);
+        letter->reparent(&graphic);
+
     }
 
-    g.addBlockNotification();
+    graphic.getBlockList()->addNotification();
 	return true;
 }
 
@@ -176,7 +172,6 @@ bool RS_FilterLFF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
             QStringList authors = sa.split(',');
             RS_DEBUG->print("count: %d", authors.count());
 
-            QString a;
             for (int i = 0; i < authors.size(); ++i) {
                 ts << QString("# Author:            %1\n").arg(authors.at(i));
             }
@@ -190,10 +185,7 @@ bool RS_FilterLFF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         RS_DEBUG->print("RS_FilterLFF::fileExport: header: OK");
 
         // iterate through blocks (=letters of font)
-        for (unsigned i=0; i<g.countBlocks(); ++i) {
-            RS_Block* blk = g.blockAt(i);
-
-            RS_DEBUG->print("block: %d", i);
+        for(RS_Block* blk: *g.getBlockList()) {
 
             if (blk && !blk->isUndone()) {
                 RS_DEBUG->print("002a: %s",

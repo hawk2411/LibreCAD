@@ -57,21 +57,14 @@ public:
      */
     std::size_t count() const;
 
-    /**
-     * @return Block at given position or NULL if i is out of range.
-     */
-    RS_Block *at(std::size_t i);
-
-    RS_Block *at(std::size_t i) const;
-
     //! \{ \brief range based loop
-    std::vector<RS_Block *>::iterator begin();
+    std::vector<RS_Block *>::iterator begin() { return _blocks.begin(); }
 
-    std::vector<RS_Block *>::iterator end();
+    std::vector<RS_Block *>::iterator end() { return _blocks.end(); }
 
-    std::vector<RS_Block *>::const_iterator begin() const;
+    std::vector<RS_Block *>::const_iterator begin() const { return _blocks.cbegin(); }
 
-    std::vector<RS_Block *>::const_iterator end() const;
+    std::vector<RS_Block *>::const_iterator end() const { return _blocks.cend(); }
     //! \}
 
     void activate(const QString &name);

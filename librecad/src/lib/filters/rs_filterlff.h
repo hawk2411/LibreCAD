@@ -57,7 +57,7 @@ RS2::FormatType rtti() const{
         return (t==RS2::FormatLFF);
     }
 
-    virtual bool fileImport(RS_Graphic& g, const QString& file, RS2::FormatType /*type*/);
+    virtual bool fileImport(RS_Graphic& graphic, const QString& file, RS2::FormatType /*type*/);
 
     virtual bool fileExport(RS_Graphic& g, const QString& file, RS2::FormatType /*type*/);
 

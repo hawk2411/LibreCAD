@@ -330,8 +330,8 @@ void QC_MDIWindow::drawChars() {
     double sep = document->getGraphic()->getVariableDouble("LetterSpacing", 3.0);
     double h = sep / 3;
     sep = sep * 3;
-    for (std::size_t i = 0; i < bl->count(); ++i) {
-        RS_Block *ch = bl->at(i);
+    std::size_t i = 0;
+    for (auto ch : *bl) {
         RS_InsertData data(ch->getName(), RS_Vector(i * sep, 0), RS_Vector(1, 1), 0, 1, 1, RS_Vector(0, 0));
         RS_Insert *in = new RS_Insert(document, data);
         document->addEntity(in);
@@ -345,6 +345,7 @@ void QC_MDIWindow::drawChars() {
                            1, uCode, info.baseName(), 0);*/
         RS_MText *tx = new RS_MText(document, datatx);
         document->addEntity(tx);
+        i++;
     }
 
 }

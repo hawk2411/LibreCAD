@@ -1075,8 +1075,8 @@ void RS_FilterDXF::linkImage(const DL_ImageDefData& data) {
     }
 
     // update images in blocks:
-    for (uint i=0; i<graphic->countBlocks(); ++i) {
-        RS_Block* b = graphic->blockAt(i);
+    for (uint i=0; i<graphic->getBlockList()->count(); ++i) {
+        RS_Block* b = graphic->getBlockList()->at(i);
         for (RS_Entity* e=b->firstEntity(RS2::ResolveNone);
                 e!=NULL; e=b->nextEntity(RS2::ResolveNone)) {
             if (e->rtti()==RS2::EntityImage) {
@@ -1300,8 +1300,8 @@ bool RS_FilterDXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         RS_DEBUG->print("writing block records...");
         dxf.writeBlockRecord(*dw);
 
-        for (uint i=0; i<graphic->countBlocks(); ++i) {
-            RS_Block* blk = graphic->blockAt(i);
+        for (uint i=0; i<graphic->getBlockList()->count(); ++i) {
+            RS_Block* blk = graphic->getBlockList()->at(i);
                         dxf.writeBlockRecord(*dw,
                             std::string(blk->getName().toLocal8Bit()));
                         /*
@@ -1341,8 +1341,8 @@ bool RS_FilterDXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         writeBlock(*dw, &b3);
     }
 
-    for (uint i=0; i<graphic->countBlocks(); ++i) {
-        RS_Block* blk = graphic->blockAt(i);
+    for (uint i=0; i<graphic->getBlockList()->count(); ++i) {
+        RS_Block* blk = graphic->getBlockList()->at(i);
 
         // Save block if it's not a model or paper space:
         // Careful: other blocks with * / $ exist
@@ -1372,8 +1372,8 @@ bool RS_FilterDXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
         // IMAGEDEF's from images in entities and images in blocks
         QStringList written;
-        for (uint i=0; i<graphic->countBlocks(); ++i) {
-            RS_Block* block = graphic->blockAt(i);
+        for (uint i=0; i<graphic->getBlockList()->count(); ++i) {
+            RS_Block* block = graphic->getBlockList()->at(i);
             for (RS_Entity* e=block->firstEntity(RS2::ResolveAll);
                     e!=NULL;
                     e=block->nextEntity(RS2::ResolveAll)) {

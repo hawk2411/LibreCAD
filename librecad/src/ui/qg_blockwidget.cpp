@@ -65,21 +65,23 @@ bool blockLessThan(const RS_Block *s1, const RS_Block *s2) {
      return s1->getName() < s2->getName();
 }
 
-void QG_BlockModel::setBlockList(RS_BlockList* bl) {
+void QG_BlockModel::setBlockList(RS_BlockList* blockList) {
     /* since 4.6 the recommended way is to use begin/endResetModel()
      * TNick <nicu.tofan@gmail.com>
      */
     beginResetModel();
     listBlock.clear();
-    if (bl == NULL){
+    if (blockList == nullptr){
         endResetModel();
         return;
     }
-    for (std::size_t i=0; i<bl->count(); ++i) {
-        if ( !bl->at(i)->isUndone() )
-            listBlock.append(bl->at(i));
+
+    for(RS_Block* block: *blockList) {
+        if (!block->isUndone()) { listBlock.append(block); }
+
     }
-    setActiveBlock(bl->getActive());
+
+    setActiveBlock(blockList->getActive());
     std::sort( listBlock.begin(), listBlock.end(), blockLessThan);
 
     //called to force redraw
@@ -289,7 +291,7 @@ void QG_BlockWidget::restoreSelections() {
 
     QItemSelectionModel* selectionModel = blockView->selectionModel();
 
-    for (auto block: *blockList) {
+    for (const auto block: *blockList) {
         if (!block) continue;
         if (!block->isVisibleInBlockList()) continue;
         if (!block->isSelectedInBlockList()) continue;

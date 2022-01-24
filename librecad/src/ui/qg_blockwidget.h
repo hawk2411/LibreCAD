@@ -58,7 +58,7 @@ public:
     QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
     QModelIndex parent ( const QModelIndex & index ) const;
     QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
-    void setBlockList(RS_BlockList* bl);
+    void setBlockList(RS_BlockList* blockList);
     RS_Block *getBlock( int row );
     QModelIndex getIndex (RS_Block * blk);
 

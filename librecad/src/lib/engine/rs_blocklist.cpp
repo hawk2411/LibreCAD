@@ -290,33 +290,6 @@ std::size_t RS_BlockList::count() const {
     return _blocks.size();
 }
 
-/**
- * @return Block at given position or nullptr if i is out of range.
- */
-RS_Block *RS_BlockList::at(std::size_t i) {
-    return _blocks.at(i);
-}
-
-RS_Block *RS_BlockList::at(std::size_t  i) const {
-    return _blocks.at(i);
-}
-
-std::vector<RS_Block *>::iterator RS_BlockList::begin() {
-    return _blocks.begin();
-}
-
-std::vector<RS_Block *>::iterator RS_BlockList::end() {
-    return _blocks.end();
-}
-
-std::vector<RS_Block *>::const_iterator RS_BlockList::begin() const {
-    return _blocks.begin();
-}
-
-std::vector<RS_Block *>::const_iterator RS_BlockList::end() const {
-    return _blocks.end();
-}
-
 //! @return The active block of nullptr if no block is activated.
 RS_Block *RS_BlockList::getActive() {
     return _activeBlock;
@@ -356,12 +329,11 @@ bool RS_BlockList::isModified() const {
 std::ostream &operator<<(std::ostream &os, RS_BlockList &b) {
 
     os << "Blocklist: \n";
-    for (std::size_t i = 0; i < b.count(); ++i) {
-        RS_Block *blk = b.at(i);
-
+    for(auto blk : b) {
         os << *blk << "\n";
     }
 
     return os;
 }
+
 

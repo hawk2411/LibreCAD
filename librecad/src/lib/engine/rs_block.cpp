@@ -73,7 +73,7 @@ RS_LayerList *RS_Block::getLayerList() {
 }
 
 
-RS_BlockList *RS_Block::getBlockList() {
+RS_BlockList *RS_Block::getBlockList() const {
     RS_Graphic *g = getGraphic();
     if (g) {
         return g->getBlockList();
@@ -162,25 +162,25 @@ QStringList RS_Block::findNestedInsert(const QString &bName) {
 
     QStringList bnChain;
 
-    for (RS_Entity *e: _entities) {
-        if (e->rtti() == RS2::EntityInsert) {
-            RS_Insert *i = ((RS_Insert *) e);
-            QString iName = i->getName();
+    for (RS_Entity *entity: _entities) {
+        if (entity->rtti() == RS2::EntityInsert) {
+            RS_Insert *insert = ((RS_Insert *) entity);
+            QString iName = insert->getName();
             if (iName == bName) {
                 bnChain << _blockData.name;
                 break;
-            } else {
-                RS_BlockList *bList = getBlockList();
-                if (bList) {
-                    RS_Block *nestedBlock = bList->find(iName);
-                    if (nestedBlock) {
-                        QStringList nestedChain;
-                        nestedChain = nestedBlock->findNestedInsert(bName);
-                        if (!nestedChain.empty()) {
-                            bnChain << _blockData.name;
-                            bnChain << nestedChain;
-                            break;
-                        }
+            }
+
+            RS_BlockList *bList = getBlockList();
+            if (bList) {
+                RS_Block *nestedBlock = bList->find(iName);
+                if (nestedBlock) {
+                    QStringList nestedChain;
+                    nestedChain = nestedBlock->findNestedInsert(bName);
+                    if (!nestedChain.empty()) {
+                        bnChain << _blockData.name;
+                        bnChain << nestedChain;
+                        break;
                     }
                 }
             }

@@ -68,7 +68,7 @@ void RS_ActionEditUndo::trigger()
 			GetDialogFactory()->commandMessage(tr("Nothing to redo!"));
 	}
 
-    graphic->addBlockNotification();
+    graphic->getBlockList()->addNotification();
     graphic->setModified(true);
     document->updateInserts();
     graphicView->redraw(RS2::RedrawDrawing);

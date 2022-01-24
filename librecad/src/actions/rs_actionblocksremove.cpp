@@ -46,9 +46,9 @@ void RS_ActionBlocksRemove::trigger() {
 		return;
 	}
 
-	RS_BlockList* bl = graphic->getBlockList();
+	RS_BlockList* blockList = graphic->getBlockList();
 	QList<RS_Block*> blocks =
-            GetDialogFactory()->requestSelectedBlocksRemovalDialog(bl);
+            GetDialogFactory()->requestSelectedBlocksRemovalDialog(blockList);
 
     if (blocks.isEmpty()) {
         finish(false);
@@ -58,9 +58,9 @@ void RS_ActionBlocksRemove::trigger() {
 	// list of containers that might refer to the block via inserts:
 	std::vector<RS_EntityContainer*> containerList;
 	containerList.push_back(graphic);
-    for (std::size_t bi = 0; bi < bl->count(); bi++) {
-        containerList.push_back(bl->at(bi));
-	}
+    for(auto current_block : *blockList) {
+        containerList.push_back(current_block);
+    }
 
     auto undoCycle = document->startUndoCycle();
 
@@ -90,8 +90,8 @@ void RS_ActionBlocksRemove::trigger() {
 
 		// clear selection and active state
 		block->selectedInBlockList(false);
-		if (block == bl->getActive()) {
-			bl->activate(nullptr);
+		if (block == blockList->getActive()) {
+			blockList->activate(nullptr);
 		}
 
 		// close all windows that are editing this block:
@@ -103,10 +103,10 @@ void RS_ActionBlocksRemove::trigger() {
     }
     document->endUndoCycle(std::move(undoCycle));
 
-    graphic->addBlockNotification();
+    graphic->getBlockList()->addNotification();
 	graphic->updateInserts();
 	graphicView->redraw(RS2::RedrawDrawing);
-    bl->activate(nullptr);
+    blockList->activate(nullptr);
 
 	finish(false);
 	GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());

@@ -509,7 +509,7 @@ void RS_Modification::paste(const RS_PasteData& data, RS_Graphic* source) {
         name_old = data.blockName;
     }
     QString name_new = name_old;
-    if (graphic->findBlock(name_old)) {
+    if (graphic->getBlockList()->find(name_old)) {
         name_new = graphic->getBlockList()->newName(name_old);
         RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_Modification::paste: paste block name: %s", name_new.toLatin1().data());
     }
@@ -519,7 +519,7 @@ void RS_Modification::paste(const RS_PasteData& data, RS_Graphic* source) {
     RS_BlockData db = RS_BlockData(name_new, RS_Vector(0.0, 0.0), false);
     RS_Block* b = new RS_Block(graphic, db);
     b->reparent(graphic);
-    graphic->addBlock(b, true);
+    graphic->getBlockList()->add(b, true);
 
     // create insert object for the paste block
     RS_InsertData di = RS_InsertData(b->getName(), ip, vfactor, data.angle, 1, 1, RS_Vector(0.0,0.0));
@@ -571,7 +571,7 @@ void RS_Modification::paste(const RS_PasteData& data, RS_Graphic* source) {
         document->removeEntity(i);
         b->clear();
         // if this call a destructor for the block?
-        graphic->removeBlock(b);
+        graphic->getBlockList()->remove(b);
     } else {
         undo.addUndoable(i);
     }
@@ -646,7 +646,7 @@ bool RS_Modification::pasteContainer(RS_Entity* entity, RS_EntityContainer* cont
     }
     RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_Modification::pasteInsert: processing container: %s", name_old.toLatin1().data());
     // rename if needed
-    if (graphic->findBlock(name_old)) {
+    if (graphic->getBlockList()->find(name_old)) {
         name_new = graphic->getBlockList()->newName(name_old);
         RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_Modification::pasteInsert: new block name: %s", name_new.toLatin1().data());
     }
@@ -655,7 +655,7 @@ bool RS_Modification::pasteContainer(RS_Entity* entity, RS_EntityContainer* cont
     RS_BlockData db = RS_BlockData(name_new, RS_Vector(0.0, 0.0), false);
     RS_Block* bc = new RS_Block(graphic, db);
     bc->reparent(graphic);
-    graphic->addBlock(bc, true);
+    graphic->getBlockList()->add(bc, true);
     // create insert for the new block
     RS_InsertData di = RS_InsertData(name_new, insertionPoint, RS_Vector(1.0, 1.0), i->getAngle(), 1, 1, RS_Vector(0.0,0.0));
     RS_Insert* ic = new RS_Insert(container, di);
