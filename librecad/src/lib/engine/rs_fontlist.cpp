@@ -31,13 +31,13 @@
 #include "rs_font.h"
 #include "rs_system.h"
 
-RS_FontList* RS_FontList::uniqueInstance = nullptr;
+RS_FontList *RS_FontList::uniqueInstance = nullptr;
 
-RS_FontList* RS_FontList::instance() {
-	if (!uniqueInstance) {
-		uniqueInstance = new RS_FontList();
-	}
-	return uniqueInstance;
+RS_FontList *RS_FontList::instance() {
+    if (!uniqueInstance) {
+        uniqueInstance = new RS_FontList();
+    }
+    return uniqueInstance;
 }
 
 
@@ -55,9 +55,9 @@ void RS_FontList::init() {
     for (int i = 0; i < list.size(); ++i) {
         RS_DEBUG->print("font: %s:", list.at(i).toLatin1().data());
 
-        QFileInfo fi( list.at(i) );
-        if ( !added.contains(fi.baseName()) ) {
-			fonts.emplace_back(new RS_Font(fi.baseName()));
+        QFileInfo fi(list.at(i));
+        if (!added.contains(fi.baseName())) {
+            fonts.emplace_back(new RS_Font(fi.baseName()));
             added.insert(fi.baseName(), 1);
         }
 
@@ -65,25 +65,23 @@ void RS_FontList::init() {
     }
 }
 
-size_t RS_FontList::countFonts() const{
-	return fonts.size();
+size_t RS_FontList::countFonts() const {
+    return fonts.size();
 }
 
-std::vector<std::unique_ptr<RS_Font> >::const_iterator RS_FontList::begin() const
-{
-	return fonts.begin();
+std::vector<std::unique_ptr<RS_Font> >::const_iterator RS_FontList::begin() const {
+    return fonts.begin();
 }
 
-std::vector<std::unique_ptr<RS_Font> >::const_iterator RS_FontList::end() const
-{
-	return fonts.end();
+std::vector<std::unique_ptr<RS_Font> >::const_iterator RS_FontList::end() const {
+    return fonts.end();
 }
 
 /**
  * Removes all fonts in the fontlist.
  */
 void RS_FontList::clearFonts() {
-	fonts.clear();
+    fonts.clear();
 }
 
 /**
@@ -91,11 +89,11 @@ void RS_FontList::clearFonts() {
  * \p NULL if no such font was found. The font will be loaded into
  * memory if it's not already.
  */
-RS_Font* RS_FontList::requestFont(const QString& name) {
-    RS_DEBUG->print("RS_FontList::requestFont %s",  name.toLatin1().data());
+RS_Font *RS_FontList::requestFont(const QString &name) {
+    RS_DEBUG->print("RS_FontList::requestFont %s", name.toLatin1().data());
 
     QString name2 = name.toLower();
-    RS_Font* foundFont = NULL;
+    RS_Font *foundFont = NULL;
 
     // QCAD 1 compatibility:
     if (name2.contains('#') && name2.contains('_')) {
@@ -106,18 +104,18 @@ RS_Font* RS_FontList::requestFont(const QString& name) {
 
     RS_DEBUG->print("name2: %s", name2.toLatin1().data());
 
-	// Search our list of available fonts:
-	for( auto const& f: fonts){
+    // Search our list of available fonts:
+    for (auto const &f: fonts) {
 
         if (f->getFileName().toLower() == name2) {
             // Make sure this font is loaded into memory:
             f->loadFont();
-			foundFont = f.get();
+            foundFont = f.get();
             break;
         }
     }
 
-	if (!foundFont && name!="standard") {
+    if (!foundFont && name != "standard") {
         foundFont = requestFont("standard");
     }
 
@@ -127,10 +125,10 @@ RS_Font* RS_FontList::requestFont(const QString& name) {
 /**
  * Dumps the fonts to stdout.
  */
-std::ostream& operator << (std::ostream& os, RS_FontList& l) {
+std::ostream &operator<<(std::ostream &os, RS_FontList &l) {
 
     os << "Fontlist: \n";
-	for(auto const& f: l.fonts){
+    for (auto const &f: l.fonts) {
         os << *f << "\n";
     }
 
