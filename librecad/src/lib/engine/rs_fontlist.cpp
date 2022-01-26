@@ -65,23 +65,12 @@ void RS_FontList::init() {
     }
 }
 
-size_t RS_FontList::countFonts() const {
-    return fonts.size();
-}
-
 std::vector<std::unique_ptr<RS_Font> >::const_iterator RS_FontList::begin() const {
     return fonts.begin();
 }
 
 std::vector<std::unique_ptr<RS_Font> >::const_iterator RS_FontList::end() const {
     return fonts.end();
-}
-
-/**
- * Removes all fonts in the fontlist.
- */
-void RS_FontList::clearFonts() {
-    fonts.clear();
 }
 
 /**
@@ -93,7 +82,7 @@ RS_Font *RS_FontList::requestFont(const QString &name) {
     RS_DEBUG->print("RS_FontList::requestFont %s", name.toLatin1().data());
 
     QString name2 = name.toLower();
-    RS_Font *foundFont = NULL;
+    RS_Font *foundFont = nullptr;
 
     // QCAD 1 compatibility:
     if (name2.contains('#') && name2.contains('_')) {

@@ -42,6 +42,10 @@ class RS_Font;
 class RS_FontList {
 
 public:
+    RS_FontList(RS_FontList const &) = delete;
+
+    RS_FontList &operator=(RS_FontList const &) = delete;
+
     /**
      * @return Instance to the unique font list.
      */
@@ -50,10 +54,6 @@ public:
     virtual ~RS_FontList() = default;
 
     void init();
-
-    void clearFonts();
-
-    size_t countFonts() const;
 
     RS_Font *requestFont(const QString &name);
 
@@ -65,10 +65,6 @@ public:
 
 private:
     RS_FontList() = default;
-
-    RS_FontList(RS_FontList const &) = delete;
-
-    RS_FontList &operator=(RS_FontList const &) = delete;
 
     static RS_FontList *uniqueInstance;
     //! fonts in the graphic
