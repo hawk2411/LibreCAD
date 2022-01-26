@@ -43,7 +43,7 @@ void RS_ActionLayersAdd::trigger() {
 		RS_Layer* layer = GetDialogFactory()->requestNewLayerDialog(
 					graphic->getLayerList());
 		if (layer)
-			graphic->addLayer(layer);
+			graphic->getLayerList()->add(layer);
 		graphic->getLayerList()->getLayerWitget()->slotUpdateLayerList();
 	}
 	finish(false);

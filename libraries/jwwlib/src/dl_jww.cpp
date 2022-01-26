@@ -176,7 +176,7 @@ if(DSen.m_nPenWidth > 26)
 //_F-0_ から_F-F_
 	RS_String lName = HEX[DSen.m_nGLayer > 0x0f ? 0: DSen.m_nGLayer] + "-" +
 		HEX[DSen.m_nLayer > 0x0f ? 0: DSen.m_nLayer];
-	if( graphic->findLayer(lName) == (RS_Layer*)NULL ){
+	if( graphic->getLayerList()->find(lName) == (RS_Layer*)NULL ){
 #ifdef DEBUG
 cout << jwdoc->vSen[i].m_nGLayer << " " << jwdoc->vSen[i].m_nLayer << endl;
 std::cout << lName.ascii() << std::endl;
@@ -307,7 +307,7 @@ void DL_Jww::CreateEnko(DL_CreationInterface* creationInterface, CDataEnko& DEnk
 
 			RS_String lName = HEX[DEnko.m_nGLayer > 0x0f ? 0:DEnko.m_nGLayer] + "-" +
 				HEX[DEnko.m_nLayer > 0x0f ? 0: DEnko.m_nLayer];
-			if( graphic->findLayer(lName) == (RS_Layer*)NULL ){
+			if( graphic->getLayerList()->find(lName) == (RS_Layer*)NULL ){
 #ifdef DEBUG
 std::cout << lName.ascii() << std::endl;
 #endif
@@ -346,7 +346,7 @@ std::cout << *circle;
 
 			RS_String lName = HEX[DEnko.m_nGLayer > 0x0f ? 0:DEnko.m_nGLayer] + "-" +
 				HEX[DEnko.m_nLayer > 0x0f ? 0: DEnko.m_nLayer];
-			if( graphic->findLayer(lName) == (RS_Layer*)NULL ){
+			if( graphic->getLayerList()->find(lName) == (RS_Layer*)NULL ){
 				RS_Layer* layer = new RS_Layer(lName);
 				graphic->addLayer(layer);
 			}
@@ -378,7 +378,7 @@ std::cout << *circle;
 
 		RS_String lName = HEX[DEnko.m_nGLayer > 0x0f ? 0:DEnko.m_nGLayer] + "-" +
 			HEX[DEnko.m_nLayer > 0x0f ? 0: DEnko.m_nLayer];
-		if( graphic->findLayer(lName) == (RS_Layer*)NULL ){
+		if( graphic->getLayerList()->find(lName) == (RS_Layer*)NULL ){
 #ifdef DEBUG
 std::cout << lName.ascii() << std::endl;
 #endif
@@ -428,7 +428,7 @@ void DL_Jww::CreateTen(DL_CreationInterface* creationInterface, CDataTen& DTen)
 	//画層設定
 	RS_String lName = HEX[DTen.m_nGLayer > 0x0f ? 0 : DTen.m_nGLayer] + "-" + 
 		HEX[DTen.m_nLayer > 0x0f ? 0: DTen.m_nLayer];
-	if( graphic->findLayer(lName) == (RS_Layer*)NULL ){
+	if( graphic->getLayerList()->find(lName) == (RS_Layer*)NULL ){
 #ifdef DEBUG
 std::cout << lName.ascii() << std::endl;
 #endif
@@ -559,7 +559,7 @@ RS_DEBUG->setLevel(RS_Debug::D_DEBUGGING);
 	//画層設定
 	RS_String lName = HEX[DMoji.m_nGLayer > 0x0f ? 0: DMoji.m_nGLayer] + "-" +
 		HEX[DMoji.m_nLayer > 0x0f ? 0 : DMoji.m_nLayer];
-	if( graphic->findLayer(lName) == (RS_Layer*)NULL ){
+	if( graphic->getLayerList()->find(lName) == (RS_Layer*)NULL ){
 #ifdef DEBUG
 std::cout << lName.ascii() << std::endl;
 #endif

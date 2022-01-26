@@ -553,7 +553,7 @@ RS_Document *RS_Entity::getDocument() const {
 void RS_Entity::addGraphicVariable(const QString &key, double val, int code) const {
     RS_Graphic *graphic = getGraphic();
     if (graphic) {
-        graphic->addVariable(key, val, code);
+        graphic->getVariables()->add(key, val, code);
     }
 }
 
@@ -567,7 +567,7 @@ void RS_Entity::addGraphicVariable(const QString &key, double val, int code) con
 void RS_Entity::addGraphicVariable(const QString &key, int val, int code) const {
     RS_Graphic *graphic = getGraphic();
     if (graphic) {
-        graphic->addVariable(key, val, code);
+        graphic->getVariables()->add(key, val, code);
     }
 }
 
@@ -584,7 +584,7 @@ void RS_Entity::addGraphicVariable(const QString &key, int val, int code) const 
 double RS_Entity::getGraphicVariableDouble(const QString &key, double def) const {
     RS_Graphic *graphic = getGraphic();
     return (graphic) ?
-           graphic->getVariableDouble(key, def) : def;
+           graphic->getVariables()->getDouble(key, def) : def;
 }
 
 
@@ -599,7 +599,7 @@ double RS_Entity::getGraphicVariableDouble(const QString &key, double def) const
  */
 int RS_Entity::getGraphicVariableInt(const QString &key, int def) const {
     RS_Graphic *graphic = getGraphic();
-    return (graphic) ? graphic->getVariableInt(key, def) : static_cast<int>(def);
+    return (graphic) ? graphic->getVariables()->getInt(key, def) : static_cast<int>(def);
 }
 
 
@@ -615,7 +615,7 @@ int RS_Entity::getGraphicVariableInt(const QString &key, int def) const {
 QString RS_Entity::getGraphicVariableString(const QString &key,
                                             const QString &def) const {
     RS_Graphic *graphic = getGraphic();
-    return (graphic) ? graphic->getVariableString(key, def) : def;
+    return (graphic) ? graphic->getVariables()->getString(key, def) : def;
 }
 
 
@@ -665,7 +665,7 @@ RS_Layer *RS_Entity::getLayer(bool resolve) const {
  */
 void RS_Entity::setLayer(const QString &name) {
     RS_Graphic *graphic = getGraphic();
-    _layer = (graphic) ? graphic->findLayer(name) : nullptr;
+    _layer = (graphic) ? graphic->getLayerList()->find(name) : nullptr;
 }
 
 
@@ -684,7 +684,7 @@ void RS_Entity::setLayer(RS_Layer *layer) {
  */
 void RS_Entity::setLayerToActive() {
     RS_Graphic *graphic = getGraphic();
-    _layer = (graphic) ? graphic->getActiveLayer() : nullptr;
+    _layer = (graphic) ? graphic->getLayerList()->getActive() : nullptr;
 }
 
 

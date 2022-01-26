@@ -59,13 +59,13 @@ void LC_ActionLayersToggleConstruction::trigger() {
             if (!layer) continue;
             if (!layer->isVisibleInLayerList()) continue;
             if (!layer->isSelectedInLayerList()) continue;
-            graphic->toggleLayerConstruction(layer);
+            graphic->getLayerList()->toggleConstruction(layer);
             deselectEntities(layer);
             cnt++;
         }
         // if there wasn't selected layers, toggle active layer
         if (!cnt) {
-            graphic->toggleLayerConstruction(a_layer);
+            graphic->getLayerList()->toggleConstruction(a_layer);
             deselectEntities(a_layer);
         }
     }

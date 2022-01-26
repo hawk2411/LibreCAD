@@ -317,7 +317,7 @@ QString DocumentPluginImplementation::addBlockFromDisk(const QString &fullName) 
         RS_LayerList *ll = g.getLayerList();
         for (unsigned int i = 0; i < ll->count(); i++) {
             RS_Layer *nl = ll->at(i)->clone();
-            docGr->addLayer(nl);
+            docGr->getLayerList()->add(nl);
         }
         RS_BlockList *block_list = g.getBlockList();
         for (auto block : *block_list) {
@@ -389,13 +389,13 @@ void DocumentPluginImplementation::setLayer(const QString &name) {
     RS_Layer *lay = listLay->find(name);
     if (!lay) {
         lay = new RS_Layer(name);
-        docGr->addLayer(lay);
+        docGr->getLayerList()->add(lay);
     }
     listLay->activate(lay, true);
 }
 
 QString DocumentPluginImplementation::getCurrentLayer() {
-    return docGr->getActiveLayer()->getName();
+    return docGr->getLayerList()->getActive()->getName();
 }
 
 QStringList DocumentPluginImplementation::getAllLayer() {
@@ -417,7 +417,7 @@ QStringList DocumentPluginImplementation::getAllBlocks() {
 }
 
 bool DocumentPluginImplementation::deleteLayer(const QString &name) {
-    RS_Layer *layer = docGr->findLayer(name);
+    RS_Layer *layer = docGr->getLayerList()->find(name);
     if (layer) {
         docGr->removeLayer(layer);
         return true;
@@ -426,7 +426,7 @@ bool DocumentPluginImplementation::deleteLayer(const QString &name) {
 }
 
 void DocumentPluginImplementation::getCurrentLayerProperties(int *c, DPI::LineWidth *w, DPI::LineType *t) {
-    RS_Pen pen = docGr->getActiveLayer()->getPen();
+    RS_Pen pen = docGr->getLayerList()->getActive()->getPen();
     *c = pen.getColor().toIntColor();
 //    RS_Color col = pen.getColor();
 //    c->setRgb(col.red(), col.green(), col.blue());
@@ -435,7 +435,7 @@ void DocumentPluginImplementation::getCurrentLayerProperties(int *c, DPI::LineWi
 }
 
 void DocumentPluginImplementation::getCurrentLayerProperties(int *c, QString *w, QString *t) {
-    RS_Pen pen = docGr->getActiveLayer()->getPen();
+    RS_Pen pen = docGr->getLayerList()->getActive()->getPen();
     *c = pen.getColor().toIntColor();
 //    RS_Color col = pen.getColor();
 //    c->setRgb(col.red(), col.green(), col.blue());
@@ -446,7 +446,7 @@ void DocumentPluginImplementation::getCurrentLayerProperties(int *c, QString *w,
 }
 
 void DocumentPluginImplementation::setCurrentLayerProperties(int c, DPI::LineWidth w, DPI::LineType t) {
-    RS_Layer *layer = docGr->getActiveLayer();
+    RS_Layer *layer = docGr->getLayerList()->getActive();
     if (layer) {
         RS_Color co;
         co.fromIntColor(c);
@@ -458,7 +458,7 @@ void DocumentPluginImplementation::setCurrentLayerProperties(int c, DPI::LineWid
 
 void DocumentPluginImplementation::setCurrentLayerProperties(int c, QString const &w,
                                                              QString const &t) {
-    RS_Layer *layer = docGr->getActiveLayer();
+    RS_Layer *layer = docGr->getLayerList()->getActive();
     if (layer) {
         RS_Color co;
         co.fromIntColor(c);
@@ -546,26 +546,26 @@ bool DocumentPluginImplementation::getAllEntities(QList<Plug_Entity *> *plug_ent
 }
 
 bool DocumentPluginImplementation::getVariableInt(const QString &key, int *num) {
-    if ((*num = docGr->getVariableInt(key, 0)))
+    if ((*num = docGr->getVariables()->getInt(key, 0)))
         return true;
     else
         return false;
 }
 
 bool DocumentPluginImplementation::getVariableDouble(const QString &key, double *num) {
-    *num = docGr->getVariableDouble(key, 0.0);
+    *num = docGr->getVariables()->getDouble(key, 0.0);
     return (*num != 0.0);
 }
 
 bool DocumentPluginImplementation::addVariable(const QString &key, int value, int code) {
-    docGr->addVariable(key, value, code);
+    docGr->getVariables()->add(key, value, code);
     if (key.startsWith("$DIM"))
         doc->updateDimensions(true);
     return true;
 }
 
 bool DocumentPluginImplementation::addVariable(const QString &key, double value, int code) {
-    docGr->addVariable(key, value, code);
+    docGr->getVariables()->add(key, value, code);
     if (key.startsWith("$DIM"))
         doc->updateDimensions(true);
     return true;

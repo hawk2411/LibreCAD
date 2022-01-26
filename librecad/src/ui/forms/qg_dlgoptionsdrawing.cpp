@@ -148,25 +148,25 @@ void QG_DlgOptionsDrawing::setGraphic(RS_Graphic* g) {
     }
 
     // main drawing unit:
-    int insunits = graphic->getVariableInt("$INSUNITS", 0);
+    int insunits = graphic->getVariables()->getInt("$INSUNITS", 0);
     cbUnit->setCurrentIndex( cbUnit->findText(
                                  RS_Units::unitToString(RS_FilterDXFRW::numberToUnit(insunits))));
 
     // units / length format:
-    int lunits = graphic->getVariableInt("$LUNITS", 2);
+    int lunits = graphic->getVariables()->getInt("$LUNITS", 2);
     cbLengthFormat->setCurrentIndex(lunits-1);
 
     // units length precision:
-    int luprec = graphic->getVariableInt("$LUPREC", 4);
+    int luprec = graphic->getVariables()->getInt("$LUPREC", 4);
     updateCBLengthPrecision(cbLengthFormat, cbLengthPrecision);
     cbLengthPrecision->setCurrentIndex(luprec);
 
     // units / angle format:
-    int aunits = graphic->getVariableInt("$AUNITS", 0);
+    int aunits = graphic->getVariables()->getInt("$AUNITS", 0);
     cbAngleFormat->setCurrentIndex(aunits);
 
     // units angle precision:
-    int auprec = graphic->getVariableInt("$AUPREC", 2);
+    int auprec = graphic->getVariables()->getInt("$AUPREC", 2);
     updateCBAnglePrecision(cbAngleFormat, cbAnglePrecision);
     cbAnglePrecision->setCurrentIndex(auprec);
 
@@ -233,7 +233,7 @@ void QG_DlgOptionsDrawing::setGraphic(RS_Graphic* g) {
         rbCrosshairRight->setDisabled(false);
     }
 
-	*spacing = graphic->getVariableVector("$GRIDUNIT",
+	*spacing = graphic->getVariables()->getVector("$GRIDUNIT",
 												   {0.0,0.0});
 	cbXSpacing->setEditText( QString("%1").arg(spacing->x));
 	cbYSpacing->setEditText( QString("%1").arg(spacing->y));
@@ -251,46 +251,46 @@ void QG_DlgOptionsDrawing::setGraphic(RS_Graphic* g) {
 	RS2::Unit unit = static_cast<RS2::Unit>(cbUnit->currentIndex());
 
     // dimension general factor:
-    double dimfactor = graphic->getVariableDouble("$DIMLFAC", 1.0);
+    double dimfactor = graphic->getVariables()->getDouble("$DIMLFAC", 1.0);
     cbDimFactor->setEditText(QString("%1").arg(dimfactor));
 
     // dimension general scale:
-    double dimscale = graphic->getVariableDouble("$DIMSCALE", 1.0);
+    double dimscale = graphic->getVariables()->getDouble("$DIMSCALE", 1.0);
     cbDimScale->setEditText(QString("%1").arg(dimscale));
 
-    double dimtxt = graphic->getVariableDouble("$DIMTXT",
+    double dimtxt = graphic->getVariables()->getDouble("$DIMTXT",
                                                RS_Units::convert(2.5, RS2::Millimeter, unit));
     //RLZ    cbDimTextHeight->setCurrentText(QString("%1").arg(dimtxt));
     cbDimTextHeight->setEditText(QString("%1").arg(dimtxt));
 
     // dimension extension line extension:
-    double dimexe = graphic->getVariableDouble("$DIMEXE",
+    double dimexe = graphic->getVariables()->getDouble("$DIMEXE",
                                                RS_Units::convert(1.25, RS2::Millimeter, unit));
     //RLZ    cbDimExe->setCurrentText(QString("%1").arg(dimexe));
     cbDimExe->setEditText(QString("%1").arg(dimexe));
 
     // dimension extension line offset:
-    double dimexo = graphic->getVariableDouble("$DIMEXO",
+    double dimexo = graphic->getVariables()->getDouble("$DIMEXO",
                                                RS_Units::convert(0.625, RS2::Millimeter, unit));
     //RLZ    cbDimExo->setCurrentText(QString("%1").arg(dimexo));
     cbDimExo->setEditText(QString("%1").arg(dimexo));
 
     // dimension line gap:
-    double dimgap = graphic->getVariableDouble("$DIMGAP",
+    double dimgap = graphic->getVariables()->getDouble("$DIMGAP",
                                                RS_Units::convert(0.625, RS2::Millimeter, unit));
     //RLZ    cbDimGap->setCurrentText(QString("%1").arg(dimgap));
     cbDimGap->setEditText(QString("%1").arg(dimgap));
 
     // dimension arrow size:
-    double dimasz = graphic->getVariableDouble("$DIMASZ",
+    double dimasz = graphic->getVariables()->getDouble("$DIMASZ",
                                                RS_Units::convert(2.5, RS2::Millimeter, unit));
     //RLZ    cbDimAsz->setCurrentText(QString("%1").arg(dimasz));
     cbDimAsz->setEditText(QString("%1").arg(dimasz));
     // dimension tick size:
-    double dimtsz = graphic->getVariableDouble("$DIMTSZ", 0.);
+    double dimtsz = graphic->getVariables()->getDouble("$DIMTSZ", 0.);
     cbDimTsz->setEditText(QString("%1").arg(dimtsz));
     // dimension alignment:
-    int dimtih = graphic->getVariableInt("$DIMTIH", 0);
+    int dimtih = graphic->getVariables()->getInt("$DIMTIH", 0);
     cbDimTih->setCurrentIndex(dimtih);
 //RLZ todo add more options for dimensions
     cbDimClrT->init(true, false);
@@ -299,10 +299,10 @@ void QG_DlgOptionsDrawing::setGraphic(RS_Graphic* g) {
     cbDimLwD->init(true, false);
     cbDimLwE->init(true, false);
     // fixed extension length:
-    double dimfxl = graphic->getVariableDouble("$DIMFXL",
+    double dimfxl = graphic->getVariables()->getDouble("$DIMFXL",
                                                RS_Units::convert(1.0, RS2::Millimeter, unit));
     cbDimFxL->setValue(dimfxl);
-    int dimfxlon = graphic->getVariableInt("$DIMFXLON",0);
+    int dimfxlon = graphic->getVariables()->getInt("$DIMFXLON",0);
     if (dimfxlon > 0){
         cbDimFxL->setEnabled(true);
         cbDimFxLon->setChecked(true);
@@ -310,51 +310,51 @@ void QG_DlgOptionsDrawing::setGraphic(RS_Graphic* g) {
         cbDimFxL->setEnabled(false);
         cbDimFxLon->setChecked(false);
     }
-    int dimlwd = graphic->getVariableInt("$DIMLWD",-2); //default ByBlock
+    int dimlwd = graphic->getVariables()->getInt("$DIMLWD",-2); //default ByBlock
     cbDimLwD->setWidth(RS2::intToLineWidth(dimlwd));
-    int dimlwe = graphic->getVariableInt("$DIMLWE",-2); //default ByBlock
+    int dimlwe = graphic->getVariables()->getInt("$DIMLWE",-2); //default ByBlock
     cbDimLwE->setWidth(RS2::intToLineWidth(dimlwe));
 
     // Dimensions / length format:
-    int dimlunit = graphic->getVariableInt("$DIMLUNIT", lunits);
+    int dimlunit = graphic->getVariables()->getInt("$DIMLUNIT", lunits);
     cbDimLUnit->setCurrentIndex(dimlunit-1);
 
     // Dimensions length precision:
-    int dimdec = graphic->getVariableInt("$DIMDEC", luprec);
+    int dimdec = graphic->getVariables()->getInt("$DIMDEC", luprec);
     updateCBLengthPrecision(cbDimLUnit, cbDimDec);
     cbDimDec->setCurrentIndex(dimdec);
     // Dimensions length zeros:
-    int dimzin = graphic->getVariableInt("$DIMZIN", 1);
+    int dimzin = graphic->getVariables()->getInt("$DIMZIN", 1);
     cbDimZin->setLinear();
     cbDimZin->setData(dimzin);
 
     // Dimensions / angle format:
-    int dimaunit = graphic->getVariableInt("$DIMAUNIT", aunits);
+    int dimaunit = graphic->getVariables()->getInt("$DIMAUNIT", aunits);
     cbDimAUnit->setCurrentIndex(dimaunit);
 
     // Dimensions angle precision:
-    int dimadec = graphic->getVariableInt("$DIMADEC", auprec);
+    int dimadec = graphic->getVariables()->getInt("$DIMADEC", auprec);
     updateCBAnglePrecision(cbDimAUnit, cbDimADec);
     cbDimADec->setCurrentIndex(dimadec);
     // Dimensions angle zeros:
-    int dimazin = graphic->getVariableInt("$DIMAZIN", 0);
+    int dimazin = graphic->getVariables()->getInt("$DIMAZIN", 0);
 //    cbDimAZin->setCurrentIndex(dimazin);
     cbDimAZin->setData(dimazin);
 
-    int dimclrd = graphic->getVariableInt("$DIMCLRD", 0);
-    int dimclre = graphic->getVariableInt("$DIMCLRE", 0);
-    int dimclrt = graphic->getVariableInt("$DIMCLRT", 0);
+    int dimclrd = graphic->getVariables()->getInt("$DIMCLRD", 0);
+    int dimclre = graphic->getVariables()->getInt("$DIMCLRE", 0);
+    int dimclrt = graphic->getVariables()->getInt("$DIMCLRT", 0);
     cbDimClrD->setColor(RS_FilterDXFRW::numberToColor(dimclrd));
     cbDimClrE->setColor(RS_FilterDXFRW::numberToColor(dimclre));
     cbDimClrT->setColor(RS_FilterDXFRW::numberToColor(dimclrt));
 
-    QString dimtxsty = graphic->getVariableString("$DIMTXSTY", "standard");
+    QString dimtxsty = graphic->getVariables()->getString("$DIMTXSTY", "standard");
     cbDimTxSty->setFont(dimtxsty);
-    int dimdsep = graphic->getVariableInt("$DIMDSEP", 0);
+    int dimdsep = graphic->getVariables()->getInt("$DIMDSEP", 0);
     (dimdsep == 44) ? cbDimDSep->setCurrentIndex(1) :  cbDimDSep->setCurrentIndex(0);
 
     // spline line segments per patch:
-    int splinesegs = graphic->getVariableInt("$SPLINESEGS", 8);
+    int splinesegs = graphic->getVariables()->getInt("$SPLINESEGS", 8);
     //RLZ    cbSplineSegs->setCurrentText(QString("%1").arg(splinesegs));
     cbSplineSegs->setEditText(QString("%1").arg(splinesegs));
 
@@ -363,7 +363,7 @@ void QG_DlgOptionsDrawing::setGraphic(RS_Graphic* g) {
 
     // encoding:
     /*
-    QString encoding = graphic->getVariableString("$DWGCODEPAGE",
+    QString encoding = graphic->getVariables()->getString("$DWGCODEPAGE",
                                                   "ANSI_1252");
     encoding=RS_System::getEncoding(encoding);
     cbEncoding->setEditText(encoding);
@@ -416,10 +416,10 @@ void QG_DlgOptionsDrawing::validate() {
         RS2::Unit unit = static_cast<RS2::Unit>(cbUnit->currentIndex());
 		graphic->setUnit(unit);
 
-        graphic->addVariable("$LUNITS", cbLengthFormat->currentIndex()+1, 70);
-        graphic->addVariable("$LUPREC", cbLengthPrecision->currentIndex(), 70);
-        graphic->addVariable("$AUNITS", cbAngleFormat->currentIndex(), 70);
-        graphic->addVariable("$AUPREC", cbAnglePrecision->currentIndex(), 70);
+        graphic->getVariables()->add("$LUNITS", cbLengthFormat->currentIndex()+1, 70);
+        graphic->getVariables()->add("$LUPREC", cbLengthPrecision->currentIndex(), 70);
+        graphic->getVariables()->add("$AUNITS", cbAngleFormat->currentIndex(), 70);
+        graphic->getVariables()->add("$AUPREC", cbAnglePrecision->currentIndex(), 70);
 
         RS2::PaperFormat currentFormat {static_cast<RS2::PaperFormat>(cbPaperFormat->currentIndex())};
         // paper:
@@ -443,7 +443,7 @@ void QG_DlgOptionsDrawing::validate() {
                              sbPagesNumV->value());
 
         // grid:
-        //graphic->addVariable("$GRIDMODE", (int)cbGridOn->isChecked() , 70);
+        //graphic->getVariables()->add("$GRIDMODE", (int)cbGridOn->isChecked() , 70);
         graphic->setGridOn(cbGridOn->isChecked());
 		*spacing=RS_Vector{0.0,0.0,0.0};
         if (cbXSpacing->currentText()==tr("auto")) {
@@ -456,85 +456,85 @@ void QG_DlgOptionsDrawing::validate() {
         } else {
 			spacing->y = cbYSpacing->currentText().toDouble();
         }
-		graphic->addVariable("$GRIDUNIT", *spacing, 10);
+		graphic->getVariables()->add("$GRIDUNIT", *spacing, 10);
 
         // dim:
         bool ok1;
-        double oldValue=graphic->getVariableDouble("$DIMTXT",1.);
+        double oldValue=graphic->getVariables()->getDouble("$DIMTXT",1.);
 		double newValue=RS_Math::eval(cbDimTextHeight->currentText(), &ok1);
         //only update text height if a valid new position is specified, bug#3470605
 		if(ok1 && (fabs(oldValue-newValue)>RS_TOLERANCE)){
-            graphic->addVariable("$DIMTXT",newValue, 40);
+            graphic->getVariables()->add("$DIMTXT",newValue, 40);
         }
-        graphic->addVariable("$DIMEXE",
+        graphic->getVariables()->add("$DIMEXE",
                              RS_Math::eval(cbDimExe->currentText()), 40);
-        graphic->addVariable("$DIMEXO",
+        graphic->getVariables()->add("$DIMEXO",
                              RS_Math::eval(cbDimExo->currentText()), 40);
         bool ok2;
-        oldValue=graphic->getVariableDouble("$DIMGAP",1);
+        oldValue=graphic->getVariables()->getDouble("$DIMGAP",1);
         newValue=RS_Math::eval(cbDimGap->currentText(),&ok2);
         //only update text position if a valid new position is specified, bug#3470605
         ok2 &= (fabs(oldValue-newValue)>RS_TOLERANCE);
         if(ok2){
-            graphic->addVariable("$DIMGAP",newValue , 40);
+            graphic->getVariables()->add("$DIMGAP",newValue , 40);
         }
         ok1 = ok1 || ok2;
-        oldValue=graphic->getVariableDouble("$DIMLFAC",1);
+        oldValue=graphic->getVariables()->getDouble("$DIMLFAC",1);
         newValue=RS_Math::eval(cbDimFactor->currentText(),&ok2);
 		ok2 &= (fabs(oldValue-newValue)>RS_TOLERANCE);
         ok1 = ok1 || ok2;
-        oldValue=graphic->getVariableDouble("$DIMSCALE",1);
+        oldValue=graphic->getVariables()->getDouble("$DIMSCALE",1);
         newValue=RS_Math::eval(cbDimScale->currentText(),&ok2);
 		ok2 &= (fabs(oldValue-newValue)>RS_TOLERANCE);
         ok1 = ok1 || ok2;
 
-        graphic->addVariable("$DIMASZ",
+        graphic->getVariables()->add("$DIMASZ",
                              RS_Math::eval(cbDimAsz->currentText()), 40);
         //dimension tick size, 0 for no tick
-        graphic->addVariable("$DIMTSZ",
+        graphic->getVariables()->add("$DIMTSZ",
                              RS_Math::eval(cbDimTsz->currentText()), 40);
         //DIMTIH, dimension text, horizontal or aligned
-        int iOldIndex = graphic->getVariableInt("$DIMTIH",0);
+        int iOldIndex = graphic->getVariables()->getInt("$DIMTIH",0);
         int iNewIndex = cbDimTih->currentIndex();
         if( iOldIndex != iNewIndex) {
             ok1 = true;
-            graphic->addVariable("$DIMTIH", iNewIndex, 70);
+            graphic->getVariables()->add("$DIMTIH", iNewIndex, 70);
         }
         //DIMLFAC, general factor for linear dimensions
         double dimFactor = RS_Math::eval(cbDimFactor->currentText());
         if( RS_TOLERANCE > fabs(dimFactor)) {
             dimFactor = 1.0;
         }
-        graphic->addVariable("$DIMLFAC", dimFactor, 40);
+        graphic->getVariables()->add("$DIMLFAC", dimFactor, 40);
         //DIMSCALE, general scale for dimensions
         double dimScale = RS_Math::eval(cbDimScale->currentText());
 		if (dimScale <= DBL_EPSILON)
             dimScale = 1.0;
-        graphic->addVariable("$DIMSCALE", dimScale, 40);
-        graphic->addVariable("$DIMLWD", cbDimLwD->getWidth(), 70);
-        graphic->addVariable("$DIMLWE", cbDimLwE->getWidth(), 70);
-        graphic->addVariable("$DIMFXL", cbDimFxL->value(), 40);
-        graphic->addVariable("$DIMFXLON", cbDimFxLon->isChecked()? 1:0, 70);
-        graphic->addVariable("$DIMLUNIT", cbDimLUnit->currentIndex()+1, 70);
-        graphic->addVariable("$DIMDEC", cbDimDec->currentIndex(), 70);
-        graphic->addVariable("$DIMZIN", cbDimZin->getData(), 70);
-        graphic->addVariable("$DIMAUNIT", cbDimAUnit->currentIndex(), 70);
-        graphic->addVariable("$DIMADEC", cbDimADec->currentIndex(), 70);
-//        graphic->addVariable("$DIMAZIN", cbDimAZin->currentIndex(), 70);
-        graphic->addVariable("$DIMAZIN", cbDimAZin->getData(), 70);
+        graphic->getVariables()->add("$DIMSCALE", dimScale, 40);
+        graphic->getVariables()->add("$DIMLWD", cbDimLwD->getWidth(), 70);
+        graphic->getVariables()->add("$DIMLWE", cbDimLwE->getWidth(), 70);
+        graphic->getVariables()->add("$DIMFXL", cbDimFxL->value(), 40);
+        graphic->getVariables()->add("$DIMFXLON", cbDimFxLon->isChecked()? 1:0, 70);
+        graphic->getVariables()->add("$DIMLUNIT", cbDimLUnit->currentIndex()+1, 70);
+        graphic->getVariables()->add("$DIMDEC", cbDimDec->currentIndex(), 70);
+        graphic->getVariables()->add("$DIMZIN", cbDimZin->getData(), 70);
+        graphic->getVariables()->add("$DIMAUNIT", cbDimAUnit->currentIndex(), 70);
+        graphic->getVariables()->add("$DIMADEC", cbDimADec->currentIndex(), 70);
+//        graphic->getVariables()->add("$DIMAZIN", cbDimAZin->currentIndex(), 70);
+        graphic->getVariables()->add("$DIMAZIN", cbDimAZin->getData(), 70);
         int colNum, colRGB;
         colNum = RS_FilterDXFRW::colorToNumber(cbDimClrD->getColor(), &colRGB);
-        graphic->addVariable("$DIMCLRD", colNum, 70);
+        graphic->getVariables()->add("$DIMCLRD", colNum, 70);
         colNum = RS_FilterDXFRW::colorToNumber(cbDimClrE->getColor(), &colRGB);
-        graphic->addVariable("$DIMCLRE", colNum, 70);
+        graphic->getVariables()->add("$DIMCLRE", colNum, 70);
         colNum = RS_FilterDXFRW::colorToNumber(cbDimClrT->getColor(), &colRGB);
-        graphic->addVariable("$DIMCLRT", colNum, 70);
+        graphic->getVariables()->add("$DIMCLRT", colNum, 70);
 		if (cbDimTxSty->getFont())
-			graphic->addVariable("$DIMTXSTY", cbDimTxSty->getFont()->getFileName() , 2);
-        graphic->addVariable("$DIMDSEP", (cbDimDSep->currentIndex()==1)? 44 : 0, 70);
+			graphic->getVariables()->add("$DIMTXSTY", cbDimTxSty->getFont()->getFileName() , 2);
+        graphic->getVariables()->add("$DIMDSEP", (cbDimDSep->currentIndex()==1)? 44 : 0, 70);
 
         // splines:
-        graphic->addVariable("$SPLINESEGS",
+        graphic->getVariables()->add("$SPLINESEGS",
                              (int)RS_Math::eval(cbSplineSegs->currentText()), 70);
 
         RS_DEBUG->print("QG_DlgOptionsDrawing::validate: splinesegs is: %s",

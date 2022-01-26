@@ -46,12 +46,12 @@
  */
 RS_Graphic::RS_Graphic(RS_EntityContainer *parent)
         : RS_Document(parent),
-          layerList(),
-          paperScaleFixed(false),
-          marginLeft(0.0),
-          marginTop(0.0),
-          marginRight(0.0),
-          marginBottom(0.0),
+          _layerList(),
+          _paperScaleFixed(false),
+          _marginLeft(0.0),
+          _marginTop(0.0),
+          _marginRight(0.0),
+          _marginBottom(0.0),
           pagesNumH(1),
           pagesNumV(1) {
 
@@ -60,30 +60,30 @@ RS_Graphic::RS_Graphic(RS_EntityContainer *parent)
     RS_SETTINGS->endGroup();
     RS_SETTINGS->beginGroup("/Appearance");
     //$ISOMETRICGRID == $SNAPSTYLE
-    addVariable("$SNAPSTYLE", static_cast<int>(RS_SETTINGS->readNumEntry("/IsometricGrid", 0)), 70);
-    crosshairType = static_cast<RS2::CrosshairType>(RS_SETTINGS->readNumEntry("/CrosshairType", 0));
+    _variableDict->add("$SNAPSTYLE", static_cast<int>(RS_SETTINGS->readNumEntry("/IsometricGrid", 0)), 70);
+    _crosshairType = static_cast<RS2::CrosshairType>(RS_SETTINGS->readNumEntry("/CrosshairType", 0));
     RS_SETTINGS->endGroup();
     RS2::Unit unit = getUnit();
 
     if (unit == RS2::Inch) {
-        addVariable("$DIMASZ", 0.1, 40);
-        addVariable("$DIMEXE", 0.05, 40);
-        addVariable("$DIMEXO", 0.025, 40);
-        addVariable("$DIMGAP", 0.025, 40);
-        addVariable("$DIMTXT", 0.1, 40);
+        _variableDict->add("$DIMASZ", 0.1, 40);
+        _variableDict->add("$DIMEXE", 0.05, 40);
+        _variableDict->add("$DIMEXO", 0.025, 40);
+        _variableDict->add("$DIMGAP", 0.025, 40);
+        _variableDict->add("$DIMTXT", 0.1, 40);
     } else {
-        addVariable("$DIMASZ",
+        _variableDict->add("$DIMASZ",
                     RS_Units::convert(2.5, RS2::Millimeter, unit), 40);
-        addVariable("$DIMEXE",
+        _variableDict->add("$DIMEXE",
                     RS_Units::convert(1.25, RS2::Millimeter, unit), 40);
-        addVariable("$DIMEXO",
+        _variableDict->add("$DIMEXO",
                     RS_Units::convert(0.625, RS2::Millimeter, unit), 40);
-        addVariable("$DIMGAP",
+        _variableDict->add("$DIMGAP",
                     RS_Units::convert(0.625, RS2::Millimeter, unit), 40);
-        addVariable("$DIMTXT",
+        _variableDict->add("$DIMTXT",
                     RS_Units::convert(2.5, RS2::Millimeter, unit), 40);
     }
-    addVariable("$DIMTIH", 0, 70);
+    _variableDict->add("$DIMTIH", 0, 70);
     //initialize printer vars bug #3602444
     setPaperScale(getPaperScale());
     setPaperInsertionBase(getPaperInsertionBase());
@@ -126,7 +126,7 @@ void RS_Graphic::removeLayer(RS_Layer *layer) {
 
         toRemove.clear();
         // remove all entities in blocks that are on that layer:
-        for (const auto &blk: *blockList) {
+        for (const auto &blk: *_blockList) {
             if (!blk) continue;
             for (auto entity: *blk) {
 
@@ -142,7 +142,7 @@ void RS_Graphic::removeLayer(RS_Layer *layer) {
             e->setLayer("0");
         }
 
-        layerList.remove(layer);
+        _layerList->remove(layer);
     }
 }
 
@@ -156,11 +156,10 @@ void RS_Graphic::newDoc() {
     RS_DEBUG->print("RS_Graphic::newDoc");
 
     clear();
+    _layerList->clear();
+    _blockList->clear();
 
-    clearLayers();
-    blockList->clear();
-
-    addLayer(new RS_Layer("0"));
+    _layerList->add(new RS_Layer("0"));
     //addLayer(new RS_Layer("ByBlock"));
 
     setModified(false);
@@ -300,8 +299,8 @@ bool RS_Graphic::save(bool isAutoSave) {
 //            qDebug()<<"modifiedTime.isValid()="<<modifiedTime.isValid();
 //            qDebug()<<"Previous timestamp: "<<modifiedTime;
 //            qDebug()<<"Current timestamp: "<<m;
-            if (currentFileName == QString(_filename)
-                && modifiedTime.isValid() && m != modifiedTime) {
+            if (_currentFileName == QString(_filename)
+                && _modifiedTime.isValid() && m != _modifiedTime) {
                 //file modified by others
 //            qDebug()<<"detected on disk change";
                 GetDialogFactory()->commandMessage(QObject::tr(
@@ -324,8 +323,8 @@ bool RS_Graphic::save(bool isAutoSave) {
 
             ret = RS_FileIO::instance()->fileExport(*this, actualName, actualType);
             QFileInfo finfo(actualName);
-            modifiedTime = finfo.lastModified();
-            currentFileName = actualName;
+            _modifiedTime = finfo.lastModified();
+            _currentFileName = actualName;
         } else {
             RS_DEBUG->print("RS_Graphic::save: Can't create object!");
             RS_DEBUG->print("RS_Graphic::save: File not saved!");
@@ -341,8 +340,8 @@ bool RS_Graphic::save(bool isAutoSave) {
             /*	Tell that drawing file is no more modified.
                          *	------------------------------------------- */
             setModified(false);
-            layerList.setModified(false);
-            blockList->setModified(false);
+            _layerList->setModified(false);
+            _blockList->setModified(false);
 
             /*	- Remove autosave file, if able to create associated object,
                          *	  and if autosave file exist.
@@ -458,10 +457,10 @@ bool RS_Graphic::loadTemplate(const QString &filename, RS2::FormatType type) {
     ret = RS_FileIO::instance()->fileImport(*this, filename, type);
 
     setModified(false);
-    layerList.setModified(false);
-    blockList->setModified(false);
+    _layerList->setModified(false);
+    _blockList->setModified(false);
     QFileInfo finfo;
-    modifiedTime = finfo.lastModified();
+    _modifiedTime = finfo.lastModified();
 
     RS_DEBUG->print("RS_Graphic::loadTemplate(%s): OK", filename.toLatin1().data());
 
@@ -490,10 +489,10 @@ bool RS_Graphic::open(const QString &filename, RS2::FormatType type) {
 
     if (ret) {
         setModified(false);
-        layerList.setModified(false);
-        blockList->setModified(false);
-        modifiedTime = finfo.lastModified();
-        currentFileName = QString(filename);
+        _layerList->setModified(false);
+        _blockList->setModified(false);
+        _modifiedTime = finfo.lastModified();
+        _currentFileName = QString(filename);
 
         //cout << *((RS_Graphic*)graphic);
         //calculateBorders();
@@ -509,7 +508,7 @@ bool RS_Graphic::open(const QString &filename, RS2::FormatType type) {
  * @return true if the grid is switched on (visible).
  */
 bool RS_Graphic::isGridOn() {
-    int on = getVariableInt("$GRIDMODE", 1);
+    int on = _variableDict->getInt("$GRIDMODE", 1);
     return on != 0;
 }
 
@@ -518,7 +517,7 @@ bool RS_Graphic::isGridOn() {
  * Enables / disables the grid.
  */
 void RS_Graphic::setGridOn(bool on) {
-    addVariable("$GRIDMODE", (int) on, 70);
+    _variableDict->add("$GRIDMODE", (int) on, 70);
 }
 
 /**
@@ -526,7 +525,7 @@ void RS_Graphic::setGridOn(bool on) {
  */
 bool RS_Graphic::isIsometricGrid() {
     //$ISOMETRICGRID == $SNAPSTYLE
-    int on = getVariableInt("$SNAPSTYLE", 0);
+    int on = _variableDict->getInt("$SNAPSTYLE", 0);
     return on != 0;
 }
 
@@ -536,15 +535,15 @@ bool RS_Graphic::isIsometricGrid() {
  */
 void RS_Graphic::setIsometricGrid(bool on) {
     //$ISOMETRICGRID == $SNAPSTYLE
-    addVariable("$SNAPSTYLE", (int) on, 70);
+    _variableDict->add("$SNAPSTYLE", (int) on, 70);
 }
 
 void RS_Graphic::setCrosshairType(RS2::CrosshairType chType) {
-    crosshairType = chType;
+    _crosshairType = chType;
 }
 
 RS2::CrosshairType RS_Graphic::getCrosshairType() {
-    return crosshairType;
+    return _crosshairType;
 }
 
 /**
@@ -554,7 +553,7 @@ void RS_Graphic::setUnit(RS2::Unit u) {
 
     setPaperSize(RS_Units::convert(getPaperSize(), getUnit(), u));
 
-    addVariable("$INSUNITS", (int) u, 70);
+    _variableDict->add("$INSUNITS", (int) u, 70);
 }
 
 
@@ -562,7 +561,7 @@ void RS_Graphic::setUnit(RS2::Unit u) {
  * Gets the unit of this graphic
  */
 RS2::Unit RS_Graphic::getUnit() {
-    return (RS2::Unit) getVariableInt("$INSUNITS", 0);
+    return (RS2::Unit) _variableDict->getInt("$INSUNITS", 0);
     //return unit;
 }
 
@@ -572,7 +571,7 @@ RS2::Unit RS_Graphic::getUnit() {
  * This is determined by the variable "$LUNITS".
  */
 RS2::LinearFormat RS_Graphic::getLinearFormat() {
-    int lunits = getVariableInt("$LUNITS", 2);
+    int lunits = _variableDict->getInt("$LUNITS", 2);
     return getLinearFormat(lunits);
 }
 
@@ -616,7 +615,7 @@ RS2::LinearFormat RS_Graphic::getLinearFormat(int f) {
  * This is determined by the variable "$LUPREC".
  */
 int RS_Graphic::getLinearPrecision() {
-    return getVariableInt("$LUPREC", 4);
+    return _variableDict->getInt("$LUPREC", 4);
 }
 
 
@@ -625,7 +624,7 @@ int RS_Graphic::getLinearPrecision() {
  * This is determined by the variable "$AUNITS".
  */
 RS2::AngleFormat RS_Graphic::getAngleFormat() {
-    int aunits = getVariableInt("$AUNITS", 0);
+    int aunits = _variableDict->getInt("$AUNITS", 0);
 
     switch (aunits) {
         default:
@@ -659,7 +658,7 @@ RS2::AngleFormat RS_Graphic::getAngleFormat() {
  * This is determined by the variable "$LUPREC".
  */
 int RS_Graphic::getAnglePrecision() {
-    return getVariableInt("$AUPREC", 4);
+    return _variableDict->getInt("$AUPREC", 4);
 }
 
 
@@ -669,7 +668,7 @@ int RS_Graphic::getAnglePrecision() {
  * point of the drawing. DXF: $PINSBASE.
  */
 RS_Vector RS_Graphic::getPaperInsertionBase() {
-    return getVariableVector("$PINSBASE", RS_Vector(0.0, 0.0));
+    return _variableDict->getVector("$PINSBASE", RS_Vector(0.0, 0.0));
 }
 
 
@@ -677,7 +676,7 @@ RS_Vector RS_Graphic::getPaperInsertionBase() {
  * Sets the PINSBASE variable.
  */
 void RS_Graphic::setPaperInsertionBase(const RS_Vector &p) {
-    addVariable("$PINSBASE", p, 10);
+    _variableDict->add("$PINSBASE", p, 10);
 }
 
 
@@ -699,8 +698,8 @@ RS_Vector RS_Graphic::getPaperSize() {
                                 RS2::Millimeter, getUnit());
     }
 
-    RS_Vector v1 = getVariableVector("$PLIMMIN", RS_Vector(0.0, 0.0));
-    RS_Vector v2 = getVariableVector("$PLIMMAX", def);
+    RS_Vector v1 = _variableDict->getVector("$PLIMMIN", RS_Vector(0.0, 0.0));
+    RS_Vector v2 = _variableDict->getVector("$PLIMMAX", def);
 
     return v2 - v1;
 }
@@ -710,8 +709,8 @@ RS_Vector RS_Graphic::getPaperSize() {
  * Sets a new paper size.
  */
 void RS_Graphic::setPaperSize(const RS_Vector &s) {
-    addVariable("$PLIMMIN", RS_Vector(0.0, 0.0), 10);
-    addVariable("$PLIMMAX", s, 10);
+    _variableDict->add("$PLIMMIN", RS_Vector(0.0, 0.0), 10);
+    _variableDict->add("$PLIMMAX", s, 10);
     //set default paper size
     RS_Vector def = RS_Units::convert(s,
                                       getUnit(), RS2::Millimeter);
@@ -728,8 +727,8 @@ void RS_Graphic::setPaperSize(const RS_Vector &s) {
  */
 RS_Vector RS_Graphic::getPrintAreaSize(bool total) {
     RS_Vector printArea = getPaperSize();
-    printArea.x -= RS_Units::convert(marginLeft + marginRight, RS2::Millimeter, getUnit());
-    printArea.y -= RS_Units::convert(marginTop + marginBottom, RS2::Millimeter, getUnit());
+    printArea.x -= RS_Units::convert(_marginLeft + _marginRight, RS2::Millimeter, getUnit());
+    printArea.y -= RS_Units::convert(_marginTop + _marginBottom, RS2::Millimeter, getUnit());
     if (total) {
         printArea.x *= pagesNumH;
         printArea.y *= pagesNumV;
@@ -776,7 +775,7 @@ void RS_Graphic::setPaperFormat(RS2::PaperFormat f, bool landscape) {
 double RS_Graphic::getPaperScale() {
     double ret;
 
-    ret = getVariableDouble("$PSVPSCALE", 1.0);
+    ret = _variableDict->getDouble("$PSVPSCALE", 1.0);
 //    if (ret<1.0e-6) {
 //        ret = 1.0;
 //    }
@@ -789,7 +788,7 @@ double RS_Graphic::getPaperScale() {
  * Sets a new scale factor for the paper space.
  */
 void RS_Graphic::setPaperScale(double s) {
-    if (paperScaleFixed == false) addVariable("$PSVPSCALE", s, 40);
+    if (_paperScaleFixed == false) _variableDict->add("$PSVPSCALE", s, 40);
 }
 
 
@@ -812,8 +811,8 @@ void RS_Graphic::centerToPage() {
     }
 
     RS_Vector pinsbase = (size - s * scale) / 2.0 - sMin * scale;
-    pinsbase.x += RS_Units::convert(marginLeft, RS2::Millimeter, getUnit());
-    pinsbase.y += RS_Units::convert(marginBottom, RS2::Millimeter, getUnit());
+    pinsbase.x += RS_Units::convert(_marginLeft, RS2::Millimeter, getUnit());
+    pinsbase.y += RS_Units::convert(_marginBottom, RS2::Millimeter, getUnit());
 
     setPaperInsertionBase(pinsbase);
 }
@@ -929,19 +928,19 @@ void RS_Graphic::setMarginsInUnits(double left, double top, double right, double
 }
 
 double RS_Graphic::getMarginLeftInUnits() {
-    return RS_Units::convert(marginLeft, RS2::Millimeter, getUnit());
+    return RS_Units::convert(_marginLeft, RS2::Millimeter, getUnit());
 }
 
 double RS_Graphic::getMarginTopInUnits() {
-    return RS_Units::convert(marginTop, RS2::Millimeter, getUnit());
+    return RS_Units::convert(_marginTop, RS2::Millimeter, getUnit());
 }
 
 double RS_Graphic::getMarginRightInUnits() {
-    return RS_Units::convert(marginRight, RS2::Millimeter, getUnit());
+    return RS_Units::convert(_marginRight, RS2::Millimeter, getUnit());
 }
 
 double RS_Graphic::getMarginBottomInUnits() {
-    return RS_Units::convert(marginBottom, RS2::Millimeter, getUnit());
+    return RS_Units::convert(_marginBottom, RS2::Millimeter, getUnit());
 }
 
 void RS_Graphic::setPagesNum(int horiz, int vert) {

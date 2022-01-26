@@ -123,7 +123,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 
     ///if(!add) graphic->clearLayers();
 
-    //graphic->addLayer(DEF_DEFAULTLAYER);
+    //graphic->getLayerList()->add(DEF_DEFAULTLAYER);
 
     //RS_DEBUG->print( "\nDefault layer added" );
 
@@ -161,7 +161,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if( dxfCode.toInt()==70 ) {
 							dxfLine=getBufLine() ;
                             if( dxfLine.size() ) {
-                                graphic->addVariable("$INSUNITS", dxfLine, 70);
+                                graphic->getVariables()->add("$INSUNITS", dxfLine, 70);
                                 /*
                                             switch( dxfLine.toInt() ) {
                                               case  0: graphic->setUnit( RS2::None );       break;
@@ -203,7 +203,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if( dxfCode.toInt()==70 ) {
 							dxfLine=getBufLine();
                             if( dxfLine.size() ) {
-                                graphic->addVariable("$DIMALT", dxfLine, 70);
+                                graphic->getVariables()->add("$DIMALT", dxfLine, 70);
                                 /*
                                             switch( dxfLine.toInt() ) {
                                               case  0: graphic->setDimensionUnit( RS2::None );       break;
@@ -261,7 +261,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if( dxfCode.toInt()==40 ) {
 							dxfLine=getBufLine() ;
                             if( dxfLine.size()) {
-                                graphic->addVariable("$DIMASZ", dxfLine, 40);
+                                graphic->getVariables()->add("$DIMASZ", dxfLine, 40);
                                 //graphic->setDimensionArrowSize( dxfLine.toDouble() );
                             }
                         }
@@ -297,7 +297,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if( dxfCode.toInt()==40 ) {
 							dxfLine=getBufLine();
                             if( dxfLine.size() ) {
-                                graphic->addVariable("$DIMTXT", dxfLine, 40);
+                                graphic->getVariables()->add("$DIMTXT", dxfLine, 40);
                                 //graphic->setDimensionTextHeight( dxfLine.toDouble() );
                             }
                         }
@@ -319,7 +319,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if( dxfCode.toInt()==40 ) {
 							dxfLine=getBufLine();
                             if( dxfLine.size() ) {
-                                graphic->addVariable("$DIMRND", dxfLine, 40);
+                                graphic->getVariables()->add("$DIMRND", dxfLine, 40);
                                 //if( dxfLine.toDouble()>0.000001 ) {
                                 //graphic->setDimensionExactness( dxfLine.toDouble() );
                             }
@@ -343,7 +343,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if( dxfCode.toInt()==40 ) {
 							dxfLine=getBufLine();
                             if( dxfLine.size() ) {
-                                graphic->addVariable("$DIMEXE", dxfLine, 40);
+                                graphic->getVariables()->add("$DIMEXE", dxfLine, 40);
                                 //graphic->setDimensionOverLength( dxfLine.toDouble() );
                             }
                         }
@@ -365,7 +365,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if( dxfCode.toInt()==40 ) {
 							dxfLine=getBufLine();
                             if( dxfLine.size() ) {
-                                graphic->addVariable("$DIMEXO", dxfLine, 40);
+                                graphic->getVariables()->add("$DIMEXO", dxfLine, 40);
                                 //graphic->setDimensionUnderLength( dxfLine.toDouble() );
                             }
                         }
@@ -388,7 +388,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if( dxfCode.toInt()==70 ) {
 							dxfLine=getBufLine();
                             if( dxfLine.size() ) {
-                                graphic->addVariable("$DIMAUNIT", dxfLine, 70);
+                                graphic->getVariables()->add("$DIMAUNIT", dxfLine, 70);
                                 /*
                                             switch( dxfLine.toInt() ) {
                                               case 0: graphic->setAngleDimensionFormat( DecimalDegrees ); break;
@@ -412,7 +412,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if( dxfCode.toInt()==70 ) {
 							dxfLine=getBufLine();
                             if( dxfLine.size() ) {
-                                graphic->addVariable("$DIMADEC", dxfLine, 70);
+                                graphic->getVariables()->add("$DIMADEC", dxfLine, 70);
                                 //graphic->setAngleDimensionExactness( RS_Math::pow(0.1, dxfLine.toInt()) );
                             }
                         }
@@ -432,7 +432,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                                 if (dxfLine.size()) {
                                     double y = atof(dxfLine.toLatin1().data());
 
-                                    graphic->addVariable("$GRIDUNIT", RS_Vector(x,y), 10);
+                                    graphic->getVariables()->add("$GRIDUNIT", RS_Vector(x,y), 10);
                                 }
                             }
                         }
@@ -549,9 +549,9 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->addLayer(new RS_Layer(dxfLine));
-                                    graphic->activateLayer(dxfLine);
-                                    currentLayer = graphic->getActiveLayer();
+                                    graphic->getLayerList()->add(new RS_Layer(dxfLine));
+                                    graphic->getLayerList()->activate(dxfLine);
+                                    currentLayer = graphic->getLayerList()->getActive();
                                     lastLayer=dxfLine;
                                     break;
                                 case 70:  // Visibility
@@ -612,7 +612,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;
@@ -664,7 +664,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;
@@ -726,7 +726,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;
@@ -791,7 +791,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;
@@ -999,7 +999,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;
@@ -1111,7 +1111,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;

@@ -121,9 +121,9 @@ bool RS_FilterDXF::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
     RS_DEBUG->print("RS_FilterDXF::fileImport: adding variables");
 
     // add some variables that need to be there for DXF drawings:
-    if (graphic->getVariableString("$DIMSTYLE", "").isEmpty()) {
+    if (graphic->getVariables()->getString("$DIMSTYLE", "").isEmpty()) {
         RS_DEBUG->print("RS_FilterDXF::fileImport: adding DIMSTYLE");
-        graphic->addVariable("$DIMSTYLE", "Standard", 2);
+        graphic->getVariables()->add("$DIMSTYLE", "Standard", 2);
         RS_DEBUG->print("RS_FilterDXF::fileImport: adding DIMSTYLE: OK");
     }
     RS_DEBUG->print("RS_FilterDXF::fileImport: adding variables: OK");
@@ -185,7 +185,7 @@ void RS_FilterDXF::addLayer(const DL_LayerData& data) {
 
 
     RS_DEBUG->print("RS_FilterDXF::addLayer: add layer to graphic");
-    graphic->addLayer(layer);
+    graphic->getLayerList()->add(layer);
     RS_DEBUG->print("RS_FilterDXF::addLayer: OK");
 }
 
@@ -215,7 +215,7 @@ void RS_FilterDXF::addBlock(const DL_BlockData& data) {
             ec->setLayer("0");
             currentContainer = ec;
             graphic->addEntity(ec);
-            //currentContainer->setLayer(graphic->findLayer("0"));
+            //currentContainer->setLayer(graphic->getLayerList()->find("0"));
         }
         else {
 #endif
@@ -1127,7 +1127,7 @@ void RS_FilterDXF::setVariableVector(const char* key,
 
     // update document's variable list:
     if (currentContainer->rtti()==RS2::EntityGraphic) {
-        ((RS_Graphic*)currentContainer)->addVariable(QString(key),
+        ((RS_Graphic*)currentContainer)->getVariables()->add(QString(key),
 #ifdef  RS_VECTOR2D
                 RS_Vector(v1, v2), code);
 #else
@@ -1150,7 +1150,7 @@ void RS_FilterDXF::setVariableString(const char* key,
 
     // update document's variable list:
     if (currentContainer->rtti()==RS2::EntityGraphic) {
-        ((RS_Graphic*)currentContainer)->addVariable(QString(key),
+        ((RS_Graphic*)currentContainer)->getVariables()->add(QString(key),
                 QString(value), code);
     }
 }
@@ -1165,7 +1165,7 @@ void RS_FilterDXF::setVariableInt(const char* key, int value, int code) {
 
     // update document's variable list:
     if (currentContainer->rtti()==RS2::EntityGraphic) {
-        ((RS_Graphic*)currentContainer)->addVariable(QString(key),
+        ((RS_Graphic*)currentContainer)->getVariables()->add(QString(key),
                 value, code);
     }
 }
@@ -1180,7 +1180,7 @@ void RS_FilterDXF::setVariableDouble(const char* key, double value, int code) {
 
     // update document's variable list:
     if (currentContainer->rtti()==RS2::EntityGraphic) {
-        ((RS_Graphic*)currentContainer)->addVariable(QString(key),
+        ((RS_Graphic*)currentContainer)->getVariables()->add(QString(key),
                 value, code);
     }
 
@@ -1289,11 +1289,11 @@ bool RS_FilterDXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
     // DIMSTYLE:
     RS_DEBUG->print("writing dim styles...");
     dxf.writeDimStyle(*dw,
-                      graphic->getVariableDouble("$DIMASZ", 2.5),
-                      graphic->getVariableDouble("$DIMEXE", 1.25),
-                      graphic->getVariableDouble("$DIMEXO", 0.625),
-                      graphic->getVariableDouble("$DIMGAP", 0.625),
-                      graphic->getVariableDouble("$DIMTXT", 2.5));
+                      graphic->getVariables()->getDouble("$DIMASZ", 2.5),
+                      graphic->getVariables()->getDouble("$DIMEXE", 1.25),
+                      graphic->getVariables()->getDouble("$DIMEXO", 0.625),
+                      graphic->getVariables()->getDouble("$DIMGAP", 0.625),
+                      graphic->getVariables()->getDouble("$DIMTXT", 2.5));
 
     // BLOCK_RECORD:
     if (type==RS2::FormatDXFOLD) {
@@ -2479,7 +2479,7 @@ void RS_FilterDXF::setEntityAttributes(RS_Entity* entity,
     } else {
         // add layer in case it doesn't exist:
 
-        if (graphic->findLayer(QString::fromUtf8(attrib.getLayer().c_str()))==NULL) {
+        if (graphic->getLayerList()->find(QString::fromUtf8(attrib.getLayer().c_str()))==NULL) {
             addLayer(DL_LayerData(attrib.getLayer(), 0));
         }
         entity->setLayer(QString::fromUtf8(attrib.getLayer().c_str()));

@@ -53,12 +53,12 @@ void RS_ActionLayersToggleView::trigger() {
             if (!layer) continue;
             if (!layer->isVisibleInLayerList()) continue;
             if (!layer->isSelectedInLayerList()) continue;
-            graphic->toggleLayer(layer);
+            graphic->getLayerList()->toggle(layer);
             cnt++;
         }
         // if there wasn't selected layers, toggle active layer
         if (!cnt) {
-            graphic->toggleLayer(a_layer);
+            graphic->getLayerList()->toggle(a_layer);
         }
         graphic->updateInserts();
         container->calculateBorders();

@@ -52,13 +52,13 @@ void RS_ActionLayersToggleLock::trigger() {
             if (!layer) continue;
             if (!layer->isVisibleInLayerList()) continue;
             if (!layer->isSelectedInLayerList()) continue;
-            graphic->toggleLayerLock(layer);
+            graphic->getLayerList()->toggleLock(layer);
             deselectEntitiesOnLockedLayer(layer);
             cnt++;
         }
         // if there wasn't selected layers, toggle active layer
         if (!cnt) {
-            graphic->toggleLayerLock(a_layer);
+            graphic->getLayerList()->toggleLock(a_layer);
             deselectEntitiesOnLockedLayer(a_layer);
         }
     }

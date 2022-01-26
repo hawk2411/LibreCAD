@@ -107,7 +107,7 @@ bool RS_FilterJWW::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         currentContainer = graphic;
         this->file = file;
 
-        RS_DEBUG->print("graphic->countLayers(): %d", graphic->countLayers());
+        RS_DEBUG->print("graphic->countLayers(): %d", graphic->getLayerList()->count());
 
         //graphic->setAutoUpdateBorders(false);
         RS_DEBUG->print("RS_FilterJWW::fileImport: reading file");
@@ -124,9 +124,9 @@ bool RS_FilterJWW::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         RS_DEBUG->print("RS_FilterJWW::fileImport: adding variables");
 
         // add some variables that need to be there for JWW drawings:
-        if (graphic->getVariableString("$DIMSTYLE", "").isEmpty()) {
+        if (graphic->getVariables()->getString("$DIMSTYLE", "").isEmpty()) {
                 RS_DEBUG->print("RS_FilterJWW::fileImport: adding DIMSTYLE");
-                graphic->addVariable("$DIMSTYLE", "Standard", 2);
+                graphic->getVariables()->add("$DIMSTYLE", "Standard", 2);
                 RS_DEBUG->print("RS_FilterJWW::fileImport: adding DIMSTYLE: OK");
         }
         RS_DEBUG->print("RS_FilterJWW::fileImport: adding variables: OK");
@@ -167,7 +167,7 @@ void RS_FilterJWW::addLayer(const DL_LayerData& data) {
         }
 
         RS_DEBUG->print("RS_FilterJWW::addLayer: add layer to graphic");
-        graphic->addLayer(layer);
+        graphic->getLayerList()->add(layer);
         RS_DEBUG->print("RS_FilterJWW::addLayer: OK");
 }
 
@@ -199,7 +199,7 @@ void RS_FilterJWW::addBlock(const DL_BlockData& data) {
                         ec->setLayer("0");
                         currentContainer = ec;
                         graphic->addEntity(ec);
-                        //currentContainer->setLayer(graphic->findLayer("0"));
+                        //currentContainer->setLayer(graphic->getLayerList()->find("0"));
                 }
                 else {
 #endif
@@ -1129,7 +1129,7 @@ void RS_FilterJWW::setVariableVector(const char* key,
 
         // update document's variable list:
         if (currentContainer->rtti()==RS2::EntityGraphic) {
-                ((RS_Graphic*)currentContainer)->addVariable(QString(key),
+                ((RS_Graphic*)currentContainer)->getVariables()->add(QString(key),
                                 RS_Vector(v1, v2, v3), code);
         }
 }
@@ -1148,7 +1148,7 @@ void RS_FilterJWW::setVariableString(const char* key,
 
         // update document's variable list:
         if (currentContainer->rtti()==RS2::EntityGraphic) {
-                ((RS_Graphic*)currentContainer)->addVariable(QString(key),
+                ((RS_Graphic*)currentContainer)->getVariables()->add(QString(key),
                                 QString(value), code);
         }
 }
@@ -1163,7 +1163,7 @@ void RS_FilterJWW::setVariableInt(const char* key, int value, int code) {
 
         // update document's variable list:
         if (currentContainer->rtti()==RS2::EntityGraphic) {
-                ((RS_Graphic*)currentContainer)->addVariable(QString(key),
+                ((RS_Graphic*)currentContainer)->getVariables()->add(QString(key),
                                 value, code);
         }
 }
@@ -1178,7 +1178,7 @@ void RS_FilterJWW::setVariableDouble(const char* key, double value, int code) {
 
         // update document's variable list:
         if (currentContainer->rtti()==RS2::EntityGraphic) {
-                ((RS_Graphic*)currentContainer)->addVariable(QString(key),
+                ((RS_Graphic*)currentContainer)->getVariables()->add(QString(key),
                                 value, code);
         }
 
@@ -1259,9 +1259,9 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
         // Layers:
         RS_DEBUG->print("writing layers...");
-        dw->tableLayers(graphic->countLayers());
-        for (unsigned i=0; i<graphic->countLayers(); ++i) {
-                RS_Layer* l = graphic->layerAt(i);
+        dw->tableLayers(graphic->getLayerList()->count());
+        for (unsigned i=0; i<graphic->getLayerList()->count(); ++i) {
+                RS_Layer* l = graphic->getLayerList()->at(i);
                 writeLayer(*dw, l);
         }
         dw->tableEnd();
@@ -1287,11 +1287,11 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         // DIMSTYLE:
         RS_DEBUG->print("writing dim styles...");
         jww.writeDimStyle(*dw,
-                                          graphic->getVariableDouble("$DIMASZ", 2.5),
-                                          graphic->getVariableDouble("$DIMEXE", 1.25),
-                                          graphic->getVariableDouble("$DIMEXO", 0.625),
-                                          graphic->getVariableDouble("$DIMGAP", 0.625),
-                                          graphic->getVariableDouble("$DIMTXT", 2.5));
+                                          graphic->getVariables()->getDouble("$DIMASZ", 2.5),
+                                          graphic->getVariables()->getDouble("$DIMEXE", 1.25),
+                                          graphic->getVariables()->getDouble("$DIMEXO", 0.625),
+                                          graphic->getVariables()->getDouble("$DIMGAP", 0.625),
+                                          graphic->getVariables()->getDouble("$DIMTXT", 2.5));
 
         // BLOCK_RECORD:
         if (type==RS2::FormatJWW) {
@@ -1424,7 +1424,7 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
  * Writes all known variable settings to the JWW file.
  */
 void RS_FilterJWW::writeVariables(DL_WriterA& dw) {
-    QHash<QString, RS_Variable>vars = graphic->getVariableDict();
+    QHash<QString, RS_Variable>vars = graphic->getVariables()->getVariableDict();
     QHash<QString, RS_Variable>::iterator it = vars.begin();
     while (it != vars.end()) {
                 // exclude variables that are not known to JWW 12:
@@ -2488,13 +2488,13 @@ void RS_FilterJWW::setEntityAttributes(RS_Entity* entity,
                 QTextCodec *codec = QTextCodec::codecForName(enc.toLatin1());
                 if(codec)
                         lName = codec->toUnicode(attrib.getLayer().c_str());
-				if (!graphic->findLayer(lName)) {
+				if (!graphic->getLayerList()->find(lName)) {
                         addLayer(DL_LayerData(attrib.getLayer(), 0));
                 }
                 entity->setLayer(lName);
 //-------------------------
                 // add layer in case it doesn't exist:
-/*		if (graphic->findLayer(attrib.getLayer().c_str())==nullptr) {
+/*		if (graphic->getLayerList()->find(attrib.getLayer().c_str())==nullptr) {
                         addLayer(DL_LayerData(attrib.getLayer(), 0));
                 }
                 entity->setLayer(attrib.getLayer().c_str());

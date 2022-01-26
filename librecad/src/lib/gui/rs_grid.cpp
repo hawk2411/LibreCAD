@@ -88,9 +88,9 @@ void RS_Grid::updatePointArray() {
 	RS_Vector userGrid;
 	if (graphic) {
 		//$ISOMETRICGRID == $SNAPSTYLE
-		isometric = static_cast<bool>(graphic->getVariableInt("$SNAPSTYLE",0));
+		isometric = static_cast<bool>(graphic->getVariables()->getInt("$SNAPSTYLE",0));
 		crosshairType=graphic->getCrosshairType();
-		userGrid = graphic->getVariableVector("$GRIDUNIT",
+		userGrid = graphic->getVariables()->getVector("$GRIDUNIT",
 											 RS_Vector(-1.0, -1.0));
 	}else {
 		isometric = (bool)RS_SETTINGS->readNumEntry("/IsometricGrid", 0);

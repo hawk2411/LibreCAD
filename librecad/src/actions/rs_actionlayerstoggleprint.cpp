@@ -55,13 +55,13 @@ void RS_ActionLayersTogglePrint::trigger() {
             if (!layer) continue;
             if (!layer->isVisibleInLayerList()) continue;
             if (!layer->isSelectedInLayerList()) continue;
-            graphic->toggleLayerPrint(layer);
+            graphic->getLayerList()->togglePrint(layer);
             deselectEntities(layer);
             cnt++;
         }
         // if there wasn't selected layers, toggle active layer
         if (!cnt) {
-            graphic->toggleLayerPrint(a_layer);
+            graphic->getLayerList()->togglePrint(a_layer);
             deselectEntities(a_layer);
         }
     }

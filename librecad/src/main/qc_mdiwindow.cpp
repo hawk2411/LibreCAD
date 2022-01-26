@@ -327,7 +327,7 @@ void QC_MDIWindow::slotZoomAuto() {
 void QC_MDIWindow::drawChars() {
 
     RS_BlockList *bl = document->getBlockList();
-    double sep = document->getGraphic()->getVariableDouble("LetterSpacing", 3.0);
+    double sep = document->getGraphic()->getVariables()->getDouble("LetterSpacing", 3.0);
     double h = sep / 3;
     sep = sep * 3;
     std::size_t i = 0;

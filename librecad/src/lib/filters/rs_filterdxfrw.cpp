@@ -153,7 +153,7 @@ bool RS_FilterDXFRW::fileImport(RS_Graphic& g, const QString& file, RS2::FormatT
 
     this->file = file;
     // add some variables that need to be there for DXF drawings:
-    graphic->addVariable("$DIMSTYLE", "Standard", 2);
+    graphic->getVariables()->add("$DIMSTYLE", "Standard", 2);
     dimStyle = "Standard";
     codePage = "ANSI_1252";
     textStyle = "Standard";
@@ -199,7 +199,7 @@ bool RS_FilterDXFRW::fileImport(RS_Graphic& g, const QString& file, RS2::FormatT
 
     delete dummyContainer;
     /*set current layer */
-    RS_Layer* cl = graphic->findLayer(graphic->getVariableString("$CLAYER", "0"));
+    RS_Layer* cl = graphic->getLayerList()->find(graphic->getVariables()->getString("$CLAYER", "0"));
 	if (cl ){
         //require to notify
         graphic->getLayerList()->activate(cl, true);
@@ -222,7 +222,7 @@ void RS_FilterDXFRW::addLayer(const DRW_Layer &data) {
     RS_DEBUG->print("RS_FilterDXF::addLayer: creating layer");
 
     QString name = QString::fromUtf8(data.name.c_str());
-    if (name != "0" && graphic->findLayer(name)) {
+    if (name != "0" && graphic->getLayerList()->find(name)) {
         return;
     }
     RS_Layer* layer = new RS_Layer(name);
@@ -264,7 +264,7 @@ void RS_FilterDXFRW::addLayer(const DRW_Layer &data) {
         RS_DEBUG->print(RS_Debug::D_WARNING, "RS_FilterDXF::addLayer: layer %s is construction layer", layer->getName().toStdString().c_str());
 
     RS_DEBUG->print("RS_FilterDXF::addLayer: add layer to graphic");
-    graphic->addLayer(layer);
+    graphic->getLayerList()->add(layer);
     RS_DEBUG->print("RS_FilterDXF::addLayer: OK");
 }
 
@@ -273,18 +273,18 @@ void RS_FilterDXFRW::addLayer(const DRW_Layer &data) {
  */
 void RS_FilterDXFRW::addDimStyle(const DRW_Dimstyle& data){
     RS_DEBUG->print("RS_FilterDXFRW::addLayer");
-    QString dimstyle = graphic->getVariableString("$DIMSTYLE", "standard");
+    QString dimstyle = graphic->getVariables()->getString("$DIMSTYLE", "standard");
 
     if (QString::compare(data.name.c_str(), dimstyle, Qt::CaseInsensitive) == 0) {
         if( isLibDxfRw && libDxfRwVersion < LIBDXFRW_VERSION( 0, 6, 2)) {
-            graphic->addVariable("$DIMDEC", graphic->getVariableInt("$DIMDEC",
-                                            graphic->getVariableInt("$LUPREC", 4)), 70);
-            graphic->addVariable("$DIMADEC", graphic->getVariableInt("$DIMADEC",
-                                             graphic->getVariableInt("$AUPREC", 2)), 70);
+            graphic->getVariables()->add("$DIMDEC", graphic->getVariables()->getInt("$DIMDEC",
+                                            graphic->getVariables()->getInt("$LUPREC", 4)), 70);
+            graphic->getVariables()->add("$DIMADEC", graphic->getVariables()->getInt("$DIMADEC",
+                                             graphic->getVariables()->getInt("$AUPREC", 2)), 70);
             //do nothing;
         } else {
-            graphic->addVariable("$DIMDEC", data.dimdec, 70);
-            graphic->addVariable("$DIMADEC", data.dimadec, 70);
+            graphic->getVariables()->add("$DIMDEC", data.dimdec, 70);
+            graphic->getVariables()->add("$DIMADEC", data.dimadec, 70);
         }
     }
 }
@@ -1302,34 +1302,34 @@ void RS_FilterDXFRW::addHeader(const DRW_Header* data){
         DRW_Variant *var = (*it).second;
         switch (var->type()) {
         case DRW_Variant::COORD:
-            container->addVariable(key,
+            container->getVariables()->add(key,
             RS_Vector(var->content.v->x, var->content.v->y, var->content.v->z), var->code());
             break;
         case DRW_Variant::STRING:
-            container->addVariable(key, QString::fromUtf8(var->content.s->c_str()), var->code());
+            container->getVariables()->add(key, QString::fromUtf8(var->content.s->c_str()), var->code());
             break;
         case DRW_Variant::INTEGER:
-            container->addVariable(key, var->content.i, var->code());
+            container->getVariables()->add(key, var->content.i, var->code());
             break;
         case DRW_Variant::DOUBLE:
-            container->addVariable(key, var->content.d, var->code());
+            container->getVariables()->add(key, var->content.d, var->code());
             break;
         default:
             break;
         }
 
     }
-    codePage = graphic->getVariableString("$DWGCODEPAGE", "ANSI_1252");
-    textStyle = graphic->getVariableString("$TEXTSTYLE", "Standard");
-    dimStyle = graphic->getVariableString("$DIMSTYLE", "Standard");
+    codePage = graphic->getVariables()->getString("$DWGCODEPAGE", "ANSI_1252");
+    textStyle = graphic->getVariables()->getString("$TEXTSTYLE", "Standard");
+    dimStyle = graphic->getVariables()->getString("$DIMSTYLE", "Standard");
     //initialize units vars if not are present in dxf file
-    graphic->getVariableInt("$LUNITS", 2);
-    graphic->getVariableInt("$LUPREC", 4);
-    graphic->getVariableInt("$AUNITS", 0);
-    graphic->getVariableInt("$AUPREC", 4);
+    graphic->getVariables()->getInt("$LUNITS", 2);
+    graphic->getVariables()->getInt("$LUPREC", 4);
+    graphic->getVariables()->getInt("$AUNITS", 0);
+    graphic->getVariables()->getInt("$AUPREC", 4);
 
 
-    QString acadver = versionStr = graphic->getVariableString("$ACADVER", "");
+    QString acadver = versionStr = graphic->getVariables()->getString("$ACADVER", "");
     acadver.replace(QRegExp("[a-zA-Z]"), "");
     bool ok;
     version=acadver.toInt(&ok);
@@ -1565,7 +1565,7 @@ void RS_FilterDXFRW::writeHeader(DRW_Header& data, dxfWriter* writer){
     RS_Vector v;
 /*TODO $ISOMETRICGRID == $SNAPSTYLE and "GRID on/off" not handled because is part of
  active vport to save is required read/write VPORT table */
-    QHash<QString, RS_Variable>vars = graphic->getVariableDict();
+    QHash<QString, RS_Variable>vars = graphic->getVariables()->getVariableDict();
     QHash<QString, RS_Variable>::iterator it = vars.begin();
     if (!vars.contains ( "$DWGCODEPAGE" )) {
 //RLZ: TODO verify this
@@ -1600,8 +1600,8 @@ void RS_FilterDXFRW::writeHeader(DRW_Header& data, dxfWriter* writer){
     data.addCoord("$EXTMAX", DRW_Coord(v.x, v.y, 0.0), 0);
 
     //when saving a block, there is no active layer. ignore it to avoid crash
-    if(graphic->getActiveLayer()==0) return;
-    data.addStr("$CLAYER", (graphic->getActiveLayer()->getName()).toUtf8().data(), 8);
+    if(graphic->getLayerList()->getActive() == nullptr) return;
+    data.addStr("$CLAYER", (graphic->getLayerList()->getActive()->getName()).toUtf8().data(), 8);
 }
 
 void RS_FilterDXFRW::writeLTypes(dxfWriter* writer){
@@ -1963,7 +1963,7 @@ void RS_FilterDXFRW::writeVports(dxfWriter* writer){
     DRW_Vport vp;
     vp.name = "*Active";
     graphic->isGridOn()? vp.grid = 1 : vp.grid = 0;
-    RS_Vector spacing = graphic->getVariableVector("$GRIDUNIT",
+    RS_Vector spacing = graphic->getVariables()->getVector("$GRIDUNIT",
                                                    RS_Vector(0.0,0.0));
     vp.gridBehavior = 3;
     vp.gridSpacing.x = spacing.x;
@@ -1995,30 +1995,30 @@ void RS_FilterDXFRW::writeVports(dxfWriter* writer){
 void RS_FilterDXFRW::writeDimstyles(dxfWriter* writer){
     DRW_Dimstyle dsty;
     dsty.name = "Standard";
-    dsty.dimscale = graphic->getVariableDouble("$DIMSCALE", 1.0);
-    dsty.dimasz = graphic->getVariableDouble("$DIMASZ", 2.5);
-    dsty.dimexo = graphic->getVariableDouble("$DIMEXO", 0.625);
-    dsty.dimexe = graphic->getVariableDouble("$DIMEXE", 1.25);
-    dsty.dimfxl = graphic->getVariableDouble("$DIMFXL", 1.0);
-    dsty.dimtxt = graphic->getVariableDouble("$DIMTXT", 2.5);
-    dsty.dimtsz = graphic->getVariableDouble("$DIMTSZ", 2.5);
-    dsty.dimlfac = graphic->getVariableDouble("$DIMLFAC", 1.0);
-    dsty.dimgap = graphic->getVariableDouble("$DIMGAP", 0.625);
-    dsty.dimtih = graphic->getVariableInt("$DIMTIH", 2);
-    dsty.dimzin = graphic->getVariableInt("$DIMZIN", 1);
-    dsty.dimazin = graphic->getVariableInt("$DIMAZIN", 0);
-    dsty.dimclrd = graphic->getVariableInt("$DIMCLRD", 0);
-    dsty.dimclre = graphic->getVariableInt("$DIMCLRE", 0);
-    dsty.dimclrt = graphic->getVariableInt("$DIMCLRT", 0);
-    dsty.dimadec = graphic->getVariableInt("$DIMADEC", 0);
-    dsty.dimdec = graphic->getVariableInt("$DIMDEC", 2);
-    dsty.dimaunit = graphic->getVariableInt("$DIMAUNIT", 0);
-    dsty.dimlunit = graphic->getVariableInt("$DIMLUNIT", 2);
-    dsty.dimdsep = graphic->getVariableInt("$DIMDSEP", 0);
-    dsty.dimfxlon = graphic->getVariableInt("$DIMFXLON", 0);
-    dsty.dimtxsty = graphic->getVariableString("$DIMTXSTY", "standard").toStdString();
-    dsty.dimlwd = graphic->getVariableInt("$DIMLWD", -2);
-    dsty.dimlwe = graphic->getVariableInt("$DIMLWE", -2);
+    dsty.dimscale = graphic->getVariables()->getDouble("$DIMSCALE", 1.0);
+    dsty.dimasz = graphic->getVariables()->getDouble("$DIMASZ", 2.5);
+    dsty.dimexo = graphic->getVariables()->getDouble("$DIMEXO", 0.625);
+    dsty.dimexe = graphic->getVariables()->getDouble("$DIMEXE", 1.25);
+    dsty.dimfxl = graphic->getVariables()->getDouble("$DIMFXL", 1.0);
+    dsty.dimtxt = graphic->getVariables()->getDouble("$DIMTXT", 2.5);
+    dsty.dimtsz = graphic->getVariables()->getDouble("$DIMTSZ", 2.5);
+    dsty.dimlfac = graphic->getVariables()->getDouble("$DIMLFAC", 1.0);
+    dsty.dimgap = graphic->getVariables()->getDouble("$DIMGAP", 0.625);
+    dsty.dimtih = graphic->getVariables()->getInt("$DIMTIH", 2);
+    dsty.dimzin = graphic->getVariables()->getInt("$DIMZIN", 1);
+    dsty.dimazin = graphic->getVariables()->getInt("$DIMAZIN", 0);
+    dsty.dimclrd = graphic->getVariables()->getInt("$DIMCLRD", 0);
+    dsty.dimclre = graphic->getVariables()->getInt("$DIMCLRE", 0);
+    dsty.dimclrt = graphic->getVariables()->getInt("$DIMCLRT", 0);
+    dsty.dimadec = graphic->getVariables()->getInt("$DIMADEC", 0);
+    dsty.dimdec = graphic->getVariables()->getInt("$DIMDEC", 2);
+    dsty.dimaunit = graphic->getVariables()->getInt("$DIMAUNIT", 0);
+    dsty.dimlunit = graphic->getVariables()->getInt("$DIMLUNIT", 2);
+    dsty.dimdsep = graphic->getVariables()->getInt("$DIMDSEP", 0);
+    dsty.dimfxlon = graphic->getVariables()->getInt("$DIMFXLON", 0);
+    dsty.dimtxsty = graphic->getVariables()->getString("$DIMTXSTY", "standard").toStdString();
+    dsty.dimlwd = graphic->getVariables()->getInt("$DIMLWD", -2);
+    dsty.dimlwe = graphic->getVariables()->getInt("$DIMLWE", -2);
     dxfW->writeDimstyle(&dsty, writer);
 }
 
@@ -2996,7 +2996,7 @@ void RS_FilterDXFRW::setEntityAttributes(RS_Entity* entity,
     QString layName = toNativeString(QString::fromUtf8(attrib->layer.c_str()));
 
     // Layer: add layer in case it doesn't exist:
-	if (!graphic->findLayer(layName)) {
+	if (!graphic->getLayerList()->find(layName)) {
         DRW_Layer lay;
         lay.name = attrib->layer;
         addLayer(lay);

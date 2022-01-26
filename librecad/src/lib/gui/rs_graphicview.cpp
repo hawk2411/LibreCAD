@@ -1001,7 +1001,7 @@ void RS_GraphicView::setPenForEntity(RS_Painter *painter,RS_Entity *e)
 			{
 				if (scaleLineWidth)
 				{
-					wf = graphic->getVariableDouble("$DIMSCALE", 1.0);
+					wf = graphic->getVariables()->getDouble("$DIMSCALE", 1.0);
 				}
 				else
 				{

@@ -73,16 +73,16 @@ bool RS_FilterLFF::fileImport(RS_Graphic& graphic, const QString& file, RS2::For
 		return false;
     }
 
-    graphic.addVariable("Names",
+    graphic.getVariables()->add("Names",
                         font.getNames().join(","), 0);
-    graphic.addVariable("LetterSpacing", font.getLetterSpacing(), 0);
-    graphic.addVariable("WordSpacing", font.getWordSpacing(), 0);
-    graphic.addVariable("LineSpacingFactor", font.getLineSpacingFactor(), 0);
-    graphic.addVariable("Authors", font.getAuthors().join(","), 0);
-    graphic.addVariable("License", font.getFileLicense(), 0);
-    graphic.addVariable("Created", font.getFileCreate(), 0);
+    graphic.getVariables()->add("LetterSpacing", font.getLetterSpacing(), 0);
+    graphic.getVariables()->add("WordSpacing", font.getWordSpacing(), 0);
+    graphic.getVariables()->add("LineSpacingFactor", font.getLineSpacingFactor(), 0);
+    graphic.getVariables()->add("Authors", font.getAuthors().join(","), 0);
+    graphic.getVariables()->add("License", font.getFileLicense(), 0);
+    graphic.getVariables()->add("Created", font.getFileCreate(), 0);
     if (!font.getEncoding().isEmpty()) {
-        graphic.addVariable("Encoding", font.getEncoding(), 0);
+        graphic.getVariables()->add("Encoding", font.getEncoding(), 0);
     }
 
     font.generateAllFonts();
@@ -144,7 +144,7 @@ bool RS_FilterLFF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         ts << QString("# Creator:           %1\n").arg(RS_SYSTEM->getAppName());
         ts << QString("# Version:           %1\n").arg(RS_SYSTEM->getAppVersion());
 
-        QString ns = g.getVariableString("Names", "");
+        QString ns = g.getVariables()->getString("Names", "");
         if (!ns.isEmpty()) {
             QStringList names = ns.split(',');
             RS_DEBUG->print("002");
@@ -153,20 +153,20 @@ bool RS_FilterLFF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
             }
         }
 
-        QString es = g.getVariableString("Encoding", "");
+        QString es = g.getVariables()->getString("Encoding", "");
         ts << QString("# Encoding:          UTF-8\n");
         ts << QString("# LetterSpacing:     %1\n").arg(
-                  g.getVariableDouble("LetterSpacing", 3.0));
+                  g.getVariables()->getDouble("LetterSpacing", 3.0));
         ts << QString("# WordSpacing:       %1\n").arg(
-                  g.getVariableDouble("WordSpacing", 6.75));
+                  g.getVariables()->getDouble("WordSpacing", 6.75));
         ts << QString("# LineSpacingFactor: %1\n").arg(
-                  g.getVariableDouble("LineSpacingFactor", 1.0));
+                  g.getVariables()->getDouble("LineSpacingFactor", 1.0));
         QString dateline = QDate::currentDate().toString ("yyyy-MM-dd");
         ts << QString("# Created:           %1\n").arg(
-                  g.getVariableString("Created", dateline));
+                  g.getVariables()->getString("Created", dateline));
         ts << QString("# Last modified:     %1\n").arg(dateline);
 
-        QString sa = g.getVariableString("Authors", "");
+        QString sa = g.getVariables()->getString("Authors", "");
         RS_DEBUG->print("authors: %s", sa.toLocal8Bit().data());
         if (!sa.isEmpty()) {
             QStringList authors = sa.split(',');
@@ -176,7 +176,7 @@ bool RS_FilterLFF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
                 ts << QString("# Author:            %1\n").arg(authors.at(i));
             }
         }
-        es = g.getVariableString("License", "");
+        es = g.getVariables()->getString("License", "");
         if (!es.isEmpty()) {
             ts << QString("# License:           %1\n").arg(es);
         } else

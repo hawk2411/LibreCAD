@@ -505,7 +505,7 @@ void LC_SimpleTests::slotTestInsertBlock() {
 			return;
 		}
 
-		graphic->addLayer(new RS_Layer("default"));
+		graphic->getLayerList()->add(new RS_Layer("default"));
 		RS_Block* block = new RS_Block(graphic, RS_BlockData("debugblock",
 															 RS_Vector(0.0,0.0), true));
 

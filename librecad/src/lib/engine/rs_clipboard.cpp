@@ -36,8 +36,8 @@ RS_Clipboard *RS_Clipboard::_uniqueInstance = nullptr;
 void RS_Clipboard::clear() {
     _graphic.clear();
     _graphic.getBlockList()->clear();
-    _graphic.clearLayers();
-    _graphic.clearVariables();
+    _graphic.getLayerList()->clear();
+    _graphic.getVariables()->clear();
 }
 
 
@@ -55,13 +55,13 @@ bool RS_Clipboard::hasBlock(const QString &name) {
 
 void RS_Clipboard::addLayer(RS_Layer *l) {
     if (l) {
-        _graphic.addLayer(l);
+        _graphic.getLayerList()->add(l);
     }
 }
 
 
 bool RS_Clipboard::hasLayer(const QString &name) {
-    return (_graphic.findLayer(name));
+    return (_graphic.getLayerList()->find(name));
 }
 
 
