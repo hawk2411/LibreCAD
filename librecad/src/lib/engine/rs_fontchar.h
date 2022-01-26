@@ -44,25 +44,17 @@ public:
      *        an identifier.
      * @param basePoint Base point (offset) of the letter (usually 0/0).
      */
-    RS_FontChar(RS_EntityContainer* parent,
-                const QString& name,
+    RS_FontChar(RS_EntityContainer *parent,
+                const QString &name,
                 RS_Vector basePoint)
             : RS_Block(parent, RS_BlockData(name, basePoint, false)) {}
 
-    virtual ~RS_FontChar() {}
+    ~RS_FontChar() override = default;
 
     /** @return RS2::EntityFontChar */
-    virtual RS2::EntityType rtti() const {
+    RS2::EntityType rtti() const override {
         return RS2::EntityFontChar;
     }
-
-
-    /*friend std::ostream& operator << (std::ostream& os, const RS_FontChar& b) {
-       	os << " name: " << b.getName().latin1() << "\n";
-    	os << " entities: " << (RS_EntityContainer&)b << "\n";
-       	return os;
-}*/
-
 
 protected:
 };
