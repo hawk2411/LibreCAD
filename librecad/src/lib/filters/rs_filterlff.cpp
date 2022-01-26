@@ -87,7 +87,7 @@ bool RS_FilterLFF::fileImport(RS_Graphic& graphic, const QString& file, RS2::For
 
     font.generateAllFonts();
     RS_BlockList* letterList = font.getLetterList();
-    for(RS_Block* letter : *letterList) {
+    for(const auto& letter : *letterList) {
 
         QString uCode;
         uCode.setNum(letter->getName().at(0).unicode(), 16);

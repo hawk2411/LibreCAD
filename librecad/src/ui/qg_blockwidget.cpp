@@ -76,7 +76,7 @@ void QG_BlockModel::setBlockList(RS_BlockList* blockList) {
         return;
     }
 
-    for(RS_Block* block: *blockList) {
+    for(auto block: *blockList) {
         if (!block->isUndone()) { listBlock.append(block); }
 
     }
@@ -291,7 +291,7 @@ void QG_BlockWidget::restoreSelections() {
 
     QItemSelectionModel* selectionModel = blockView->selectionModel();
 
-    for (const auto block: *blockList) {
+    for (const auto& block: *blockList) {
         if (!block) continue;
         if (!block->isVisibleInBlockList()) continue;
         if (!block->isSelectedInBlockList()) continue;

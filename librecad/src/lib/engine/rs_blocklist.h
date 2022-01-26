@@ -28,8 +28,8 @@
 #ifndef RS_BLOCKLIST_H
 #define RS_BLOCKLIST_H
 
+#include <qmap.h>
 #include <vector>
-#include <QList>
 
 class QString;
 
@@ -58,13 +58,13 @@ public:
     std::size_t count() const;
 
     //! \{ \brief range based loop
-    std::vector<RS_Block *>::iterator begin() { return _blocks.begin(); }
+    QMap<QString, RS_Block *>::iterator begin() { return _blocks.begin(); }
 
-    std::vector<RS_Block *>::iterator end() { return _blocks.end(); }
+    QMap<QString, RS_Block *>::iterator end() { return _blocks.end(); }
 
-    std::vector<RS_Block *>::const_iterator begin() const { return _blocks.cbegin(); }
+    QMap<QString, RS_Block *>::const_iterator begin() const { return _blocks.cbegin(); }
 
-    std::vector<RS_Block *>::const_iterator end() const { return _blocks.cend(); }
+    QMap<QString, RS_Block *>::const_iterator end() const { return _blocks.cend(); }
     //! \}
 
     void activate(const QString &name);
@@ -117,7 +117,7 @@ private:
     //! Is the list owning the blocks?
     bool _owner;
     //! Blocks in the graphic
-    std::vector<RS_Block *> _blocks;
+    QMap<QString, RS_Block *> _blocks;
     //! List of registered BlockListListeners
     std::vector<RS_BlockListListener *> _blockListListeners;
     //! Currently active block

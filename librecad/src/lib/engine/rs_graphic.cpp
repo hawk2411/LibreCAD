@@ -126,13 +126,13 @@ void RS_Graphic::removeLayer(RS_Layer *layer) {
 
         toRemove.clear();
         // remove all entities in blocks that are on that layer:
-        for (RS_Block *blk: *blockList) {
+        for (const auto& blk: *blockList) {
             if (!blk) continue;
-            for (auto e: *blk) {
+            for (auto entity: *blk) {
 
-                if (e->getLayer() &&
-                    e->getLayer()->getName() == layer->getName()) {
-                    toRemove.push_back(e);
+                if (entity->getLayer() &&
+                    entity->getLayer()->getName() == layer->getName()) {
+                    toRemove.push_back(entity);
                 }
             }
         }

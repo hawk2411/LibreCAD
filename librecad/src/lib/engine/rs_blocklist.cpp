@@ -90,7 +90,7 @@ bool RS_BlockList::add(RS_Block *block, bool notify) {
     // check if block already exists:
     RS_Block *b = find(block->getName());
     if (!b) {
-        _blocks.push_back(block);
+        _blocks[block->getName()] = block;
 
         if (notify) {
             addNotification();
@@ -183,15 +183,12 @@ RS_Block *RS_BlockList::find(const QString &name) {
         RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_BlockList::find(): wrong name to find");
         return nullptr;
     }
-    // Todo : reduce this from O(N) to O(log(N)) complexity based on sorted list or hash
-    //DFS
-    for (RS_Block *b: _blocks) {
-        if (b->getName() == name) {
-            return b;
-        }
+    auto it = _blocks.find(name);
+    if( it == _blocks.end()) {
+        RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_BlockList::find(): bad");
+        return nullptr;
     }
-    RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_BlockList::find(): bad");
-    return nullptr;
+    return it.value();
 }
 
 /**
@@ -211,12 +208,12 @@ QString RS_BlockList::newName(const QString &suggestion) {
         i = name.midRef(index + 1).toInt();
         name = name.mid(0, index);
     }
-    for (RS_Block *b: _blocks) {
-        index = b->getName().lastIndexOf(rx);
+    for (const auto& block : _blocks) {
+        index = block->getName().lastIndexOf(rx);
         if (index < 0) continue;
-        QString const part1 = b->getName().mid(0, index);
+        QString const part1 = block->getName().mid(0, index);
         if (part1 != name) continue;
-        i = std::max(b->getName().midRef(index + 1).toInt(), i);
+        i = std::max(block->getName().midRef(index + 1).toInt(), i);
     }
     return QString("%1-%2").arg(name).arg(i + 1);
 }
@@ -255,9 +252,9 @@ void RS_BlockList::toggle(RS_Block *block) {
  */
 void RS_BlockList::freezeAll(bool freeze) {
 
-    for(auto block : _blocks) {
-        if(block->isVisibleInBlockList()) {
-            block->freeze(freeze);
+    for(const auto& item : _blocks) {
+        if(item->isVisibleInBlockList()) {
+            item->freeze(freeze);
         }
     }
     // TODO LordOfBikes: when block attributes are saved, activate this
@@ -304,7 +301,7 @@ void RS_BlockList::setModified(bool m) {
     // Update each block modified status,
     // but only when the status is set to false.
     if (!m) {
-        for (auto b: _blocks) {
+        for (const auto &b: _blocks) {
             b->setModifiedFlag(false);
         }
     }
@@ -329,8 +326,8 @@ bool RS_BlockList::isModified() const {
 std::ostream &operator<<(std::ostream &os, RS_BlockList &b) {
 
     os << "Blocklist: \n";
-    for(auto blk : b) {
-        os << *blk << "\n";
+    for(const auto& blk : b) {
+        os << blk << "\n";
     }
 
     return os;

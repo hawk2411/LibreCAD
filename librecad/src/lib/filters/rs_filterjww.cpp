@@ -1070,7 +1070,7 @@ void RS_FilterJWW::linkImage(const DL_ImageDefData& data) {
         }
 
         // update images in blocks:
-        for(RS_Block* b : *graphic->getBlockList()) {
+        for(const auto& b : *graphic->getBlockList()) {
                 for (RS_Entity* e=b->firstEntity(RS2::ResolveNone);
                                 e; e=b->nextEntity(RS2::ResolveNone)) {
                         if (e->rtti()==RS2::EntityImage) {
