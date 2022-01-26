@@ -126,7 +126,7 @@ void RS_Graphic::removeLayer(RS_Layer *layer) {
 
         toRemove.clear();
         // remove all entities in blocks that are on that layer:
-        for (const auto& blk: *blockList) {
+        for (const auto &blk: *blockList) {
             if (!blk) continue;
             for (auto entity: *blk) {
 

@@ -58,7 +58,7 @@ public:
 
     RS_LayerList *getLayerList() override { return &layerList; }
 
-    RS_BlockList* getBlockList() const override { return blockList.get(); }
+    RS_BlockList *getBlockList() const override { return blockList.get(); }
 
     void newDoc() override;
 
@@ -321,7 +321,7 @@ private:
     QDateTime modifiedTime;
     QString currentFileName; //keep a copy of filename for the modifiedTime
 
-    RS_BlockList * test;
+    RS_BlockList *test;
     RS_LayerList layerList;
     std::unique_ptr<RS_BlockList> blockList = std::make_unique<RS_BlockList>(true);
     RS_VariableDict variableDict;
