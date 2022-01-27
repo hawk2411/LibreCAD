@@ -76,55 +76,55 @@ public:
 
     virtual void removeLayer(RS_Layer *layer);
 
-    RS2::LinearFormat getLinearFormat();
+    RS2::LinearFormat getLinearFormat() const;
 
-    RS2::LinearFormat getLinearFormat(int f);
+    static RS2::LinearFormat getLinearFormat(int f);
 
-    int getLinearPrecision();
+    int getLinearPrecision() const;
 
-    RS2::AngleFormat getAngleFormat();
+    RS2::AngleFormat getAngleFormat() const;
 
-    int getAnglePrecision();
+    int getAnglePrecision() const;
 
-    RS_Vector getPaperSize();
+    RS_Vector getPaperSize() const;
 
-    void setPaperSize(const RS_Vector &s);
+    void setPaperSize(const RS_Vector &s) const;
 
-    RS_Vector getPrintAreaSize(bool total = true);
+    RS_Vector getPrintAreaSize(bool total = true) const;
 
-    RS_Vector getPaperInsertionBase();
+    RS_Vector getPaperInsertionBase() const;
 
-    void setPaperInsertionBase(const RS_Vector &p);
+    void setPaperInsertionBase(const RS_Vector &p) const;
 
-    RS2::PaperFormat getPaperFormat(bool *landscape);
+    RS2::PaperFormat getPaperFormat(bool *landscape) const;
 
-    void setPaperFormat(RS2::PaperFormat f, bool landscape);
+    void setPaperFormat(RS2::PaperFormat f, bool landscape) const;
 
-    double getPaperScale();
+    double getPaperScale() const;
 
-    void setPaperScale(double s);
+    void setPaperScale(double s) const;
 
-    virtual void setUnit(RS2::Unit u);
+    virtual void setUnit(RS2::Unit u) const;
 
-    virtual RS2::Unit getUnit();
+    virtual RS2::Unit getUnit() const;
 
-    bool isGridOn();
+    bool isGridOn() const;
 
-    void setGridOn(bool on);
+    void setGridOn(bool on) const;
 
-    bool isIsometricGrid();
+    bool isIsometricGrid() const;
 
-    void setIsometricGrid(bool on);
+    void setIsometricGrid(bool on) const;
 
     void setCrosshairType(RS2::CrosshairType chType);
 
-    RS2::CrosshairType getCrosshairType();
+    RS2::CrosshairType getCrosshairType() const;
 
-    void centerToPage();
+    void centerToPage() const;
 
-    bool fitToPage();
+    bool fitToPage() const;
 
-    bool isBiggerThanPaper();
+    bool isBiggerThanPaper() const;
 
     /**
      * @retval true The document has been modified since it was last saved.
@@ -183,13 +183,13 @@ public:
      */
     void setMarginsInUnits(double left, double top, double right, double bottom);
 
-    double getMarginLeftInUnits();
+    double getMarginLeftInUnits() const;
 
-    double getMarginTopInUnits();
+    double getMarginTopInUnits() const;
 
-    double getMarginRightInUnits();
+    double getMarginRightInUnits() const;
 
-    double getMarginBottomInUnits();
+    double getMarginBottomInUnits() const;
 
     /**
      * Number of pages drawing occupies
@@ -199,11 +199,11 @@ public:
     void setPagesNum(const QString &horizXvert);
 
     int getPagesNumHoriz() const {
-        return pagesNumH;
+        return _pagesNumH;
     }
 
     int getPagesNumVert() const {
-        return pagesNumV;
+        return _pagesNumV;
     }
 
     friend std::ostream &operator<<(std::ostream &os, RS_Graphic &g);
@@ -211,8 +211,13 @@ public:
     int clean();
 
 private:
+    RS2::Unit getUnitLocal() const { return (RS2::Unit) _variableDict->getInt("$INSUNITS", 0); }
+    void setUnitLocal(RS2::Unit u) const {
+        setPaperSize(RS_Units::convert(getPaperSize(), getUnit(), u));
 
-    bool BackupDrawingFile(const QString &filename);
+        _variableDict->add("$INSUNITS", (int) u, 70);
+    }
+    static bool BackupDrawingFile(const QString &filename);
 
     QDateTime _modifiedTime;
     QString _currentFileName; //keep a copy of filename for the modifiedTime
@@ -231,8 +236,8 @@ private:
     double _marginBottom;
 
     // Number of pages drawing occupies
-    int pagesNumH;
-    int pagesNumV;
+    int _pagesNumH;
+    int _pagesNumV;
 };
 
 
