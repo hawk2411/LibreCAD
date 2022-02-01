@@ -43,8 +43,8 @@
 RS_BlockList::RS_BlockList(bool owner) {
     this->owner = owner;
     //blocks.setAutoDelete(owner);
-	activeBlock = nullptr;
-	setModified(false);
+    activeBlock = nullptr;
+    setModified(false);
 }
 
 
@@ -53,8 +53,8 @@ RS_BlockList::RS_BlockList(bool owner) {
  */
 void RS_BlockList::clear() {
     blocks.clear();
-	activeBlock = nullptr;
-	setModified(true);
+    activeBlock = nullptr;
+    setModified(true);
 }
 
 
@@ -62,7 +62,7 @@ void RS_BlockList::clear() {
  * Activates the given block.
  * Listeners are notified.
  */
-void RS_BlockList::activate(const QString& name) {
+void RS_BlockList::activate(const QString &name) {
     RS_DEBUG->print("RS_BlockList::activate");
 
     activate(find(name));
@@ -72,9 +72,9 @@ void RS_BlockList::activate(const QString& name) {
  * Activates the given block.
  * Listeners are notified.
  */
-void RS_BlockList::activate(RS_Block* block) {
+void RS_BlockList::activate(RS_Block *block) {
     RS_DEBUG->print("RS_BlockList::activate");
-	activeBlock = block;
+    activeBlock = block;
 }
 
 
@@ -87,34 +87,33 @@ void RS_BlockList::activate(RS_Block* block) {
  *
  * @return false: block already existed and was deleted.
  */
-bool RS_BlockList::add(RS_Block* block, bool notify) {
+bool RS_BlockList::add(RS_Block *block, bool notify) {
     RS_DEBUG->print("RS_BlockList::add()");
 
-	if (!block) {
+    if (!block) {
         return false;
     }
 
     // check if block already exists:
-    RS_Block* b = find(block->getName());
-	if (!b) {
+    RS_Block *b = find(block->getName());
+    if (!b) {
         blocks.append(block);
 
         if (notify) {
             addNotification();
         }
-		setModified(true);
+        setModified(true);
 
-		return true;
+        return true;
     } else {
         if (owner) {
             delete block;
-			block = nullptr;
+            block = nullptr;
         }
-		return false;
+        return false;
     }
 
 }
-
 
 
 /**
@@ -123,11 +122,10 @@ bool RS_BlockList::add(RS_Block* block, bool notify) {
  * to force an update of GUI blocklists.
  */
 void RS_BlockList::addNotification() {
-	for(auto l: blockListListeners){
-		l->blockAdded(nullptr);
-	}
+    for (auto l: blockListListeners) {
+        l->blockAdded(nullptr);
+    }
 }
-
 
 
 /**
@@ -135,24 +133,24 @@ void RS_BlockList::addNotification() {
  * Listeners are notified after the block was removed from 
  * the list but before it gets deleted.
  */
-void RS_BlockList::remove(RS_Block* block) {
+void RS_BlockList::remove(RS_Block *block) {
     RS_DEBUG->print("RS_BlockList::removeBlock()");
 
     // here the block is removed from the list but not deleted
     blocks.removeOne(block);
 
-	for(auto l: blockListListeners){
-		l->blockRemoved(block);
-	}
-		
-	setModified(true);
+    for (auto l: blockListListeners) {
+        l->blockRemoved(block);
+    }
+
+    setModified(true);
 
     // / *
     // activate an other block if necessary:
-    if (activeBlock==block) {
-    	//activate(blocks.first());
-		activeBlock = nullptr;
-	}
+    if (activeBlock == block) {
+        //activate(blocks.first());
+        activeBlock = nullptr;
+    }
     // * /
 
     // now it's save to delete the block
@@ -162,7 +160,6 @@ void RS_BlockList::remove(RS_Block* block) {
 }
 
 
-
 /**
  * Tries to rename the given block to 'name'. Block names are unique in the
  * block list.
@@ -170,16 +167,16 @@ void RS_BlockList::remove(RS_Block* block) {
  * @retval true block was successfully renamed.
  * @retval false block couldn't be renamed.
  */
-bool RS_BlockList::rename(RS_Block* block, const QString& name) {
-	if (block) {
-		if (!find(name)) {
-			block->setName(name);
-			setModified(true);
-			return true;
-		}
-	}
+bool RS_BlockList::rename(RS_Block *block, const QString &name) {
+    if (block) {
+        if (!find(name)) {
+            block->setName(name);
+            setModified(true);
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 
@@ -204,23 +201,23 @@ void RS_BlockList::editBlock(RS_Block* block, const RS_Block& source) {
  * @return Pointer to the block with the given name or
  * \p nullptr if no such block was found.
  */
-RS_Block* RS_BlockList::find(const QString& name) {
+RS_Block *RS_BlockList::find(const QString &name) {
     try {
         RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_BlockList::find(): %s", name.toLatin1().constData());
     }
-    catch(...) {
+    catch (...) {
         RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_BlockList::find(): wrong name to find");
         return nullptr;
     }
-	// Todo : reduce this from O(N) to O(log(N)) complexity based on sorted list or hash
-	//DFS
-	for(RS_Block* b: blocks) {
-		if (b->getName()==name) {
-			return b;
-		}
-	}
+    // Todo : reduce this from O(N) to O(log(N)) complexity based on sorted list or hash
+    //DFS
+    for (RS_Block *b: blocks) {
+        if (b->getName() == name) {
+            return b;
+        }
+    }
     RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_BlockList::find(): bad");
-	return nullptr;
+    return nullptr;
 }
 
 /**
@@ -228,35 +225,35 @@ RS_Block* RS_BlockList::find(const QString& name) {
  *
  * @param suggestion Suggested name the new name will be based on.
  */
-QString RS_BlockList::newName(const QString& suggestion) {
+QString RS_BlockList::newName(const QString &suggestion) {
 //	qDebug()<<"begin: suggestion: "<<suggestion;
-	if(!find(suggestion))
-		return suggestion;
+    if (!find(suggestion))
+        return suggestion;
 
-	QString name=suggestion;
-	QRegExp const rx(R"(-\d+$)");
-	int index=name.lastIndexOf(rx);
-	int i=-1;
-	if(index>0){
-		i=name.mid(index+1).toInt();
-		name=name.mid(0, index);
-	}
-	for(RS_Block* b: blocks){
-		index=b->getName().lastIndexOf(rx);
-		if(index<0) continue;
-		QString const part1= b->getName().mid(0, index);
-		if(part1 != name) continue;
-		i=std::max(b->getName().mid(index+1).toInt(),i);
-	}
+    QString name = suggestion;
+    QRegExp const rx(R"(-\d+$)");
+    int index = name.lastIndexOf(rx);
+    int i = -1;
+    if (index > 0) {
+        i = name.mid(index + 1).toInt();
+        name = name.mid(0, index);
+    }
+    for (RS_Block *b: blocks) {
+        index = b->getName().lastIndexOf(rx);
+        if (index < 0) continue;
+        QString const part1 = b->getName().mid(0, index);
+        if (part1 != name) continue;
+        i = std::max(b->getName().mid(index + 1).toInt(), i);
+    }
 //	qDebug()<<QString("%1-%2").arg(name).arg(i+1);
-	return QString("%1-%2").arg(name).arg(i+1);
+    return QString("%1-%2").arg(name).arg(i + 1);
 }
 
 /**
  * Switches on / off the given block. 
  * Listeners are notified.
  */
-void RS_BlockList::toggle(const QString& name) {
+void RS_BlockList::toggle(const QString &name) {
     toggle(find(name));
 }
 
@@ -264,8 +261,8 @@ void RS_BlockList::toggle(const QString& name) {
  * Switches on / off the given block. 
  * Listeners are notified.
  */
-void RS_BlockList::toggle(RS_Block* block) {
-	if (!block) {
+void RS_BlockList::toggle(RS_Block *block) {
+    if (!block) {
         return;
     }
 
@@ -274,9 +271,9 @@ void RS_BlockList::toggle(RS_Block* block) {
     //setModified(true);
 
     // Notify listeners:
-	for(auto l: blockListListeners){
-		l->blockToggled(block);
-	}
+    for (auto l: blockListListeners) {
+        l->blockToggled(block);
+    }
 }
 
 /**
@@ -286,7 +283,7 @@ void RS_BlockList::toggle(RS_Block* block) {
  */
 void RS_BlockList::freezeAll(bool freeze) {
 
-    for (int l=0; l<count(); l++) {
+    for (int l = 0; l < count(); l++) {
         if (at(l)->isVisibleInBlockList()) {
             at(l)->freeze(freeze);
         }
@@ -294,84 +291,81 @@ void RS_BlockList::freezeAll(bool freeze) {
     // TODO LordOfBikes: when block attributes are saved, activate this
     //setModified(true);
 
-	for(auto l: blockListListeners){
-		l->blockToggled(nullptr);
-	}
+    for (auto l: blockListListeners) {
+        l->blockToggled(nullptr);
+    }
 }
 
 /**
  * adds a BlockListListener to the list of listeners. Listeners
  * are notified when the block list changes.
  */
-void RS_BlockList::addListener(RS_BlockListListener* listener) {
+void RS_BlockList::addListener(RS_BlockListListener *listener) {
     blockListListeners.append(listener);
 }
-
 
 
 /**
  * removes a BlockListListener from the list of listeners. 
  */
-void RS_BlockList::removeListener(RS_BlockListListener* listener) {
+void RS_BlockList::removeListener(RS_BlockListListener *listener) {
     blockListListeners.removeOne(listener);
 }
 
-int RS_BlockList::count() const{
-	return blocks.count();
+int RS_BlockList::count() const {
+    return blocks.count();
 }
 
 /**
  * @return Block at given position or nullptr if i is out of range.
  */
-RS_Block* RS_BlockList::at(int i) {
-	return blocks.at(i);
-}
-RS_Block* RS_BlockList::at(int i) const{
-	return blocks.at(i);
-}
-QList<RS_Block*>::iterator RS_BlockList::begin()
-{
-	return blocks.begin();
+RS_Block *RS_BlockList::at(int i) {
+    return blocks.at(i);
 }
 
-QList<RS_Block*>::iterator RS_BlockList::end()
-{
-	return blocks.end();
+RS_Block *RS_BlockList::at(int i) const {
+    return blocks.at(i);
 }
 
-QList<RS_Block*>::const_iterator RS_BlockList::begin()const
-{
-	return blocks.begin();
+QList<RS_Block *>::iterator RS_BlockList::begin() {
+    return blocks.begin();
 }
 
-QList<RS_Block*>::const_iterator RS_BlockList::end()const
-{
-	return blocks.end();
+QList<RS_Block *>::iterator RS_BlockList::end() {
+    return blocks.end();
+}
+
+QList<RS_Block *>::const_iterator RS_BlockList::begin() const {
+    return blocks.begin();
+}
+
+QList<RS_Block *>::const_iterator RS_BlockList::end() const {
+    return blocks.end();
 }
 
 //! @return The active block of nullptr if no block is activated.
-RS_Block* RS_BlockList::getActive() {
-	return activeBlock;
+RS_Block *RS_BlockList::getActive() {
+    return activeBlock;
 }
 
 /**
  * Sets the block list modified status to 'm'.
  */
 void RS_BlockList::setModified(bool m) {
-	modified = m;
+    modified = m;
 
-	// Update each block modified status,
-	// but only when the status is set to false.
-	if (m == false) {
-		for (auto b: blocks) {
-			b->setModifiedFlag(false);
-		}
-	}
+    // Update each block modified status,
+    // but only when the status is set to false.
+    if (m == false) {
+        for (auto b: blocks) {
+            b->setModifiedFlag(false);
+        }
+    }
 
-	// Notify listeners
-	for (auto l: blockListListeners) {
-		l->blockListModified(m);
-	}
+    // Notify listeners
+    for (auto l: blockListListeners) {
+        l->blockListModified(m);
+    }
 }
 
 /**
@@ -379,17 +373,17 @@ void RS_BlockList::setModified(bool m) {
  * @retval false The block list has not been modified.
  */
 bool RS_BlockList::isModified() const {
-	return modified;
+    return modified;
 }
 
 /**
  * Dumps the blocks to stdout.
  */
-std::ostream& operator << (std::ostream& os, RS_BlockList& b) {
+std::ostream &operator<<(std::ostream &os, RS_BlockList &b) {
 
     os << "Blocklist: \n";
-    for (int i=0; i<b.count(); ++i) {
-        RS_Block* blk = b.at(i);
+    for (int i = 0; i < b.count(); ++i) {
+        RS_Block *blk = b.at(i);
 
         os << *blk << "\n";
     }

@@ -108,7 +108,7 @@ void RS_Undo::startUndoCycle() {
         return;
     }
 
-    // if there are undo cycles behind undoPointer
+    // if there are the "undo" cycles behind undoPointer
     // remove obsolete entities and undoCycles
 
 
