@@ -46,7 +46,7 @@ class RS_BlockListListener;
  */
 class RS_BlockList {
 public:
-    RS_BlockList(bool owner = false);
+    explicit RS_BlockList(bool owner = false);
 
     virtual ~RS_BlockList() = default;
 
@@ -81,7 +81,7 @@ public:
     //! @return The active block of NULL if no block is activated.
     RS_Block *getActive();
 
-    virtual bool add(RS_Block *block, bool notify = true);
+    virtual bool add(RS_Block *block, bool notify);
 
     virtual void addNotification();
 
@@ -104,14 +104,14 @@ public:
 
     void removeListener(RS_BlockListListener *listener);
 
-    bool isOwner() const { return owner; }
+    bool isOwner() const { return _owner; }
 
-    void setOwner(bool ow) { owner = ow; }
+    void setOwner(bool ow) { _owner = ow; }
 
     /**
      * Sets the block list modified status to 'm'.
      */
-    void setModified(bool m);
+    void setModified(bool modified);
 
     /**
      * @retval true The block list has been modified.
@@ -123,15 +123,15 @@ public:
 
 private:
     //! Is the list owning the blocks?
-    bool owner;
+    bool _owner;
     //! Blocks in the graphic
-    QList<RS_Block *> blocks;
+    QList<RS_Block *> _blocks;
     //! List of registered BlockListListeners
-    QList<RS_BlockListListener *> blockListListeners;
+    QList<RS_BlockListListener *> _blockListListeners;
     //! Currently active block
-    RS_Block *activeBlock;
+    RS_Block *_activeBlock;
     /** Flag set if the block list was modified and not yet saved. */
-    bool modified;
+    bool _modified;
 };
 
 #endif
