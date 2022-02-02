@@ -46,12 +46,12 @@
  */
 RS_Graphic::RS_Graphic(RS_EntityContainer *parent)
         : RS_Document(parent),
-          layerList(),
-          paperScaleFixed(false),
-          marginLeft(0.0),
-          marginTop(0.0),
-          marginRight(0.0),
-          marginBottom(0.0),
+          _layerList(),
+          _paperScaleFixed(false),
+          _marginLeft(0.0),
+          _marginTop(0.0),
+          _marginRight(0.0),
+          _marginBottom(0.0),
           pagesNumH(1),
           pagesNumV(1) {
 
@@ -61,7 +61,7 @@ RS_Graphic::RS_Graphic(RS_EntityContainer *parent)
     RS_SETTINGS->beginGroup("/Appearance");
     //$ISOMETRICGRID == $SNAPSTYLE
     addVariable("$SNAPSTYLE", static_cast<int>(RS_SETTINGS->readNumEntry("/IsometricGrid", 0)), 70);
-    crosshairType = static_cast<RS2::CrosshairType>(RS_SETTINGS->readNumEntry("/CrosshairType", 0));
+    _crosshairType = static_cast<RS2::CrosshairType>(RS_SETTINGS->readNumEntry("/CrosshairType", 0));
     RS_SETTINGS->endGroup();
     RS2::Unit unit = getUnit();
 
@@ -126,7 +126,7 @@ void RS_Graphic::removeLayer(RS_Layer *layer) {
 
         toRemove.clear();
         // remove all entities in blocks that are on that layer:
-        for (RS_Block *blk: *blockList) {
+        for (RS_Block *blk: *_blockList) {
             if (!blk) continue;
             for (auto e: *blk) {
 
@@ -142,7 +142,7 @@ void RS_Graphic::removeLayer(RS_Layer *layer) {
             e->setLayer("0");
         }
 
-        layerList.remove(layer);
+        _layerList.remove(layer);
     }
 }
 
@@ -158,7 +158,7 @@ void RS_Graphic::newDoc() {
     clear();
 
     clearLayers();
-    blockList->clear();
+    _blockList->clear();
 
     addLayer(new RS_Layer("0"));
     //addLayer(new RS_Layer("ByBlock"));
@@ -300,8 +300,8 @@ bool RS_Graphic::save(bool isAutoSave) {
 //            qDebug()<<"modifiedTime.isValid()="<<modifiedTime.isValid();
 //            qDebug()<<"Previous timestamp: "<<modifiedTime;
 //            qDebug()<<"Current timestamp: "<<m;
-            if (currentFileName == QString(_filename)
-                && modifiedTime.isValid() && m != modifiedTime) {
+            if (_currentFileName == QString(_filename)
+                && _modifiedTime.isValid() && m != _modifiedTime) {
                 //file modified by others
 //            qDebug()<<"detected on disk change";
                 GetDialogFactory()->commandMessage(QObject::tr(
@@ -324,8 +324,8 @@ bool RS_Graphic::save(bool isAutoSave) {
 
             ret = RS_FileIO::instance()->fileExport(*this, actualName, actualType);
             QFileInfo finfo(actualName);
-            modifiedTime = finfo.lastModified();
-            currentFileName = actualName;
+            _modifiedTime = finfo.lastModified();
+            _currentFileName = actualName;
         } else {
             RS_DEBUG->print("RS_Graphic::save: Can't create object!");
             RS_DEBUG->print("RS_Graphic::save: File not saved!");
@@ -341,8 +341,8 @@ bool RS_Graphic::save(bool isAutoSave) {
             /*	Tell that drawing file is no more modified.
                          *	------------------------------------------- */
             setModified(false);
-            layerList.setModified(false);
-            blockList->setModified(false);
+            _layerList.setModified(false);
+            _blockList->setModified(false);
 
             /*	- Remove autosave file, if able to create associated object,
                          *	  and if autosave file exist.
@@ -458,10 +458,10 @@ bool RS_Graphic::loadTemplate(const QString &filename, RS2::FormatType type) {
     ret = RS_FileIO::instance()->fileImport(*this, filename, type);
 
     setModified(false);
-    layerList.setModified(false);
-    blockList->setModified(false);
+    _layerList.setModified(false);
+    _blockList->setModified(false);
     QFileInfo finfo;
-    modifiedTime = finfo.lastModified();
+    _modifiedTime = finfo.lastModified();
 
     RS_DEBUG->print("RS_Graphic::loadTemplate(%s): OK", filename.toLatin1().data());
 
@@ -490,10 +490,10 @@ bool RS_Graphic::open(const QString &filename, RS2::FormatType type) {
 
     if (ret) {
         setModified(false);
-        layerList.setModified(false);
-        blockList->setModified(false);
-        modifiedTime = finfo.lastModified();
-        currentFileName = QString(filename);
+        _layerList.setModified(false);
+        _blockList->setModified(false);
+        _modifiedTime = finfo.lastModified();
+        _currentFileName = QString(filename);
 
         //cout << *((RS_Graphic*)graphic);
         //calculateBorders();
@@ -540,11 +540,11 @@ void RS_Graphic::setIsometricGrid(bool on) {
 }
 
 void RS_Graphic::setCrosshairType(RS2::CrosshairType chType) {
-    crosshairType = chType;
+    _crosshairType = chType;
 }
 
 RS2::CrosshairType RS_Graphic::getCrosshairType() {
-    return crosshairType;
+    return _crosshairType;
 }
 
 /**
@@ -728,8 +728,8 @@ void RS_Graphic::setPaperSize(const RS_Vector &s) {
  */
 RS_Vector RS_Graphic::getPrintAreaSize(bool total) {
     RS_Vector printArea = getPaperSize();
-    printArea.x -= RS_Units::convert(marginLeft + marginRight, RS2::Millimeter, getUnit());
-    printArea.y -= RS_Units::convert(marginTop + marginBottom, RS2::Millimeter, getUnit());
+    printArea.x -= RS_Units::convert(_marginLeft + _marginRight, RS2::Millimeter, getUnit());
+    printArea.y -= RS_Units::convert(_marginTop + _marginBottom, RS2::Millimeter, getUnit());
     if (total) {
         printArea.x *= pagesNumH;
         printArea.y *= pagesNumV;
@@ -789,7 +789,7 @@ double RS_Graphic::getPaperScale() {
  * Sets a new scale factor for the paper space.
  */
 void RS_Graphic::setPaperScale(double s) {
-    if (paperScaleFixed == false) addVariable("$PSVPSCALE", s, 40);
+    if (_paperScaleFixed == false) addVariable("$PSVPSCALE", s, 40);
 }
 
 
@@ -812,8 +812,8 @@ void RS_Graphic::centerToPage() {
     }
 
     RS_Vector pinsbase = (size - s * scale) / 2.0 - sMin * scale;
-    pinsbase.x += RS_Units::convert(marginLeft, RS2::Millimeter, getUnit());
-    pinsbase.y += RS_Units::convert(marginBottom, RS2::Millimeter, getUnit());
+    pinsbase.x += RS_Units::convert(_marginLeft, RS2::Millimeter, getUnit());
+    pinsbase.y += RS_Units::convert(_marginBottom, RS2::Millimeter, getUnit());
 
     setPaperInsertionBase(pinsbase);
 }
@@ -929,19 +929,19 @@ void RS_Graphic::setMarginsInUnits(double left, double top, double right, double
 }
 
 double RS_Graphic::getMarginLeftInUnits() {
-    return RS_Units::convert(marginLeft, RS2::Millimeter, getUnit());
+    return RS_Units::convert(_marginLeft, RS2::Millimeter, getUnit());
 }
 
 double RS_Graphic::getMarginTopInUnits() {
-    return RS_Units::convert(marginTop, RS2::Millimeter, getUnit());
+    return RS_Units::convert(_marginTop, RS2::Millimeter, getUnit());
 }
 
 double RS_Graphic::getMarginRightInUnits() {
-    return RS_Units::convert(marginRight, RS2::Millimeter, getUnit());
+    return RS_Units::convert(_marginRight, RS2::Millimeter, getUnit());
 }
 
 double RS_Graphic::getMarginBottomInUnits() {
-    return RS_Units::convert(marginBottom, RS2::Millimeter, getUnit());
+    return RS_Units::convert(_marginBottom, RS2::Millimeter, getUnit());
 }
 
 void RS_Graphic::setPagesNum(int horiz, int vert) {
