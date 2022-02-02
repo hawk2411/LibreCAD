@@ -64,7 +64,7 @@ void RS_ActionBlocksInsert::init(int status) {
     reset();
 
     if (graphic) {
-        block = graphic->getActiveBlock();
+        block = graphic->getBlockList()->getActive();
         if (block) {
             QString blockName = block->getName();
             data->name = blockName;

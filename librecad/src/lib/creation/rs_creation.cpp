@@ -1040,7 +1040,7 @@ RS_Block *RS_Creation::createBlock(const RS_BlockData *data,
     }
 
     if (graphic) {
-        graphic->addBlock(block, true);
+        graphic->getBlockList()->add(block, true);
     }
 
     return block;

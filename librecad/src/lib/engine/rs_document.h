@@ -52,7 +52,7 @@ public:
 
     virtual RS_LayerList *getLayerList() = 0;
 
-    virtual RS_BlockList *getBlockList() = 0;
+    virtual RS_BlockList *getBlockList() const = 0;
 
     virtual void newDoc() = 0;
 

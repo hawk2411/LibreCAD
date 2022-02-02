@@ -65,10 +65,10 @@ public:
 	void addBlock(RS_Block* b);
         bool hasBlock(const QString& name);
 	int  countBlocks() {
-		return graphic.countBlocks();
+		return graphic.getBlockList()->count();
 	}
 	RS_Block* blockAt(int i) {
-		return graphic.blockAt(i);
+		return graphic.getBlockList()->at(i);
 	}
 	
 	void addLayer(RS_Layer* l);

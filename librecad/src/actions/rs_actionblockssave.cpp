@@ -45,7 +45,7 @@ void RS_ActionBlocksSave::addBlock(RS_Insert* in, RS_Graphic* g) {
         if (e->rtti() == RS2::EntityInsert) {
 			RS_Insert * in=static_cast<RS_Insert *>(e);
 			addBlock(in,g);
-			g->addBlock(in->getBlockForInsert(), true);
+			g->getBlockList()->add(in->getBlockForInsert(), true);
         }
     }
 }
@@ -73,7 +73,7 @@ void RS_ActionBlocksSave::trigger() {
                 g.addEntity(e);
                 if (e->rtti() == RS2::EntityInsert) {
 					RS_Insert *in = static_cast<RS_Insert *>(e);
-                    g.addBlock(in->getBlockForInsert(), true);
+                    g.getBlockList()->add(in->getBlockForInsert(), true);
 					addBlock(in,&g);
                 }
 //           std::cout<<__FILE__<<" : "<<__func__<<" : line: "<<__LINE__<<" : "<<e->rtti()<<std::endl;

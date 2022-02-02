@@ -103,7 +103,7 @@ void RS_ActionBlocksRemove::trigger() {
     }
     document->endUndoCycle();
 
-    graphic->addBlockNotification();
+    graphic->getBlockList()->addNotification();
 	graphic->updateInserts();
 	graphicView->redraw(RS2::RedrawDrawing);
     bl->activate(nullptr);

@@ -547,7 +547,7 @@ void LC_SimpleTests::slotTestInsertBlock() {
 		block->addEntity(circle);
 
 
-		graphic->addBlock(block, true);
+		graphic->getBlockList()->add(block, true);
 
 
 
@@ -927,7 +927,7 @@ void LC_SimpleTests::slotTestUnicode() {
 				}
 				strCode = "[" + strCode + "] " + uCode;
 
-				if (graphic->findBlock(strCode)) {
+				if (graphic->getBlockList()->find(strCode)) {
 					RS_InsertData d(strCode,
 									RS_Vector(col/0x10*20.0,row*20.0),
 									RS_Vector(1.0,1.0), 0.0,

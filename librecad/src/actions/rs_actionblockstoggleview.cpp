@@ -51,12 +51,12 @@ void RS_ActionBlocksToggleView::trigger() {
             if (!block) continue;
             if (!block->isVisibleInBlockList()) continue;
             if (!block->isSelectedInBlockList()) continue;
-            graphic->toggleBlock(block);
+            graphic->getBlockList()->toggle(block);
             cnt++;
         }
         // if there wasn't selected blocks, toggle active block
         if (!cnt) {
-            graphic->toggleBlock(graphic->getActiveBlock());
+            graphic->getBlockList()->toggle(graphic->getBlockList()->getActive());
         }
     }
     graphicView->redraw(RS2::RedrawDrawing);

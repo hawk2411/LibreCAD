@@ -218,7 +218,7 @@ void RS_FilterJWW::addBlock(const DL_BlockData& data) {
                                                          RS_BlockData(blName, bp, false));
                         //block->setFlags(flags);
 
-                        if (graphic->addBlock(block, true)) {
+                        if (graphic->getBlockList()->add(block, true)) {
                                 currentContainer = block;
                         }
 #ifndef RS_NO_COMPLEX_ENTITIES
@@ -1070,8 +1070,8 @@ void RS_FilterJWW::linkImage(const DL_ImageDefData& data) {
         }
 
         // update images in blocks:
-        for (unsigned i=0; i<graphic->countBlocks(); ++i) {
-                RS_Block* b = graphic->blockAt(i);
+        for (unsigned i=0; i<graphic->getBlockList()->count(); ++i) {
+                RS_Block* b = graphic->getBlockList()->at(i);
                 for (RS_Entity* e=b->firstEntity(RS2::ResolveNone);
                                 e; e=b->nextEntity(RS2::ResolveNone)) {
                         if (e->rtti()==RS2::EntityImage) {
@@ -1299,8 +1299,8 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
                 RS_DEBUG->print("writing block records...");
                 jww.writeBlockRecord(*dw);
 
-                for (unsigned i=0; i<graphic->countBlocks(); ++i) {
-                        RS_Block* blk = graphic->blockAt(i);
+                for (unsigned i=0; i<graphic->getBlockList()->count(); ++i) {
+                        RS_Block* blk = graphic->getBlockList()->at(i);
                         if (!blk->isUndone())
                             jww.writeBlockRecord(*dw,
                                 std::string((const char*)blk->getName().toLocal8Bit().data()));
@@ -1341,8 +1341,8 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
                 writeBlock(*dw, &b3);
         }
 
-        for (unsigned i=0; i<graphic->countBlocks(); ++i) {
-                RS_Block* blk = graphic->blockAt(i);
+        for (unsigned i=0; i<graphic->getBlockList()->count(); ++i) {
+                RS_Block* blk = graphic->getBlockList()->at(i);
 
                 // Save block if it's not a model or paper space:
                 // Careful: other blocks with * / $ exist
@@ -1373,8 +1373,8 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
                 // IMAGEDEF's from images in entities and images in blocks
                 QStringList written;
-                for (unsigned i=0; i<graphic->countBlocks(); ++i) {
-                        RS_Block* block = graphic->blockAt(i);
+                for (unsigned i=0; i<graphic->getBlockList()->count(); ++i) {
+                        RS_Block* block = graphic->getBlockList()->at(i);
                         for (RS_Entity* e=block->firstEntity(RS2::ResolveAll);
                                         e;
                                         e=block->nextEntity(RS2::ResolveAll)) {

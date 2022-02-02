@@ -90,7 +90,7 @@ public:
     virtual bool rename(RS_Block *block, const QString &name);
 
     //virtual void editBlock(RS_Block* block, const RS_Block& source);
-    RS_Block *find(const QString &name);
+    RS_Block *find(const QString &name) const;
 
     QString newName(const QString &suggestion = "");
 

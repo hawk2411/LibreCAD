@@ -322,14 +322,14 @@ QString DocumentPluginImplementation::addBlockFromDisk(const QString &fullName) 
         RS_BlockList *bl = g.getBlockList();
         for (int i = 0; i < bl->count(); i++) {
             auto *nb = (RS_Block *) bl->at(i)->clone();
-            docGr->addBlock(nb, true);
+            docGr->getBlockList()->add(nb, true);
         }
         for (unsigned int i = 0; i < g.count(); i++) {
             RS_Entity *e = g.entityAt(i)->clone();
             e->reparent(b);
             b->addEntity(e);
         }
-        docGr->addBlock(b, true);
+        docGr->getBlockList()->add(b, true);
         return name;
 
     } else {

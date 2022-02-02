@@ -73,13 +73,9 @@ RS_LayerList *RS_Block::getLayerList() {
 }
 
 
-RS_BlockList *RS_Block::getBlockList() {
+RS_BlockList *RS_Block::getBlockList() const {
     RS_Graphic *g = getGraphic();
-    if (g) {
-        return g->getBlockList();
-    } else {
-        return nullptr;
-    }
+    return (g) ?g->getBlockList() : nullptr;
 }
 
 

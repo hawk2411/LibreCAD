@@ -102,11 +102,11 @@ bool RS_FilterLFF::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         letterList->rename(ch,
                            QString("[%1] %2").arg(uCode).arg(ch->getName().at(0)));
 
-        g.addBlock(ch, false);
+        g.getBlockList()->add(ch, false);
         ch->reparent(&g);
     }
 
-    g.addBlockNotification();
+    g.getBlockList()->addNotification();
 	return true;
 }
 
@@ -190,8 +190,8 @@ bool RS_FilterLFF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         RS_DEBUG->print("RS_FilterLFF::fileExport: header: OK");
 
         // iterate through blocks (=letters of font)
-        for (unsigned i=0; i<g.countBlocks(); ++i) {
-            RS_Block* blk = g.blockAt(i);
+        for (unsigned i=0; i<g.getBlockList()->count(); ++i) {
+            RS_Block* blk = g.getBlockList()->at(i);
 
             RS_DEBUG->print("block: %d", i);
 

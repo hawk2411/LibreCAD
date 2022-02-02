@@ -30,13 +30,13 @@
 #include "rs_layer.h"
 #include "rs_entity.h"
 
-RS_Clipboard* RS_Clipboard::uniqueInstance = NULL;
+RS_Clipboard* RS_Clipboard::uniqueInstance = nullptr;
 
 
 
 void RS_Clipboard::clear() {
 	graphic.clear();
-	graphic.clearBlocks();
+	graphic.getBlockList()->clear();
 	graphic.clearLayers();
 	graphic.clearVariables();
 }
@@ -47,13 +47,13 @@ void RS_Clipboard::clear() {
 
 void RS_Clipboard::addBlock(RS_Block* b) {
 	if (b) {
-		graphic.addBlock(b, false);
+		graphic.getBlockList()->add(b, false);
 	}
 }
 
 
 bool RS_Clipboard::hasBlock(const QString& name) {
-	return (graphic.findBlock(name));
+	return (graphic.getBlockList()->find(name));
 }
 
 

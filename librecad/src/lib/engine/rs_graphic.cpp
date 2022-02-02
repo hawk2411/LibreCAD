@@ -47,7 +47,6 @@
 RS_Graphic::RS_Graphic(RS_EntityContainer *parent)
         : RS_Document(parent),
           layerList(),
-          blockList(true),
           paperScaleFixed(false),
           marginLeft(0.0),
           marginTop(0.0),
@@ -127,7 +126,7 @@ void RS_Graphic::removeLayer(RS_Layer *layer) {
 
         toRemove.clear();
         // remove all entities in blocks that are on that layer:
-        for (RS_Block *blk: blockList) {
+        for (RS_Block *blk: *blockList) {
             if (!blk) continue;
             for (auto e: *blk) {
 
@@ -159,7 +158,7 @@ void RS_Graphic::newDoc() {
     clear();
 
     clearLayers();
-    clearBlocks();
+    blockList->clear();
 
     addLayer(new RS_Layer("0"));
     //addLayer(new RS_Layer("ByBlock"));
@@ -343,7 +342,7 @@ bool RS_Graphic::save(bool isAutoSave) {
                          *	------------------------------------------- */
             setModified(false);
             layerList.setModified(false);
-            blockList.setModified(false);
+            blockList->setModified(false);
 
             /*	- Remove autosave file, if able to create associated object,
                          *	  and if autosave file exist.
@@ -460,7 +459,7 @@ bool RS_Graphic::loadTemplate(const QString &filename, RS2::FormatType type) {
 
     setModified(false);
     layerList.setModified(false);
-    blockList.setModified(false);
+    blockList->setModified(false);
     QFileInfo finfo;
     modifiedTime = finfo.lastModified();
 
@@ -492,7 +491,7 @@ bool RS_Graphic::open(const QString &filename, RS2::FormatType type) {
     if (ret) {
         setModified(false);
         layerList.setModified(false);
-        blockList.setModified(false);
+        blockList->setModified(false);
         modifiedTime = finfo.lastModified();
         currentFileName = QString(filename);
 

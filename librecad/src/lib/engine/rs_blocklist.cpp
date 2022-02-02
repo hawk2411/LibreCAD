@@ -198,7 +198,7 @@ void RS_BlockList::editBlock(RS_Block* block, const RS_Block& source) {
  * @return Pointer to the block with the given name or
  * \p nullptr if no such block was found.
  */
-RS_Block *RS_BlockList::find(const QString &name) {
+RS_Block *RS_BlockList::find(const QString &name) const{
     try {
         RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_BlockList::find(): %s", name.toLatin1().constData());
     }
