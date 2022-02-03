@@ -330,21 +330,16 @@ void QC_MDIWindow::drawChars() {
     double sep = document->getGraphic()->getVariableDouble("LetterSpacing", 3.0);
     double h = sep / 3;
     sep = sep * 3;
-    for (int i = 0; i < bl->count(); ++i) {
-        RS_Block *ch = bl->at(i);
+    int i = -1;
+    for (RS_Block *ch : *bl) {
+        i++;
         RS_InsertData data(ch->getName(), RS_Vector(i * sep, 0), RS_Vector(1, 1), 0, 1, 1, RS_Vector(0, 0));
-        RS_Insert *in = new RS_Insert(document, data);
-        document->addEntity(in);
-        QFileInfo info(document->getFilename());
+        document->addEntity(new RS_Insert(document, data));
         QString uCode = (ch->getName()).mid(1, 4);
         RS_MTextData datatx(RS_Vector(i * sep, -h), h, 4 * h, RS_MTextData::VATop,
                             RS_MTextData::HALeft, RS_MTextData::ByStyle, RS_MTextData::AtLeast,
                             1, uCode, "standard", 0);
-/*        RS_MTextData datatx(RS_Vector(i*sep,-h), h, 4*h, RS2::VAlignTop,
-                           RS2::HAlignLeft, RS2::ByStyle, RS2::AtLeast,
-                           1, uCode, info.baseName(), 0);*/
-        RS_MText *tx = new RS_MText(document, datatx);
-        document->addEntity(tx);
+        document->addEntity(new RS_MText(document, datatx));
     }
 
 }

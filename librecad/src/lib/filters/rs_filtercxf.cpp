@@ -85,9 +85,7 @@ bool RS_FilterCXF::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
     }
 
     RS_BlockList* letterList = font.getLetterList();
-    for (unsigned i=0; i<font.countLetters(); ++i) {
-        RS_Block* ch = font.letterAt(i);
-
+    for (auto & ch : *font.getLetterList()) {
         QString uCode;
         uCode.setNum(ch->getName().at(0).unicode(), 16);
         while (uCode.length()<4) {
@@ -196,9 +194,9 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
         RS_DEBUG->print("008");
         // iterate through blocks (=letters of font)
-        for (unsigned i=0; i<g.getBlockList()->count(); ++i) {
-            RS_Block* blk = g.getBlockList()->at(i);
-
+        int i = -1;
+        for (auto & blk : *g.getBlockList()) {
+            i++;
             RS_DEBUG->print("block: %d", i);
             RS_DEBUG->print("001");
 

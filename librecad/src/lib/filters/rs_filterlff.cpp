@@ -88,17 +88,12 @@ bool RS_FilterLFF::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
     font.generateAllFonts();
     RS_BlockList* letterList = font.getLetterList();
-    for (unsigned i=0; i<font.countLetters(); ++i) {
-        RS_Block* ch = font.letterAt(i);
-
+    for (auto & ch : *font.getLetterList()) {
         QString uCode;
         uCode.setNum(ch->getName().at(0).unicode(), 16);
         while (uCode.length()<4) {
-//            uCode.rightJustified(4, '0');
             uCode="0"+uCode;
         }
-        //ch->setName("[" + uCode + "] " + ch->getName());
-        //letterList->rename(ch, QString("[%1]").arg(ch->getName()));
         letterList->rename(ch,
                            QString("[%1] %2").arg(uCode).arg(ch->getName().at(0)));
 
@@ -190,9 +185,9 @@ bool RS_FilterLFF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         RS_DEBUG->print("RS_FilterLFF::fileExport: header: OK");
 
         // iterate through blocks (=letters of font)
-        for (unsigned i=0; i<g.getBlockList()->count(); ++i) {
-            RS_Block* blk = g.getBlockList()->at(i);
-
+        int i = -1;
+        for (auto & blk : *g.getBlockList()) {
+            i++;
             RS_DEBUG->print("block: %d", i);
 
             if (blk && !blk->isUndone()) {

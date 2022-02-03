@@ -57,13 +57,6 @@ public:
      */
     int count() const;
 
-    /**
-     * @return Block at given position or NULL if i is out of range.
-     */
-    RS_Block *at(int i);
-
-    RS_Block *at(int i) const;
-
     //! \{ \brief range based loop
     QList<RS_Block *>::iterator begin();
 

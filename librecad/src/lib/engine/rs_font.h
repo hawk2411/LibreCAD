@@ -99,15 +99,10 @@ public:
 		return &letterList;
 	}
     RS_Block* findLetter(const QString& name);
-//    RS_Block* findLetter(const QString& name) {
-//		return letterList.find(name);
-//	}
+
     unsigned countLetters() {
         return letterList.count();
     }
-    RS_Block* letterAt(unsigned i) {
-		return letterList.at(i);
-	}
 
     friend std::ostream& operator << (std::ostream& os, const RS_Font& l);
 
@@ -123,7 +118,7 @@ private:
     QMap<QString, QStringList> rawLffFontList;
 
         //! block list (letters)
-        RS_BlockList letterList;
+    RS_BlockList letterList;
 
     //! Font file name
     QString fileName;

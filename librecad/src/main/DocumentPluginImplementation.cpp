@@ -320,8 +320,8 @@ QString DocumentPluginImplementation::addBlockFromDisk(const QString &fullName) 
             docGr->addLayer(nl);
         }
         RS_BlockList *bl = g.getBlockList();
-        for (int i = 0; i < bl->count(); i++) {
-            auto *nb = (RS_Block *) bl->at(i)->clone();
+        for (auto & block : *bl) {
+            auto *nb = (RS_Block *) block->clone();
             docGr->getBlockList()->add(nb, true);
         }
         for (unsigned int i = 0; i < g.count(); i++) {
@@ -410,8 +410,8 @@ QStringList DocumentPluginImplementation::getAllLayer() {
 QStringList DocumentPluginImplementation::getAllBlocks() {
     QStringList listName;
     RS_BlockList *listBlk = doc->getBlockList();
-    for (int i = 0; i < listBlk->count(); ++i) {
-        listName << listBlk->at(i)->getName();
+    for (auto & block : *listBlk) {
+        listName << block->getName();
     }
     return listName;
 }

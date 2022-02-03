@@ -67,10 +67,7 @@ public:
 	int  countBlocks() {
 		return graphic.getBlockList()->count();
 	}
-	RS_Block* blockAt(int i) {
-		return graphic.getBlockList()->at(i);
-	}
-	
+
 	void addLayer(RS_Layer* l);
         bool hasLayer(const QString& name);
 	int  countLayers() {

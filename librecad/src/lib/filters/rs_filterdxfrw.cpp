@@ -1270,8 +1270,7 @@ void RS_FilterDXFRW::linkImage(const DRW_ImageDef *data) {
     }
 
     // update images in blocks:
-    for (unsigned i=0; i<graphic->getBlockList()->count(); ++i) {
-        RS_Block* b = graphic->getBlockList()->at(i);
+    for (auto & b : *graphic->getBlockList()) {
         for (RS_Entity* e=b->firstEntity(RS2::ResolveNone);
                 e; e=b->nextEntity(RS2::ResolveNone)) {
             if (e->rtti()==RS2::EntityImage) {
@@ -1450,13 +1449,12 @@ bool RS_FilterDXFRW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatT
  * Prepare unnamed blocks.
  */
 void RS_FilterDXFRW::prepareBlocks() {
-    RS_Block *blk;
+
     int dimNum = 0, hatchNum= 0;
     QString prefix, sufix;
 
     //check for existing *D?? or  *U??
-    for (unsigned i = 0; i < graphic->getBlockList()->count(); i++) {
-        blk = graphic->getBlockList()->at(i);
+    for (RS_Block *blk : *graphic->getBlockList()) {
         prefix = blk->getName().left(2).toUpper();
         sufix = blk->getName().mid(2);
         if (prefix == "*D") {
@@ -1507,9 +1505,8 @@ void RS_FilterDXFRW::writeBlockRecords(dxfWriter* writer){
     }
 
     //next send "normal" blocks
-    RS_Block *blk;
-    for (unsigned i = 0; i < graphic->getBlockList()->count(); i++) {
-        blk = graphic->getBlockList()->at(i);
+
+    for (auto & blk : *graphic->getBlockList()) {
         if (!blk->isUndone()){
             RS_DEBUG->print("writing block record: %s", (const char*)blk->getName().toLocal8Bit());
             dxfW->writeBlockRecord(blk->getName().toUtf8().data(), writer);
@@ -1521,7 +1518,6 @@ void RS_FilterDXFRW::writeBlockRecords(dxfWriter* writer){
  * Writes blocks.
  */
 void RS_FilterDXFRW::writeBlocks(dxfWriter* writer) {
-    RS_Block *blk;
 
     //write unnamed blocks
     QHash<RS_Entity*, QString>::const_iterator it = noNameBlock.constBegin();
@@ -1544,8 +1540,7 @@ void RS_FilterDXFRW::writeBlocks(dxfWriter* writer) {
     }
 
     //next write "normal" blocks
-    for (unsigned i = 0; i < graphic->getBlockList()->count(); i++) {
-        blk = graphic->getBlockList()->at(i);
+    for (auto &blk : *graphic->getBlockList()) {
         if (!blk->isUndone()) {
             RS_DEBUG->print("writing block: %s", (const char*)blk->getName().toLocal8Bit());
 
@@ -1933,9 +1928,8 @@ void RS_FilterDXFRW::writeTextstyles(dxfWriter* writer){
         }
     }
     //Find fonts used by text entities in blocks
-    RS_Block *blk;
-    for (unsigned i = 0; i < graphic->getBlockList()->count(); i++) {
-        blk = graphic->getBlockList()->at(i);
+
+    for (auto &blk : *graphic->getBlockList()) {
         for (RS_Entity *e = blk->firstEntity(RS2::ResolveNone);
 			 e ; e = blk->nextEntity(RS2::ResolveNone)) {
             if ( !(e->getFlag(RS2::FlagUndone)) ) {

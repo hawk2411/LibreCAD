@@ -58,8 +58,8 @@ void RS_ActionBlocksRemove::trigger() {
 	// list of containers that might refer to the block via inserts:
 	std::vector<RS_EntityContainer*> containerList;
 	containerList.push_back(graphic);
-    for (int bi = 0; bi < bl->count(); bi++) {
-        containerList.push_back(bl->at(bi));
+    for (auto & block: *bl) {
+        containerList.push_back(block);
 	}
 
     document->startUndoCycle();

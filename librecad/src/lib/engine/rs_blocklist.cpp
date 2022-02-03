@@ -176,24 +176,6 @@ bool RS_BlockList::rename(RS_Block *block, const QString &name) {
     return false;
 }
 
-
-/**
- * Changes a block's attributes. The attributes of block 'block'
- * are copied from block 'source'.
- * Listeners are notified.
- */
-/*
-void RS_BlockList::editBlock(RS_Block* block, const RS_Block& source) {
-	*block = source;
-	
-    for (unsigned i=0; i<blockListListeners.count(); ++i) {
-		RS_BlockListListener* l = blockListListeners.at(i);
- 
-		l->blockEdited(block);
-	}
-}
-*/
-
 /**
  * @return Pointer to the block with the given name or
  * \p nullptr if no such block was found.
@@ -278,16 +260,16 @@ void RS_BlockList::toggle(RS_Block *block) {
  */
 void RS_BlockList::freezeAll(bool freeze) {
 
-    for (int l = 0; l < count(); l++) {
-        if (at(l)->isVisibleInBlockList()) {
-            at(l)->freeze(freeze);
+    for(auto &block : _blocks) {
+        if(block->isVisibleInBlockList()) {
+            block->freeze(freeze);
         }
     }
     // TODO LordOfBikes: when block attributes are saved, activate this
     //setModified(true);
 
-    for (auto l: _blockListListeners) {
-        l->blockToggled(nullptr);
+    for (auto listener: _blockListListeners) {
+        listener->blockToggled(nullptr);
     }
 }
 
@@ -309,17 +291,6 @@ void RS_BlockList::removeListener(RS_BlockListListener *listener) {
 
 int RS_BlockList::count() const {
     return _blocks.count();
-}
-
-/**
- * @return Block at given position or nullptr if i is out of range.
- */
-RS_Block *RS_BlockList::at(int i) {
-    return _blocks.at(i);
-}
-
-RS_Block *RS_BlockList::at(int i) const {
-    return _blocks.at(i);
 }
 
 QList<RS_Block *>::iterator RS_BlockList::begin() {
@@ -374,15 +345,12 @@ bool RS_BlockList::isModified() const {
 /**
  * Dumps the blocks to stdout.
  */
-std::ostream &operator<<(std::ostream &os, RS_BlockList &b) {
+std::ostream &operator<<(std::ostream &os, RS_BlockList &blockList) {
 
     os << "Blocklist: \n";
-    for (int i = 0; i < b.count(); ++i) {
-        RS_Block *blk = b.at(i);
-
-        os << *blk << "\n";
+    for(auto & block: blockList) {
+        os << *block << "\n";
     }
-
     return os;
 }
 
