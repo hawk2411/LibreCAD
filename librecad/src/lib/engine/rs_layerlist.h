@@ -53,14 +53,14 @@ public:
      * @return Number of layers in the list.
      */
     unsigned int count() const {
-        return layers.count();
+        return _layers.count();
     }
 
     /**
      * @return Layer at given position or NULL if i is out of range.
      */
     RS_Layer *at(unsigned int i) {
-        return layers.at(i);
+        return _layers.at(i);
     }
 
     QList<RS_Layer *>::iterator begin();
@@ -77,7 +77,7 @@ public:
 
     //! @return The active layer of NULL if no layer is activated.
     RS_Layer *getActive() {
-        return activeLayer;
+        return _activeLayer;
     }
 
     virtual void add(RS_Layer *layer);
@@ -87,10 +87,6 @@ public:
     virtual void edit(RS_Layer *layer, const RS_Layer &source);
 
     RS_Layer *find(const QString &name);
-
-    int getIndex(const QString &name);
-
-    int getIndex(RS_Layer *layer);
 
     void toggle(const QString &name);
 
@@ -108,12 +104,12 @@ public:
 
     //! sets the layerWidget pointer in RS_LayerListClass
     void setLayerWitget(QG_LayerWidget *lw) {
-        layerWidget = lw;
+        _layerWidget = lw;
     }
 
     //! @return the layerWidget pointer inside the RS_LayerListClass
     QG_LayerWidget *getLayerWitget() {
-        return layerWidget;
+        return _layerWidget;
     }
     //! @return First layer of the list.
     //RS_Layer* firstLayer() {
@@ -140,7 +136,7 @@ public:
      * @retval false The layer list has not been modified.
      */
     virtual bool isModified() const {
-        return modified;
+        return _modified;
     }
 
     /**
@@ -152,14 +148,14 @@ public:
 
 private:
     //! layers in the graphic
-    QList<RS_Layer *> layers;
+    QList<RS_Layer *> _layers;
     //! List of registered LayerListListeners
-    QList<RS_LayerListListener *> layerListListeners;
-    QG_LayerWidget *layerWidget;
+    QList<RS_LayerListListener *> _layerListListeners;
+    QG_LayerWidget *_layerWidget;
     //! Currently active layer
-    RS_Layer *activeLayer;
+    RS_Layer *_activeLayer;
     /** Flag set if the layer list was modified and not yet saved. */
-    bool modified;
+    bool _modified;
 };
 
 #endif
