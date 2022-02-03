@@ -29,7 +29,8 @@
 #define RS_BLOCKLIST_H
 
 
-#include <QList>
+#include <QMap>
+#include <QSet>
 
 class QString;
 
@@ -58,13 +59,13 @@ public:
     int count() const;
 
     //! \{ \brief range based loop
-    QList<RS_Block *>::iterator begin();
+    QMap<QString, RS_Block *>::iterator begin();
 
-    QList<RS_Block *>::iterator end();
+    QMap<QString, RS_Block *>::iterator end();
 
-    QList<RS_Block *>::const_iterator begin() const;
+    QMap<QString, RS_Block *>::const_iterator begin() const;
 
-    QList<RS_Block *>::const_iterator end() const;
+    QMap<QString, RS_Block *>::const_iterator end() const;
     //! \}
 
     void activate(const QString &name);
@@ -118,9 +119,9 @@ private:
     //! Is the list owning the blocks?
     bool _owner;
     //! Blocks in the graphic
-    QList<RS_Block *> _blocks;
+    QMap<QString, RS_Block *> _blocks;
     //! List of registered BlockListListeners
-    QList<RS_BlockListListener *> _blockListListeners;
+    QSet<RS_BlockListListener *> _blockListListeners;
     //! Currently active block
     RS_Block *_activeBlock;
     /** Flag set if the block list was modified and not yet saved. */

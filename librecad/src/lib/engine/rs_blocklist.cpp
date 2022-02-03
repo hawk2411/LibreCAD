@@ -97,7 +97,7 @@ bool RS_BlockList::add(RS_Block *block, bool notify) {
     // check if block already exists:
     RS_Block *existing_block = find(block->getName());
     if (!existing_block) {
-        _blocks.append(block);
+        _blocks.insert(block->getName(), block);
 
         if (notify) {
             addNotification();
@@ -134,7 +134,7 @@ void RS_BlockList::remove(RS_Block *block) {
     RS_DEBUG->print("RS_BlockList::removeBlock()");
 
     // here the block is removed from the list but not deleted
-    _blocks.removeOne(block);
+    _blocks.remove(block->getName());
 
     for (auto l: _blockListListeners) {
         l->blockRemoved(block);
@@ -145,7 +145,6 @@ void RS_BlockList::remove(RS_Block *block) {
     // / *
     // activate an other block if necessary:
     if (_activeBlock == block) {
-        //activate(blocks.first());
         _activeBlock = nullptr;
     }
     // * /
@@ -165,15 +164,15 @@ void RS_BlockList::remove(RS_Block *block) {
  * @retval false block couldn't be renamed.
  */
 bool RS_BlockList::rename(RS_Block *block, const QString &name) {
-    if (block) {
-        if (!find(name)) {
-            block->setName(name);
-            setModified(true);
-            return true;
-        }
+    if(!block) {
+        return false;
+    }
+    if(!find(name)) {
+        return false;
     }
 
-    return false;
+    block->setName(name);
+    setModified(true);
 }
 
 /**
@@ -181,22 +180,9 @@ bool RS_BlockList::rename(RS_Block *block, const QString &name) {
  * \p nullptr if no such block was found.
  */
 RS_Block *RS_BlockList::find(const QString &name) const{
-    try {
-        RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_BlockList::find(): %s", name.toLatin1().constData());
-    }
-    catch (...) {
-        RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_BlockList::find(): wrong name to find");
-        return nullptr;
-    }
-    // Todo : reduce this from O(N) to O(log(N)) complexity based on sorted list or hash
-    //DFS
-    for (RS_Block *b: _blocks) {
-        if (b->getName() == name) {
-            return b;
-        }
-    }
-    RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_BlockList::find(): bad");
-    return nullptr;
+
+    auto it = _blocks.find(name);
+    return (it == _blocks.end())? nullptr : it.value();
 }
 
 /**
@@ -278,7 +264,7 @@ void RS_BlockList::freezeAll(bool freeze) {
  * are notified when the block list changes.
  */
 void RS_BlockList::addListener(RS_BlockListListener *listener) {
-    _blockListListeners.append(listener);
+    _blockListListeners.insert(listener);
 }
 
 
@@ -286,26 +272,26 @@ void RS_BlockList::addListener(RS_BlockListListener *listener) {
  * removes a BlockListListener from the list of listeners. 
  */
 void RS_BlockList::removeListener(RS_BlockListListener *listener) {
-    _blockListListeners.removeOne(listener);
+    _blockListListeners.remove(listener);
 }
 
 int RS_BlockList::count() const {
     return _blocks.count();
 }
 
-QList<RS_Block *>::iterator RS_BlockList::begin() {
+QMap<QString, RS_Block *>::iterator RS_BlockList::begin() {
     return _blocks.begin();
 }
 
-QList<RS_Block *>::iterator RS_BlockList::end() {
+QMap<QString, RS_Block *>::iterator RS_BlockList::end() {
     return _blocks.end();
 }
 
-QList<RS_Block *>::const_iterator RS_BlockList::begin() const {
+QMap<QString, RS_Block *>::const_iterator RS_BlockList::begin() const {
     return _blocks.begin();
 }
 
-QList<RS_Block *>::const_iterator RS_BlockList::end() const {
+QMap<QString, RS_Block *>::const_iterator RS_BlockList::end() const {
     return _blocks.end();
 }
 
@@ -315,7 +301,7 @@ RS_Block *RS_BlockList::getActive() {
 }
 
 /**
- * Sets the block list modified status to 'm'.
+ * Sets the block list modified status to 'modified'.
  */
 void RS_BlockList::setModified(bool modified) {
     _modified = modified;
@@ -323,6 +309,7 @@ void RS_BlockList::setModified(bool modified) {
     // Update each block modified status,
     // but only when the status is set to false.
     if (!_modified) {
+        //TODO WTF why only when _modified is false???
         for (auto b: _blocks) {
             b->setModifiedFlag(_modified);
         }
