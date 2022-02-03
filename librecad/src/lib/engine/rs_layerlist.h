@@ -33,6 +33,7 @@
 #include "rs_layer.h"
 
 class RS_LayerListListener;
+
 class QG_LayerWidget;
 
 /**
@@ -43,7 +44,8 @@ class QG_LayerWidget;
 class RS_LayerList {
 public:
     RS_LayerList();
-	virtual ~RS_LayerList() = default;
+
+    virtual ~RS_LayerList() = default;
 
     void clear();
 
@@ -57,40 +59,60 @@ public:
     /**
      * @return Layer at given position or NULL if i is out of range.
      */
-    RS_Layer* at(unsigned int i) {
+    RS_Layer *at(unsigned int i) {
         return layers.at(i);
     }
-    QList<RS_Layer*>::iterator begin();
-    QList<RS_Layer*>::iterator end();
-    QList<RS_Layer*>::const_iterator begin()const;
-    QList<RS_Layer*>::const_iterator end()const;
 
-    void activate(const QString& name, bool notify = false);
-    void activate(RS_Layer* layer, bool notify = false);
+    QList<RS_Layer *>::iterator begin();
+
+    QList<RS_Layer *>::iterator end();
+
+    QList<RS_Layer *>::const_iterator begin() const;
+
+    QList<RS_Layer *>::const_iterator end() const;
+
+    void activate(const QString &name, bool notify = false);
+
+    void activate(RS_Layer *layer, bool notify = false);
+
     //! @return The active layer of NULL if no layer is activated.
-    RS_Layer* getActive() {
+    RS_Layer *getActive() {
         return activeLayer;
     }
-    virtual void add(RS_Layer* layer);
-    virtual void remove(RS_Layer* layer);
-    virtual void edit(RS_Layer* layer, const RS_Layer& source);
-    RS_Layer* find(const QString& name);
-    int getIndex(const QString& name);
-    int getIndex(RS_Layer* layer);
-    void toggle(const QString& name);
-    void toggle(RS_Layer* layer);
-    void toggleLock(RS_Layer* layer);
-    void togglePrint(RS_Layer* layer);
-    void toggleConstruction(RS_Layer* layer);
+
+    virtual void add(RS_Layer *layer);
+
+    virtual void remove(RS_Layer *layer);
+
+    virtual void edit(RS_Layer *layer, const RS_Layer &source);
+
+    RS_Layer *find(const QString &name);
+
+    int getIndex(const QString &name);
+
+    int getIndex(RS_Layer *layer);
+
+    void toggle(const QString &name);
+
+    void toggle(RS_Layer *layer);
+
+    void toggleLock(RS_Layer *layer);
+
+    void togglePrint(RS_Layer *layer);
+
+    void toggleConstruction(RS_Layer *layer);
+
     void freezeAll(bool freeze);
+
     void lockAll(bool lock);
 
     //! sets the layerWidget pointer in RS_LayerListClass
-    void setLayerWitget(QG_LayerWidget * lw) {
-        layerWidget=lw;
+    void setLayerWitget(QG_LayerWidget *lw) {
+        layerWidget = lw;
     }
+
     //! @return the layerWidget pointer inside the RS_LayerListClass
-    QG_LayerWidget* getLayerWitget() {
+    QG_LayerWidget *getLayerWitget() {
         return layerWidget;
     }
     //! @return First layer of the list.
@@ -104,8 +126,9 @@ public:
     //    return layers.next();
     //}
 
-    void addListener(RS_LayerListListener* listener);
-    void removeListener(RS_LayerListListener* listener);
+    void addListener(RS_LayerListListener *listener);
+
+    void removeListener(RS_LayerListListener *listener);
 
     /**
      * Sets the layer lists modified status to 'm'.
@@ -119,21 +142,22 @@ public:
     virtual bool isModified() const {
         return modified;
     }
+
     /**
      * @brief sort by layer names
      */
     void sort();
 
-    friend std::ostream& operator << (std::ostream& os, RS_LayerList& l);
+    friend std::ostream &operator<<(std::ostream &os, RS_LayerList &l);
 
 private:
     //! layers in the graphic
-    QList<RS_Layer*> layers;
+    QList<RS_Layer *> layers;
     //! List of registered LayerListListeners
-    QList<RS_LayerListListener*> layerListListeners;
-    QG_LayerWidget* layerWidget;
+    QList<RS_LayerListListener *> layerListListeners;
+    QG_LayerWidget *layerWidget;
     //! Currently active layer
-    RS_Layer* activeLayer;
+    RS_Layer *activeLayer;
     /** Flag set if the layer list was modified and not yet saved. */
     bool modified;
 };
