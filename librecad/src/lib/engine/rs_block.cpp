@@ -63,13 +63,9 @@ RS_Entity *RS_Block::clone() const {
 }
 
 
-RS_LayerList *RS_Block::getLayerList() {
-    RS_Graphic *g = getGraphic();
-    if (g) {
-        return g->getLayerList();
-    } else {
-        return nullptr;
-    }
+RS_LayerList *RS_Block::getLayerList() const {
+    RS_Graphic *graphic = getGraphic();
+    return (graphic) ? graphic->getLayerList() : nullptr;
 }
 
 

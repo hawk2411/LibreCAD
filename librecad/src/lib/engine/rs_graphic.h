@@ -56,7 +56,7 @@ public:
         return RS2::EntityGraphic;
     }
 
-    RS_LayerList *getLayerList() override { return &_layerList; }
+    RS_LayerList *getLayerList() const override { return _layerList.get(); }
 
     RS_BlockList *getBlockList() const override { return _blockList.get(); }
 
@@ -70,74 +70,9 @@ public:
 
     bool loadTemplate(const QString &filename, RS2::FormatType type) override;
 
-    // Wrappers for Layer functions:
-    void clearLayers() {
-        _layerList.clear();
-    }
-
-    unsigned countLayers() const {
-        return _layerList.count();
-    }
-
-    RS_Layer *layerAt(unsigned i) {
-        return _layerList.at(i);
-    }
-
-    void activateLayer(const QString &name) {
-        _layerList.activate(name);
-    }
-
-    void activateLayer(RS_Layer *layer) {
-        _layerList.activate(layer);
-    }
-
-    RS_Layer *getActiveLayer() {
-        return _layerList.getActive();
-    }
-
-    virtual void addLayer(RS_Layer *layer) {
-        _layerList.add(layer);
-    }
-
     void addEntity(RS_Entity *entity) override;
 
     virtual void removeLayer(RS_Layer *layer);
-
-    virtual void editLayer(RS_Layer *layer, const RS_Layer &source) {
-        _layerList.edit(layer, source);
-    }
-
-    RS_Layer *findLayer(const QString &name) {
-        return _layerList.find(name);
-    }
-
-    void toggleLayer(RS_Layer *layer) {
-        _layerList.toggle(layer);
-    }
-
-    void toggleLayerLock(RS_Layer *layer) {
-        _layerList.toggleLock(layer);
-    }
-
-    void toggleLayerPrint(RS_Layer *layer) {
-        _layerList.togglePrint(layer);
-    }
-
-    void toggleLayerConstruction(RS_Layer *layer) {
-        _layerList.toggleConstruction(layer);
-    }
-
-    void freezeAllLayers(bool freeze) {
-        _layerList.freezeAll(freeze);
-    }
-
-    void lockAllLayers(bool lock) {
-        _layerList.lockAll(lock);
-    }
-
-    void addLayerListListener(RS_LayerListListener *listener) {
-        _layerList.addListener(listener);
-    }
 
     // Wrappers for variable functions:
     void clearVariables() {
@@ -235,7 +170,7 @@ public:
      * @retval false The document has not been modified since it was last saved.
      */
     bool isModified() const override {
-        return _modified || _layerList.isModified() || _blockList->isModified();
+        return _modified || _layerList->isModified() || _blockList->isModified();
     }
 
     /**
@@ -243,7 +178,7 @@ public:
      */
     void setModified(bool m) override {
         _modified = m;
-        _layerList.setModified(m);
+        _layerList->setModified(m);
         _blockList->setModified(m);
     }
 
@@ -321,7 +256,7 @@ private:
     QDateTime _modifiedTime;
     QString _currentFileName; //keep a copy of filename for the modifiedTime
 
-    RS_LayerList _layerList;
+    std::unique_ptr<RS_LayerList> _layerList = std::make_unique<RS_LayerList>();
     std::unique_ptr<RS_BlockList> _blockList = std::make_unique<RS_BlockList>();
     RS_VariableDict _variableDict;
     RS2::CrosshairType _crosshairType; //crosshair type used by isometric grid

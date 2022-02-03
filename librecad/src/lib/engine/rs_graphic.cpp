@@ -46,7 +46,6 @@
  */
 RS_Graphic::RS_Graphic(RS_EntityContainer *parent)
         : RS_Document(parent),
-          _layerList(),
           _paperScaleFixed(false),
           _marginLeft(0.0),
           _marginTop(0.0),
@@ -142,7 +141,7 @@ void RS_Graphic::removeLayer(RS_Layer *layer) {
             e->setLayer("0");
         }
 
-        _layerList.remove(layer);
+        _layerList->remove(layer);
     }
 }
 
@@ -157,10 +156,10 @@ void RS_Graphic::newDoc() {
 
     clear();
 
-    clearLayers();
+    _layerList->clear();
     _blockList->clear();
 
-    addLayer(new RS_Layer("0"));
+    _layerList->add(new RS_Layer("0"));
     //addLayer(new RS_Layer("ByBlock"));
 
     setModified(false);
@@ -341,7 +340,7 @@ bool RS_Graphic::save(bool isAutoSave) {
             /*	Tell that drawing file is no more modified.
                          *	------------------------------------------- */
             setModified(false);
-            _layerList.setModified(false);
+            _layerList->setModified(false);
             _blockList->setModified(false);
 
             /*	- Remove autosave file, if able to create associated object,
@@ -458,7 +457,7 @@ bool RS_Graphic::loadTemplate(const QString &filename, RS2::FormatType type) {
     ret = RS_FileIO::instance()->fileImport(*this, filename, type);
 
     setModified(false);
-    _layerList.setModified(false);
+    _layerList->setModified(false);
     _blockList->setModified(false);
     QFileInfo finfo;
     _modifiedTime = finfo.lastModified();
@@ -490,7 +489,7 @@ bool RS_Graphic::open(const QString &filename, RS2::FormatType type) {
 
     if (ret) {
         setModified(false);
-        _layerList.setModified(false);
+        _layerList->setModified(false);
         _blockList->setModified(false);
         _modifiedTime = finfo.lastModified();
         _currentFileName = QString(filename);

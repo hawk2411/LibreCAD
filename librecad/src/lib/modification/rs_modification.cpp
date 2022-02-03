@@ -475,7 +475,7 @@ void RS_Modification::paste(const RS_PasteData& data, RS_Graphic* source) {
     RS_Vector ip = data.insertionPoint;
 
     // remember active layer before inserting absent layers
-    RS_Layer *l = graphic->getActiveLayer();
+    RS_Layer *l = graphic->getLayerList()->getActive();
 
     // insert absent layers from source to graphic
     if (!pasteLayers(source)) {
@@ -499,7 +499,7 @@ void RS_Modification::paste(const RS_PasteData& data, RS_Graphic* source) {
         return;
     }
     RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_Modification::paste: selected layer: %s", l->getName().toLatin1().data());
-    graphic->activateLayer(l);
+    graphic->getLayerList()->activate(l);
 
     // hash for renaming duplicated blocks
     QHash<QString, QString> blocksDict;
@@ -606,8 +606,8 @@ bool RS_Modification::pasteLayers(RS_Graphic* source) {
 
         // add layers if absent
         QString ln = l->getName();
-        if (!graphic->findLayer(ln)) {
-            graphic->addLayer(l->clone());
+        if (!graphic->getLayerList()->find(ln)) {
+            graphic->getLayerList()->add(l->clone());
             RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_Modification::pasteLayers: layer added: %s", ln.toLatin1().data());
         }
     }

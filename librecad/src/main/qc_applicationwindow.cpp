@@ -1400,9 +1400,9 @@ QC_MDIWindow *QC_ApplicationWindow::slotFileNew(RS_Document *doc) {
     }
     if (graphic) {
         // Link the graphic's layer list to the pen tool bar
-        graphic->addLayerListListener(penToolBar);
+        graphic->getLayerList()->addListener(penToolBar);
         // Link the layer list to the layer widget
-        graphic->addLayerListListener(layerWidget);
+        graphic->getLayerList()->addListener(layerWidget);
 
         // Link the block list to the block widget
         graphic->getBlockList()->addListener(blockWidget);
@@ -2441,9 +2441,9 @@ void QC_ApplicationWindow::slotFilePrintPreview(bool on) {
                 RS_Graphic *graphic = w->getDocument()->getGraphic();
                 if (graphic) {
                     // Link the layer list to the pen tool bar
-                    graphic->addLayerListListener(penToolBar);
+                    graphic->getLayerList()->addListener(penToolBar);
                     // Link the layer list to the layer widget
-                    graphic->addLayerListListener(layerWidget);
+                    graphic->getLayerList()->addListener(layerWidget);
 
                     // Link the block list to the block widget
                     graphic->getBlockList()->addListener(blockWidget);

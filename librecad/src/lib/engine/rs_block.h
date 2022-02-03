@@ -103,7 +103,7 @@ public:
         return _blockData.basePoint;
     }
 
-    RS_LayerList *getLayerList() override;
+    RS_LayerList *getLayerList() const override;
 
     RS_BlockList *getBlockList() const override;
 

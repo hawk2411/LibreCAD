@@ -549,9 +549,9 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->addLayer(new RS_Layer(dxfLine));
-                                    graphic->activateLayer(dxfLine);
-                                    currentLayer = graphic->getActiveLayer();
+                                    graphic->getLayerList()->add(new RS_Layer(dxfLine));
+                                    graphic->getLayerList()->activate(dxfLine);
+                                    currentLayer = graphic->getLayerList()->getActive();
                                     lastLayer=dxfLine;
                                     break;
                                 case 70:  // Visibility
@@ -612,7 +612,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;
@@ -664,7 +664,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;
@@ -726,7 +726,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;
@@ -791,7 +791,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;
@@ -999,7 +999,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;
@@ -1111,7 +1111,7 @@ bool RS_FilterDXF1::readFromBuffer() {
 									if (dxfLine=="(null)" || dxfLine=="default") {
 										dxfLine = "0";
 									}
-                                    graphic->activateLayer(dxfLine);
+                                    graphic->getLayerList()->activate(dxfLine);
                                     //lastLayer=dxfLine;
                                     //}
                                     break;

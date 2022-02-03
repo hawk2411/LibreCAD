@@ -199,7 +199,7 @@ bool RS_FilterDXFRW::fileImport(RS_Graphic& g, const QString& file, RS2::FormatT
 
     delete dummyContainer;
     /*set current layer */
-    RS_Layer* cl = graphic->findLayer(graphic->getVariableString("$CLAYER", "0"));
+    RS_Layer* cl = graphic->getLayerList()->find(graphic->getVariableString("$CLAYER", "0"));
 	if (cl ){
         //require to notify
         graphic->getLayerList()->activate(cl, true);
@@ -222,7 +222,7 @@ void RS_FilterDXFRW::addLayer(const DRW_Layer &data) {
     RS_DEBUG->print("RS_FilterDXF::addLayer: creating layer");
 
     QString name = QString::fromUtf8(data.name.c_str());
-    if (name != "0" && graphic->findLayer(name)) {
+    if (name != "0" && graphic->getLayerList()->find(name)) {
         return;
     }
     RS_Layer* layer = new RS_Layer(name);
@@ -264,7 +264,7 @@ void RS_FilterDXFRW::addLayer(const DRW_Layer &data) {
         RS_DEBUG->print(RS_Debug::D_WARNING, "RS_FilterDXF::addLayer: layer %s is construction layer", layer->getName().toStdString().c_str());
 
     RS_DEBUG->print("RS_FilterDXF::addLayer: add layer to graphic");
-    graphic->addLayer(layer);
+    graphic->getLayerList()->add(layer);
     RS_DEBUG->print("RS_FilterDXF::addLayer: OK");
 }
 
@@ -1601,8 +1601,8 @@ void RS_FilterDXFRW::writeHeader(DRW_Header& data, dxfWriter* writer){
     data.addCoord("$EXTMAX", DRW_Coord(v.x, v.y, 0.0), 0);
 
     //when saving a block, there is no active layer. ignore it to avoid crash
-    if(graphic->getActiveLayer()==0) return;
-    data.addStr("$CLAYER", (graphic->getActiveLayer()->getName()).toUtf8().data(), 8);
+    if(graphic->getLayerList()->getActive()==0) return;
+    data.addStr("$CLAYER", (graphic->getLayerList()->getActive()->getName()).toUtf8().data(), 8);
 }
 
 void RS_FilterDXFRW::writeLTypes(dxfWriter* writer){
@@ -2997,7 +2997,7 @@ void RS_FilterDXFRW::setEntityAttributes(RS_Entity* entity,
     QString layName = toNativeString(QString::fromUtf8(attrib->layer.c_str()));
 
     // Layer: add layer in case it doesn't exist:
-	if (!graphic->findLayer(layName)) {
+	if (!graphic->getLayerList()->find(layName)) {
         DRW_Layer lay;
         lay.name = attrib->layer;
         addLayer(lay);

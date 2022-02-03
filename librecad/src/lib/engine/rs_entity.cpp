@@ -665,7 +665,7 @@ RS_Layer *RS_Entity::getLayer(bool resolve) const {
  */
 void RS_Entity::setLayer(const QString &name) {
     RS_Graphic *graphic = getGraphic();
-    _layer = (graphic) ? graphic->findLayer(name) : nullptr;
+    _layer = (graphic) ? graphic->getLayerList()->find(name) : nullptr;
 }
 
 
@@ -684,7 +684,7 @@ void RS_Entity::setLayer(RS_Layer *layer) {
  */
 void RS_Entity::setLayerToActive() {
     RS_Graphic *graphic = getGraphic();
-    _layer = (graphic) ? graphic->getActiveLayer() : nullptr;
+    _layer = (graphic) ? graphic->getLayerList()->getActive() : nullptr;
 }
 
 

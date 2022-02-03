@@ -107,7 +107,7 @@ bool RS_FilterJWW::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         currentContainer = graphic;
         this->file = file;
 
-        RS_DEBUG->print("graphic->countLayers(): %d", graphic->countLayers());
+        RS_DEBUG->print("graphic->countLayers(): %d", graphic->getLayerList()->count());
 
         //graphic->setAutoUpdateBorders(false);
         RS_DEBUG->print("RS_FilterJWW::fileImport: reading file");
@@ -167,7 +167,7 @@ void RS_FilterJWW::addLayer(const DL_LayerData& data) {
         }
 
         RS_DEBUG->print("RS_FilterJWW::addLayer: add layer to graphic");
-        graphic->addLayer(layer);
+        graphic->getLayerList()->add(layer);
         RS_DEBUG->print("RS_FilterJWW::addLayer: OK");
 }
 
@@ -1258,9 +1258,9 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
         // Layers:
         RS_DEBUG->print("writing layers...");
-        dw->tableLayers(graphic->countLayers());
-        for (unsigned i=0; i<graphic->countLayers(); ++i) {
-                RS_Layer* l = graphic->layerAt(i);
+        dw->tableLayers(graphic->getLayerList()->count());
+        for (unsigned i=0; i<graphic->getLayerList()->count(); ++i) {
+                RS_Layer* l = graphic->getLayerList()->at(i);
                 writeLayer(*dw, l);
         }
         dw->tableEnd();
@@ -2483,7 +2483,7 @@ void RS_FilterJWW::setEntityAttributes(RS_Entity* entity,
                 QTextCodec *codec = QTextCodec::codecForName(enc.toLatin1());
                 if(codec)
                         lName = codec->toUnicode(attrib.getLayer().c_str());
-				if (!graphic->findLayer(lName)) {
+				if (!graphic->getLayerList()->find(lName)) {
                         addLayer(DL_LayerData(attrib.getLayer(), 0));
                 }
                 entity->setLayer(lName);

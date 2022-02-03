@@ -48,7 +48,7 @@ void RS_ActionLayersLockAll::trigger() {
             container->setSelected(false);
         }
 
-        graphic->lockAllLayers(lock);
+        graphic->getLayerList()->lockAll(lock);
     }
     finish(false);
 }

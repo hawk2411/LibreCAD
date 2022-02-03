@@ -50,7 +50,7 @@ public:
 
     ~RS_Document() override = default;
 
-    virtual RS_LayerList *getLayerList() = 0;
+    virtual RS_LayerList *getLayerList() const = 0;
 
     virtual RS_BlockList *getBlockList() const = 0;
 

@@ -65,7 +65,7 @@ void RS_ActionBlocksSave::trigger() {
             g.setOwner(false);
             g.getBlockList()->setOwner(false);
 
-           g.clearLayers();
+           g.getLayerList()->clear();
 //           g.addLayer(b->getLayer());
             for (RS_Entity* e=b->firstEntity(RS2::ResolveNone);
                  e;
