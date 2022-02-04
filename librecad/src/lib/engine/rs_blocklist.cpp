@@ -173,6 +173,7 @@ bool RS_BlockList::rename(RS_Block *block, const QString &name) {
 
     block->setName(name);
     setModified(true);
+    return true;
 }
 
 /**

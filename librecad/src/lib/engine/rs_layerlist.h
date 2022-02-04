@@ -29,7 +29,7 @@
 #ifndef RS_LAYERLIST_H
 #define RS_LAYERLIST_H
 
-#include <QList>
+#include <QMap>
 #include "rs_layer.h"
 
 class RS_LayerListListener;
@@ -56,13 +56,13 @@ public:
         return _layers.count();
     }
 
-    QList<RS_Layer *>::iterator begin();
+    QMap<QString, RS_Layer *>::iterator begin();
 
-    QList<RS_Layer *>::iterator end();
+    QMap<QString, RS_Layer *>::iterator end();
 
-    QList<RS_Layer *>::const_iterator begin() const;
+    QMap<QString, RS_Layer *>::const_iterator begin() const;
 
-    QList<RS_Layer *>::const_iterator end() const;
+    QMap<QString, RS_Layer *>::const_iterator end() const;
 
     void activate(const QString &name, bool notify = false);
 
@@ -132,16 +132,11 @@ public:
         return _modified;
     }
 
-    /**
-     * @brief sort by layer names
-     */
-    void sort();
-
     friend std::ostream &operator<<(std::ostream &os, RS_LayerList &l);
 
 private:
     //! layers in the graphic
-    QList<RS_Layer *> _layers;
+    QMap<QString, RS_Layer *> _layers;
     //! List of registered LayerListListeners
     QList<RS_LayerListListener *> _layerListListeners;
     QG_LayerWidget *_layerWidget;

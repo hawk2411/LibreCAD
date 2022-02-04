@@ -64,7 +64,6 @@ void QG_LayerBox::init(RS_LayerList& list,
                        bool show_by_block, bool show_unchanged) {
     this->showByBlock = show_by_block;
 	this->showUnchanged = show_unchanged;
-    list.sort();
     this->layerList = &list;
 
     if (show_unchanged) {

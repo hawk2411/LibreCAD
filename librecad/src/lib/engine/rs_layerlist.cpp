@@ -47,19 +47,19 @@ void RS_LayerList::clear() {
 }
 
 
-QList<RS_Layer *>::iterator RS_LayerList::begin() {
+QMap<QString, RS_Layer *>::iterator RS_LayerList::begin() {
     return _layers.begin();
 }
 
-QList<RS_Layer *>::iterator RS_LayerList::end() {
+QMap<QString, RS_Layer *>::iterator RS_LayerList::end() {
     return _layers.end();
 }
 
-QList<RS_Layer *>::const_iterator RS_LayerList::begin() const {
+QMap<QString, RS_Layer *>::const_iterator RS_LayerList::begin() const {
     return _layers.begin();
 }
 
-QList<RS_Layer *>::const_iterator RS_LayerList::end() const {
+QMap<QString, RS_Layer *>::const_iterator RS_LayerList::end() const {
     return _layers.end();
 }
 
@@ -108,15 +108,6 @@ void RS_LayerList::activate(RS_Layer *layer, bool notify) {
 
 
 /**
- * @brief sort by layer names
- */
-void RS_LayerList::sort() {
-    std::stable_sort(_layers.begin(), _layers.end(), [](const RS_Layer *l0, const RS_Layer *l1) -> bool {
-        return l0->getName() < l1->getName();
-    });
-}
-
-/**
  * Adds a layer to the layer list.
  * If there is already a layer with the same name, no layer is 
  * added. In that case the layer passed to the method will be deleted!
@@ -134,8 +125,7 @@ void RS_LayerList::add(RS_Layer *layer) {
     // check if layer already exists:
     RS_Layer *l = find(layer->getName());
     if (l == nullptr) {
-        _layers.append(layer);
-        this->sort();
+        _layers.insert(layer->getName(), layer);
         // notify listeners
         for (auto listener : _layerListListeners) {
             listener->layerAdded(layer);
@@ -177,7 +167,7 @@ void RS_LayerList::remove(RS_Layer *layer) {
     }
 
     // here the layer is removed from the list but not deleted
-    _layers.removeOne(layer);
+    _layers.remove(layer->getName());
 
     for (auto l : _layerListListeners) {
         l->layerRemoved(layer);
@@ -220,12 +210,8 @@ void RS_LayerList::edit(RS_Layer *layer, const RS_Layer &source) {
  * \p NULL if no such layer was found.
  */
 RS_Layer *RS_LayerList::find(const QString &name) {
-    for (auto l : _layers) {
-        if (l->getName() == name) {
-            return l;
-        }
-    }
-    return nullptr;
+    auto it =_layers.find(name);
+    return (it == _layers.end())? nullptr: it.value();
 }
 
 /**
