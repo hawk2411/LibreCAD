@@ -184,9 +184,9 @@ void LC_MakerCamSVG::writeLayers(RS_Document* document) {
 
     RS_LayerList* layerlist = document->getLayerList();
 
-    for (unsigned int i = 0; i < layerlist->count(); i++) {
+    for (auto &layer : *layerlist) {
 
-        writeLayer(document, layerlist->at(i));
+        writeLayer(document, layer);
     }
 }
 

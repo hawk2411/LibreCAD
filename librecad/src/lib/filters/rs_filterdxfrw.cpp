@@ -1882,11 +1882,9 @@ void RS_FilterDXFRW::writeLTypes(dxfWriter* writer){
 
 void RS_FilterDXFRW::writeLayers(dxfWriter* writer){
     DRW_Layer lay;
-    RS_LayerList* ll = graphic->getLayerList();
     int exact_rgb;
-    for (unsigned int i = 0; i < ll->count(); i++) {
+    for (RS_Layer* l : *graphic->getLayerList()) {
         lay.reset();
-        RS_Layer* l = ll->at(i);
         RS_Pen pen = l->getPen();
         lay.name = l->getName().toUtf8().data();
         lay.color = colorToNumber(pen.getColor(), &exact_rgb);

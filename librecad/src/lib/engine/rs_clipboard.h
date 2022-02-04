@@ -70,12 +70,6 @@ public:
 
 	void addLayer(RS_Layer* l);
         bool hasLayer(const QString& name);
-	int  countLayers() {
-		return graphic.getLayerList()->count();
-	}
-	RS_Layer* layerAt(int i) {
-		return graphic.getLayerList()->at(i);
-	}
 
 	void addEntity(RS_Entity* e);
 

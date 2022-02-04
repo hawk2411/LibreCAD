@@ -356,16 +356,15 @@ void RS_LayerList::toggleConstruction(RS_Layer *layer) {
  */
 void RS_LayerList::freezeAll(bool freeze) {
 
-    for (unsigned l = 0; l < count(); l++) {
-        if (at(l)->isVisibleInLayerList()) {
-            at(l)->freeze(freeze);
+    for ( auto & layer : _layers) {
+        if (layer->isVisibleInLayerList()) {
+            layer->freeze(freeze);
         }
     }
     setModified(true);
 
-    for (int i = 0; i < _layerListListeners.size(); ++i) {
-        RS_LayerListListener *l = _layerListListeners.at(i);
-        l->layerToggled(NULL);
+    for (auto listener : _layerListListeners) {
+        listener->layerToggled(nullptr);
     }
 }
 
@@ -377,16 +376,15 @@ void RS_LayerList::freezeAll(bool freeze) {
  */
 void RS_LayerList::lockAll(bool lock) {
 
-    for (unsigned l = 0; l < count(); l++) {
-        if (at(l)->isVisibleInLayerList()) {
-            at(l)->lock(lock);
+    for (auto & layer : _layers) {
+        if (layer->isVisibleInLayerList()) {
+            layer->lock(lock);
         }
     }
     setModified(true);
 
-    for (int i = 0; i < _layerListListeners.size(); ++i) {
-        RS_LayerListListener *l = _layerListListeners.at(i);
-        l->layerToggled(NULL);
+    for (auto l : _layerListListeners) {
+        l->layerToggled(nullptr);
     }
 }
 
@@ -413,11 +411,11 @@ void RS_LayerList::removeListener(RS_LayerListListener *listener) {
 /**
  * Dumps the layers to stdout.
  */
-std::ostream &operator<<(std::ostream &os, RS_LayerList &l) {
+std::ostream &operator<<(std::ostream &os, RS_LayerList &layerList) {
 
     os << "Layerlist: \n";
-    for (unsigned i = 0; i < l.count(); i++) {
-        os << *(l.at(i)) << "\n";
+    for (auto & layer: layerList) {
+        os << *layer << "\n";
     }
 
     return os;

@@ -56,13 +56,6 @@ public:
         return _layers.count();
     }
 
-    /**
-     * @return Layer at given position or NULL if i is out of range.
-     */
-    RS_Layer *at(unsigned int i) {
-        return _layers.at(i);
-    }
-
     QList<RS_Layer *>::iterator begin();
 
     QList<RS_Layer *>::iterator end();

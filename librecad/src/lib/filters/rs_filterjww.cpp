@@ -1259,8 +1259,7 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         // Layers:
         RS_DEBUG->print("writing layers...");
         dw->tableLayers(graphic->getLayerList()->count());
-        for (unsigned i=0; i<graphic->getLayerList()->count(); ++i) {
-                RS_Layer* l = graphic->getLayerList()->at(i);
+        for (RS_Layer* l : *graphic->getLayerList()) {
                 writeLayer(*dw, l);
         }
         dw->tableEnd();
