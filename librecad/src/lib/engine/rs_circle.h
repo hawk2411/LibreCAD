@@ -28,7 +28,7 @@
 
 #ifndef RS_CIRCLE_H
 #define RS_CIRCLE_H
-
+#include <memory>
 #include <vector>
 #include "rs_atomicentity.h"
 
@@ -61,8 +61,7 @@ class RS_Circle : public RS_AtomicEntity {
 public:
     RS_Circle() = default;
 
-    RS_Circle(RS_EntityContainer *parent,
-              const RS_CircleData &d);
+    RS_Circle(RS_EntityContainer *parent, const RS_CircleData &d);
 
     ~RS_Circle() override = default;
 
@@ -85,13 +84,6 @@ public:
 
     RS_VectorSolutions getRefPoints() const override;
 
-    //no start/end point for whole circle
-    //        RS_Vector getStartpoint() const {
-    //                return data.center + RS_Vector(data.radius, 0.0);
-    //        }
-    //        RS_Vector getEndpoint() const {
-    //                return data.center + RS_Vector(data.radius, 0.0);
-    //        }
     /**
          * @return Direction 1. The angle at which the arc starts at
          * the startpoint.
@@ -120,7 +112,7 @@ public:
 
     bool isTangent(const RS_CircleData &circleData) const override;
 
-    bool createFromCR(const RS_Vector &c, double r);
+    bool createFromCenterPointAndRadius(const RS_Vector &center_point, double radius);
 
     bool createFrom2P(const RS_Vector &p1, const RS_Vector &p2);
 
@@ -139,9 +131,9 @@ public:
 | Cx - Ci|^2=(Rx+Ri)^2
 with Cx the center of the common tangent circle, Rx the radius. Ci and Ri are the Center and radius of the i-th existing circle
 **/
-    static std::vector<RS_Circle> solveApolloniusSingle(const std::vector<RS_Circle> &circles);
+    static std::vector<std::unique_ptr<RS_Circle>> solveApolloniusSingle(const std::vector<std::unique_ptr<RS_Circle>> &circles);
 
-    static std::vector<RS_Circle> createTan3(const std::vector<RS_AtomicEntity *> &circles);
+    static std::vector<std::unique_ptr<RS_Circle>> createTan3(const std::vector<RS_AtomicEntity *> &source);
 
     bool testTan3(const std::vector<RS_AtomicEntity *> &circles) const;
 
@@ -212,8 +204,10 @@ m0 x + m1 y + m2 =0
 
     void calculateBorders() override;
 
-protected:
+private:
     RS_CircleData _data;
+
+    static bool isDistanceValid(const RS_Circle *left, const RS_Circle *right);
 };
 
 #endif

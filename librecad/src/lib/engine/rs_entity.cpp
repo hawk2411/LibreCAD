@@ -55,7 +55,7 @@
  *               E.g. a line might have a graphic entity or
  *               a polyline entity as parent.
  */
-RS_Entity::RS_Entity(RS_EntityContainer *parent) : _layer(nullptr), id(0), _updateEnabled(false) {
+RS_Entity::RS_Entity(RS_EntityContainer *parent) : _layer(nullptr), _id(0), _updateEnabled(false) {
 
     this->_parent = parent;
     init();
@@ -83,7 +83,7 @@ void RS_Entity::init() {
 void RS_Entity::initId() {
     static unsigned long int idCounter = 0;
     idCounter++;
-    id = idCounter;
+    _id = idCounter;
 }
 
 /**
@@ -849,7 +849,7 @@ std::ostream &operator<<(std::ostream &os, RS_Entity &e) {
     //os << "Warning: Virtual entity!\n";
     //return os;
 
-    os << " {Entity id: " << e.id;
+    os << " {Entity id: " << e._id;
     if (e._parent) {
         os << " | parent id: " << e._parent->getId() << "\n";
     } else {

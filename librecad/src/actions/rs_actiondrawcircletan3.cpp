@@ -280,11 +280,10 @@ bool RS_ActionDrawCircleTan3::getData(){
 		}
 
 	} else {
-		RS_Circle c{nullptr, *pPoints->cData};
-		auto solutions=c.createTan3(pPoints->circles);
+		auto solutions=RS_Circle::createTan3(pPoints->circles);
 		pPoints->candidates.clear();
-		for(const RS_Circle& s: solutions){
-			pPoints->candidates.push_back(std::make_shared<RS_CircleData>(s.getData()));
+		for(const auto& circle: solutions){
+			pPoints->candidates.push_back(std::make_shared<RS_CircleData>(circle->getData()));
 		}
 	}
 	pPoints->valid = ( pPoints->candidates.size() >0);

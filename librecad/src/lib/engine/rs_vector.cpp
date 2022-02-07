@@ -152,9 +152,9 @@ double RS_Vector::magnitude() const {
 double RS_Vector::squared() const {
     // Note that the z coordinate is also needed for 2d
     //   (due to definition of crossP())
-	if (valid)
-        return x*x + y*y + z*z;
-    return RS_MAXDOUBLE;
+    if (!valid) { return RS_MAXDOUBLE; }
+
+    return x * x + y * y + z * z;
 }
 
 /**
