@@ -70,8 +70,7 @@ public:
 			RS_Entity const* e2,
             bool onEntities = false);
 
-    static RS_VectorSolutions getIntersectionLineLine(RS_Line* e1,
-            RS_Line* e2);
+    static RS_VectorSolutions getIntersectionLineLine(const RS_Line* e1, const RS_Line* e2);
 
     static RS_VectorSolutions getIntersectionLineArc(RS_Line* line,
             RS_Arc* arc);
@@ -87,8 +86,8 @@ public:
     static RS_VectorSolutions getIntersectionCircleEllipse(RS_Circle* e1,
             RS_Ellipse* e2);
     
-	static RS_VectorSolutions getIntersectionEllipseLine(RS_Line* line,
-            RS_Ellipse* ellipse);
+	static RS_VectorSolutions getIntersectionEllipseLine(const RS_Line *line,
+                                                         const RS_Ellipse *ellipse);
 	/**
 	 * @brief createQuadrilateral form quadrilateral from 4 straight lines
 	 * @param container contains 4 straight lines

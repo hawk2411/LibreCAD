@@ -114,12 +114,12 @@ public:
 
     bool createFromCenterPointAndRadius(const RS_Vector &center_point, double radius);
 
-    bool createFrom2P(const RS_Vector &p1, const RS_Vector &p2);
+    static std::unique_ptr<RS_Circle> createFrom2P(const RS_Vector &p1, const RS_Vector &p2);
 
-    bool createFrom3P(const RS_Vector &p1, const RS_Vector &p2,
+    static std::unique_ptr<RS_Circle> createFrom3P(const RS_Vector &p1, const RS_Vector &p2,
                       const RS_Vector &p3);
 
-    bool createFrom3P(const RS_VectorSolutions &sol);
+    static std::unique_ptr<RS_Circle> createFrom3P(const RS_VectorSolutions &sol);
 
     bool createInscribe(const RS_Vector &coord, const std::vector<RS_Line *> &lines);
 

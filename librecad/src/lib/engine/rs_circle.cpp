@@ -139,9 +139,11 @@ bool RS_Circle::isTangent(const RS_CircleData &circleData) const {
 bool RS_Circle::createFromCenterPointAndRadius(const RS_Vector &center_point, double radius) {
     if (fabs(radius) <= RS_TOLERANCE || !center_point.valid) {
         RS_DEBUG->print(RS_Debug::D_WARNING, "RS_Circle::createFromCenterPointAndRadius(): "
-                                             "Cannot create a circle with radius 0.0.");
+                                            "Cannot create a circle with radius 0.0.");
+
         return false;
     }
+
 
     _data.radius = fabs(radius);
     _data.center = center_point;
@@ -155,17 +157,16 @@ bool RS_Circle::createFromCenterPointAndRadius(const RS_Vector &center_point, do
  * @param p1 1st point.
  * @param p2 2nd point.
  */
-bool RS_Circle::createFrom2P(const RS_Vector &p1, const RS_Vector &p2) {
+std::unique_ptr<RS_Circle> RS_Circle::createFrom2P(const RS_Vector &p1, const RS_Vector &p2) {
     double r = 0.5 * p1.distanceTo(p2);
+
     if (r > RS_TOLERANCE) {
-        _data.radius = r;
-        _data.center = (p1 + p2) * 0.5;
-        return true;
-    } else {
-//        RS_DEBUG->print(RS_Debug::D_WARNING, "RS_Circle::createFrom2P(): "
-//                        "Cannot create a circle with radius 0.0.");
-        return false;
+        RS_CircleData data;
+        data.radius = r;
+        data.center = (p1 + p2) * 0.5;
+        return std::make_unique<RS_Circle>(nullptr, data);
     }
+    return {nullptr};
 }
 
 
@@ -176,7 +177,7 @@ bool RS_Circle::createFrom2P(const RS_Vector &p1, const RS_Vector &p2) {
  * @param p2 2nd point.
  * @param p3 3rd point.
  */
-bool RS_Circle::createFrom3P(const RS_Vector &p1, const RS_Vector &p2,
+std::unique_ptr<RS_Circle> RS_Circle::createFrom3P(const RS_Vector &p1, const RS_Vector &p2,
                              const RS_Vector &p3) {
     RS_Vector vra = p2 - p1;
     RS_Vector vrb = p3 - p1;
@@ -186,22 +187,28 @@ bool RS_Circle::createFrom3P(const RS_Vector &p1, const RS_Vector &p2,
     if (fabs(crossp) < RS_TOLERANCE2) {
         RS_DEBUG->print(RS_Debug::D_WARNING, "RS_Circle::createFrom3P(): "
                                              "Cannot create a circle with radius 0.0.");
-        return false;
+        return {nullptr};
     }
     crossp = 1. / crossp;
-    _data.center.set((ra2 * vrb.y - rb2 * vra.y) * crossp, (rb2 * vra.x - ra2 * vrb.x) * crossp);
-    _data.radius = _data.center.magnitude();
-    _data.center += p1;
-    return true;
+    RS_CircleData data;
+    data.center.set((ra2 * vrb.y - rb2 * vra.y) * crossp, (rb2 * vra.x - ra2 * vrb.x) * crossp);
+    data.radius = data.center.magnitude();
+    data.center += p1;
+    return std::make_unique<RS_Circle>(nullptr, data);
 }
 
 //*create Circle from 3 points
 //Author: Dongxu Li
-bool RS_Circle::createFrom3P(const RS_VectorSolutions &sol) {
-    if (sol.getNumber() < 2) return false;
-    if (sol.getNumber() == 2) return createFrom2P(sol.get(0), sol.get(1));
-    if ((sol.get(1) - sol.get(2)).squared() < RS_TOLERANCE2)
+std::unique_ptr<RS_Circle> RS_Circle::createFrom3P(const RS_VectorSolutions &sol) {
+    if (sol.getNumber() < 2) {
+        return {nullptr};
+    }
+    if (sol.getNumber() == 2) {
         return createFrom2P(sol.get(0), sol.get(1));
+    }
+    if ((sol.get(1) - sol.get(2)).squared() < RS_TOLERANCE2) {
+        return createFrom2P(sol.get(0), sol.get(1));
+    }
     RS_Vector vra(sol.get(1) - sol.get(0));
     RS_Vector vrb(sol.get(2) - sol.get(0));
     double ra2 = vra.squared() * 0.5;
@@ -210,13 +217,14 @@ bool RS_Circle::createFrom3P(const RS_VectorSolutions &sol) {
     if (fabs(crossp) < RS_TOLERANCE2) {
         RS_DEBUG->print(RS_Debug::D_WARNING, "RS_Circle::createFrom3P(): "
                                              "Cannot create a circle with radius 0.0.");
-        return false;
+        return {nullptr};
     }
     crossp = 1. / crossp;
-    _data.center.set((ra2 * vrb.y - rb2 * vra.y) * crossp, (rb2 * vra.x - ra2 * vrb.x) * crossp);
-    _data.radius = _data.center.magnitude();
-    _data.center += sol.get(0);
-    return true;
+    RS_CircleData data;
+    data.center.set((ra2 * vrb.y - rb2 * vra.y) * crossp, (rb2 * vra.x - ra2 * vrb.x) * crossp);
+    data.radius = data.center.magnitude();
+    data.center += sol.get(0);
+    return std::make_unique<RS_Circle>(nullptr, data);
 }
 
 /**
