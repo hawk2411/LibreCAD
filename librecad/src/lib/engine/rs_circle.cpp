@@ -136,18 +136,19 @@ bool RS_Circle::isTangent(const RS_CircleData &circleData) const {
  * @param center_point Center.
  * @param radius Radius
  */
-bool RS_Circle::createFromCenterPointAndRadius(const RS_Vector &center_point, double radius) {
+std::unique_ptr<RS_Circle> RS_Circle::createFromCenterPointAndRadius(const RS_Vector &center_point, double radius) {
     if (fabs(radius) <= RS_TOLERANCE || !center_point.valid) {
         RS_DEBUG->print(RS_Debug::D_WARNING, "RS_Circle::createFromCenterPointAndRadius(): "
                                             "Cannot create a circle with radius 0.0.");
 
-        return false;
+        return {nullptr};
     }
 
+    RS_CircleData data;
+    data.radius = fabs(radius);
+    data.center = center_point;
 
-    _data.radius = fabs(radius);
-    _data.center = center_point;
-    return true;
+    return std::make_unique<RS_Circle>(nullptr, data);;
 }
 
 
@@ -232,22 +233,31 @@ std::unique_ptr<RS_Circle> RS_Circle::createFrom3P(const RS_VectorSolutions &sol
   *
   *Author: Dongxu Li
   */
-bool RS_Circle::createInscribe(const RS_Vector &coord, const std::vector<RS_Line *> &lines) {
-    if (lines.size() < 3) return false;
+std::unique_ptr<RS_Circle> RS_Circle::createInscribe(const RS_Vector &coord, const std::vector<RS_Line *> &lines) {
+    if (lines.size() < 3) {
+        return {nullptr};
+    }
     std::vector<RS_Line *> tri(lines);
     RS_VectorSolutions sol = RS_Information::getIntersectionLineLine(tri[0], tri[1]);
     if (sol.getNumber() == 0) {//move parallel to opposite
         std::swap(tri[1], tri[2]);
         sol = RS_Information::getIntersectionLineLine(tri[0], tri[1]);
     }
-    if (sol.getNumber() == 0) return false;
+    if (sol.getNumber() == 0) {
+        return {nullptr};
+    }
     RS_Vector vp0(sol.get(0));
     sol = RS_Information::getIntersectionLineLine(tri[2], tri[1]);
-    if (sol.getNumber() == 0) return false;
+    if (sol.getNumber() == 0) {
+        return {nullptr};
+    }
     RS_Vector vp1(sol.get(0));
     RS_Vector dvp(vp1 - vp0);
     double a(dvp.squared());
-    if (a < RS_TOLERANCE2) return false; //three lines share a common intersecting point
+    if (a < RS_TOLERANCE2) {
+        //three lines share a common intersecting point
+        return {nullptr};
+    }
     RS_Vector vp(coord - vp0);
     vp -= dvp * (RS_Vector::dotP(dvp, vp) / a); //normal component
     RS_Vector vl0(tri[0]->getEndpoint() - tri[0]->getStartpoint());
@@ -265,13 +275,21 @@ bool RS_Circle::createInscribe(const RS_Vector &coord, const std::vector<RS_Line
     }
     RS_Line line1(vp1, vp1 + RS_Vector(angle0));//second bisection line
     sol = RS_Information::getIntersectionLineLine(&line0, &line1);
-    if (sol.getNumber() == 0) return false;
+    if (sol.getNumber() == 0) {
+        return {nullptr};
+    }
 
-    bool ret = createFromCenterPointAndRadius(sol.get(0),
+    std::unique_ptr<RS_Circle> ret = createFromCenterPointAndRadius(sol.get(0),
                                               tri[1]->getDistanceToPoint(sol.get(0), nullptr, RS2::ResolveNone,
                                                                          RS_MAXDOUBLE));
-    if (!ret) { return false; }
-    return std::all_of(lines.cbegin(), lines.cend(), [&](const RS_Line *line) { return line->isTangent(_data); });
+    if (!ret) {
+        return ret;
+    }
+
+    if(std::all_of(lines.cbegin(), lines.cend(), [&](const RS_Line *line) { return line->isTangent(ret->getData()); })){
+        return ret;
+    }
+    return {nullptr};
 }
 
 std::vector<RS_Entity *> RS_Circle::offsetTwoSides(const double &distance) const {
@@ -375,6 +393,7 @@ RS_Circle::solveApolloniusSingle(const std::vector<std::unique_ptr<RS_Circle>> &
     std::vector<RS_Vector> centers;
     std::vector<double> radii;
 
+    std::transform()
     for (const auto &c: circles) {
         if (!c->getCenter().valid) { return ret; }
         centers.push_back(c->getCenter());

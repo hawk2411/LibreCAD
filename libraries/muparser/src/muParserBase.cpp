@@ -1236,7 +1236,8 @@ namespace mu
                   Error(ecUNEXPECTED_ARG_SEP, m_pTokenReader->GetPos());
 
                 ++stArgCount.top();
-                // fallthrough intentional (no break!)
+                ApplyRemainingOprt(stOpt, stVal);
+                break;
 
         case cmEND:
                 ApplyRemainingOprt(stOpt, stVal);
@@ -1293,9 +1294,6 @@ namespace mu
         //case cmOR:
         //case cmXOR:
         case cmIF:
-                m_nIfElseCounter++;
-                // fallthrough intentional (no break!)
-
         case cmLAND:
         case cmLOR:
         case cmLT:
@@ -1312,6 +1310,9 @@ namespace mu
         case cmASSIGN:
         case cmOPRT_BIN:
 
+            if(opt.GetCode() == cmIF) {
+                m_nIfElseCounter++;
+            }
                 // A binary operator (user defined or built in) has been found. 
                 while ( stOpt.size() && 
                         stOpt.top().GetCode() != cmBO &&

@@ -112,28 +112,8 @@ public:
 
     bool isTangent(const RS_CircleData &circleData) const override;
 
-    bool createFromCenterPointAndRadius(const RS_Vector &center_point, double radius);
-
-    static std::unique_ptr<RS_Circle> createFrom2P(const RS_Vector &p1, const RS_Vector &p2);
-
-    static std::unique_ptr<RS_Circle> createFrom3P(const RS_Vector &p1, const RS_Vector &p2,
-                      const RS_Vector &p3);
-
-    static std::unique_ptr<RS_Circle> createFrom3P(const RS_VectorSolutions &sol);
-
-    bool createInscribe(const RS_Vector &coord, const std::vector<RS_Line *> &lines);
 
     std::vector<RS_Entity *> offsetTwoSides(const double &distance) const override;
-
-    static RS_VectorSolutions createTan2(const std::vector<RS_AtomicEntity *> &circles, const double &r);
-
-    /** solve one of the eight Appollonius Equations
-| Cx - Ci|^2=(Rx+Ri)^2
-with Cx the center of the common tangent circle, Rx the radius. Ci and Ri are the Center and radius of the i-th existing circle
-**/
-    static std::vector<std::unique_ptr<RS_Circle>> solveApolloniusSingle(const std::vector<std::unique_ptr<RS_Circle>> &circles);
-
-    static std::vector<std::unique_ptr<RS_Circle>> createTan3(const std::vector<RS_AtomicEntity *> &source);
 
     bool testTan3(const std::vector<RS_AtomicEntity *> &circles) const;
 
@@ -203,6 +183,30 @@ m0 x + m1 y + m2 =0
     friend std::ostream &operator<<(std::ostream &os, const RS_Circle &a);
 
     void calculateBorders() override;
+
+    /*
+     * Create RS_Circle functions
+     */
+    static std::unique_ptr<RS_Circle> createFromCenterPointAndRadius(const RS_Vector &center_point, double radius);
+
+    static std::unique_ptr<RS_Circle> createFrom2P(const RS_Vector &p1, const RS_Vector &p2);
+
+    static std::unique_ptr<RS_Circle> createFrom3P(const RS_Vector &p1, const RS_Vector &p2,
+                                                   const RS_Vector &p3);
+
+    static std::unique_ptr<RS_Circle> createFrom3P(const RS_VectorSolutions &sol);
+
+    static std::unique_ptr<RS_Circle> createInscribe(const RS_Vector &coord, const std::vector<RS_Line *> &lines);
+
+    static RS_VectorSolutions createTan2(const std::vector<RS_AtomicEntity *> &circles, const double &r);
+
+    /** solve one of the eight Appollonius Equations
+| Cx - Ci|^2=(Rx+Ri)^2
+with Cx the center of the common tangent circle, Rx the radius. Ci and Ri are the Center and radius of the i-th existing circle
+**/
+    static std::vector<std::unique_ptr<RS_Circle>> solveApolloniusSingle(const std::vector<std::unique_ptr<RS_Circle>> &circles);
+
+    static std::vector<std::unique_ptr<RS_Circle>> createTan3(const std::vector<RS_AtomicEntity *> &source);
 
 private:
     RS_CircleData _data;

@@ -137,12 +137,12 @@ bool RS_ActionDrawEllipseCenter3Points::preparePreview(){
     switch(getStatus()) {
     case SetPoint1:
     {
-		RS_Circle c(preview.get(), pPoints->cData);
-		pPoints->valid= c.createFromCenterPointAndRadius(pPoints->points.at(0),
-                                                         pPoints->points.get(0).distanceTo(pPoints->points.get(1)));
+        auto c = RS_Circle::createFromCenterPointAndRadius(pPoints->points.at(0),
+                                                           pPoints->points.get(0).distanceTo(pPoints->points.get(1)));
+		pPoints->valid= (c != nullptr);
 
 		if (pPoints->valid){
-			pPoints->cData = c.getData();
+			pPoints->cData = c->getData();
         }
 
     }
