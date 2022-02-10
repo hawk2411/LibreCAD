@@ -34,7 +34,9 @@
 #define RS_CLIPBOARD RS_Clipboard::instance()
 
 class RS_Block;
+
 class RS_Layer;
+
 class RS_Entity;
 
 /**
@@ -53,50 +55,55 @@ public:
     /**
      * @return Instance to the unique clipboard object.
      */
-    static RS_Clipboard* instance() {
-        if (uniqueInstance==NULL) {
+    static RS_Clipboard *instance() {
+        if (uniqueInstance == NULL) {
             uniqueInstance = new RS_Clipboard();
         }
         return uniqueInstance;
     }
 
-	void clear();
+    void clear();
 
-	void addBlock(RS_Block* b);
-        bool hasBlock(const QString& name);
-	int  countBlocks() {
-		return graphic.getBlockList()->count();
-	}
+    void addBlock(RS_Block *b);
 
-	void addLayer(RS_Layer* l);
-        bool hasLayer(const QString& name);
+    bool hasBlock(const QString &name);
 
-	void addEntity(RS_Entity* e);
+    int countBlocks() {
+        return graphic.getBlockList()->count();
+    }
+
+    void addLayer(RS_Layer *l);
+
+    bool hasLayer(const QString &name);
+
+    void addEntity(RS_Entity *e);
 
     unsigned count() {
-		return graphic.count();
-	}
-    RS_Entity* entityAt(unsigned i) {
-		return graphic.entityAt(i);
-	}
-	RS_Entity* firstEntity() {
-		return graphic.firstEntity( RS2::ResolveNone);
-	}
-	
-	RS_Entity* nextEntity() {
-		return graphic.nextEntity(RS2::ResolveNone);
-	}
+        return graphic.count();
+    }
 
-	RS_Graphic* getGraphic() {
-		return &graphic;
-	}
+    RS_Entity *entityAt(unsigned i) {
+        return graphic.entityAt(i);
+    }
 
-    friend std::ostream& operator << (std::ostream& os, RS_Clipboard& cb);
+    RS_Entity *firstEntity() {
+        return graphic.firstEntity(RS2::ResolveNone);
+    }
+
+    RS_Entity *nextEntity() {
+        return graphic.nextEntity(RS2::ResolveNone);
+    }
+
+    RS_Graphic *getGraphic() {
+        return &graphic;
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, RS_Clipboard &cb);
 
 protected:
-    static RS_Clipboard* uniqueInstance;
+    static RS_Clipboard *uniqueInstance;
 
-	RS_Graphic graphic;
+    RS_Graphic graphic;
 };
 
 #endif

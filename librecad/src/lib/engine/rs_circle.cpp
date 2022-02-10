@@ -489,11 +489,9 @@ RS_Vector RS_Circle::getNearestPointOnEntity(const RS_Vector &coord,
     double d(vp.magnitude());
     if (d < RS_TOLERANCE) return RS_Vector(false);
     vp = _data.center + vp * (_data.radius / d);
-//    RS_DEBUG->print(RS_Debug::D_ERROR, "circle(%g, %g), r=%g: distance to point (%g, %g)\n",data.center.x,data.center.y,coord.x,coord.y);
 
     if (dist) {
         *dist = coord.distanceTo(vp);
-//        RS_DEBUG->print(RS_Debug::D_ERROR, "circle(%g, %g), r=%g: distance to point (%g, %g)=%g\n",data.center.x,data.center.y,coord.x,coord.y,*dist);
     }
     return vp;
 }
@@ -533,11 +531,6 @@ RS_VectorSolutions RS_Circle::getTangentPoint(const RS_Vector &point) const {
 
 RS_Vector RS_Circle::getTangentDirection(const RS_Vector &point) const {
     RS_Vector vp(point - getCenter());
-//    double c2(vp.squared());
-//    if(c2<r2-getRadius()*2.*RS_TOLERANCE) {
-//        //inside point, no tangential point
-//        return RS_Vector(false);
-//    }
     return {-vp.y, vp.x};
 
 }
@@ -684,7 +677,6 @@ void RS_Circle::scale(const RS_Vector &center, const RS_Vector &factor) {
     //radius always is positive
     _data.radius *= fabs(factor.x);
     scaleBorders(center, factor);
-//    calculateBorders();
 }
 
 double RS_Circle::getDirection1() const {
