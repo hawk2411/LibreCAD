@@ -176,7 +176,7 @@ void RS_ActionDrawCircleTan1_2P::mouseMoveEvent(QMouseEvent* e) {
     }
     case SetCenter: {
 
-        //        RS_Entity*  en = catchEntity(e, enTypeList, RS2::ResolveAll);
+        //        RS_Entity*  en = catchEntity(e, _enTypeList, RS2::ResolveAll);
 		pPoints->coord= graphicView->toGraph(e->x(), e->y());
         //        circles[getStatus()]=static_cast<RS_Line*>(en);
         if(preparePreview()) {
@@ -331,7 +331,7 @@ void RS_ActionDrawCircleTan1_2P::coordinateEvent(RS_CoordinateEvent* e) {
         break;
 
     case SetPoint2:
-//		pPoints->points.reserve(1);
+//		_points->points.reserve(1);
 		pPoints->points.push_back(mouse);
         if(getCenters()) {
 			if(pPoints->centers.size()==1) trigger();
