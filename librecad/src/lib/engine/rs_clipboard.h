@@ -48,15 +48,14 @@ class RS_Entity;
  */
 class RS_Clipboard {
 protected:
-    RS_Clipboard() {
-    }
+    RS_Clipboard() = default;
 
 public:
     /**
      * @return Instance to the unique clipboard object.
      */
     static RS_Clipboard *instance() {
-        if (uniqueInstance == NULL) {
+        if (uniqueInstance == nullptr) {
             uniqueInstance = new RS_Clipboard();
         }
         return uniqueInstance;
@@ -68,10 +67,6 @@ public:
 
     bool hasBlock(const QString &name);
 
-    int countBlocks() {
-        return graphic.getBlockList()->count();
-    }
-
     void addLayer(RS_Layer *l);
 
     bool hasLayer(const QString &name);
@@ -80,10 +75,6 @@ public:
 
     unsigned count() {
         return graphic.count();
-    }
-
-    RS_Entity *entityAt(unsigned i) {
-        return graphic.entityAt(i);
     }
 
     RS_Entity *firstEntity() {
