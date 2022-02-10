@@ -393,7 +393,6 @@ RS_Circle::solveApolloniusSingle(const std::vector<std::unique_ptr<RS_Circle>> &
     std::vector<RS_Vector> centers;
     std::vector<double> radii;
 
-    std::transform()
     for (const auto &c: circles) {
         if (!c->getCenter().valid) { return ret; }
         centers.push_back(c->getCenter());

@@ -16,7 +16,7 @@ add_compile_definitions(QC_APPDIR="\"librecad\"")
 set(LC_VERSION "2.2.0-alpha")
 set(VERSION ${LC_VERSION})
 
-find_package(GTest REQUIRED)
+#find_package(GTest REQUIRED)
 find_package(Qt5 REQUIRED PrintSupport Widgets Svg )
 #find_package(Qt5Core REQUIRED)
 #find_package(Qt5Gui REQUIRED)
