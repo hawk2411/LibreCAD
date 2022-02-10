@@ -32,6 +32,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "rs_coordinateevent.h"
 #include "rs_preview.h"
 #include "rs_debug.h"
+#include "rs_actiondrawcircle.h"
 
 struct RS_ActionDrawEllipse4Points::Points {
 	RS_VectorSolutions points;
@@ -129,10 +130,10 @@ bool RS_ActionDrawEllipse4Points::preparePreview(){
     case SetPoint2:
     case SetPoint3:
     {
-		RS_Circle c(preview.get(), pPoints->cData);
-		pPoints->valid= c.createFrom3P(pPoints->points);
+		auto circle =RS_Circle::createFrom3P(pPoints->points);
+		pPoints->valid = (circle != nullptr);
 		if(pPoints->valid){
-			pPoints->cData = c.getData();
+			pPoints->cData = circle->getData();
         }
 
     }
@@ -142,10 +143,10 @@ bool RS_ActionDrawEllipse4Points::preparePreview(){
         int j=SetPoint4;
 		pPoints->evalid=false;
 		if ((pPoints->points.get(j) - pPoints->points.get(j-1)).squared() <RS_TOLERANCE15){
-			RS_Circle c(preview.get(), pPoints->cData);
-			pPoints->valid= c.createFrom3P(pPoints->points);
+			auto circle = RS_Circle::createFrom3P(pPoints->points);
+			pPoints->valid= (circle != nullptr);
 			if (pPoints->valid) {
-				pPoints->cData = c.getData();
+				pPoints->cData = circle->getData();
 			}
 		} else {
 			RS_Ellipse e{preview.get(), pPoints->eData};
@@ -156,7 +157,7 @@ bool RS_ActionDrawEllipse4Points::preparePreview(){
 				pPoints->m_bUniqueEllipse=false;
 			} else {
 				pPoints->evalid=false;
-				if (pPoints->m_bUniqueEllipse==false) {
+				if (!pPoints->m_bUniqueEllipse) {
                     GetDialogFactory()->commandMessage(tr("Can not determine uniquely an ellipse"));
 					pPoints->m_bUniqueEllipse=true;
                 }

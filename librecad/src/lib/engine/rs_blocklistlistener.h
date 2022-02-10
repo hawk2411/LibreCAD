@@ -48,7 +48,7 @@ public:
     /**
      * Called when a block is removed from the list.
      */
-    virtual void blockRemoved(RS_Block *) {};
+    virtual void blockRemoved(RS_Block *) {}
 
     /**
      * Called when a block's visibility is toggled. 

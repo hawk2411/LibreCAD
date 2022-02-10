@@ -64,15 +64,13 @@ void QG_LayerBox::init(RS_LayerList& list,
                        bool show_by_block, bool show_unchanged) {
     this->showByBlock = show_by_block;
 	this->showUnchanged = show_unchanged;
-    list.sort();
     this->layerList = &list;
 
     if (show_unchanged) {
         addItem(tr("- Unchanged -"));
 	}
 
-    for (unsigned i=0; i < list.count(); ++i) {
-        RS_Layer* lay = list.at(i);
+    for (RS_Layer* lay : list) {
         if (lay && (lay->getName()!="ByBlock" || show_by_block)) {
             addItem(lay->getName());
         }

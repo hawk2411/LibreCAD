@@ -314,14 +314,13 @@ QString DocumentPluginImplementation::addBlockFromDisk(const QString &fullName) 
             delete b;
             return nullptr;
         }
-        RS_LayerList *ll = g.getLayerList();
-        for (unsigned int i = 0; i < ll->count(); i++) {
-            RS_Layer *nl = ll->at(i)->clone();
+        for (auto & layer : *g.getLayerList()) {
+            RS_Layer *nl = layer->clone();
             docGr->getLayerList()->add(nl);
         }
-        RS_BlockList *block_list = g.getBlockList();
-        for (auto block : *block_list) {
-            auto *nb = dynamic_cast<RS_Block*>(block->clone());
+        RS_BlockList *bl = g.getBlockList();
+        for (auto & block : *bl) {
+            auto *nb = (RS_Block *) block->clone();
             docGr->getBlockList()->add(nb, true);
         }
         for (unsigned int i = 0; i < g.count(); i++) {
@@ -401,8 +400,8 @@ QString DocumentPluginImplementation::getCurrentLayer() {
 QStringList DocumentPluginImplementation::getAllLayer() {
     QStringList listName;
     RS_LayerList *listLay = doc->getLayerList();
-    for (unsigned int i = 0; i < listLay->count(); ++i) {
-        listName << listLay->at(i)->getName();
+    for (auto & layer: *listLay) {
+        listName << layer->getName();
     }
     return listName;
 }
@@ -410,7 +409,7 @@ QStringList DocumentPluginImplementation::getAllLayer() {
 QStringList DocumentPluginImplementation::getAllBlocks() {
     QStringList listName;
     RS_BlockList *listBlk = doc->getBlockList();
-    for (auto block : *listBlk) {
+    for (auto & block : *listBlk) {
         listName << block->getName();
     }
     return listName;

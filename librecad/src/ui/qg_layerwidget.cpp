@@ -81,12 +81,12 @@ void QG_LayerModel::setLayerList(RS_LayerList* ll) {
      */
     beginResetModel();
     listLayer.clear();
-    if (ll == NULL) {
+    if (ll == nullptr) {
         endResetModel();
         return;
     }
-    for (unsigned i=0; i < ll->count(); ++i) {
-        listLayer.append(ll->at(i));
+    for (auto & layer : *ll) {
+        listLayer.append(layer);
     }
     setActiveLayer(ll->getActive());
     std::sort( listLayer.begin(), listLayer.end(), [](const RS_Layer *s1, const RS_Layer *s2)-> bool{
@@ -101,7 +101,7 @@ void QG_LayerModel::setLayerList(RS_LayerList* ll) {
 
 RS_Layer *QG_LayerModel::getLayer( int row ) {
     if ( row >= listLayer.size() || row < 0)
-        return NULL;
+        return nullptr;
     return listLayer.at(row);
 }
 

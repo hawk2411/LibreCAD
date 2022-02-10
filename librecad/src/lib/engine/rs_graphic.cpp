@@ -51,8 +51,8 @@ RS_Graphic::RS_Graphic(RS_EntityContainer *parent)
           _marginTop(0.0),
           _marginRight(0.0),
           _marginBottom(0.0),
-          _pagesNumH(1),
-          _pagesNumV(1) {
+          pagesNumH(1),
+          pagesNumV(1) {
 
     RS_SETTINGS->beginGroup("/Defaults");
     setUnitLocal(RS_Units::stringToUnit(RS_SETTINGS->readEntry("/Unit", "None")));
@@ -60,7 +60,7 @@ RS_Graphic::RS_Graphic(RS_EntityContainer *parent)
     RS_SETTINGS->endGroup();
     RS_SETTINGS->beginGroup("/Appearance");
     //$ISOMETRICGRID == $SNAPSTYLE
-    _variableDict->add("$SNAPSTYLE", static_cast<int>(RS_SETTINGS->readNumEntry("/IsometricGrid", 0)), 70);
+    addVariable("$SNAPSTYLE", static_cast<int>(RS_SETTINGS->readNumEntry("/IsometricGrid", 0)), 70);
     _crosshairType = static_cast<RS2::CrosshairType>(RS_SETTINGS->readNumEntry("/CrosshairType", 0));
     RS_SETTINGS->endGroup();
     RS2::Unit unit = getUnitLocal();
@@ -128,7 +128,7 @@ void RS_Graphic::removeLayer(RS_Layer *layer){
 
         toRemove.clear();
         // remove all entities in blocks that are on that layer:
-        for (const auto &blk: *_blockList) {
+        for (RS_Block *blk: *_blockList) {
             if (!blk) continue;
             for (auto entity: *blk) {
 
@@ -158,6 +158,9 @@ void RS_Graphic::newDoc() {
     RS_DEBUG->print("RS_Graphic::newDoc");
 
     clear();
+    _layerList->clear();
+    _blockList->clear();
+
     _layerList->clear();
     _blockList->clear();
 
@@ -508,7 +511,7 @@ void RS_Graphic::setCrosshairType(RS2::CrosshairType chType) {
     _crosshairType = chType;
 }
 
-RS2::CrosshairType RS_Graphic::getCrosshairType() const {
+RS2::CrosshairType RS_Graphic::getCrosshairType() {
     return _crosshairType;
 }
 
@@ -731,8 +734,8 @@ double RS_Graphic::getPaperScale() const {
 /**
  * Sets a new scale factor for the paper space.
  */
-void RS_Graphic::setPaperScale(double s) const {
-    if (!_paperScaleFixed) _variableDict->add("$PSVPSCALE", s, 40);
+void RS_Graphic::setPaperScale(double s) {
+    if (_paperScaleFixed == false) addVariable("$PSVPSCALE", s, 40);
 }
 
 
@@ -871,19 +874,19 @@ void RS_Graphic::setMarginsInUnits(double left, double top, double right, double
             RS_Units::convert(bottom, getUnit(), RS2::Millimeter));
 }
 
-double RS_Graphic::getMarginLeftInUnits() const {
+double RS_Graphic::getMarginLeftInUnits() {
     return RS_Units::convert(_marginLeft, RS2::Millimeter, getUnit());
 }
 
-double RS_Graphic::getMarginTopInUnits() const {
+double RS_Graphic::getMarginTopInUnits() {
     return RS_Units::convert(_marginTop, RS2::Millimeter, getUnit());
 }
 
-double RS_Graphic::getMarginRightInUnits() const {
+double RS_Graphic::getMarginRightInUnits() {
     return RS_Units::convert(_marginRight, RS2::Millimeter, getUnit());
 }
 
-double RS_Graphic::getMarginBottomInUnits() const {
+double RS_Graphic::getMarginBottomInUnits() {
     return RS_Units::convert(_marginBottom, RS2::Millimeter, getUnit());
 }
 

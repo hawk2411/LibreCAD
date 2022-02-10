@@ -48,7 +48,7 @@ QG_BlockModel::QG_BlockModel(QObject * parent) : QAbstractTableModel(parent) {
 }
 
 int QG_BlockModel::rowCount ( const QModelIndex & /*parent*/ ) const {
-    return listBlock.size();
+    return _listBlock.size();
 }
 
 QModelIndex QG_BlockModel::parent ( const QModelIndex & /*index*/ ) const {
@@ -56,7 +56,7 @@ QModelIndex QG_BlockModel::parent ( const QModelIndex & /*index*/ ) const {
 }
 
 QModelIndex QG_BlockModel::index ( int row, int column, const QModelIndex & /*parent*/ ) const {
-    if ( row >= listBlock.size() || row < 0)
+    if (row >= _listBlock.size() || row < 0)
         return QModelIndex();
     return createIndex ( row, column);
 }
@@ -70,19 +70,17 @@ void QG_BlockModel::setBlockList(RS_BlockList* blockList) {
      * TNick <nicu.tofan@gmail.com>
      */
     beginResetModel();
-    listBlock.clear();
+    _listBlock.clear();
     if (blockList == nullptr){
         endResetModel();
         return;
     }
-
-    for(auto block: *blockList) {
-        if (!block->isUndone()) { listBlock.append(block); }
-
+    for (auto & block : *blockList) {
+        if ( !block->isUndone() )
+            _listBlock.append(block);
     }
-
     setActiveBlock(blockList->getActive());
-    std::sort( listBlock.begin(), listBlock.end(), blockLessThan);
+    std::sort(_listBlock.begin(), _listBlock.end(), blockLessThan);
 
     //called to force redraw
     endResetModel();
@@ -90,23 +88,23 @@ void QG_BlockModel::setBlockList(RS_BlockList* blockList) {
 
 
 RS_Block *QG_BlockModel::getBlock( int row ){
-    if ( row >= listBlock.size() || row < 0)
+    if (row >= _listBlock.size() || row < 0)
         return NULL;
-    return listBlock.at(row);
+    return _listBlock.at(row);
 }
 
 QModelIndex QG_BlockModel::getIndex (RS_Block * blk){
-    int row = listBlock.indexOf(blk);
+    int row = _listBlock.indexOf(blk);
     if (row<0)
         return QModelIndex();
     return createIndex ( row, NAME);
 }
 
 QVariant QG_BlockModel::data ( const QModelIndex & index, int role ) const {
-    if (!index.isValid() || index.row() >= listBlock.size())
+    if (!index.isValid() || index.row() >= _listBlock.size())
         return QVariant();
 
-    RS_Block* blk = listBlock.at(index.row());
+    RS_Block* blk = _listBlock.at(index.row());
 
     if (role ==Qt::DecorationRole && index.column() == VISIBLE) {
         if (!blk->isFrozen()) {

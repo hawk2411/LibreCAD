@@ -70,16 +70,14 @@ public:
 	void updateMouseCursor() override;
 
 //protected:
-    private:
-	std::vector<double> verifyCenter(const RS_Vector& center) const;
-	std::vector<double> getRadii(RS_AtomicEntity* entity, const RS_Vector& center) const;
+private:
     RS_Entity* catchCircle(QMouseEvent* e);
 
 	struct Points;
-	std::unique_ptr<Points> pPoints;
+	std::unique_ptr<Points> _points;
 
     //list of entity types supported by current action
-    const EntityTypeList enTypeList = EntityTypeList {RS2::EntityArc, RS2::EntityCircle, RS2::EntityLine, RS2::EntityPoint};
+    EntityTypeList _enTypeList = {RS2::EntityArc, RS2::EntityCircle, RS2::EntityLine, RS2::EntityPoint};
 };
 
 #endif

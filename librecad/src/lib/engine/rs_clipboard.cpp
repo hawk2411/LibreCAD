@@ -30,38 +30,44 @@
 #include "rs_layer.h"
 #include "rs_entity.h"
 
-RS_Clipboard *RS_Clipboard::_uniqueInstance = nullptr;
+RS_Clipboard* RS_Clipboard::uniqueInstance = nullptr;
+
 
 
 void RS_Clipboard::clear() {
-    _graphic.clear();
-    _graphic.getBlockList()->clear();
-    _graphic.getLayerList()->clear();
-    _graphic.getVariables()->clear();
+	graphic.clear();
+	graphic.getBlockList()->clear();
+	graphic.getLayerList()->clear();
+	graphic.clearVariables();
 }
 
 
-void RS_Clipboard::addBlock(RS_Block *b) {
-    if (b) {
-        _graphic.getBlockList()->add(b, false);
-    }
+
+
+
+void RS_Clipboard::addBlock(RS_Block* b) {
+	if (b) {
+		graphic.getBlockList()->add(b, false);
+	}
 }
 
 
-bool RS_Clipboard::hasBlock(const QString &name) {
-    return (_graphic.getBlockList()->find(name));
+bool RS_Clipboard::hasBlock(const QString& name) {
+	return (graphic.getBlockList()->find(name));
 }
 
 
-void RS_Clipboard::addLayer(RS_Layer *l) {
-    if (l) {
-        _graphic.getLayerList()->add(l);
-    }
+void RS_Clipboard::addLayer(RS_Layer* l) {
+	if (l) {
+		//graphic.addLayer(l->clone());
+		graphic.getLayerList()->add(l);
+	}
 }
 
 
-bool RS_Clipboard::hasLayer(const QString &name) {
-    return (_graphic.getLayerList()->find(name));
+
+bool RS_Clipboard::hasLayer(const QString& name) {
+	return (graphic.getLayerList()->find(name));
 }
 
 

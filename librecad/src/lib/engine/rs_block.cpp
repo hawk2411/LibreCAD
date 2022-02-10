@@ -64,22 +64,14 @@ RS_Entity *RS_Block::clone() const {
 
 
 RS_LayerList *RS_Block::getLayerList() const {
-    RS_Graphic *g = getGraphic();
-    if (g) {
-        return g->getLayerList();
-    } else {
-        return nullptr;
-    }
+    RS_Graphic *graphic = getGraphic();
+    return (graphic) ? graphic->getLayerList() : nullptr;
 }
 
 
 RS_BlockList *RS_Block::getBlockList() const {
     RS_Graphic *g = getGraphic();
-    if (g) {
-        return g->getBlockList();
-    } else {
-        return nullptr;
-    }
+    return (g) ?g->getBlockList() : nullptr;
 }
 
 

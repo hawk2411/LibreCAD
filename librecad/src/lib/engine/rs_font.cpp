@@ -128,7 +128,7 @@ bool RS_Font::loadFont() {
         pline->addVertex(RS_Vector(1, 0), 0);
         letter->addEntity(pline);
         letter->calculateBorders();
-        _letterList.add(letter, true);
+        letterList.add(letter, true);
     }
 
     _loaded = true;
@@ -264,7 +264,7 @@ void RS_Font::readCXF(const QString& path) {
                 delete letter;
             } else {
                 letter->calculateBorders();
-                _letterList.add(letter, true);
+                letterList.add(letter, true);
             }
         }
     }
@@ -436,7 +436,7 @@ RS_Block *RS_Font::generateLffFont(const QString &ch) {
         return nullptr;
     } else {
         letter->calculateBorders();
-        _letterList.add(letter, true);
+        letterList.add(letter, true);
         return letter;
     }
 }

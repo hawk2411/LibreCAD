@@ -336,8 +336,7 @@ RS_VectorSolutions RS_Information::getIntersection(RS_Entity const* e1,
 /**
  * @return Intersection between two lines.
  */
-RS_VectorSolutions RS_Information::getIntersectionLineLine(RS_Line* e1,
-        RS_Line* e2) {
+RS_VectorSolutions RS_Information::getIntersectionLineLine(const RS_Line* e1, const RS_Line* e2) {
 
     RS_VectorSolutions ret;
 
@@ -361,10 +360,8 @@ RS_VectorSolutions RS_Information::getIntersectionLineLine(RS_Line* e1,
 		double xs = p1.x + u * (p2.x-p1.x);
 		double ys = p1.y + u * (p2.y-p1.y);
 		ret = RS_VectorSolutions({RS_Vector(xs, ys)});
-	}
-
-    // lines are parallel
-    else {
+	} else {
+        // lines are parallel
         ret = RS_VectorSolutions();
     }
 
@@ -681,8 +678,8 @@ RS_VectorSolutions RS_Information::getIntersectionArcEllipse(RS_Arc * a1,
 /**
  * @return One or two intersection points between given entities.
  */
-RS_VectorSolutions RS_Information::getIntersectionEllipseLine(RS_Line* line,
-        RS_Ellipse* ellipse) {
+RS_VectorSolutions RS_Information::getIntersectionEllipseLine(const RS_Line *line,
+                                                              const RS_Ellipse *ellipse) {
 
     RS_VectorSolutions ret;
 

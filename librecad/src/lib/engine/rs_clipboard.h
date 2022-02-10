@@ -75,7 +75,18 @@ public:
         return _graphic.getLayerList()->at(i);
     }
 
-    void addEntity(RS_Entity *e);
+	void clear();
+
+	void addBlock(RS_Block* b);
+        bool hasBlock(const QString& name);
+	int  countBlocks() {
+		return graphic.getBlockList()->count();
+	}
+
+	void addLayer(RS_Layer* l);
+        bool hasLayer(const QString& name);
+
+	void addEntity(RS_Entity* e);
 
     unsigned count() {
         return _graphic.count();

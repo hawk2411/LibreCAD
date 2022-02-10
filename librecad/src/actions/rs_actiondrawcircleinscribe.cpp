@@ -143,10 +143,10 @@ void RS_ActionDrawCircleInscribe::mouseMoveEvent(QMouseEvent* e) {
 bool RS_ActionDrawCircleInscribe::preparePreview(){
     valid=false;
     if(getStatus() == SetLine3) {
-		RS_Circle c(preview.get(), pPoints->cData);
-		valid= c.createInscribe(pPoints->coord, pPoints->lines);
+		auto c = RS_Circle::createInscribe(pPoints->coord, pPoints->lines);
+		valid= (c != nullptr);
         if(valid){
-			pPoints->cData = c.getData();
+			pPoints->cData = c->getData();
         }
     }
     return valid;

@@ -117,7 +117,7 @@ public:
      * @return Unique Id of this entity.
      */
     unsigned long int getId() const {
-        return id;
+        return _id;
     }
 
     /**
@@ -611,7 +611,7 @@ protected:
     RS_Layer *_layer;
 
     //! Entity id
-    unsigned long int id;
+    unsigned long int _id;
 
     //! pen (attributes) for this entity
     RS_Pen _pen;

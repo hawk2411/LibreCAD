@@ -108,7 +108,7 @@ std::unique_ptr<RS_UndoCycle> RS_Undo::startUndoCycle() {
         return currentCycle;
     }
 
-    // if there are undo cycles behind undoPointer
+    // if there are the "undo" cycles behind undoPointer
     // remove obsolete entities and undoCycles
 
 

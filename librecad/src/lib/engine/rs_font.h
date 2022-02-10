@@ -93,9 +93,14 @@ public:
 
     void generateAllFonts();
 
-    // Wrappers for block list (letters) functions
-    RS_BlockList *getLetterList() {
-        return &_letterList;
+	// Wrappers for block list (letters) functions
+	RS_BlockList* getLetterList() {
+		return &letterList;
+	}
+    RS_Block* findLetter(const QString& name);
+
+    unsigned countLetters() {
+        return letterList.count();
     }
 
     RS_Block *findLetter(const QString &name);
@@ -115,8 +120,8 @@ private:
     //raw lff font file list, not processed into blocks yet
     QMap<QString, QStringList> _rawLffFontList;
 
-    //! block list (letters)
-    RS_BlockList _letterList;
+        //! block list (letters)
+    RS_BlockList letterList;
 
     //! Font file name
     QString _fileName;

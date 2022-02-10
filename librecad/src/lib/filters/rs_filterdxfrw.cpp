@@ -199,7 +199,7 @@ bool RS_FilterDXFRW::fileImport(RS_Graphic& g, const QString& file, RS2::FormatT
 
     delete dummyContainer;
     /*set current layer */
-    RS_Layer* cl = graphic->getLayerList()->find(graphic->getVariables()->getString("$CLAYER", "0"));
+    RS_Layer* cl = graphic->getLayerList()->find(graphic->getVariableString("$CLAYER", "0"));
 	if (cl ){
         //require to notify
         graphic->getLayerList()->activate(cl, true);
@@ -1270,7 +1270,7 @@ void RS_FilterDXFRW::linkImage(const DRW_ImageDef *data) {
     }
 
     // update images in blocks:
-    for (RS_Block* b : *graphic->getBlockList()) {
+    for (auto & b : *graphic->getBlockList()) {
         for (RS_Entity* e=b->firstEntity(RS2::ResolveNone);
                 e; e=b->nextEntity(RS2::ResolveNone)) {
             if (e->rtti()==RS2::EntityImage) {
@@ -1449,6 +1449,7 @@ bool RS_FilterDXFRW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatT
  * Prepare unnamed blocks.
  */
 void RS_FilterDXFRW::prepareBlocks() {
+
     int dimNum = 0, hatchNum= 0;
     QString prefix, sufix;
 
@@ -1505,7 +1506,7 @@ void RS_FilterDXFRW::writeBlockRecords(dxfWriter* writer){
 
     //next send "normal" blocks
 
-    for (RS_Block *blk : *graphic->getBlockList()) {
+    for (auto & blk : *graphic->getBlockList()) {
         if (!blk->isUndone()){
             RS_DEBUG->print("writing block record: %s", (const char*)blk->getName().toLocal8Bit());
             dxfW->writeBlockRecord(blk->getName().toUtf8().data(), writer);
@@ -1539,7 +1540,7 @@ void RS_FilterDXFRW::writeBlocks(dxfWriter* writer) {
     }
 
     //next write "normal" blocks
-    for (RS_Block * blk : *graphic->getBlockList()) {
+    for (auto &blk : *graphic->getBlockList()) {
         if (!blk->isUndone()) {
             RS_DEBUG->print("writing block: %s", (const char*)blk->getName().toLocal8Bit());
 
@@ -1600,7 +1601,7 @@ void RS_FilterDXFRW::writeHeader(DRW_Header& data, dxfWriter* writer){
     data.addCoord("$EXTMAX", DRW_Coord(v.x, v.y, 0.0), 0);
 
     //when saving a block, there is no active layer. ignore it to avoid crash
-    if(graphic->getLayerList()->getActive() == nullptr) return;
+    if(graphic->getLayerList()->getActive()==0) return;
     data.addStr("$CLAYER", (graphic->getLayerList()->getActive()->getName()).toUtf8().data(), 8);
 }
 
@@ -1881,11 +1882,9 @@ void RS_FilterDXFRW::writeLTypes(dxfWriter* writer){
 
 void RS_FilterDXFRW::writeLayers(dxfWriter* writer){
     DRW_Layer lay;
-    RS_LayerList* ll = graphic->getLayerList();
     int exact_rgb;
-    for (unsigned int i = 0; i < ll->count(); i++) {
+    for (RS_Layer* l : *graphic->getLayerList()) {
         lay.reset();
-        RS_Layer* l = ll->at(i);
         RS_Pen pen = l->getPen();
         lay.name = l->getName().toUtf8().data();
         lay.color = colorToNumber(pen.getColor(), &exact_rgb);
@@ -1928,7 +1927,7 @@ void RS_FilterDXFRW::writeTextstyles(dxfWriter* writer){
     }
     //Find fonts used by text entities in blocks
 
-    for (RS_Block *blk : *graphic->getBlockList()) {
+    for (auto &blk : *graphic->getBlockList()) {
         for (RS_Entity *e = blk->firstEntity(RS2::ResolveNone);
 			 e ; e = blk->nextEntity(RS2::ResolveNone)) {
             if ( !(e->getFlag(RS2::FlagUndone)) ) {

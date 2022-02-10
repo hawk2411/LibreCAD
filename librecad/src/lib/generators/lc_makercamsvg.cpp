@@ -146,13 +146,14 @@ void LC_MakerCamSVG::writeBlocks(RS_Document* document) {
 
         RS_DEBUG->print("RS_MakerCamSVG::writeBlocks: Writing blocks ...");
 
-        RS_BlockList* blocklist = document->getBlockList();
+        RS_BlockList* block_list = document->getBlockList();
 
-        if (blocklist->count() > 0) {
+        if (block_list->count() > 0) {
 
             xmlWriter->addElement("defs", NAMESPACE_URI_SVG);
 
-            for (RS_Block* block: *blocklist) {
+            for (auto & block:  *block_list) {
+
                 writeBlock(block);
             }
 
@@ -183,9 +184,9 @@ void LC_MakerCamSVG::writeLayers(RS_Document* document) {
 
     RS_LayerList* layerlist = document->getLayerList();
 
-    for (unsigned int i = 0; i < layerlist->count(); i++) {
+    for (auto &layer : *layerlist) {
 
-        writeLayer(document, layerlist->at(i));
+        writeLayer(document, layer);
     }
 }
 

@@ -66,7 +66,7 @@ public:
     void setActiveBlock(RS_Block* b) { activeBlock = b; };
 
 private:
-    QList<RS_Block*> listBlock;
+    QList<RS_Block*> _listBlock;
     QIcon blockVisible;
     QIcon blockHidden;
     RS_Block* activeBlock {nullptr};

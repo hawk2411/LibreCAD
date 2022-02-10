@@ -28,8 +28,9 @@
 #ifndef RS_BLOCKLIST_H
 #define RS_BLOCKLIST_H
 
-#include <qmap.h>
-#include <vector>
+
+#include <QMap>
+#include <QSet>
 
 class QString;
 
@@ -55,16 +56,16 @@ public:
     /**
      * @return Number of blocks available.
      */
-    std::size_t count() const;
+    int count() const;
 
     //! \{ \brief range based loop
-    QMap<QString, RS_Block *>::iterator begin() { return _blocks.begin(); }
+    QMap<QString, RS_Block *>::iterator begin();
 
-    QMap<QString, RS_Block *>::iterator end() { return _blocks.end(); }
+    QMap<QString, RS_Block *>::iterator end();
 
-    QMap<QString, RS_Block *>::const_iterator begin() const { return _blocks.cbegin(); }
+    QMap<QString, RS_Block *>::const_iterator begin() const;
 
-    QMap<QString, RS_Block *>::const_iterator end() const { return _blocks.cend(); }
+    QMap<QString, RS_Block *>::const_iterator end() const;
     //! \}
 
     void activate(const QString &name);
@@ -74,7 +75,8 @@ public:
     //! @return The active block of NULL if no block is activated.
     RS_Block *getActive();
 
-    virtual bool add(RS_Block *block, bool notify); //notify = true
+    virtual bool add(RS_Block *block, bool notify);
+
     virtual void addNotification();
 
     virtual void remove(RS_Block *block);
@@ -82,7 +84,7 @@ public:
     virtual bool rename(RS_Block *block, const QString &name);
 
     //virtual void editBlock(RS_Block* block, const RS_Block& source);
-    RS_Block *find(const QString &name);
+    RS_Block *find(const QString &name) const;
 
     QString newName(const QString &suggestion = "");
 
@@ -103,7 +105,7 @@ public:
     /**
      * Sets the block list modified status to 'm'.
      */
-    void setModified(bool m);
+    void setModified(bool modified);
 
     /**
      * @retval true The block list has been modified.
@@ -119,7 +121,7 @@ private:
     //! Blocks in the graphic
     QMap<QString, RS_Block *> _blocks;
     //! List of registered BlockListListeners
-    std::vector<RS_BlockListListener *> _blockListListeners;
+    QSet<RS_BlockListListener *> _blockListListeners;
     //! Currently active block
     RS_Block *_activeBlock;
     /** Flag set if the block list was modified and not yet saved. */

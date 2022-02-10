@@ -28,7 +28,7 @@
 
 #ifndef RS_CIRCLE_H
 #define RS_CIRCLE_H
-
+#include <memory>
 #include <vector>
 #include "rs_atomicentity.h"
 
@@ -47,7 +47,7 @@ struct RS_CircleData {
     bool operator==(RS_CircleData const &) const;
 
     RS_Vector center;
-    double radius{0.0};
+    double radius = 0.0;    //default is not valid
 };
 
 std::ostream &operator<<(std::ostream &os, const RS_CircleData &ad);
@@ -61,8 +61,7 @@ class RS_Circle : public RS_AtomicEntity {
 public:
     RS_Circle() = default;
 
-    RS_Circle(RS_EntityContainer *parent,
-              const RS_CircleData &circleData);
+    RS_Circle(RS_EntityContainer *parent, const RS_CircleData &d);
 
     ~RS_Circle() override = default;
 
@@ -113,28 +112,8 @@ public:
 
     bool isTangent(const RS_CircleData &circleData) const override;
 
-    bool createFromCR(const RS_Vector &c, double r);
-
-    bool createFrom2P(const RS_Vector &p1, const RS_Vector &p2);
-
-    bool createFrom3P(const RS_Vector &p1, const RS_Vector &p2,
-                      const RS_Vector &p3);
-
-    bool createFrom3P(const RS_VectorSolutions &sol);
-
-    bool createInscribe(const RS_Vector &coord, const std::vector<RS_Line *> &lines);
 
     std::vector<RS_Entity *> offsetTwoSides(const double &distance) const override;
-
-    static RS_VectorSolutions createTan2(const std::vector<RS_AtomicEntity *> &circles, const double &r);
-
-    /** solve one of the eight Appollonius Equations
-| Cx - Ci|^2=(Rx+Ri)^2
-with Cx the center of the common tangent circle, Rx the radius. Ci and Ri are the Center and radius of the i-th existing circle
-**/
-    static std::vector<RS_Circle> solveAppolloniusSingle(const std::vector<RS_Circle> &circles);
-
-    static std::vector<RS_Circle> createTan3(const std::vector<RS_AtomicEntity *> &circles);
 
     bool testTan3(const std::vector<RS_AtomicEntity *> &circles) const;
 
@@ -147,28 +126,22 @@ with Cx the center of the common tangent circle, Rx the radius. Ci and Ri are th
                                       bool onEntity, double *dist,
                                       RS_Entity **entity) const override;
 
-    RS_Vector getNearestCenter(const RS_Vector &coord,
-                               double *dist) const override;
+    RS_Vector getNearestCenter(const RS_Vector &coord, double *dist) const override;
 
-    RS_Vector getNearestMiddle(const RS_Vector &coord,
-                               double *dist,
-                               int middlePoints) const override;
+    RS_Vector getNearestMiddle(const RS_Vector &coord, double *dist,int middlePoints) const override;
 
-    RS_Vector getNearestDist(double distance,
-                             const RS_Vector &coord,
-                             double *dist) const override;
+    RS_Vector getNearestDist(double distance, const RS_Vector &coord, double *dist) const override;
 
     RS_Vector getNearestDist(double distance,
                              bool startp) const override;
 
-    RS_Vector getNearestOrthTan(const RS_Vector &coord,
-                                const RS_Line &normal,
-                                bool onEntity) const override;
+    RS_Vector getNearestOrthTan(const RS_Vector &coord, const RS_Line &normal, bool onEntity) const override;
 
     bool offset(const RS_Vector &coord, const double &distance) override;
 
-    RS_VectorSolutions
-    getTangentPoint(const RS_Vector &point) const override;//find the tangential points seeing from given point
+    //find the tangential points seeing from given point
+    RS_VectorSolutions getTangentPoint(const RS_Vector &point) const override;
+
     RS_Vector getTangentDirection(const RS_Vector &point) const override;
 
     void move(const RS_Vector &offset) override;
@@ -211,13 +184,34 @@ m0 x + m1 y + m2 =0
 
     void calculateBorders() override;
 
+    /*
+     * Create RS_Circle functions
+     */
+    static std::unique_ptr<RS_Circle> createFromCenterPointAndRadius(const RS_Vector &center_point, double radius);
+
+    static std::unique_ptr<RS_Circle> createFrom2P(const RS_Vector &p1, const RS_Vector &p2);
+
+    static std::unique_ptr<RS_Circle> createFrom3P(const RS_Vector &p1, const RS_Vector &p2,
+                                                   const RS_Vector &p3);
+
+    static std::unique_ptr<RS_Circle> createFrom3P(const RS_VectorSolutions &sol);
+
+    static std::unique_ptr<RS_Circle> createInscribe(const RS_Vector &coord, const std::vector<RS_Line *> &lines);
+
+    static RS_VectorSolutions createTan2(const std::vector<RS_AtomicEntity *> &circles, const double &r);
+
+    /** solve one of the eight Appollonius Equations
+| Cx - Ci|^2=(Rx+Ri)^2
+with Cx the center of the common tangent circle, Rx the radius. Ci and Ri are the Center and radius of the i-th existing circle
+**/
+    static std::vector<std::unique_ptr<RS_Circle>> solveApolloniusSingle(const std::vector<std::unique_ptr<RS_Circle>> &circles);
+
+    static std::vector<std::unique_ptr<RS_Circle>> createTan3(const std::vector<RS_AtomicEntity *> &source);
+
 private:
-
-    void calcBorders();
-
     RS_CircleData _data;
 
-
+    static bool isDistanceValid(const RS_Circle *left, const RS_Circle *right);
 };
 
 #endif

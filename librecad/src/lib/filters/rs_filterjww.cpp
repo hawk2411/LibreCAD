@@ -1070,9 +1070,8 @@ void RS_FilterJWW::linkImage(const DL_ImageDefData& data) {
         }
 
         // update images in blocks:
-        for(const auto& b : *graphic->getBlockList()) {
-                for (RS_Entity* e=b->firstEntity(RS2::ResolveNone);
-                                e; e=b->nextEntity(RS2::ResolveNone)) {
+        for (auto & b :  *graphic->getBlockList()) {
+                for (RS_Entity* e=b->firstEntity(RS2::ResolveNone); e; e=b->nextEntity(RS2::ResolveNone)) {
                         if (e->rtti()==RS2::EntityImage) {
                                 RS_Image* img = (RS_Image*)e;
                                 if (img->getHandle()==handle) {
@@ -1260,8 +1259,7 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         // Layers:
         RS_DEBUG->print("writing layers...");
         dw->tableLayers(graphic->getLayerList()->count());
-        for (unsigned i=0; i<graphic->getLayerList()->count(); ++i) {
-                RS_Layer* l = graphic->getLayerList()->at(i);
+        for (RS_Layer* l : *graphic->getLayerList()) {
                 writeLayer(*dw, l);
         }
         dw->tableEnd();
@@ -1298,7 +1296,7 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
                 RS_DEBUG->print("writing block records...");
                 jww.writeBlockRecord(*dw);
 
-                for(RS_Block* blk : *graphic->getBlockList()) {
+                for (RS_Block* blk : *graphic->getBlockList()) {
                         if (!blk->isUndone())
                             jww.writeBlockRecord(*dw,
                                 std::string((const char*)blk->getName().toLocal8Bit().data()));
@@ -1339,15 +1337,14 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
                 writeBlock(*dw, &b3);
         }
 
-        for (auto blk: *graphic->getBlockList()) {
-
-            // Save block if it's not a model or paper space:
-            // Careful: other blocks with * / $ exist
-            //if (blk->getName().at(0)!='*' &&
-            //		blk->getName().at(0)!='$') {
-            if (!blk->isUndone())
-                writeBlock(*dw, blk);
-            //}
+        for (RS_Block* blk  : *graphic->getBlockList()) {
+                // Save block if it's not a model or paper space:
+                // Careful: other blocks with * / $ exist
+                //if (blk->getName().at(0)!='*' &&
+                //		blk->getName().at(0)!='$') {
+                if (!blk->isUndone())
+                    writeBlock(*dw, blk);
+                //}
         }
         dw->sectionEnd();
 
@@ -1370,11 +1367,8 @@ bool RS_FilterJWW::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
                 // IMAGEDEF's from images in entities and images in blocks
                 QStringList written;
-                for (auto block : *graphic->getBlockList()) {
-                        for (RS_Entity* e=block->firstEntity(RS2::ResolveAll);
-                                        e != nullptr;
-                                        e=block->nextEntity(RS2::ResolveAll)) {
-
+                for (RS_Block* block : *graphic->getBlockList()) {
+                        for (RS_Entity* e=block->firstEntity(RS2::ResolveAll);e;e=block->nextEntity(RS2::ResolveAll)) {
                                 if (e->rtti()==RS2::EntityImage) {
                                         RS_Image* img = ((RS_Image*)e);
                                         if (written.contains(file)==0 && img->getHandle()!=0) {

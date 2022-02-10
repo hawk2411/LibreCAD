@@ -1,5 +1,6 @@
 add_subdirectory(libdxfrw)
 add_subdirectory(jwwlib)
+add_subdirectory(googletest)
 
 find_package(muparser QUIET)
 option(build_muparser "Boolean flag to build muparser." NO)

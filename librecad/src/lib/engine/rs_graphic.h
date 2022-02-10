@@ -60,8 +60,6 @@ public:
 
     RS_BlockList *getBlockList() const override { return _blockList.get(); }
 
-    RS_VariableDict* getVariables() const {return _variableDict.get(); }
-
     void newDoc() override;
 
     bool save(bool isAutoSave) override;
@@ -76,21 +74,46 @@ public:
 
     virtual void removeLayer(RS_Layer *layer);
 
-    RS2::LinearFormat getLinearFormat() const;
+    // Wrappers for variable functions:
+    void clearVariables() {
+        _variableDict.clear();
+    }
 
-    static RS2::LinearFormat getLinearFormat(int f);
+    void addVariable(const QString &key, const RS_Vector &value, int code) {
+        _variableDict.add(key, value, code);
+    }
 
-    int getLinearPrecision() const;
+    void addVariable(const QString &key, const QString &value, int code) {
+        _variableDict.add(key, value, code);
+    }
 
-    RS2::AngleFormat getAngleFormat() const;
+    void addVariable(const QString &key, int value, int code) {
+        _variableDict.add(key, value, code);
+    }
 
-    int getAnglePrecision() const;
+    void addVariable(const QString &key, double value, int code) {
+        _variableDict.add(key, value, code);
+    }
 
-    RS_Vector getPaperSize() const;
+    RS_Vector getVariableVector(const QString &key, const RS_Vector &def) {
+        return _variableDict.getVector(key, def);
+    }
 
-    void setPaperSize(const RS_Vector &s) const;
+    QString getVariableString(const QString &key, const QString &def) {
+        return _variableDict.getString(key, def);
+    }
 
-    RS_Vector getPrintAreaSize(bool total = true) const;
+    int getVariableInt(const QString &key, int def) {
+        return _variableDict.getInt(key, def);
+    }
+
+    double getVariableDouble(const QString &key, double def) {
+        return _variableDict.getDouble(key, def);
+    }
+
+    QHash<QString, RS_Variable> &getVariableDict() {
+        return _variableDict.getVariableDict();
+    }
 
     RS_Vector getPaperInsertionBase() const;
 
@@ -223,8 +246,8 @@ private:
     QString _currentFileName; //keep a copy of filename for the modifiedTime
 
     std::unique_ptr<RS_LayerList> _layerList = std::make_unique<RS_LayerList>();
-    std::unique_ptr<RS_BlockList> _blockList = std::make_unique<RS_BlockList>(true);
-    std::unique_ptr<RS_VariableDict> _variableDict = std::make_unique<RS_VariableDict>();
+    std::unique_ptr<RS_BlockList> _blockList = std::make_unique<RS_BlockList>();
+    RS_VariableDict _variableDict;
     RS2::CrosshairType _crosshairType; //crosshair type used by isometric grid
     //if set to true, will refuse to modify paper scale
     bool _paperScaleFixed;

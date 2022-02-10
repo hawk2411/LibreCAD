@@ -101,12 +101,11 @@ void RS_ActionDrawCircle3P::trigger() {
 void RS_ActionDrawCircle3P::preparePreview() {
 	pPoints->data = RS_CircleData{};
 	if (pPoints->point1.valid && pPoints->point2.valid && pPoints->point3.valid) {
-		RS_Circle circle{nullptr, pPoints->data};
-		bool suc = circle.createFrom3P(pPoints->point1,
+		auto circle = RS_Circle::createFrom3P(pPoints->point1,
 									   pPoints->point2,
 									   pPoints->point3);
-        if (suc) {
-			pPoints->data = circle.getData();
+        if (circle) {
+			pPoints->data = circle->getData();
         }
     }
 }

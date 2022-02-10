@@ -119,7 +119,7 @@ public:
     }
    virtual void layerRemoved(RS_Layer*) {
         update();
-        activateLayer(layerList->at(0));
+        activateLayer(*layerList->begin());
     }
     virtual void layerToggled(RS_Layer*) {
         update();

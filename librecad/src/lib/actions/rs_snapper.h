@@ -42,7 +42,7 @@ class QMouseEvent;
 class RS_EntityContainer;
 
 
-typedef std::initializer_list<RS2::EntityType> EntityTypeList;
+typedef std::vector<RS2::EntityType> EntityTypeList;
 
 
 /**
