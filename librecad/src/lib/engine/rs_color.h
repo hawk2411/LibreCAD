@@ -44,17 +44,24 @@
  *
  * @author Andrew Mustun
  */
-class RS_Color: public QColor, public RS_Flags {
+class RS_Color : public QColor, public RS_Flags {
 public:
     RS_Color() : QColor(), RS_Flags() {}
+
     RS_Color(int r, int g, int b) : QColor(r, g, b), RS_Flags() {}
+
     RS_Color(int r, int g, int b, int a) : QColor(r, g, b, a), RS_Flags() {}
-    RS_Color(const QColor& c) : QColor(c), RS_Flags() {}
+
+    RS_Color(const QColor &c) : QColor(c), RS_Flags() {}
+
     RS_Color(const Qt::GlobalColor color) : QColor(color), RS_Flags() {}
-    RS_Color(const RS_Color& c) : QColor(c), RS_Flags() {
+
+    RS_Color(const RS_Color &c) : QColor(c), RS_Flags() {
         setFlags(c.getFlags());
     }
+
     RS_Color(unsigned int f) : QColor(), RS_Flags(f) {}
+
     RS_Color(QString name) : QColor(name), RS_Flags() {}
 
 
@@ -74,15 +81,17 @@ public:
     }
 
     QColor toQColor(void) const {
-            QColor c0;
-            c0.setRgb(red(),green(),blue());
-            return c0;
+        QColor c0;
+        c0.setRgb(red(), green(), blue());
+        return c0;
     }
 
     //These 3 methods are used for plugins
     int toIntColor(void) const;
+
     void fromIntColor(int co);
-    int colorDistance(const RS_Color& c) const;
+
+    int colorDistance(const RS_Color &c) const;
 
     enum {
         Black = 0,
@@ -93,21 +102,21 @@ public:
         MinColorDistance = 20,  //< in %
     };
 
-    RS_Color& operator = (const RS_Color& c) {
+    RS_Color &operator=(const RS_Color &c) {
         setRgb(c.red(), c.green(), c.blue());
         setFlags(c.getFlags());
 
         return *this;
     }
 
-    bool operator == (const RS_Color& c) const {
-        return (red()==c.red() &&
-                green()==c.green() &&
-                blue()==c.blue() &&
-                getFlags()==c.getFlags());
+    bool operator==(const RS_Color &c) const {
+        return (red() == c.red() &&
+                green() == c.green() &&
+                blue() == c.blue() &&
+                getFlags() == c.getFlags());
     }
 
-    friend std::ostream& operator << (std::ostream& os, const RS_Color& c);
+    friend std::ostream &operator<<(std::ostream &os, const RS_Color &c);
 };
 
 #endif
