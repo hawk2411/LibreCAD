@@ -89,7 +89,7 @@ RS_Entity* RS_DimLinear::clone() const {
 RS_VectorSolutions RS_DimLinear::getRefPoints() const
 {
 		return RS_VectorSolutions({edata.extensionPoint1, edata.extensionPoint2,
-												data.definitionPoint, data.middleOfText});
+                                   _data.definitionPoint, _data.middleOfText});
 }
 void RS_DimLinear::setAngle(double a) {
 	edata.angle = RS_Math::correctAngle(a);
@@ -106,8 +106,8 @@ QString RS_DimLinear::getMeasuredLabel() {
 
     // construction line for dimension line
 	RS_ConstructionLine dimLine(nullptr,
-								RS_ConstructionLineData(data.definitionPoint,
-														data.definitionPoint + dirDim));
+								RS_ConstructionLineData(_data.definitionPoint,
+                                                        _data.definitionPoint + dirDim));
 
     RS_Vector dimP1 = dimLine.getNearestPointOnEntity(edata.extensionPoint1, true, nullptr, nullptr);
     RS_Vector dimP2 = dimLine.getNearestPointOnEntity(edata.extensionPoint2, true, nullptr, nullptr);
@@ -177,8 +177,8 @@ void RS_DimLinear::updateDim(bool autoText) {
     // construction line for dimension line
     RS_ConstructionLine dimLine(
 		nullptr,
-		RS_ConstructionLineData(data.definitionPoint,
-								data.definitionPoint + dirDim));
+		RS_ConstructionLineData(_data.definitionPoint,
+                                _data.definitionPoint + dirDim));
 
     RS_Vector dimP1 = dimLine.getNearestPointOnEntity(edata.extensionPoint1, true, nullptr, nullptr);
     RS_Vector dimP2 = dimLine.getNearestPointOnEntity(edata.extensionPoint2, true, nullptr, nullptr);
@@ -357,12 +357,12 @@ void RS_DimLinear::stretch(const RS_Vector& firstCorner,
 
 void RS_DimLinear::moveRef(const RS_Vector& ref, const RS_Vector& offset) {
 
-	if (ref.distanceTo(data.definitionPoint)<1.0e-4) {
-		data.definitionPoint += offset;
+	if (ref.distanceTo(_data.definitionPoint) < 1.0e-4) {
+        _data.definitionPoint += offset;
                 updateDim(true);
     }
-        else if (ref.distanceTo(data.middleOfText)<1.0e-4) {
-        data.middleOfText += offset;
+        else if (ref.distanceTo(_data.middleOfText) < 1.0e-4) {
+        _data.middleOfText += offset;
                 updateDim(false);
     }
         else if (ref.distanceTo(edata.extensionPoint1)<1.0e-4) {

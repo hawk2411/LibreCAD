@@ -170,7 +170,7 @@ public:
 	size_t size() const;
     void resize(size_t n);
     bool hasValid() const;
-void set(size_t i, const RS_Vector& v);
+    void set(size_t i, const RS_Vector& v);
     void push_back(const RS_Vector& v);
 	void removeAt(const size_t i);
 	RS_VectorSolutions& push_back(const RS_VectorSolutions& v);

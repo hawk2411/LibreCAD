@@ -446,16 +446,16 @@ void RS_DimAngular::calcDimension(void)
     // get unit vectors for definition points
     dimDir1s = RS_Vector::polar( 1.0, RS_Math::correctAngle( edata.definitionPoint2.angleTo( edata.definitionPoint1)));
     dimDir1e = RS_Vector::polar( 1.0, RS_Math::correctAngle( edata.definitionPoint1.angleTo( edata.definitionPoint2)));
-    dimDir2s = RS_Vector::polar( 1.0, RS_Math::correctAngle( data.definitionPoint.angleTo( edata.definitionPoint3)));
-    dimDir2e = RS_Vector::polar( 1.0, RS_Math::correctAngle( edata.definitionPoint3.angleTo( data.definitionPoint)));
+    dimDir2s = RS_Vector::polar( 1.0, RS_Math::correctAngle(_data.definitionPoint.angleTo(edata.definitionPoint3)));
+    dimDir2e = RS_Vector::polar( 1.0, RS_Math::correctAngle( edata.definitionPoint3.angleTo(_data.definitionPoint)));
 
     // create the two dimension definition lines
     dimLine1 = RS_ConstructionLine( nullptr,
                                     RS_ConstructionLineData( edata.definitionPoint2,
                                                              edata.definitionPoint1));
     dimLine2 = RS_ConstructionLine( nullptr,
-                                    RS_ConstructionLineData( data.definitionPoint,
-                                                             edata.definitionPoint3));
+                                    RS_ConstructionLineData(_data.definitionPoint,
+                                                            edata.definitionPoint3));
 
     RS_VectorSolutions vs {RS_Information::getIntersection( &dimLine1, &dimLine2, false)};
     dimCenter = vs.get(0);
@@ -481,7 +481,7 @@ void RS_DimAngular::calcDimension(void)
 void RS_DimAngular::fixDimension(void)
 {
     if( ! RS_Math::isAngleBetween( dimDirRad.angle(), dimDir2s.angle(), dimDir1s.angle(), false)) {
-        double distance0 {data.definitionPoint.distanceTo( dimCenter)};
+        double distance0 {_data.definitionPoint.distanceTo(dimCenter)};
         double distance1 {edata.definitionPoint1.distanceTo( dimCenter)};
         double distance2 {edata.definitionPoint2.distanceTo( dimCenter)};
         double distance3 {edata.definitionPoint3.distanceTo( dimCenter)};
@@ -494,11 +494,11 @@ void RS_DimAngular::fixDimension(void)
             angle0 = angle3;
         }
         else if( RS_TOLERANCE >= distance3) {
-            angle0 = (data.definitionPoint - dimCenter).angle();
+            angle0 = (_data.definitionPoint - dimCenter).angle();
             angle3 = angle0;
         }
         else {
-            angle0 = (data.definitionPoint - dimCenter).angle();
+            angle0 = (_data.definitionPoint - dimCenter).angle();
             angle3 = (edata.definitionPoint3 - dimCenter).angle();
         }
 

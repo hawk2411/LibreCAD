@@ -101,15 +101,15 @@ std::ostream &operator<<(std::ostream &os,
 class RS_Dimension : public RS_EntityContainer {
 public:
     RS_Dimension(RS_EntityContainer *parent,
-                 const RS_DimensionData &d);
+                 RS_DimensionData d);
 
-    RS_Vector getNearestRef(const RS_Vector &coord, double *dist = nullptr) const override;
+    RS_Vector getNearestRef(const RS_Vector &coord, double *dist) const override;
 
-    RS_Vector getNearestSelectedRef(const RS_Vector &coord, double *dist = nullptr) const override;
+    RS_Vector getNearestSelectedRef(const RS_Vector &coord, double *dist) const override;
 
     /** @return Copy of data that defines the dimension. */
     RS_DimensionData getData() const {
-        return data;
+        return _data;
     }
 
     QString getLabel(bool resolve = true);
@@ -127,48 +127,48 @@ public:
      * to update the subentities which make up the dimension entity.
      */
     void update() override {
-        updateDim();
+        updateDim(false);
     }
 
-    virtual void updateDim(bool autoText = false) = 0;
+    virtual void updateDim(bool autoText) = 0;  //default = false
 
     void updateCreateDimensionLine(const RS_Vector &p1, const RS_Vector &p2,
                                    bool arrow1 = true, bool arrow2 = true, bool autoText = false);
 
-    RS_Vector getDefinitionPoint() {
-        return data.definitionPoint;
+    RS_Vector getDefinitionPoint() const {
+        return _data.definitionPoint;
     }
 
-    RS_Vector getMiddleOfText() {
-        return data.middleOfText;
+    RS_Vector getMiddleOfText() const {
+        return _data.middleOfText;
     }
 
-    RS_MTextData::VAlign getVAlign() {
-        return data.valign;
+    RS_MTextData::VAlign getVAlign() const {
+        return _data.valign;
     }
 
-    RS_MTextData::HAlign getHAlign() {
-        return data.halign;
+    RS_MTextData::HAlign getHAlign() const {
+        return _data.halign;
     }
 
-    RS_MTextData::MTextLineSpacingStyle getLineSpacingStyle() {
-        return data.lineSpacingStyle;
+    RS_MTextData::MTextLineSpacingStyle getLineSpacingStyle() const {
+        return _data.lineSpacingStyle;
     }
 
-    double getLineSpacingFactor() {
-        return data.lineSpacingFactor;
+    double getLineSpacingFactor() const {
+        return _data.lineSpacingFactor;
     }
 
-    QString getText() {
-        return data.text;
+    QString getText() const {
+        return _data.text;
     }
 
-    QString getStyle() {
-        return data.style;
+    QString getStyle() const {
+        return _data.style;
     }
 
-    double getAngle() {
-        return data.angle;
+    double getAngle() const {
+        return _data.angle;
     }
 
     double getGeneralFactor();
@@ -211,10 +211,6 @@ public:
 
     static QString stripZerosLinear(QString linear, int zeros = 1);
 
-    //	virtual double getLength() {
-    //		return -1.0;
-    //	}
-
     void move(const RS_Vector &offset) override;
 
     void rotate(const RS_Vector &center, const double &angle) override;
@@ -227,7 +223,7 @@ public:
 
 private:
     static RS_VectorSolutions getIntersectionsLineContainer(
-            const RS_Line *l, const RS_EntityContainer *c, bool infiniteLine = false);
+            const RS_Line *line, const RS_EntityContainer *entityContainer, bool infiniteLine = false);
 
     void updateCreateHorizontalTextDimensionLine(
             const RS_Vector &p1, const RS_Vector &p2,
@@ -239,7 +235,7 @@ private:
 
 protected:
     /** Data common to all dimension entities. */
-    RS_DimensionData data;
+    RS_DimensionData _data;
 };
 
 #endif
