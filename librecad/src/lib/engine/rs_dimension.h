@@ -38,7 +38,7 @@ struct RS_DimensionData : public RS_Flags {
     /**
 	 * Default constructor
      */
-	RS_DimensionData();
+    RS_DimensionData();
 
     /**
      * Constructor with initialisation.
@@ -56,18 +56,18 @@ struct RS_DimensionData : public RS_Flags {
      * @param angle Rotation angle of dimension text away from
      *         default orientation.
      */
-	RS_DimensionData(const RS_Vector& definitionPoint,
-                     const RS_Vector& middleOfText,
+    RS_DimensionData(const RS_Vector &definitionPoint,
+                     const RS_Vector &middleOfText,
                      RS_MTextData::VAlign valign,
                      RS_MTextData::HAlign halign,
                      RS_MTextData::MTextLineSpacingStyle lineSpacingStyle,
                      double lineSpacingFactor,
                      QString text,
                      QString style,
-					 double angle);
+                     double angle);
 
     /** Definition point */
-	RS_Vector definitionPoint;
+    RS_Vector definitionPoint;
     /** Middle point of dimension text */
     RS_Vector middleOfText;
     /** Vertical alignment */
@@ -90,8 +90,8 @@ struct RS_DimensionData : public RS_Flags {
     double angle;
 };
 
-std::ostream& operator << (std::ostream& os,
-								  const RS_DimensionData& dd);
+std::ostream &operator<<(std::ostream &os,
+                         const RS_DimensionData &dd);
 
 /**
  * Abstract base class for dimension entity classes.
@@ -100,19 +100,21 @@ std::ostream& operator << (std::ostream& os,
  */
 class RS_Dimension : public RS_EntityContainer {
 public:
-    RS_Dimension(RS_EntityContainer* parent,
-                 const RS_DimensionData& d);
+    RS_Dimension(RS_EntityContainer *parent,
+                 const RS_DimensionData &d);
 
-	RS_Vector getNearestRef( const RS_Vector& coord, double* dist = nullptr) const override;
-	RS_Vector getNearestSelectedRef( const RS_Vector& coord, double* dist = nullptr) const override;
+    RS_Vector getNearestRef(const RS_Vector &coord, double *dist = nullptr) const override;
+
+    RS_Vector getNearestSelectedRef(const RS_Vector &coord, double *dist = nullptr) const override;
 
     /** @return Copy of data that defines the dimension. */
     RS_DimensionData getData() const {
         return data;
     }
 
-    QString getLabel(bool resolve=true);
-        void setLabel(const QString& l);
+    QString getLabel(bool resolve = true);
+
+    void setLabel(const QString &l);
 
     /**
      * Needs to be implemented by the dimension class to return the
@@ -124,17 +126,17 @@ public:
      * Must be overwritten by implementing dimension entity class
      * to update the subentities which make up the dimension entity.
      */
-	void update() override{
-            updateDim();
-        }
+    void update() override {
+        updateDim();
+    }
 
-    virtual void updateDim(bool autoText=false) = 0;
+    virtual void updateDim(bool autoText = false) = 0;
 
-    void updateCreateDimensionLine(const RS_Vector& p1, const RS_Vector& p2,
-                  bool arrow1=true, bool arrow2=true, bool autoText=false);
+    void updateCreateDimensionLine(const RS_Vector &p1, const RS_Vector &p2,
+                                   bool arrow1 = true, bool arrow2 = true, bool autoText = false);
 
     RS_Vector getDefinitionPoint() {
-		return data.definitionPoint;
+        return data.definitionPoint;
     }
 
     RS_Vector getMiddleOfText() {
@@ -170,46 +172,70 @@ public:
     }
 
     double getGeneralFactor();
+
     double getGeneralScale();
+
     double getArrowSize();
+
     double getTickSize();
+
     double getExtensionLineExtension();
+
     double getExtensionLineOffset();
+
     double getDimensionLineGap();
+
     double getTextHeight();
+
     bool getInsideHorizontalText();
+
     bool getFixedLengthOn();
+
     double getFixedLength();
+
     RS2::LineWidth getExtensionLineWidth();
+
     RS2::LineWidth getDimensionLineWidth();
+
     RS_Color getDimensionLineColor();
+
     RS_Color getExtensionLineColor();
+
     RS_Color getTextColor();
+
     QString getTextStyle();
 
-        double getGraphicVariable(const QString& key, double defMM, int code);
-        static QString stripZerosAngle(QString angle, int zeros=0);
-        static QString stripZerosLinear(QString linear, int zeros=1);
+    double getGraphicVariable(const QString &key, double defMM, int code);
 
-        //	virtual double getLength() {
-        //		return -1.0;
-        //	}
+    static QString stripZerosAngle(QString angle, int zeros = 0);
 
-		void move(const RS_Vector& offset) override;
-		void rotate(const RS_Vector& center, const double& angle) override;
-		void rotate(const RS_Vector& center, const RS_Vector& angleVector) override;
-		void scale(const RS_Vector& center, const RS_Vector& factor) override;
-		void mirror(const RS_Vector& axisPoint1, const RS_Vector& axisPoint2) override;
+    static QString stripZerosLinear(QString linear, int zeros = 1);
+
+    //	virtual double getLength() {
+    //		return -1.0;
+    //	}
+
+    void move(const RS_Vector &offset) override;
+
+    void rotate(const RS_Vector &center, const double &angle) override;
+
+    void rotate(const RS_Vector &center, const RS_Vector &angleVector) override;
+
+    void scale(const RS_Vector &center, const RS_Vector &factor) override;
+
+    void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
 
 private:
-    static RS_VectorSolutions  getIntersectionsLineContainer(
-        const RS_Line* l, const RS_EntityContainer* c, bool infiniteLine=false);
+    static RS_VectorSolutions getIntersectionsLineContainer(
+            const RS_Line *l, const RS_EntityContainer *c, bool infiniteLine = false);
+
     void updateCreateHorizontalTextDimensionLine(
-        const RS_Vector& p1, const RS_Vector& p2,
-        bool arrow1=true, bool arrow2=true, bool autoText=false);
+            const RS_Vector &p1, const RS_Vector &p2,
+            bool arrow1 = true, bool arrow2 = true, bool autoText = false);
+
     void updateCreateAlignedTextDimensionLine(
-        const RS_Vector& p1, const RS_Vector& p2,
-        bool arrow1=true, bool arrow2=true, bool autoText=false);
+            const RS_Vector &p1, const RS_Vector &p2,
+            bool arrow1 = true, bool arrow2 = true, bool autoText = false);
 
 protected:
     /** Data common to all dimension entities. */
