@@ -2466,7 +2466,7 @@ void RS_FilterJWW::setEntityAttributes(RS_Entity* entity,
         RS_DEBUG->print("RS_FilterJWW::setEntityAttributes");
 
         RS_Pen pen;
-        pen.setColor(Qt::black);
+        pen.setColor(RS_Color(Qt::black));
         pen.setLineType(RS2::SolidLine);
 
         // Layer:
@@ -2577,52 +2577,52 @@ RS_Color RS_FilterJWW::numberToColor(int num, bool comp) {
         if (comp) {
                 switch(num) {
                 case 0:
-                        return QColor(Qt::black);
+                        return RS_Color(Qt::black);
                         break;
                 case 1:
-                        return QColor(Qt::darkBlue);
+                        return RS_Color(Qt::darkBlue);
                         break;
                 case 2:
-                        return QColor(Qt::darkGreen);
+                        return RS_Color(Qt::darkGreen);
                         break;
                 case 3:
-                        return QColor(Qt::darkCyan);
+                        return RS_Color(Qt::darkCyan);
                         break;
                 case 4:
-                        return QColor(Qt::darkRed);
+                        return RS_Color(Qt::darkRed);
                         break;
                 case 5:
-                        return QColor(Qt::darkMagenta);
+                        return RS_Color(Qt::darkMagenta);
                         break;
                 case 6:
-                        return QColor(Qt::darkYellow);
+                        return RS_Color(Qt::darkYellow);
                         break;
                 case 7:
-                        return QColor(Qt::lightGray);
+                        return RS_Color(Qt::lightGray);
                         break;
                 case 8:
-                        return QColor(Qt::darkGray);
+                        return RS_Color(Qt::darkGray);
                         break;
                 case 9:
-                        return QColor(Qt::blue);
+                        return RS_Color(Qt::blue);
                         break;
                 case 10:
-                        return QColor(Qt::green);
+                        return RS_Color(Qt::green);
                         break;
                 case 11:
-                        return QColor(Qt::cyan);
+                        return RS_Color(Qt::cyan);
                         break;
                 case 12:
-                        return QColor(Qt::red);
+                        return RS_Color(Qt::red);
                         break;
                 case 13:
-                        return QColor(Qt::magenta);
+                        return RS_Color(Qt::magenta);
                         break;
                 case 14:
-                        return QColor(Qt::yellow);
+                        return RS_Color(Qt::yellow);
                         break;
                 case 15:
-                        return QColor(Qt::black);
+                        return RS_Color(Qt::black);
                         break;
                 default:
                         break;
@@ -2633,16 +2633,16 @@ RS_Color RS_FilterJWW::numberToColor(int num, bool comp) {
                 } else if (num==256) {
                         return RS_Color(RS2::FlagByLayer);
                 } else if (num<=255 && num>=0) {
-                        return RS_Color((int)(dxfColors[num][0]*255),
+                        return {(int)(dxfColors[num][0]*255),
                                                         (int)(dxfColors[num][1]*255),
-                                                        (int)(dxfColors[num][2]*255));
+                                                        (int)(dxfColors[num][2]*255)};
                 } else {
                         RS_DEBUG->print(RS_Debug::D_WARNING,
                                 "RS_FilterJWW::numberToColor: Invalid color number given.");
                         return RS_Color(RS2::FlagByLayer);
                 }
         }
-        return RS_Color();
+        return {};
 }
 
 

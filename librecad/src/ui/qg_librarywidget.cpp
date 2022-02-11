@@ -452,7 +452,7 @@ QString QG_LibraryWidget::getPathToPixmap(const QString& dir,
                 e; e=graphic.nextEntity(RS2::ResolveAll)) {
             if (e->rtti() != RS2::EntityHatch){
                 RS_Pen pen = e->getPen();
-                pen.setColor(Qt::black);
+                pen.setColor(RS_Color(Qt::black));
                 e->setPen(pen);
             }
             gv.drawEntity(&painter, e);

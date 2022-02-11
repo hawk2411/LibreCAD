@@ -31,14 +31,11 @@
 #include "rs_color.h"
 
 //This method is used for plugins
-int RS_Color::toIntColor(void) const {
+int RS_Color::toIntColor() const {
     if (isByLayer())
         return -1;
     if (isByBlock())
         return -2;
-//    int tmp1 = red() << 16;
-//    int tmp2 = green() << 8;
-//    int tmp3 = tmp1+tmp2+blue();
     int cd = (red() << 16) + (green() << 8) + blue();
     return cd;
 

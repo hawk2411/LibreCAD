@@ -2006,9 +2006,9 @@ bool QC_ApplicationWindow::fileExport(const QString &name,
 
     RS_StaticGraphicView gv(size.width(), size.height(), &painter, &borders);
     if (black) {
-        gv.setBackground(Qt::black);
+        gv.setBackground(RS_Color(Qt::black));
     } else {
-        gv.setBackground(Qt::white);
+        gv.setBackground(RS_Color(Qt::white));
     }
     gv.setContainer(graphic);
     gv.zoomAuto(false);
@@ -2633,14 +2633,14 @@ void QC_ApplicationWindow::slotOptionsGeneral() {
         if (m) {
             QG_GraphicView *gv = m->getGraphicView();
             if (gv) {
-                gv->setBackground(background);
-                gv->setGridColor(gridColor);
-                gv->setMetaGridColor(metaGridColor);
-                gv->setSelectedColor(selectedColor);
-                gv->setHighlightedColor(highlightedColor);
-                gv->setStartHandleColor(startHandleColor);
-                gv->setHandleColor(handleColor);
-                gv->setEndHandleColor(endHandleColor);
+                gv->setBackground(RS_Color(background));
+                gv->setGridColor(RS_Color(gridColor));
+                gv->setMetaGridColor(RS_Color(metaGridColor));
+                gv->setSelectedColor(RS_Color(selectedColor));
+                gv->setHighlightedColor(RS_Color(highlightedColor));
+                gv->setStartHandleColor(RS_Color(startHandleColor));
+                gv->setHandleColor(RS_Color(handleColor));
+                gv->setEndHandleColor(RS_Color(endHandleColor));
                 gv->setAntialiasing(antialiasing != 0);
                 gv->redraw(RS2::RedrawGrid);
             }

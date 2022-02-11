@@ -228,9 +228,10 @@ void QG_ColorBox::slotColorChanged(int index) {
 
     if (itemText(index) == tr("Custom"))
     {
-       RS_Color selectedColor = QColorDialog::getColor(*currentColor, this);
-       if (selectedColor.isValid())
-            *currentColor = selectedColor;
+       RS_Color selectedColor{ QColorDialog::getColor(*currentColor, this) };
+       if (selectedColor.isValid()) {
+           *currentColor = selectedColor;
+       }
     }
     else if (index >= colorIndexStart)
     {
@@ -239,11 +240,11 @@ void QG_ColorBox::slotColorChanged(int index) {
             QVariant q0=itemData(index);
             if(q0 != QVariant::Invalid )
             {
-                *currentColor=itemData(index).value<QColor>();
+                *currentColor = RS_Color{itemData(index).value<QColor>()};
             }
             else
             {
-                *currentColor=Qt::black; //default to black color
+                *currentColor = RS_Color{Qt::black}; //default to black color
             }
         }
     }

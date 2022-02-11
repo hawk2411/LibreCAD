@@ -556,15 +556,15 @@ void RS_PainterQt::setPen(const RS_Color& color) {
 void RS_PainterQt::setPen(int r, int g, int b) {
     switch (drawingMode) {
     case RS2::ModeBW:
-        setPen( QColor( Qt::black));
+        setPen( RS_Color( Qt::black));
         break;
 
     case RS2::ModeWB:
-        setPen( QColor( Qt::white));
+        setPen( RS_Color( Qt::white));
         break;
 
     default:
-        setPen( QColor( r, g, b));
+        setPen( RS_Color( r, g, b));
         break;
     }
 }
@@ -577,11 +577,11 @@ void RS_PainterQt::disablePen() {
 void RS_PainterQt::setBrush(const RS_Color& color) {
     switch (drawingMode) {
     case RS2::ModeBW:
-        QPainter::setBrush( QColor( Qt::black));
+        QPainter::setBrush( RS_Color( Qt::black));
         break;
 
     case RS2::ModeWB:
-        QPainter::setBrush( QColor( Qt::white));
+        QPainter::setBrush( RS_Color( Qt::white));
         break;
 
     default:

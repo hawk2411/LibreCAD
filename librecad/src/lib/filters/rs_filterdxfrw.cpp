@@ -2990,7 +2990,7 @@ void RS_FilterDXFRW::setEntityAttributes(RS_Entity* entity,
     RS_DEBUG->print("RS_FilterDXF::setEntityAttributes");
 
     RS_Pen pen;
-    pen.setColor(Qt::black);
+    pen.setColor(RS_Color(Qt::black));
     pen.setLineType(RS2::SolidLine);
     QString layName = toNativeString(QString::fromUtf8(attrib->layer.c_str()));
 

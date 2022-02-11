@@ -41,7 +41,7 @@ RS_LayerData::RS_LayerData(QString name,
  * Constructor.
  */
 RS_Layer::RS_Layer(const QString &name) :
-        _data(name, RS_Pen(Qt::black, RS2::Width00, RS2::SolidLine), false, false) {
+        _data(name, RS_Pen(RS_Color(Qt::black), RS2::Width00, RS2::SolidLine), false, false) {
 }
 
 RS_Layer *RS_Layer::clone() const {

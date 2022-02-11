@@ -70,14 +70,14 @@ RS_GraphicView::RS_GraphicView(QWidget* parent, Qt::WindowFlags f)
     ,panning(false)
 {
     RS_SETTINGS->beginGroup("Colors");
-    setBackground(QColor(RS_SETTINGS->readEntry("/background", Colors::background)));
-    setGridColor(QColor(RS_SETTINGS->readEntry("/grid", Colors::grid)));
-    setMetaGridColor(QColor(RS_SETTINGS->readEntry("/meta_grid", Colors::meta_grid)));
-    setSelectedColor(QColor(RS_SETTINGS->readEntry("/select", Colors::select)));
-    setHighlightedColor(QColor(RS_SETTINGS->readEntry("/highlight", Colors::highlight)));
-    setStartHandleColor(QColor(RS_SETTINGS->readEntry("/start_handle", Colors::start_handle)));
-    setHandleColor(QColor(RS_SETTINGS->readEntry("/handle", Colors::handle)));
-    setEndHandleColor(QColor(RS_SETTINGS->readEntry("/end_handle", Colors::end_handle)));
+    setBackground(RS_Color(RS_SETTINGS->readEntry("/background", Colors::background)));
+    setGridColor(RS_Color(RS_SETTINGS->readEntry("/grid", Colors::grid)));
+    setMetaGridColor(RS_Color(RS_SETTINGS->readEntry("/meta_grid", Colors::meta_grid)));
+    setSelectedColor(RS_Color(RS_SETTINGS->readEntry("/select", Colors::select)));
+    setHighlightedColor(RS_Color(RS_SETTINGS->readEntry("/highlight", Colors::highlight)));
+    setStartHandleColor(RS_Color(RS_SETTINGS->readEntry("/start_handle", Colors::start_handle)));
+    setHandleColor(RS_Color(RS_SETTINGS->readEntry("/handle", Colors::handle)));
+    setEndHandleColor(RS_Color(RS_SETTINGS->readEntry("/end_handle", Colors::end_handle)));
     RS_SETTINGS->endGroup();
 }
 
@@ -1400,7 +1400,7 @@ void RS_GraphicView::drawPaper(RS_Painter *painter) {
 
 	// draw paper:
 	// RVT_PORT rewritten from     painter->setPen(Qt::gray);
-	painter->setPen(QColor(Qt::gray));
+	painter->setPen(RS_Color(Qt::gray));
 
 	RS_Vector pinsbase = graphic->getPaperInsertionBase();
 	RS_Vector printAreaSize = graphic->getPrintAreaSize();
