@@ -68,12 +68,12 @@ public:
     RS_ConstructionLine(RS_EntityContainer *parent,
                         const RS_ConstructionLineData &d);
 
-    virtual RS_Entity *clone() const;
+    RS_Entity *clone() const override;
 
-    virtual ~RS_ConstructionLine() = default;
+    ~RS_ConstructionLine() override = default;
 
     /**	@return RS2::EntityConstructionLine */
-    virtual RS2::EntityType rtti() const {
+    RS2::EntityType rtti() const override {
         return RS2::EntityConstructionLine;
     }
 
@@ -92,9 +92,9 @@ public:
     /** @return End point of the entity */
     RS_Vector getEndpoint() const override;
 
-    double getDirection1(void) const override;
+    double getDirection1() const override;
 
-    double getDirection2(void) const override;
+    double getDirection2() const override;
 
     /** return the equation of the entity
 for quadratic,
@@ -105,53 +105,55 @@ m0 x^2 + m1 xy + m2 y^2 + m3 x + m4 y + m5 =0
 for linear:
 m0 x + m1 y + m2 =0
 **/
-    virtual LC_Quadratic getQuadratic() const;
+    LC_Quadratic getQuadratic() const override;
 
-    virtual RS_Vector getMiddlePoint(void) const;
+    RS_Vector getMiddlePoint() const override;
 
-    virtual RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                         double *dist = NULL) const;
+    RS_Vector getNearestEndpoint(const RS_Vector &coord,
+                                         double *dist) const override;
 
-    virtual RS_Vector getNearestPointOnEntity(const RS_Vector &coord,
-                                              bool onEntity = true, double *dist = NULL,
-                                              RS_Entity **entity = NULL) const;
+    RS_Vector getNearestPointOnEntity(const RS_Vector &coord,
+                                              bool onEntity, double *dist,
+                                              RS_Entity **entity) const override;
 
-    virtual RS_Vector getNearestCenter(const RS_Vector &coord,
-                                       double *dist = NULL) const;
+    RS_Vector getNearestCenter(const RS_Vector &coord, double *dist) const override;
 
-    virtual RS_Vector getNearestMiddle(const RS_Vector &coord,
-                                       double *dist = NULL,
-                                       int middlePoints = 1) const;
+    RS_Vector getNearestMiddle(const RS_Vector &coord,
+                                       double *dist,
+                                       int middlePoints) const override;
 
-    virtual RS_Vector getNearestDist(double distance,
+    RS_Vector getNearestDist(double distance,
                                      const RS_Vector &coord,
-                                     double *dist = NULL) const;
+                                     double *dist) const override;
 
-    virtual double getDistanceToPoint(const RS_Vector &coord,
-                                      RS_Entity **entity = NULL,
-                                      RS2::ResolveLevel level = RS2::ResolveNone,
-                                      double solidDist = RS_MAXDOUBLE) const;
+    double getDistanceToPoint(const RS_Vector &coord,
+                                      RS_Entity **entity,
+                                      RS2::ResolveLevel level,
+                                      double solidDist) const override;
 
-    virtual void move(const RS_Vector &offset);
+    void move(const RS_Vector &offset) override;
 
-    virtual void rotate(const RS_Vector &center, const double &angle);
+    void rotate(const RS_Vector &center, const double &angle) override;
 
-    virtual void rotate(const RS_Vector &center, const RS_Vector &angleVector);
+    void rotate(const RS_Vector &center, const RS_Vector &angleVector) override;
 
-    virtual void scale(const RS_Vector &center, const RS_Vector &factor);
+    void scale(const RS_Vector &center, const RS_Vector &factor) override;
 
-    virtual void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2);
+    void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
 
-    virtual void draw(RS_Painter * /*painter*/, RS_GraphicView * /*view*/,
-                      double & /*patternOffset*/) {}
+    void draw(RS_Painter * /*painter*/, RS_GraphicView * /*view*/,
+                      double & /*patternOffset*/) override {}
 
     friend std::ostream &operator<<(std::ostream &os,
                                     const RS_ConstructionLine &l);
 
-    virtual void calculateBorders();
+    void calculateBorders() override;
 
-protected:
-    RS_ConstructionLineData data;
+private:
+    void calculateBordersLocal();
+
+    RS_ConstructionLineData _data;
+
 };
 
 #endif
