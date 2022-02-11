@@ -298,7 +298,7 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const std::array<RS_V
     const bool outsideArrows = (textIntersectionLength + 3 * arrow_size_scaled) > distance;
 
     // arrow angles:
-    double arrowAngle[2];
+    std::array<double, 2> arrowAngle = {0.0, 0.0};
     // add arrows
     if (!outsideArrows) {
         arrowAngle[0] = dimensionLine->getAngle2();
@@ -322,42 +322,14 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const std::array<RS_V
             _data.middleOfText = textPos;
         }
     }
-    const double dimtsz = getTickSize() * dim_scale;
-    const bool displayArrows = dimtsz < 0.01;
+    const double tick_size_scaled = getTickSize() * dim_scale;
+    const bool displayArrows = tick_size_scaled < 0.01;
     if (displayArrows) {
         //display arrow
-        // Arrows:
-        RS_SolidData sd;
-        RS_Solid *arrow;
-
-        for(int i = 0; i < 2; i++) {
-            if (arrows[i]) {
-                arrow = new RS_Solid(this, sd);
-                arrow->shapeArrow(points[i],
-                                  arrowAngle[i],
-                                  arrow_size_scaled);
-                arrow->setPen(pen);
-                arrow->setLayer(nullptr);
-                addEntity(arrow);
-            }
-
-        }
+        drawArrows(points, arrows, pen, arrowAngle, arrow_size_scaled);
     } else {
         //display ticks
-        // Arrows:
-
-        RS_Line *tick;
-        RS_Vector tickVector = RS_Vector::polar(dimtsz, arrowAngle[0] + M_PI * 0.25); //tick is 45 degree away
-
-        for(int i = 0; i < 2; i++) {
-            if (arrows[i]) {
-                // tick 1
-                tick = new RS_Line(this, points[i] - tickVector, points[i] + tickVector);
-                tick->setPen(pen);
-                tick->setLayer(nullptr);
-                addEntity(tick);
-            }
-        }
+        drawTicks(points, arrows, pen, arrowAngle, tick_size_scaled);
     }
 
     // calculate split dimension lines
@@ -418,7 +390,6 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const std::array<RS_V
 
     addEntity(text);
 }
-
 
 /**
  * Creates an aligned-text dimensioning line (line with one, two or no arrows
@@ -499,7 +470,7 @@ void RS_Dimension::updateCreateAlignedTextDimensionLine(const std::array<RS_Vect
 
     // arrow size:
     const double arrowSize = getArrowSize() * dim_scale;
-    double arrowAngle[2];
+    std::array<double, 2> arrowAngle = {0.0, 0.0};
     // do we have to put the arrows outside of the line?
     const bool outsideArrows = (distance < arrowSize * 2.5);
 
@@ -519,37 +490,11 @@ void RS_Dimension::updateCreateAlignedTextDimensionLine(const std::array<RS_Vect
     const double dimtsz = getTickSize() * dim_scale;
     if (dimtsz < 0.01) {
         //display arrow
-        // Arrows:
-        RS_SolidData sd;
-        RS_Solid *arrow;
+        drawArrows(points, arrows, pen, arrowAngle, arrowSize);
 
-        for (int i = 0; i < 2; i++) {
-            if (arrows[i]) {
-                // arrow 1
-                arrow = new RS_Solid(this, sd);
-                arrow->shapeArrow(points[i],
-                                  arrowAngle[i],
-                                  arrowSize);
-                arrow->setPen(pen);
-                arrow->setLayer(nullptr);
-                addEntity(arrow);
-            }
-        }
     } else {
         //display ticks
-        // Arrows:
-        RS_Line *tick;
-        RS_Vector tickVector = RS_Vector::polar(dimtsz, arrowAngle[0] + M_PI * 0.25); //tick is 45 degree away
-
-        for(int i=0; i < 2; i++) {
-            if (arrows[i]) {
-                // tick 1
-                tick = new RS_Line(this, points[i] - tickVector, points[i] + tickVector);
-                tick->setPen(pen);
-                tick->setLayer(nullptr);
-                addEntity(tick);
-            }
-        }
+        drawTicks(points, arrows, pen, arrowAngle, dimtsz);
     }
 }
 
@@ -841,6 +786,42 @@ void RS_Dimension::scale(const RS_Vector &center, const RS_Vector &factor) {
 void RS_Dimension::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) {
     _data.definitionPoint.mirror(axisPoint1, axisPoint2);
     _data.middleOfText.mirror(axisPoint1, axisPoint2);
+}
+
+void
+RS_Dimension::drawTicks(const std::array<RS_Vector, 2> &points, const std::array<bool, 2> &arrows, const RS_Pen &pen,
+                        const std::array<double, 2> &arrowAngle, double dimtsz) {
+    RS_Vector tickVector = RS_Vector::polar(dimtsz, arrowAngle[0] + M_PI * 0.25); //tick is 45 degree away
+
+    for(int i = 0; i < 2; i++) {
+        if (arrows[i]) {
+            // tick 1
+            auto tick = new RS_Line(this, points[i] - tickVector, points[i] + tickVector);
+            tick->setPen(pen);
+            tick->setLayer(nullptr);
+            addEntity(tick);
+        }
+    }
+}
+
+void
+RS_Dimension::drawArrows(const std::array<RS_Vector, 2> &points, const std::array<bool, 2> &arrows, const RS_Pen &pen,
+                         const std::array<double, 2>& arrowAngle, double arrow_size_scaled) {
+
+    for(int i = 0; i < 2; i++) {
+        if (arrows[i]) {
+            RS_SolidData sd;
+
+            auto arrow = new RS_Solid(this, sd);
+            arrow->shapeArrow(points[i],
+                              arrowAngle[i],
+                              arrow_size_scaled);
+            arrow->setPen(pen);
+            arrow->setLayer(nullptr);
+            addEntity(arrow);
+        }
+
+    }
 }
 
 // EOF

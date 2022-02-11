@@ -235,6 +235,12 @@ private:
 protected:
     /** Data common to all dimension entities. */
     RS_DimensionData _data;
+
+    void drawArrows(const std::array<RS_Vector, 2> &points, const std::array<bool, 2> &arrows, const RS_Pen &pen,
+                     const std::array<double, 2>& arrowAngle, double arrow_size_scaled);
+
+    void drawTicks(const std::array<RS_Vector, 2> &points, const std::array<bool, 2> &arrows, const RS_Pen &pen,
+                   const std::array<double, 2> &arrowAngle, double dimtsz);
 };
 
 #endif
