@@ -226,12 +226,11 @@ private:
             const RS_Line *line, const RS_EntityContainer *entityContainer, bool infiniteLine = false);
 
     void updateCreateHorizontalTextDimensionLine(
-            const RS_Vector &p1, const RS_Vector &p2,
-            bool arrow1 = true, bool arrow2 = true, bool autoText = false);
+            const std::array<RS_Vector, 2>& points,
+            const std::array<bool, 2>& arrows, bool autoText = false);
 
     void updateCreateAlignedTextDimensionLine(
-            const RS_Vector &p1, const RS_Vector &p2,
-            bool arrow1 = true, bool arrow2 = true, bool autoText = false);
+            const std::array<RS_Vector, 2>& points, const std::array<bool, 2>& arrows, bool autoText = false);
 
 protected:
     /** Data common to all dimension entities. */

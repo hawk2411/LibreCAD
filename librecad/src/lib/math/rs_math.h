@@ -68,8 +68,7 @@ public:
 	 * @return the minimum of angular difference a1-a2 and a2-a1
 	 */
 	static double getAngleDifferenceU(double a1, double a2);
-	static double makeAngleReadable(double angle, bool readable=true,
-									bool* corrected=nullptr);
+	static double makeAngleReadable(double angle, bool readable, bool& corrected);
     static bool isAngleReadable(double angle);
     static bool isSameDirection(double dir1, double dir2, double tol);
 

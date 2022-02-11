@@ -618,7 +618,7 @@ void RS_MText::mirror(const RS_Vector& axisPoint1, const RS_Vector& axisPoint2) 
     data.angle = vec.angle();
 
     bool corr;
-    data.angle = RS_Math::makeAngleReadable(data.angle, readable, &corr);
+    data.angle = RS_Math::makeAngleReadable(data.angle, readable, corr);
 
     if (corr) {
         if (data.halign==RS_MTextData::HALeft) {

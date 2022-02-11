@@ -195,26 +195,20 @@ double RS_Math::getAngleDifferenceU(double a1, double a2)
  * @return The given angle or the given angle+PI, depending which on
  * is readable from the bottom or right.
  */
-double RS_Math::makeAngleReadable(double angle, bool readable,
-                                  bool* corrected) {
+double RS_Math::makeAngleReadable(double angle, bool readable, bool& corrected) {
 
     double ret=correctAngle(angle);
 
-    bool cor = isAngleReadable(ret) ^ readable;
+    corrected = isAngleReadable(ret) ^ readable;
 
     // quadrant 1 & 4
-    if (cor) {
+    if (corrected) {
         //        ret = angle;
         //    }
         // quadrant 2 & 3
         //    else {
         ret = correctAngle(angle+M_PI);
     }
-
-    if (corrected) {
-        *corrected = cor;
-    }
-
     return ret;
 }
 
