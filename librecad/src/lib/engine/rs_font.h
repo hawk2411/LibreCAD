@@ -42,14 +42,14 @@
  */
 class RS_Font {
 public:
-    RS_Font(const QString& name, bool owner=true);
+    RS_Font(const QString &name, bool owner = true);
     //RS_Font(const char* name);
 
     /** @return the fileName of this font. */
     QString getFileName() const {
         return fileName;
     }
-	
+
     /** @return the fileLicense of this font. */
     QString getFileLicense() const {
         return fileLicense;
@@ -64,14 +64,14 @@ public:
     QString getEncoding() const {
         return encoding;
     }
-	
+
     /** @return the alternative names of this font. */
-    const QStringList& getNames() const {
+    const QStringList &getNames() const {
         return names;
     }
-	
+
     /** @return the author(s) of this font. */
-    const QStringList& getAuthors() const {
+    const QStringList &getAuthors() const {
         return authors;
     }
 
@@ -94,35 +94,38 @@ public:
 
     void generateAllFonts();
 
-	// Wrappers for block list (letters) functions
-	RS_BlockList* getLetterList() {
-		return &letterList;
-	}
-    RS_Block* findLetter(const QString& name);
+    // Wrappers for block list (letters) functions
+    RS_BlockList *getLetterList() {
+        return &letterList;
+    }
+
+    RS_Block *findLetter(const QString &name);
 
     unsigned countLetters() {
         return letterList.count();
     }
 
-    friend std::ostream& operator << (std::ostream& os, const RS_Font& l);
+    friend std::ostream &operator<<(std::ostream &os, const RS_Font &l);
 
     friend class RS_FontList;
 
 private:
     void readCXF(QString path);
+
     void readLFF(QString path);
-    RS_Block* generateLffFont(const QString& ch);
+
+    RS_Block *generateLffFont(const QString &ch);
 
 private:
     //raw lff font file list, not processed into blocks yet
     QMap<QString, QStringList> rawLffFontList;
 
-        //! block list (letters)
+    //! block list (letters)
     RS_BlockList letterList;
 
     //! Font file name
     QString fileName;
-	
+
     //! Font file license
     QString fileLicense;
 
@@ -132,11 +135,11 @@ private:
     //! Font encoding (see docu for QTextCodec)
     QString encoding;
 
-	//! Font names
-        QStringList names;
-	
-	//! Authors
-        QStringList authors;
+    //! Font names
+    QStringList names;
+
+    //! Authors
+    QStringList authors;
 
     //! Is this font currently loaded into memory?
     bool loaded;
