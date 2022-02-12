@@ -474,9 +474,6 @@ double RS_EntityContainer::totalSelectedLength() {
  * Adjusts the borders of this graphic (max/min values)
  */
 void RS_EntityContainer::adjustBorders(RS_Entity *entity) {
-    //RS_DEBUG->print("RS_EntityContainer::adjustBorders");
-    //resetBorders();
-
     if (entity) {
         // make sure a container is not empty (otherwise the border
         //   would get extended to 0/0):
@@ -484,12 +481,6 @@ void RS_EntityContainer::adjustBorders(RS_Entity *entity) {
             _minV = RS_Vector::minimum(entity->getMin(), _minV);
             _maxV = RS_Vector::maximum(entity->getMax(), _maxV);
         }
-
-        // Notify parents. The border for the parent might
-        // also change TODO: Check for efficiency
-        //if(parent) {
-        //parent->adjustBorders(this);
-        //}
     }
 }
 
@@ -498,65 +489,14 @@ void RS_EntityContainer::adjustBorders(RS_Entity *entity) {
  * Recalculates the borders of this entity container.
  */
 void RS_EntityContainer::calculateBorders() {
-    RS_DEBUG->print("RS_EntityContainer::calculateBorders");
-
-    resetBorders();
-    for (RS_Entity *e: _entities) {
-
-        RS_Layer *layer = e->getLayer();
-
-        //        RS_DEBUG->print("RS_EntityContainer::calculateBorders: "
-        //                        "isVisible: %d", (int)e->isVisible());
-
-        if (e->isVisible() && !(layer && layer->isFrozen())) {
-            e->calculateBorders();
-            adjustBorders(e);
-        }
-    }
-
-    RS_DEBUG->print("RS_EntityContainer::calculateBorders: size 1: %f,%f",
-                    getSize().x, getSize().y);
-
-    // needed for correcting corrupt data (PLANS.dxf)
-    if (_minV.x > _maxV.x || _minV.x > RS_MAXDOUBLE || _maxV.x > RS_MAXDOUBLE
-        || _minV.x < RS_MINDOUBLE || _maxV.x < RS_MINDOUBLE) {
-
-        _minV.x = 0.0;
-        _maxV.x = 0.0;
-    }
-    if (_minV.y > _maxV.y || _minV.y > RS_MAXDOUBLE || _maxV.y > RS_MAXDOUBLE
-        || _minV.y < RS_MINDOUBLE || _maxV.y < RS_MINDOUBLE) {
-
-        _minV.y = 0.0;
-        _maxV.y = 0.0;
-    }
-
-    RS_DEBUG->print("RS_EntityContainer::calculateBorders: size: %f,%f",
-                    getSize().x, getSize().y);
-
-    //RS_DEBUG->print("  borders: %f/%f %f/%f", minV.x, minV.y, maxV.x, maxV.y);
-
-    //printf("borders: %lf/%lf  %lf/%lf\n", minV.x, minV.y, maxV.x, maxV.y);
-    //RS_Entity::calculateBorders();
+    calculateBordersLocal();
 }
-
-//namespace {
-//bool isBoundingBoxValid(RS_Entity* e) {
-//	if (!(e->getMin() && e->getMax())) return false;
-//	if (!(e->getMin().x <= e->getMax().x)) return false;
-//	if (!(e->getMin().y <= e->getMax().y)) return false;
-//	if ((e->getMin() - e->getMax()).magnitude() > RS_MAXDOUBLE) return false;
-//	return true;
-//}
-//}
 
 /**
  * Recalculates the borders of this entity container including
  * invisible entities.
  */
 void RS_EntityContainer::forcedCalculateBorders() {
-    //RS_DEBUG->print("RS_EntityContainer::calculateBorders");
-
     resetBorders();
     for (RS_Entity *e: _entities) {
 
@@ -583,11 +523,6 @@ void RS_EntityContainer::forcedCalculateBorders() {
         _minV.y = 0.0;
         _maxV.y = 0.0;
     }
-
-    //RS_DEBUG->print("  borders: %f/%f %f/%f", minV.x, minV.y, maxV.x, maxV.y);
-
-    //printf("borders: %lf/%lf  %lf/%lf\n", minV.x, minV.y, maxV.x, maxV.y);
-    //RS_Entity::calculateBorders();
 }
 
 /**
@@ -1906,4 +1841,28 @@ bool RS_EntityContainer::hasEntitiesInArea(RS_EntityContainer *entityContainer, 
 
     }
     return included;
+}
+
+void RS_EntityContainer::calculateBordersLocal() {
+    resetBorders();
+    for (RS_Entity *e: _entities) {
+        RS_Layer *layer = e->getLayer();
+        if (e->isVisible() && !(layer && layer->isFrozen())) {
+            e->calculateBorders();
+            adjustBorders(e);
+        }
+    }
+    // needed for correcting corrupt data (PLANS.dxf)
+    if (_minV.x > _maxV.x || _minV.x > RS_MAXDOUBLE || _maxV.x > RS_MAXDOUBLE
+        || _minV.x < RS_MINDOUBLE || _maxV.x < RS_MINDOUBLE) {
+
+        _minV.x = 0.0;
+        _maxV.x = 0.0;
+    }
+    if (_minV.y > _maxV.y || _minV.y > RS_MAXDOUBLE || _maxV.y > RS_MAXDOUBLE
+        || _minV.y < RS_MINDOUBLE || _maxV.y < RS_MINDOUBLE) {
+
+        _minV.y = 0.0;
+        _maxV.y = 0.0;
+    }
 }

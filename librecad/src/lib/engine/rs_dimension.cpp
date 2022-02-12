@@ -233,10 +233,8 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const std::array<RS_V
 
     // Create dimension line:
     RS_Line *dimensionLine{new RS_Line{this, points[0], points[1]}};
-    RS_Line *dimensionLineInside1{nullptr};
-    RS_Line *dimensionLineInside2{nullptr};
-    RS_Line *dimensionLineOutside1{nullptr};
-    RS_Line *dimensionLineOutside2{nullptr};
+    addEntity(dimensionLine);
+
     dimensionLine->setPen(pen);
     dimensionLine->setLayer(nullptr);
 
@@ -268,6 +266,8 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const std::array<RS_V
                             0.0);
 
     auto *text = new RS_MText(this, textData);
+    addEntity(text);
+
     text->setPen(RS_Pen(getTextColor(), RS2::WidthByBlock, RS2::SolidLine));
     text->setLayer(nullptr);
 
@@ -309,8 +309,9 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const std::array<RS_V
 
         // extend dimension line outside arrows
         RS_Vector dir = RS_Vector::polar(arrow_size_scaled * 2, dimensionLine->getAngle1());
-        dimensionLineOutside1 = new RS_Line{this, points[0] - dir, points[0]};
-        dimensionLineOutside2 = new RS_Line{this, points[1] + dir, points[1]};
+        // dimension lines outside
+        addEntity(new RS_Line{this, points[0] - dir, points[0]});
+        addEntity(new RS_Line{this, points[1] + dir, points[1]});
 
         // move text to the side if it won't fit either
         if (textIntersectionLength > distance && autoText) {
@@ -371,24 +372,11 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const std::array<RS_V
         }
 
         if (splitDimensionLine) {
-            dimensionLineInside1 = new RS_Line{this, points[0], s1};
-            dimensionLineInside2 = new RS_Line{this, s2, points[1]};
+            //dimension lines inside
+            addEntity(new RS_Line{this, points[0], s1});
+            addEntity(new RS_Line{this, s2, points[1]});
         }
     }
-
-    //TODO why finally? Why not directly if the pointers are created? Is it because of_adjustBorder inside of addEntity()
-    // finally, add the dimension line(s) and text to the drawing
-    if (outsideArrows && dimensionLineOutside1) {
-        addEntity(dimensionLineOutside1);
-        addEntity(dimensionLineOutside2);
-    } else if (splitDimensionLine && dimensionLineInside1) {
-        addEntity(dimensionLineInside1);
-        addEntity(dimensionLineInside2);
-    } else {
-        addEntity(dimensionLine);
-    }
-
-    addEntity(text);
 }
 
 /**
@@ -793,7 +781,7 @@ RS_Dimension::drawTicks(const std::array<RS_Vector, 2> &points, const std::array
                         const std::array<double, 2> &arrowAngle, double dimtsz) {
     RS_Vector tickVector = RS_Vector::polar(dimtsz, arrowAngle[0] + M_PI * 0.25); //tick is 45 degree away
 
-    for(int i = 0; i < 2; i++) {
+    for (int i = 0; i < 2; i++) {
         if (arrows[i]) {
             // tick 1
             auto tick = new RS_Line(this, points[i] - tickVector, points[i] + tickVector);
@@ -806,9 +794,9 @@ RS_Dimension::drawTicks(const std::array<RS_Vector, 2> &points, const std::array
 
 void
 RS_Dimension::drawArrows(const std::array<RS_Vector, 2> &points, const std::array<bool, 2> &arrows, const RS_Pen &pen,
-                         const std::array<double, 2>& arrowAngle, double arrow_size_scaled) {
+                         const std::array<double, 2> &arrowAngle, double arrow_size_scaled) {
 
-    for(int i = 0; i < 2; i++) {
+    for (int i = 0; i < 2; i++) {
         if (arrows[i]) {
             RS_SolidData sd;
 
