@@ -37,7 +37,7 @@ struct RS_DimDiametricData {
     /**
 	 * Default constructor
      */
-	RS_DimDiametricData();
+    RS_DimDiametricData();
 
     /**
      * Constructor with initialisation.
@@ -45,8 +45,8 @@ struct RS_DimDiametricData {
      * @param definitionPoint Definition point of the diametric dimension.
      * @param leader Leader length.
      */
-    RS_DimDiametricData(const RS_Vector& definitionPoint,
-					 double leader);
+    RS_DimDiametricData(const RS_Vector &definitionPoint,
+                        double leader);
 
 
     /** Definition point. */
@@ -55,7 +55,7 @@ struct RS_DimDiametricData {
     double leader;
 };
 
-std::ostream& operator << (std::ostream& os, const RS_DimDiametricData& dd);
+std::ostream &operator<<(std::ostream &os, const RS_DimDiametricData &dd);
 
 /**
  * Class for diametric dimension entities.
@@ -64,14 +64,14 @@ std::ostream& operator << (std::ostream& os, const RS_DimDiametricData& dd);
  */
 class RS_DimDiametric : public RS_Dimension {
 public:
-    RS_DimDiametric(RS_EntityContainer* parent,
-                 const RS_DimensionData& d,
-                 const RS_DimDiametricData& ed);
+    RS_DimDiametric(RS_EntityContainer *parent,
+                    const RS_DimensionData &d,
+                    const RS_DimDiametricData &ed);
 
-	RS_Entity* clone() const override;
+    RS_Entity *clone() const override;
 
     /**	@return RS2::EntityDimDiametric */
-	RS2::EntityType rtti() const override{
+    RS2::EntityType rtti() const override {
         return RS2::EntityDimDiametric;
     }
 
@@ -83,28 +83,34 @@ public:
         return edata;
     }
 
-	RS_VectorSolutions getRefPoints() const override;
+    RS_VectorSolutions getRefPoints() const override;
 
-	QString getMeasuredLabel() override;
+    QString getMeasuredLabel() override;
 
-	void updateDim(bool autoText=false) override;
+    void updateDim(bool autoText = false) override;
 
     RS_Vector getDefinitionPoint() {
         return edata.definitionPoint;
     }
+
     double getLeader() {
         return edata.leader;
     }
-	void move(const RS_Vector& offset) override;
-	void rotate(const RS_Vector& center, const double& angle) override;
-	void rotate(const RS_Vector& center, const RS_Vector& angleVector) override;
-	void scale(const RS_Vector& center, const RS_Vector& factor) override;
-	void mirror(const RS_Vector& axisPoint1, const RS_Vector& axisPoint2) override;
 
-	void moveRef(const RS_Vector& ref, const RS_Vector& offset) override;
+    void move(const RS_Vector &offset) override;
 
-    friend std::ostream& operator << (std::ostream& os,
-                                      const RS_DimDiametric& d);
+    void rotate(const RS_Vector &center, const double &angle) override;
+
+    void rotate(const RS_Vector &center, const RS_Vector &angleVector) override;
+
+    void scale(const RS_Vector &center, const RS_Vector &factor) override;
+
+    void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
+
+    void moveRef(const RS_Vector &ref, const RS_Vector &offset) override;
+
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const RS_DimDiametric &d);
 
 protected:
     /** Extended data. */

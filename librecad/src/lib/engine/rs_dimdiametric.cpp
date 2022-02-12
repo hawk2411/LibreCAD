@@ -32,10 +32,9 @@
 #include "rs_units.h"
 #include "rs_debug.h"
 
-RS_DimDiametricData::RS_DimDiametricData():
-	definitionPoint(false),
-	leader(0.0)
-{}
+RS_DimDiametricData::RS_DimDiametricData() :
+        definitionPoint(false),
+        leader(0.0) {}
 
 /**
  * Constructor with initialisation.
@@ -43,17 +42,15 @@ RS_DimDiametricData::RS_DimDiametricData():
  * @param definitionPoint Definition point of the diametric dimension.
  * @param leader Leader length.
  */
-RS_DimDiametricData::RS_DimDiametricData(const RS_Vector& _definitionPoint,
-				 double _leader):
-	definitionPoint(_definitionPoint)
-	,leader(_leader)
-{
+RS_DimDiametricData::RS_DimDiametricData(const RS_Vector &_definitionPoint,
+                                         double _leader) :
+        definitionPoint(_definitionPoint), leader(_leader) {
 }
 
-std::ostream& operator << (std::ostream& os,
-								  const RS_DimDiametricData& dd) {
-	os << "(" << dd.definitionPoint << "," << dd.leader << ")";
-	return os;
+std::ostream &operator<<(std::ostream &os,
+                         const RS_DimDiametricData &dd) {
+    os << "(" << dd.definitionPoint << "," << dd.leader << ")";
+    return os;
 }
 
 /**
@@ -63,20 +60,20 @@ std::ostream& operator << (std::ostream& os,
  * @para d Common dimension geometrical data.
  * @para ed Extended geometrical data for diametric dimension.
  */
-RS_DimDiametric::RS_DimDiametric(RS_EntityContainer* parent,
-                           const RS_DimensionData& d,
-                           const RS_DimDiametricData& ed)
+RS_DimDiametric::RS_DimDiametric(RS_EntityContainer *parent,
+                                 const RS_DimensionData &d,
+                                 const RS_DimDiametricData &ed)
         : RS_Dimension(parent, d), edata(ed) {
 
     calculateBorders();
 }
 
-RS_Entity* RS_DimDiametric::clone() const {
-	RS_DimDiametric* d = new RS_DimDiametric(*this);
-	d->setOwner(isOwner());
-	d->initId();
-	d->detach();
-	return d;
+RS_Entity *RS_DimDiametric::clone() const {
+    RS_DimDiametric *d = new RS_DimDiametric(*this);
+    d->setOwner(isOwner());
+    d->initId();
+    d->detach();
+    return d;
 }
 
 /**
@@ -86,9 +83,9 @@ RS_Entity* RS_DimDiametric::clone() const {
 QString RS_DimDiametric::getMeasuredLabel() {
 
     // Definitive dimension line:
-	double dist = _data.definitionPoint.distanceTo(edata.definitionPoint) * getGeneralFactor();
+    double dist = _data.definitionPoint.distanceTo(edata.definitionPoint) * getGeneralFactor();
 
-    RS_Graphic* graphic = getGraphic();
+    RS_Graphic *graphic = getGraphic();
 
     QString ret;
     if (graphic) {
@@ -100,12 +97,11 @@ QString RS_DimDiametric::getMeasuredLabel() {
         if (format == RS2::Decimal)
             ret = stripZerosLinear(ret, dimzin);
         //verify if units are decimal and comma separator
-        if (format == RS2::Decimal || format == RS2::ArchitecturalMetric){
+        if (format == RS2::Decimal || format == RS2::ArchitecturalMetric) {
             if (getGraphicVariableInt("$DIMDSEP", 0) == 44)
                 ret.replace(QChar('.'), QChar(','));
         }
-    }
-    else {
+    } else {
         ret = QString("%1").arg(dist);
     }
 
@@ -113,11 +109,9 @@ QString RS_DimDiametric::getMeasuredLabel() {
 }
 
 
-
-RS_VectorSolutions RS_DimDiametric::getRefPoints() const
-{
-		return RS_VectorSolutions({edata.definitionPoint,
-                                   _data.definitionPoint, _data.middleOfText});
+RS_VectorSolutions RS_DimDiametric::getRefPoints() const {
+    return RS_VectorSolutions({edata.definitionPoint,
+                               _data.definitionPoint, _data.middleOfText});
 }
 
 
@@ -133,20 +127,19 @@ void RS_DimDiametric::updateDim(bool autoText) {
 
     clear();
 
-        if (isUndone()) {
-                return;
-        }
+    if (isUndone()) {
+        return;
+    }
 
     // dimension line:
-	updateCreateDimensionLine(_data.definitionPoint, edata.definitionPoint,
+    updateCreateDimensionLine(_data.definitionPoint, edata.definitionPoint,
                               true, true, autoText);
 
     calculateBorders();
 }
 
 
-
-void RS_DimDiametric::move(const RS_Vector& offset) {
+void RS_DimDiametric::move(const RS_Vector &offset) {
     RS_Dimension::move(offset);
 
     edata.definitionPoint.move(offset);
@@ -154,12 +147,11 @@ void RS_DimDiametric::move(const RS_Vector& offset) {
 }
 
 
-
-void RS_DimDiametric::rotate(const RS_Vector& center, const double& angle) {
-    rotate(center,RS_Vector(angle));
+void RS_DimDiametric::rotate(const RS_Vector &center, const double &angle) {
+    rotate(center, RS_Vector(angle));
 }
 
-void RS_DimDiametric::rotate(const RS_Vector& center, const RS_Vector& angleVector) {
+void RS_DimDiametric::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
     RS_Dimension::rotate(center, angleVector);
 
     edata.definitionPoint.rotate(center, angleVector);
@@ -167,17 +159,16 @@ void RS_DimDiametric::rotate(const RS_Vector& center, const RS_Vector& angleVect
 }
 
 
-void RS_DimDiametric::scale(const RS_Vector& center, const RS_Vector& factor) {
+void RS_DimDiametric::scale(const RS_Vector &center, const RS_Vector &factor) {
     RS_Dimension::scale(center, factor);
 
     edata.definitionPoint.scale(center, factor);
-        edata.leader*=factor.x;
+    edata.leader *= factor.x;
     update();
 }
 
 
-
-void RS_DimDiametric::mirror(const RS_Vector& axisPoint1, const RS_Vector& axisPoint2) {
+void RS_DimDiametric::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) {
     RS_Dimension::mirror(axisPoint1, axisPoint2);
 
     edata.definitionPoint.mirror(axisPoint1, axisPoint2);
@@ -185,41 +176,37 @@ void RS_DimDiametric::mirror(const RS_Vector& axisPoint1, const RS_Vector& axisP
 }
 
 
+void RS_DimDiametric::moveRef(const RS_Vector &ref, const RS_Vector &offset) {
 
-void RS_DimDiametric::moveRef(const RS_Vector& ref, const RS_Vector& offset) {
+    if (ref.distanceTo(edata.definitionPoint) < 1.0e-4) {
+        RS_Vector c = (edata.definitionPoint + _data.definitionPoint) / 2.0;
+        double d = c.distanceTo(edata.definitionPoint);
+        double a = c.angleTo(edata.definitionPoint + offset);
 
-    if (ref.distanceTo(edata.definitionPoint)<1.0e-4) {
-				RS_Vector c = (edata.definitionPoint + _data.definitionPoint) / 2.0;
-                double d = c.distanceTo(edata.definitionPoint);
-                double a = c.angleTo(edata.definitionPoint + offset);
-
-				RS_Vector v = RS_Vector::polar(d, a);
+        RS_Vector v = RS_Vector::polar(d, a);
         edata.definitionPoint = c + v;
         _data.definitionPoint = c - v;
-                updateDim(true);
-    }
-	else if (ref.distanceTo(_data.definitionPoint) < 1.0e-4) {
-				RS_Vector c = (edata.definitionPoint + _data.definitionPoint) / 2.0;
-				double d = c.distanceTo(_data.definitionPoint);
-				double a = c.angleTo(_data.definitionPoint + offset);
+        updateDim(true);
+    } else if (ref.distanceTo(_data.definitionPoint) < 1.0e-4) {
+        RS_Vector c = (edata.definitionPoint + _data.definitionPoint) / 2.0;
+        double d = c.distanceTo(_data.definitionPoint);
+        double a = c.angleTo(_data.definitionPoint + offset);
 
-				RS_Vector v = RS_Vector::polar(d, a);
+        RS_Vector v = RS_Vector::polar(d, a);
         _data.definitionPoint = c + v;
-                edata.definitionPoint = c - v;
-                updateDim(true);
-    }
-        else if (ref.distanceTo(_data.middleOfText) < 1.0e-4) {
+        edata.definitionPoint = c - v;
+        updateDim(true);
+    } else if (ref.distanceTo(_data.middleOfText) < 1.0e-4) {
         _data.middleOfText.move(offset);
-                updateDim(false);
+        updateDim(false);
     }
 }
-
 
 
 /**
  * Dumps the point's data to stdout.
  */
-std::ostream& operator << (std::ostream& os, const RS_DimDiametric& d) {
+std::ostream &operator<<(std::ostream &os, const RS_DimDiametric &d) {
     os << " DimDiametric: " << d.getData() << "\n" << d.getEData() << "\n";
     return os;
 }
