@@ -45,17 +45,8 @@ QG_FontBox::QG_FontBox(QWidget* parent)
  * once).
  */
 void QG_FontBox::init() {
-    QStringList fonts;
+    QStringList fonts = RS_FONTLIST->getFontList();
 
-	for(auto const& f: * RS_FONTLIST){
-		if(fonts.contains(f->getFileName())){
-			DEBUG_HEADER
-			qDebug()<<__func__<<": WARNING: duplicated font: "<<f->getFileName();
-			continue;
-		}
-
-		fonts.append(f->getFileName());
-	}
     addItems(fonts);
 
     connect(this, static_cast<void (QG_FontBox::*)(int)>(&QG_FontBox::activated),

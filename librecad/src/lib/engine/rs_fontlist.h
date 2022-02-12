@@ -28,6 +28,7 @@
 
 #include <memory>
 #include <vector>
+#include <map>
 
 class RS_Font;
 
@@ -42,6 +43,10 @@ class RS_Font;
 class RS_FontList {
 
 public:
+    RS_FontList(RS_FontList const &) = delete;
+
+    RS_FontList &operator=(RS_FontList const &) = delete;
+
     /**
      * @return Instance to the unique font list.
      */
@@ -51,28 +56,18 @@ public:
 
     void init();
 
-    void clearFonts();
-
-    size_t countFonts() const;
-
     RS_Font *requestFont(const QString &name);
 
-    std::vector<std::unique_ptr<RS_Font> >::const_iterator begin() const;
-
-    std::vector<std::unique_ptr<RS_Font> >::const_iterator end() const;
+    QStringList getFontList()const;
 
     friend std::ostream &operator<<(std::ostream &os, RS_FontList &l);
 
 private:
     RS_FontList() = default;
 
-    RS_FontList(RS_FontList const &) = delete;
-
-    RS_FontList &operator=(RS_FontList const &) = delete;
-
     static RS_FontList *uniqueInstance;
     //! fonts in the graphic
-    std::vector<std::unique_ptr<RS_Font>> fonts;
+    std::map<QString, std::unique_ptr<RS_Font>> _fonts;
 };
 
 #endif
