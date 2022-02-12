@@ -27,7 +27,6 @@
 #include<iostream>
 #include "rs_dimdiametric.h"
 #include "rs_mtext.h"
-#include "rs_solid.h"
 #include "rs_graphic.h"
 #include "rs_units.h"
 #include "rs_debug.h"
@@ -63,13 +62,13 @@ std::ostream &operator<<(std::ostream &os,
 RS_DimDiametric::RS_DimDiametric(RS_EntityContainer *parent,
                                  const RS_DimensionData &d,
                                  const RS_DimDiametricData &ed)
-        : RS_Dimension(parent, d), edata(ed) {
+        : RS_Dimension(parent, d), _edata(ed) {
 
-    calculateBorders();
+    calculateBordersLocal();
 }
 
 RS_Entity *RS_DimDiametric::clone() const {
-    RS_DimDiametric *d = new RS_DimDiametric(*this);
+    auto *d = new RS_DimDiametric(*this);
     d->setOwner(isOwner());
     d->initId();
     d->detach();
@@ -83,34 +82,35 @@ RS_Entity *RS_DimDiametric::clone() const {
 QString RS_DimDiametric::getMeasuredLabel() {
 
     // Definitive dimension line:
-    double dist = _data.definitionPoint.distanceTo(edata.definitionPoint) * getGeneralFactor();
+    double dist = _data.definitionPoint.distanceTo(_edata.definitionPoint) * getGeneralFactor();
 
     RS_Graphic *graphic = getGraphic();
 
-    QString ret;
-    if (graphic) {
-        int dimlunit = getGraphicVariableInt("$DIMLUNIT", 2);
-        int dimdec = getGraphicVariableInt("$DIMDEC", 4);
-        int dimzin = getGraphicVariableInt("$DIMZIN", 1);
-        RS2::LinearFormat format = graphic->getLinearFormat(dimlunit);
-        ret = RS_Units::formatLinear(dist, RS2::None, format, dimdec);
-        if (format == RS2::Decimal)
-            ret = stripZerosLinear(ret, dimzin);
-        //verify if units are decimal and comma separator
-        if (format == RS2::Decimal || format == RS2::ArchitecturalMetric) {
-            if (getGraphicVariableInt("$DIMDSEP", 0) == 44)
-                ret.replace(QChar('.'), QChar(','));
-        }
-    } else {
-        ret = QString("%1").arg(dist);
+    if (!graphic) {
+        return QString("%1").arg(dist);
     }
 
+    const int dimlunit = getGraphicVariableInt("$DIMLUNIT", 2);
+    const int dimdec = getGraphicVariableInt("$DIMDEC", 4);
+    const int dimzin = getGraphicVariableInt("$DIMZIN", 1);
+    RS2::LinearFormat format = graphic->getLinearFormat(dimlunit);
+
+    QString ret = RS_Units::formatLinear(dist, RS2::None, format, dimdec);
+    if (format == RS2::Decimal) {
+        ret = stripZerosLinear(ret, dimzin);
+    }
+    //verify if units are decimal and comma separator
+    if (format == RS2::Decimal || format == RS2::ArchitecturalMetric) {
+        if (getGraphicVariableInt("$DIMDSEP", 0) == 44) {
+            ret.replace(QChar('.'), QChar(','));
+        }
+    }
     return ret;
 }
 
 
 RS_VectorSolutions RS_DimDiametric::getRefPoints() const {
-    return RS_VectorSolutions({edata.definitionPoint,
+    return RS_VectorSolutions({_edata.definitionPoint,
                                _data.definitionPoint, _data.middleOfText});
 }
 
@@ -132,7 +132,7 @@ void RS_DimDiametric::updateDim(bool autoText) {
     }
 
     // dimension line:
-    updateCreateDimensionLine(_data.definitionPoint, edata.definitionPoint,
+    updateCreateDimensionLine(_data.definitionPoint, _edata.definitionPoint,
                               true, true, autoText);
 
     calculateBorders();
@@ -142,7 +142,7 @@ void RS_DimDiametric::updateDim(bool autoText) {
 void RS_DimDiametric::move(const RS_Vector &offset) {
     RS_Dimension::move(offset);
 
-    edata.definitionPoint.move(offset);
+    _edata.definitionPoint.move(offset);
     update();
 }
 
@@ -154,7 +154,7 @@ void RS_DimDiametric::rotate(const RS_Vector &center, const double &angle) {
 void RS_DimDiametric::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
     RS_Dimension::rotate(center, angleVector);
 
-    edata.definitionPoint.rotate(center, angleVector);
+    _edata.definitionPoint.rotate(center, angleVector);
     update();
 }
 
@@ -162,8 +162,8 @@ void RS_DimDiametric::rotate(const RS_Vector &center, const RS_Vector &angleVect
 void RS_DimDiametric::scale(const RS_Vector &center, const RS_Vector &factor) {
     RS_Dimension::scale(center, factor);
 
-    edata.definitionPoint.scale(center, factor);
-    edata.leader *= factor.x;
+    _edata.definitionPoint.scale(center, factor);
+    _edata.leader *= factor.x;
     update();
 }
 
@@ -171,30 +171,30 @@ void RS_DimDiametric::scale(const RS_Vector &center, const RS_Vector &factor) {
 void RS_DimDiametric::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) {
     RS_Dimension::mirror(axisPoint1, axisPoint2);
 
-    edata.definitionPoint.mirror(axisPoint1, axisPoint2);
+    _edata.definitionPoint.mirror(axisPoint1, axisPoint2);
     update();
 }
 
 
 void RS_DimDiametric::moveRef(const RS_Vector &ref, const RS_Vector &offset) {
 
-    if (ref.distanceTo(edata.definitionPoint) < 1.0e-4) {
-        RS_Vector c = (edata.definitionPoint + _data.definitionPoint) / 2.0;
-        double d = c.distanceTo(edata.definitionPoint);
-        double a = c.angleTo(edata.definitionPoint + offset);
+    if (ref.distanceTo(_edata.definitionPoint) < 1.0e-4) {
+        RS_Vector c = (_edata.definitionPoint + _data.definitionPoint) / 2.0;
+        double d = c.distanceTo(_edata.definitionPoint);
+        double a = c.angleTo(_edata.definitionPoint + offset);
 
         RS_Vector v = RS_Vector::polar(d, a);
-        edata.definitionPoint = c + v;
+        _edata.definitionPoint = c + v;
         _data.definitionPoint = c - v;
         updateDim(true);
     } else if (ref.distanceTo(_data.definitionPoint) < 1.0e-4) {
-        RS_Vector c = (edata.definitionPoint + _data.definitionPoint) / 2.0;
+        RS_Vector c = (_edata.definitionPoint + _data.definitionPoint) / 2.0;
         double d = c.distanceTo(_data.definitionPoint);
         double a = c.angleTo(_data.definitionPoint + offset);
 
         RS_Vector v = RS_Vector::polar(d, a);
         _data.definitionPoint = c + v;
-        edata.definitionPoint = c - v;
+        _edata.definitionPoint = c - v;
         updateDim(true);
     } else if (ref.distanceTo(_data.middleOfText) < 1.0e-4) {
         _data.middleOfText.move(offset);
