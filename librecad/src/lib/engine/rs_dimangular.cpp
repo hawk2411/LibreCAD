@@ -25,8 +25,8 @@
 **
 **********************************************************************/
 
-#include<iostream>
-#include<cmath>
+#include <iostream>
+#include <cmath>
 #include "rs_dimangular.h"
 #include "rs_math.h"
 
@@ -39,19 +39,6 @@
 #include "rs_mtext.h"
 #include "rs_debug.h"
 
-RS_DimAngularData::RS_DimAngularData() :
-        definitionPoint1(false),
-        definitionPoint2(false),
-        definitionPoint3(false),
-        definitionPoint4(false) {
-}
-
-RS_DimAngularData::RS_DimAngularData(const RS_DimAngularData &ed) :
-        definitionPoint1(ed.definitionPoint1),
-        definitionPoint2(ed.definitionPoint2),
-        definitionPoint3(ed.definitionPoint3),
-        definitionPoint4(ed.definitionPoint4) {
-}
 
 /**
  * Constructor with initialisation.
@@ -79,27 +66,18 @@ RS_DimAngularData::RS_DimAngularData(const RS_Vector &_definitionPoint1,
  * @param dimgap  text distance to line (DIMGAP)
  * @param arrowSize  arrow length
  */
-LC_DimAngularVars::LC_DimAngularVars(const double _dimscale,
-                                     const double _dimexo,
-                                     const double _dimexe,
-                                     const double _dimtxt,
-                                     const double _dimgap,
-                                     const double _arrowSize) :
-        dimscale(_dimscale),
-        dimexo(_dimexo * _dimscale),
-        dimexe(_dimexe * _dimscale),
-        dimtxt(_dimtxt * _dimscale),
-        dimgap(_dimgap * _dimscale),
-        arrowSize(_arrowSize * _dimscale) {
-}
-
-LC_DimAngularVars::LC_DimAngularVars(const LC_DimAngularVars &av) :
-        dimscale(av.dimscale),
-        dimexo(av.dimexo),
-        dimexe(av.dimexe),
-        dimtxt(av.dimtxt),
-        dimgap(av.dimgap),
-        arrowSize(av.arrowSize) {
+LC_DimAngularVars::LC_DimAngularVars(const double dimscale,
+                                     const double dimexo,
+                                     const double dimexe,
+                                     const double dimtxt,
+                                     const double dimgap,
+                                     const double arrowSize) :
+        _dimscale(dimscale),
+        _dimexo(dimexo * dimscale),
+        _dimexe(dimexe * dimscale),
+        _dimtxt(dimtxt * dimscale),
+        _dimgap(dimgap * dimscale),
+        _arrowSize(arrowSize * dimscale) {
 }
 
 /**
@@ -113,9 +91,9 @@ RS_DimAngular::RS_DimAngular(RS_EntityContainer *parent,
                              const RS_DimensionData &d,
                              const RS_DimAngularData &ed) :
         RS_Dimension(parent, d),
-        edata(ed) {
+        _edata(ed) {
     calcDimension();
-    calculateBorders();
+    calculateBordersLocal();
 }
 
 RS_Entity *RS_DimAngular::clone() const {
@@ -133,11 +111,11 @@ RS_Entity *RS_DimAngular::clone() const {
  * measurement of this dimension.
  */
 QString RS_DimAngular::getMeasuredLabel() {
-    int dimaunit{getGraphicVariableInt(QStringLiteral("$DIMAUNIT"), 0)};
-    int dimadec{getGraphicVariableInt(QStringLiteral("$DIMADEC"), 0)};
-    int dimazin{getGraphicVariableInt(QStringLiteral("$DIMAZIN"), 0)};
+    int dimaunit{getGraphicVariableInt(QString("$DIMAUNIT"), 0)};
+    int dimadec{getGraphicVariableInt(QString("$DIMADEC"), 0)};
+    int dimazin{getGraphicVariableInt(QString("$DIMAZIN"), 0)};
     RS2::AngleFormat format{RS_Units::numberToAngleFormat(dimaunit)};
-    QString strLabel(RS_Units::formatAngle(dimAngle, format, dimadec));
+    QString strLabel(RS_Units::formatAngle(_dimAngle, format, dimadec));
 
     if (RS2::DegreesMinutesSeconds != format
         && RS2::Surveyors != format) {
@@ -146,7 +124,7 @@ QString RS_DimAngular::getMeasuredLabel() {
 
     //verify if units are decimal and comma separator
     if (RS2::DegreesMinutesSeconds != dimaunit) {
-        if (',' == getGraphicVariableInt(QStringLiteral("$DIMDSEP"), 0)) {
+        if (',' == getGraphicVariableInt(QString("$DIMDSEP"), 0)) {
             strLabel.replace(QChar('.'), QChar(','));
         }
     }
@@ -158,7 +136,7 @@ QString RS_DimAngular::getMeasuredLabel() {
  * @return Center of the measured dimension.
  */
 RS_Vector RS_DimAngular::getCenter() const {
-    return dimCenter;
+    return _dimCenter;
 }
 
 /**
@@ -178,7 +156,7 @@ void RS_DimAngular::extensionLine(const RS_ConstructionLine &dimLine,
                                   const LC_DimAngularVars &av,
                                   const RS_Pen &pen) {
     double diffLine{RS_Vector::posInLine(dimLine.getStartpoint(), dimLine.getEndpoint(), dimPoint)};
-    double diffCenter{RS_Vector::posInLine(dimLine.getStartpoint(), dimCenter, dimPoint)};
+    double diffCenter{RS_Vector::posInLine(dimLine.getStartpoint(), _dimCenter, dimPoint)};
 
     if (0.0 <= diffLine && 1.0 >= diffLine) {
         // dimension ends on entity, nothing to extend
@@ -203,7 +181,7 @@ void RS_DimAngular::extensionLine(const RS_ConstructionLine &dimLine,
         addEntity(line);
     } else if (0.0 > diffLine && 1.0 < diffCenter) {
         RS_Line *line{new RS_Line(this,
-                                  dimCenter - dirStart * av.exo(),
+                                  _dimCenter - dirStart * av.exo(),
                                   dimPoint + dirEnd * av.exe())};
 
         line->setPen(pen);
@@ -233,7 +211,7 @@ void RS_DimAngular::arrow(const RS_Vector &point,
         return;
     }
 
-    double arrowAngle{0.0};
+    double arrowAngle;
 
     if (outsideArrows) {
         // for outside arrows use tangent angle on endpoints
@@ -241,15 +219,12 @@ void RS_DimAngular::arrow(const RS_Vector &point,
         arrowAngle = angle + std::copysign(M_PI_2, direction);
     } else {
         // compute the angle from center to the endpoint of the arrow on the arc
-        double endAngle{0.0};
-        if (RS_TOLERANCE_ANGLE < dimRadius) {
-            endAngle = av.arrow() / dimRadius;
-        }
+        double endAngle = (RS_TOLERANCE_ANGLE < _dimRadius) ? av.arrow() / _dimRadius : 0.0;
 
         // compute the endpoint of the arrow on the arc
         RS_Vector arrowEnd;
-        arrowEnd.setPolar(dimRadius, angle + std::copysign(endAngle, direction));
-        arrowEnd += dimCenter;
+        arrowEnd.setPolar(_dimRadius, angle + std::copysign(endAngle, direction));
+        arrowEnd += _dimCenter;
         arrowAngle = arrowEnd.angleTo(point);
     }
 
@@ -280,7 +255,7 @@ void RS_DimAngular::updateDim(bool autoText /*= false*/) {
         return;
     }
 
-    if (!dimCenter.valid) {
+    if (!_dimCenter.valid) {
         return;
     }
 
@@ -293,21 +268,21 @@ void RS_DimAngular::updateDim(bool autoText /*= false*/) {
 
     // create new lines with offsets for extension lines
     RS_ConstructionLine line1(nullptr,
-                              RS_ConstructionLineData(dimLine1.getStartpoint() - dimDir1s * av.exo(),
-                                                      dimLine1.getEndpoint() - dimDir1e * av.exo()));
+                              RS_ConstructionLineData(_dimLine1.getStartpoint() - _dimDir1s * av.exo(),
+                                                      _dimLine1.getEndpoint() - _dimDir1e * av.exo()));
     RS_ConstructionLine line2(nullptr,
-                              RS_ConstructionLineData(dimLine2.getStartpoint() - dimDir2s * av.exo(),
-                                                      dimLine2.getEndpoint() - dimDir2e * av.exo()));
+                              RS_ConstructionLineData(_dimLine2.getStartpoint() - _dimDir2s * av.exo(),
+                                                      _dimLine2.getEndpoint() - _dimDir2e * av.exo()));
 
-    RS_Vector p1{dimCenter + dimDir1e * dimRadius};
-    RS_Vector p2{dimCenter + dimDir2e * dimRadius};
+    RS_Vector p1{_dimCenter + _dimDir1e * _dimRadius};
+    RS_Vector p2{_dimCenter + _dimDir2e * _dimRadius};
     RS_Pen pen(getExtensionLineColor(), getExtensionLineWidth(), RS2::LineByBlock);
 
-    extensionLine(line1, p1, dimDir1s, dimDir1e, av, pen);
-    extensionLine(line2, p2, dimDir2s, dimDir2e, av, pen);
+    extensionLine(line1, p1, _dimDir1s, _dimDir1e, av, pen);
+    extensionLine(line2, p2, _dimDir2s, _dimDir2e, av, pen);
 
     // Create dimension line (arc)
-    RS_Arc *arc{new RS_Arc(this, RS_ArcData(dimCenter, dimRadius, dimAngleL1, dimAngleL2, false))};
+    RS_Arc *arc{new RS_Arc(this, RS_ArcData(_dimCenter, _dimRadius, _dimAngleL1, _dimAngleL2, false))};
     pen.setWidth(getDimensionLineWidth());
     pen.setColor(getDimensionLineColor());
     arc->setPen(pen);
@@ -317,16 +292,16 @@ void RS_DimAngular::updateDim(bool autoText /*= false*/) {
     // do we have to put the arrows outside of the arc?
     bool outsideArrows{arc->getLength() < 3.0 * av.arrow()};
 
-    arrow(p1, dimAngleL1, +1.0, outsideArrows, av, pen);
-    arrow(p2, dimAngleL2, -1.0, outsideArrows, av, pen);
+    arrow(p1, _dimAngleL1, +1.0, outsideArrows, av, pen);
+    arrow(p2, _dimAngleL2, -1.0, outsideArrows, av, pen);
 
     // text label
     RS_MTextData textData;
     RS_Vector textPos{arc->getMiddlePoint()};
 
     RS_Vector distV;
-    double textAngle{0.0};
-    double angle1{textPos.angleTo(dimCenter) - M_PI_2};
+    double textAngle;
+    double angle1{textPos.angleTo(_dimCenter) - M_PI_2};
 
     // rotate text so it's readable from the bottom or right (ISO)
     // quadrant 1 & 4
@@ -373,10 +348,10 @@ void RS_DimAngular::update() {
 void RS_DimAngular::move(const RS_Vector &offset) {
     RS_Dimension::move(offset);
 
-    edata.definitionPoint1.move(offset);
-    edata.definitionPoint2.move(offset);
-    edata.definitionPoint3.move(offset);
-    edata.definitionPoint4.move(offset);
+    _edata.definitionPoint1.move(offset);
+    _edata.definitionPoint2.move(offset);
+    _edata.definitionPoint3.move(offset);
+    _edata.definitionPoint4.move(offset);
     update();
 }
 
@@ -387,30 +362,30 @@ void RS_DimAngular::rotate(const RS_Vector &center, const double &angle) {
 void RS_DimAngular::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
     RS_Dimension::rotate(center, angleVector);
 
-    edata.definitionPoint1.rotate(center, angleVector);
-    edata.definitionPoint2.rotate(center, angleVector);
-    edata.definitionPoint3.rotate(center, angleVector);
-    edata.definitionPoint4.rotate(center, angleVector);
+    _edata.definitionPoint1.rotate(center, angleVector);
+    _edata.definitionPoint2.rotate(center, angleVector);
+    _edata.definitionPoint3.rotate(center, angleVector);
+    _edata.definitionPoint4.rotate(center, angleVector);
     update();
 }
 
 void RS_DimAngular::scale(const RS_Vector &center, const RS_Vector &factor) {
     RS_Dimension::scale(center, factor);
 
-    edata.definitionPoint1.scale(center, factor);
-    edata.definitionPoint2.scale(center, factor);
-    edata.definitionPoint3.scale(center, factor);
-    edata.definitionPoint4.scale(center, factor);
+    _edata.definitionPoint1.scale(center, factor);
+    _edata.definitionPoint2.scale(center, factor);
+    _edata.definitionPoint3.scale(center, factor);
+    _edata.definitionPoint4.scale(center, factor);
     update();
 }
 
 void RS_DimAngular::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) {
     RS_Dimension::mirror(axisPoint1, axisPoint2);
 
-    edata.definitionPoint1.mirror(axisPoint1, axisPoint2);
-    edata.definitionPoint2.mirror(axisPoint1, axisPoint2);
-    edata.definitionPoint3.mirror(axisPoint1, axisPoint2);
-    edata.definitionPoint4.mirror(axisPoint1, axisPoint2);
+    _edata.definitionPoint1.mirror(axisPoint1, axisPoint2);
+    _edata.definitionPoint2.mirror(axisPoint1, axisPoint2);
+    _edata.definitionPoint3.mirror(axisPoint1, axisPoint2);
+    _edata.definitionPoint4.mirror(axisPoint1, axisPoint2);
     update();
 }
 
@@ -420,32 +395,32 @@ void RS_DimAngular::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoi
  * From DXF reference the lines are P2-P1 and P-P3.
  * The dimension is drawn from line1 (P2-P1) to line2 (P-P3) in CCW direction.
  */
-void RS_DimAngular::calcDimension(void) {
+void RS_DimAngular::calcDimension() {
     // get unit vectors for definition points
-    dimDir1s = RS_Vector::polar(1.0, RS_Math::correctAngle(edata.definitionPoint2.angleTo(edata.definitionPoint1)));
-    dimDir1e = RS_Vector::polar(1.0, RS_Math::correctAngle(edata.definitionPoint1.angleTo(edata.definitionPoint2)));
-    dimDir2s = RS_Vector::polar(1.0, RS_Math::correctAngle(_data.definitionPoint.angleTo(edata.definitionPoint3)));
-    dimDir2e = RS_Vector::polar(1.0, RS_Math::correctAngle(edata.definitionPoint3.angleTo(_data.definitionPoint)));
+    _dimDir1s = RS_Vector::polar(1.0, RS_Math::correctAngle(_edata.definitionPoint2.angleTo(_edata.definitionPoint1)));
+    _dimDir1e = RS_Vector::polar(1.0, RS_Math::correctAngle(_edata.definitionPoint1.angleTo(_edata.definitionPoint2)));
+    _dimDir2s = RS_Vector::polar(1.0, RS_Math::correctAngle(_data.definitionPoint.angleTo(_edata.definitionPoint3)));
+    _dimDir2e = RS_Vector::polar(1.0, RS_Math::correctAngle(_edata.definitionPoint3.angleTo(_data.definitionPoint)));
 
     // create the two dimension definition lines
-    dimLine1 = RS_ConstructionLine(nullptr,
-                                   RS_ConstructionLineData(edata.definitionPoint2,
-                                                           edata.definitionPoint1));
-    dimLine2 = RS_ConstructionLine(nullptr,
-                                   RS_ConstructionLineData(_data.definitionPoint,
-                                                           edata.definitionPoint3));
+    _dimLine1 = RS_ConstructionLine(nullptr,
+                                    RS_ConstructionLineData(_edata.definitionPoint2,
+                                                            _edata.definitionPoint1));
+    _dimLine2 = RS_ConstructionLine(nullptr,
+                                    RS_ConstructionLineData(_data.definitionPoint,
+                                                            _edata.definitionPoint3));
 
-    RS_VectorSolutions vs{RS_Information::getIntersection(&dimLine1, &dimLine2, false)};
-    dimCenter = vs.get(0);
-    dimRadius = dimCenter.distanceTo(edata.definitionPoint4);
-    dimDirRad = RS_Vector::polar(1.0, RS_Math::correctAngle(dimCenter.angleTo(edata.definitionPoint4)));
+    RS_VectorSolutions vs{RS_Information::getIntersection(&_dimLine1, &_dimLine2, false)};
+    _dimCenter = vs.get(0);
+    _dimRadius = _dimCenter.distanceTo(_edata.definitionPoint4);
+    _dimDirRad = RS_Vector::polar(1.0, RS_Math::correctAngle(_dimCenter.angleTo(_edata.definitionPoint4)));
 
     fixDimension();
 
-    dimAngleL1 = dimLine1.getDirection2();
-    dimAngleL2 = dimLine2.getDirection2();
+    _dimAngleL1 = _dimLine1.getDirection2();
+    _dimAngleL2 = _dimLine2.getDirection2();
 
-    dimAngle = RS_Math::correctAngle(dimLine2.getDirection1() - dimLine1.getDirection1());
+    _dimAngle = RS_Math::correctAngle(_dimLine2.getDirection1() - _dimLine1.getDirection1());
 }
 
 /**
@@ -456,77 +431,78 @@ void RS_DimAngular::calcDimension(void) {
  * LibreCAD takes care on correct orientation and line order in RS_ActionDimAngular
  * but angular dimensions, created in other CAD software, may fail and must be fixed here
  */
-void RS_DimAngular::fixDimension(void) {
-    if (!RS_Math::isAngleBetween(dimDirRad.angle(), dimDir2s.angle(), dimDir1s.angle(), false)) {
-        double distance0{_data.definitionPoint.distanceTo(dimCenter)};
-        double distance1{edata.definitionPoint1.distanceTo(dimCenter)};
-        double distance2{edata.definitionPoint2.distanceTo(dimCenter)};
-        double distance3{edata.definitionPoint3.distanceTo(dimCenter)};
-        double angle0{0.0};
-        double angle1{0.0};
-        double angle2{0.0};
-        double angle3{0.0};
-        if (RS_TOLERANCE >= distance0) {
-            angle3 = (edata.definitionPoint3 - dimCenter).angle();
-            angle0 = angle3;
-        } else if (RS_TOLERANCE >= distance3) {
-            angle0 = (_data.definitionPoint - dimCenter).angle();
-            angle3 = angle0;
-        } else {
-            angle0 = (_data.definitionPoint - dimCenter).angle();
-            angle3 = (edata.definitionPoint3 - dimCenter).angle();
-        }
-
-        if (RS_TOLERANCE >= distance1) {
-            angle2 = (edata.definitionPoint2 - dimCenter).angle();
-            angle1 = angle2;
-        } else if (RS_TOLERANCE >= distance2) {
-            angle1 = (edata.definitionPoint1 - dimCenter).angle();
-            angle2 = angle1;
-        } else {
-            angle1 = (edata.definitionPoint1 - dimCenter).angle();
-            angle2 = (edata.definitionPoint2 - dimCenter).angle();
-        }
-
-        if (angle2 == angle1
-            && distance2 < distance1
-            && angle0 == angle3
-            && distance0 < distance3) {
-            // revert both lines
-            dimLine1 = RS_ConstructionLine(nullptr,
-                                           RS_ConstructionLineData(dimLine1.getEndpoint(),
-                                                                   dimLine1.getStartpoint()));
-            dimLine2 = RS_ConstructionLine(nullptr,
-                                           RS_ConstructionLineData(dimLine2.getEndpoint(),
-                                                                   dimLine2.getStartpoint()));
-
-            // and their unit vectors
-            RS_Vector swapDir{dimDir1s};
-            dimDir1s = dimDir1e;
-            dimDir1e = swapDir;
-
-            swapDir = dimDir2s;
-            dimDir2s = dimDir2e;
-            dimDir2e = swapDir;
-        }
-
-        // check again, as the previous revert may have made this condition false
-        if (!RS_Math::isAngleBetween(dimDirRad.angle(), dimDir2s.angle(), dimDir1s.angle(), false)) {
-            // swap the lines
-            RS_ConstructionLine swapLine{dimLine1};
-            dimLine1 = dimLine2;
-            dimLine2 = swapLine;
-
-            // and their unit vectors
-            RS_Vector swapDir{dimDir1s};
-            dimDir1s = dimDir2s;
-            dimDir2s = swapDir;
-
-            swapDir = dimDir1e;
-            dimDir1e = dimDir2e;
-            dimDir2e = swapDir;
-        }
+void RS_DimAngular::fixDimension() {
+    if (RS_Math::isAngleBetween(_dimDirRad.angle(), _dimDir2s.angle(), _dimDir1s.angle(), false)) {
+        return;
     }
+    std::array<double, 4> distance{_data.definitionPoint.distanceTo(_dimCenter),
+                                   _edata.definitionPoint1.distanceTo(_dimCenter),
+                                   _edata.definitionPoint2.distanceTo(_dimCenter),
+                                   _edata.definitionPoint3.distanceTo(_dimCenter)};
+
+    std::array<double, 4> angle = {0.0, 0.0, 0.0, 0.0};
+
+    if (RS_TOLERANCE >= distance[0]) {
+        angle[3] = (_edata.definitionPoint3 - _dimCenter).angle();
+        angle[0] = angle[3];
+    } else if (RS_TOLERANCE >= distance[3]) {
+        angle[0] = (_data.definitionPoint - _dimCenter).angle();
+        angle[3] = angle[0];
+    } else {
+        angle[0] = (_data.definitionPoint - _dimCenter).angle();
+        angle[3] = (_edata.definitionPoint3 - _dimCenter).angle();
+    }
+
+    if (RS_TOLERANCE >= distance[1]) {
+        angle[2] = (_edata.definitionPoint2 - _dimCenter).angle();
+        angle[1] = angle[2];
+    } else if (RS_TOLERANCE >= distance[2]) {
+        angle[1] = (_edata.definitionPoint1 - _dimCenter).angle();
+        angle[2] = angle[1];
+    } else {
+        angle[1] = (_edata.definitionPoint1 - _dimCenter).angle();
+        angle[2] = (_edata.definitionPoint2 - _dimCenter).angle();
+    }
+
+    if (angle[2] == angle[1]
+        && distance[2] < distance[1]
+        && angle[0] == angle[3]
+        && distance[0] < distance[3]) {
+        // revert both lines
+        _dimLine1 = RS_ConstructionLine(nullptr,
+                                        RS_ConstructionLineData(_dimLine1.getEndpoint(),
+                                                                _dimLine1.getStartpoint()));
+        _dimLine2 = RS_ConstructionLine(nullptr,
+                                        RS_ConstructionLineData(_dimLine2.getEndpoint(),
+                                                                _dimLine2.getStartpoint()));
+
+        // and their unit vectors
+        RS_Vector swapDir{_dimDir1s};
+        _dimDir1s = _dimDir1e;
+        _dimDir1e = swapDir;
+
+        swapDir = _dimDir2s;
+        _dimDir2s = _dimDir2e;
+        _dimDir2e = swapDir;
+    }
+
+    // check again, as the previous revert may have made this condition false
+    if (!RS_Math::isAngleBetween(_dimDirRad.angle(), _dimDir2s.angle(), _dimDir1s.angle(), false)) {
+        // swap the lines
+        RS_ConstructionLine swapLine{_dimLine1};
+        _dimLine1 = _dimLine2;
+        _dimLine2 = swapLine;
+
+        // and their unit vectors
+        RS_Vector swapDir{_dimDir1s};
+        _dimDir1s = _dimDir2s;
+        _dimDir2s = swapDir;
+
+        swapDir = _dimDir1e;
+        _dimDir1e = _dimDir2e;
+        _dimDir2e = swapDir;
+    }
+
 }
 
 /**

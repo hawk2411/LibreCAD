@@ -35,9 +35,9 @@
  * Holds the data that defines a angular dimension entity.
  */
 struct RS_DimAngularData {
-    RS_DimAngularData();
+    RS_DimAngularData() = default;
 
-    RS_DimAngularData(const RS_DimAngularData &ed);
+    RS_DimAngularData(const RS_DimAngularData &ed) = default;
 
     /**
      * Constructor with initialisation.
@@ -45,7 +45,7 @@ struct RS_DimAngularData {
      * @param definitionPoint Definition point of the angular dimension.
      * @param leader Leader length.
      */
-    RS_DimAngularData(const RS_Vector &definitionPoint1,
+     explicit RS_DimAngularData(const RS_Vector &definitionPoint1,
                       const RS_Vector &definitionPoint2,
                       const RS_Vector &definitionPoint3,
                       const RS_Vector &definitionPoint4);
@@ -63,46 +63,44 @@ std::ostream &operator<<(std::ostream &os, const RS_DimAngularData &dd);
  * Holds the DXF variables that defines a angular dimension entity.
  */
 struct LC_DimAngularVars {
-    explicit LC_DimAngularVars(const double _dimscale,
-                               const double _dimexo,
-                               const double _dimexe,
-                               const double _dimtxt,
-                               const double _dimgap,
-                               const double _arrowSize);
+    explicit LC_DimAngularVars(double dimscale,
+                               double dimexo,
+                               double dimexe,
+                               double dimtxt,
+                               double dimgap,
+                               double arrowSize);
 
-    explicit LC_DimAngularVars(const LC_DimAngularVars &av);
-
-    double scale(void) const {
-        return dimscale;
+    double scale() const {
+        return _dimscale;
     }
 
-    double exo(void) const {
-        return dimexo;
+    double exo() const {
+        return _dimexo;
     }
 
-    double exe(void) const {
-        return dimexe;
+    double exe() const {
+        return _dimexe;
     }
 
-    double txt(void) const {
-        return dimtxt;
+    double txt() const {
+        return _dimtxt;
     }
 
-    double gap(void) const {
-        return dimgap;
+    double gap() const {
+        return _dimgap;
     }
 
-    double arrow(void) const {
-        return arrowSize;
+    double arrow() const {
+        return _arrowSize;
     }
 
 private:
-    double dimscale{1.0};  ///< general scale (DIMSCALE)
-    double dimexo{0.0};  ///< distance from entities (DIMEXO)
-    double dimexe{0.0};  ///< extension line extension (DIMEXE)
-    double dimtxt{0.0};  ///< text height (DIMTXT)
-    double dimgap{0.0};  ///< text distance to line (DIMGAP)
-    double arrowSize{0.0};  ///< arrow length
+    double _dimscale{1.0};  ///< general scale (DIMSCALE)
+    double _dimexo{0.0};  ///< distance from entities (DIMEXO)
+    double _dimexe{0.0};  ///< extension line extension (DIMEXE)
+    double _dimtxt{0.0};  ///< text height (DIMTXT)
+    double _dimgap{0.0};  ///< text distance to line (DIMGAP)
+    double _arrowSize{0.0};  ///< arrow length
 };
 
 std::ostream &operator<<(std::ostream &os, const LC_DimAngularVars &dd);
@@ -132,29 +130,29 @@ public:
      * @see getData()
      */
     RS_DimAngularData getEData() const {
-        return edata;
+        return _edata;
     }
 
     QString getMeasuredLabel() override;
 
     RS_Vector getCenter() const override;
 
-    void updateDim(bool autoText = false) override;
+    void updateDim(bool autoText) override;
 
-    RS_Vector getDefinitionPoint1() {
-        return edata.definitionPoint1;
+    RS_Vector getDefinitionPoint1() const {
+        return _edata.definitionPoint1;
     }
 
-    RS_Vector getDefinitionPoint2() {
-        return edata.definitionPoint2;
+    RS_Vector getDefinitionPoint2() const {
+        return _edata.definitionPoint2;
     }
 
-    RS_Vector getDefinitionPoint3() {
-        return edata.definitionPoint3;
+    RS_Vector getDefinitionPoint3() const {
+        return _edata.definitionPoint3;
     }
 
-    RS_Vector getDefinitionPoint4() {
-        return edata.definitionPoint4;
+    RS_Vector getDefinitionPoint4() const {
+        return _edata.definitionPoint4;
     }
 
     void update() override;
@@ -171,12 +169,12 @@ public:
 
 protected:
     /** Extended data. */
-    RS_DimAngularData edata;
+    RS_DimAngularData _edata;
 
 private:
-    void calcDimension(void);
+    void calcDimension();
 
-    void fixDimension(void);
+    void fixDimension();
 
     void extensionLine(const RS_ConstructionLine &dimLine,
                        const RS_Vector &dimPoint,
@@ -186,24 +184,24 @@ private:
                        const RS_Pen &pen);
 
     void arrow(const RS_Vector &point,
-               const double angle,
-               const double direction,
-               const bool outsideArrows,
+               double angle,
+               double direction,
+               bool outsideArrows,
                const LC_DimAngularVars &av,
                const RS_Pen &pen);
 
-    RS_Vector dimDir1s;
-    RS_Vector dimDir1e;
-    RS_Vector dimDir2s;
-    RS_Vector dimDir2e;
-    RS_Vector dimDirRad;
-    RS_ConstructionLine dimLine1;
-    RS_ConstructionLine dimLine2;
-    double dimRadius{0.0};
-    double dimAngleL1{0.0};
-    double dimAngleL2{0.0};
-    double dimAngle{0.0};     ///< angle to dimension in rad
-    RS_Vector dimCenter;          ///< intersection point of the dimension lines
+    RS_Vector _dimDir1s;
+    RS_Vector _dimDir1e;
+    RS_Vector _dimDir2s;
+    RS_Vector _dimDir2e;
+    RS_Vector _dimDirRad;
+    RS_ConstructionLine _dimLine1;
+    RS_ConstructionLine _dimLine2;
+    double _dimRadius{0.0};
+    double _dimAngleL1{0.0};
+    double _dimAngleL2{0.0};
+    double _dimAngle{0.0};     ///< angle to dimension in rad
+    RS_Vector _dimCenter;          ///< intersection point of the dimension lines
 };
 
 #endif
