@@ -32,6 +32,7 @@
 #include <QStringList>
 #include <QMap>
 #include "rs_blocklist.h"
+#include "rs_fontchar.h"
 
 /**
  * Class for representing a font. This is implemented as a RS_Graphic
@@ -42,52 +43,51 @@
  */
 class RS_Font {
 public:
-    RS_Font(const QString &name, bool owner = true);
-    //RS_Font(const char* name);
+    explicit RS_Font(QString name, bool owner = true);
 
     /** @return the fileName of this font. */
     QString getFileName() const {
-        return fileName;
+        return _fileName;
     }
 
     /** @return the fileLicense of this font. */
     QString getFileLicense() const {
-        return fileLicense;
+        return _fileLicense;
     }
 
     /** @return the creation date of this font. */
     QString getFileCreate() const {
-        return fileCreate;
+        return _fileCreate;
     }
 
     /** @return the encoding of this font. */
     QString getEncoding() const {
-        return encoding;
+        return _encoding;
     }
 
     /** @return the alternative names of this font. */
     const QStringList &getNames() const {
-        return names;
+        return _names;
     }
 
     /** @return the author(s) of this font. */
     const QStringList &getAuthors() const {
-        return authors;
+        return _authors;
     }
 
     /** @return Default letter spacing for this font */
-    double getLetterSpacing() {
-        return letterSpacing;
+    double getLetterSpacing() const {
+        return _letterSpacing;
     }
 
     /** @return Default word spacing for this font */
-    double getWordSpacing() {
-        return wordSpacing;
+    double getWordSpacing() const {
+        return _wordSpacing;
     }
 
     /** @return Default line spacing factor for this font */
-    double getLineSpacingFactor() {
-        return lineSpacingFactor;
+    double getLineSpacingFactor() const {
+        return _lineSpacingFactor;
     }
 
     bool loadFont();
@@ -96,62 +96,60 @@ public:
 
     // Wrappers for block list (letters) functions
     RS_BlockList *getLetterList() {
-        return &letterList;
+        return &_letterList;
     }
 
     RS_Block *findLetter(const QString &name);
-
-    unsigned countLetters() {
-        return letterList.count();
-    }
 
     friend std::ostream &operator<<(std::ostream &os, const RS_Font &l);
 
     friend class RS_FontList;
 
 private:
-    void readCXF(QString path);
+    void readCXF(const QString& path);
 
-    void readLFF(QString path);
+    void readLFF(const QString& path);
 
     RS_Block *generateLffFont(const QString &ch);
 
 private:
     //raw lff font file list, not processed into blocks yet
-    QMap<QString, QStringList> rawLffFontList;
+    QMap<QString, QStringList> _rawLffFontList;
 
     //! block list (letters)
-    RS_BlockList letterList;
+    RS_BlockList _letterList;
 
     //! Font file name
-    QString fileName;
+    QString _fileName;
 
     //! Font file license
-    QString fileLicense;
+    QString _fileLicense;
 
     //! Font file license
-    QString fileCreate;
+    QString _fileCreate;
 
     //! Font encoding (see docu for QTextCodec)
-    QString encoding;
+    QString _encoding;
 
     //! Font names
-    QStringList names;
+    QStringList _names;
 
     //! Authors
-    QStringList authors;
+    QStringList _authors;
 
     //! Is this font currently loaded into memory?
-    bool loaded;
+    bool _loaded;
 
     //! Default letter spacing for this font
-    double letterSpacing;
+    double _letterSpacing;
 
     //! Default word spacing for this font
-    double wordSpacing;
+    double _wordSpacing;
 
     //! Default line spacing factor for this font
-    double lineSpacingFactor;
+    double _lineSpacingFactor;
+
+    void handleChar(RS_FontChar *letter, QString &line);
 };
 
 #endif

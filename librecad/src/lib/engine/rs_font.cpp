@@ -29,6 +29,7 @@
 #include <iostream>
 #include <QTextStream>
 #include <QTextCodec>
+#include <utility>
 
 #include "rs_font.h"
 #include "rs_arc.h"
@@ -45,13 +46,13 @@
  * @param owner true if the font owns the letters (blocks). Otherwise
  *              the letters will be deleted when the font is deleted.
  */
-RS_Font::RS_Font(const QString &fileName, bool owner)
-        : letterList(owner), fileName(fileName), fileLicense("unknown") {
-    loaded = false;
-    letterSpacing = 3.0;
-    wordSpacing = 6.75;
-    lineSpacingFactor = 1.0;
-    rawLffFontList.clear();
+RS_Font::RS_Font(QString fileName, bool owner)
+        : _letterList(owner), _fileName(std::move(fileName)), _fileLicense("unknown") {
+    _loaded = false;
+    _letterSpacing = 3.0;
+    _wordSpacing = 6.75;
+    _lineSpacingFactor = 1.0;
+    _rawLffFontList.clear();
 }
 
 
@@ -64,33 +65,28 @@ RS_Font::RS_Font(const QString &fileName, bool owner)
 bool RS_Font::loadFont() {
     RS_DEBUG->print("RS_Font::loadFont");
 
-    if (loaded) {
+    if (_loaded) {
         return true;
     }
 
     QString path;
 
     // Search for the appropriate font if we have only the name of the font:
-    if (!fileName.toLower().contains(".cxf") &&
-        !fileName.toLower().contains(".lff")) {
+    if (!_fileName.contains(".cxf", Qt::CaseInsensitive) &&
+        !_fileName.contains(".lff", Qt::CaseInsensitive)) {
         QStringList fonts = RS_SYSTEM->getNewFontList();
         fonts.append(RS_SYSTEM->getFontList());
 
-        QFileInfo file;
-        for (QStringList::Iterator it = fonts.begin();
-             it != fonts.end();
-             it++) {
+        for (auto &font: fonts) {
 
-            if (QFileInfo(*it).baseName().toLower() == fileName.toLower()) {
-                path = *it;
+            if (QFileInfo(font).baseName().toLower() == _fileName.toLower()) {
+                path = font;
                 break;
             }
         }
-    }
-
+    } else {
         // We have the full path of the font:
-    else {
-        path = fileName;
+        path = _fileName;
     }
 
     // No font paths found:
@@ -119,11 +115,11 @@ bool RS_Font::loadFont() {
     if (path.contains(".lff"))
         readLFF(path);
 
-    RS_Block *bk = letterList.find(QChar(0xfffd));
+    RS_Block *bk = _letterList.find(QChar(0xfffd));
     if (!bk) {
         // create new letter:
-        RS_FontChar *letter = new RS_FontChar(nullptr, QChar(0xfffd), RS_Vector(0.0, 0.0));
-        RS_Polyline *pline = new RS_Polyline(letter, RS_PolylineData());
+        auto *letter = new RS_FontChar(nullptr, QChar(0xfffd), RS_Vector(0.0, 0.0));
+        auto *pline = new RS_Polyline(letter, RS_PolylineData());
         pline->setPen(RS_Pen(RS2::FlagInvalid));
         pline->setLayer(nullptr);
         pline->addVertex(RS_Vector(1, 0), 0);
@@ -133,10 +129,10 @@ bool RS_Font::loadFont() {
         pline->addVertex(RS_Vector(1, 0), 0);
         letter->addEntity(pline);
         letter->calculateBorders();
-        letterList.add(letter, true);
+        _letterList.add(letter, true);
     }
 
-    loaded = true;
+    _loaded = true;
 
     RS_DEBUG->print("RS_Font::loadFont OK");
 
@@ -144,7 +140,7 @@ bool RS_Font::loadFont() {
 }
 
 
-void RS_Font::readCXF(QString path) {
+void RS_Font::readCXF(const QString &path) {
     QString line;
     QFile f(path);
     f.open(QIODevice::ReadOnly);
@@ -172,18 +168,18 @@ void RS_Font::readCXF(QString path) {
             QString value = (*it3).trimmed();
 
             if (identifier.toLower() == "letterspacing") {
-                letterSpacing = value.toDouble();
+                _letterSpacing = value.toDouble();
             } else if (identifier.toLower() == "wordspacing") {
-                wordSpacing = value.toDouble();
+                _wordSpacing = value.toDouble();
             } else if (identifier.toLower() == "linespacingfactor") {
-                lineSpacingFactor = value.toDouble();
+                _lineSpacingFactor = value.toDouble();
             } else if (identifier.toLower() == "author") {
-                authors.append(value);
+                _authors.append(value);
             } else if (identifier.toLower() == "name") {
-                names.append(value);
+                _names.append(value);
             } else if (identifier.toLower() == "encoding") {
                 ts.setCodec(QTextCodec::codecForName(value.toLatin1()));
-                encoding = value;
+                _encoding = value;
             }
         }
 
@@ -215,7 +211,7 @@ void RS_Font::readCXF(QString path) {
             }
 
             // create new letter:
-            RS_FontChar *letter =
+            auto *letter =
                     new RS_FontChar(nullptr, ch, RS_Vector(0.0, 0.0));
 
             // Read entities of this letter:
@@ -241,10 +237,10 @@ void RS_Font::readCXF(QString path) {
                     double x2 = (*it2++).toDouble();
                     double y2 = (*it2).toDouble();
 
-                    RS_Line *line = new RS_Line{letter, {{x1, y1}, {x2, y2}}};
-                    line->setPen(RS_Pen(RS2::FlagInvalid));
-                    line->setLayer(nullptr);
-                    letter->addEntity(line);
+                    auto *rs_line = new RS_Line{letter, {{x1, y1}, {x2, y2}}};
+                    rs_line->setPen(RS_Pen(RS2::FlagInvalid));
+                    rs_line->setLayer(nullptr);
+                    letter->addEntity(rs_line);
                 }
 
                     // Arc:
@@ -258,7 +254,7 @@ void RS_Font::readCXF(QString path) {
 
                     RS_ArcData ad(RS_Vector(cx, cy),
                                   r, a1, a2, reversed);
-                    RS_Arc *arc = new RS_Arc(letter, ad);
+                    auto *arc = new RS_Arc(letter, ad);
                     arc->setPen(RS_Pen(RS2::FlagInvalid));
                     arc->setLayer(nullptr);
                     letter->addEntity(arc);
@@ -269,54 +265,56 @@ void RS_Font::readCXF(QString path) {
                 delete letter;
             } else {
                 letter->calculateBorders();
-                letterList.add(letter, true);
+                _letterList.add(letter, true);
             }
         }
     }
     f.close();
 }
 
-void RS_Font::readLFF(QString path) {
-    QString line;
-    QFile f(path);
-    encoding = "UTF-8";
-    f.open(QIODevice::ReadOnly);
-    QTextStream ts(&f);
+void RS_Font::readLFF(const QString &path) {
+
+    QFile file(path);
+    _encoding = "UTF-8";
+    file.open(QIODevice::ReadOnly);
+    QTextStream text_stream(&file);
 
     // Read line by line until we find a new letter:
-    while (!ts.atEnd()) {
-        line = ts.readLine();
+    while (!text_stream.atEnd()) {
+        QString line = text_stream.readLine();
 
-        if (line.isEmpty())
+        if (line.isEmpty()) {
             continue;
+        }
 
         // Read font settings:
         if (line.at(0) == '#') {
             QStringList lst = line.remove(0, 1).split(':', QString::SkipEmptyParts);
-            //if size is < 2 is a comentary not parameter
-            if (lst.size() < 2)
+            //if size is < 2 it is a commentary not parameter
+            if (lst.size() < 2) {
                 continue;
+            }
 
             QString identifier = lst.at(0).trimmed();
             QString value = lst.at(1).trimmed();
 
             if (identifier.toLower() == "letterspacing") {
-                letterSpacing = value.toDouble();
+                _letterSpacing = value.toDouble();
             } else if (identifier.toLower() == "wordspacing") {
-                wordSpacing = value.toDouble();
+                _wordSpacing = value.toDouble();
             } else if (identifier.toLower() == "linespacingfactor") {
-                lineSpacingFactor = value.toDouble();
+                _lineSpacingFactor = value.toDouble();
             } else if (identifier.toLower() == "author") {
-                authors.append(value);
+                _authors.append(value);
             } else if (identifier.toLower() == "name") {
-                names.append(value);
+                _names.append(value);
             } else if (identifier.toLower() == "license") {
-                fileLicense = value;
+                _fileLicense = value;
             } else if (identifier.toLower() == "encoding") {
-                ts.setCodec(QTextCodec::codecForName(value.toLatin1()));
-                encoding = value;
+                text_stream.setCodec(QTextCodec::codecForName(value.toLatin1()));
+                _encoding = value;
             } else if (identifier.toLower() == "created") {
-                fileCreate = value;
+                _fileCreate = value;
             }
         }
 
@@ -342,46 +340,42 @@ void RS_Font::readLFF(QString path) {
 
             QStringList fontData;
             do {
-                line = ts.readLine();
-                if (line.isEmpty()) break;
+                line = text_stream.readLine();
+                if (line.isEmpty()) {
+                    break;
+                }
                 fontData.push_back(line);
             } while (true);
-            if (fontData.size() > 0) {
-                rawLffFontList[QString(ch)] = fontData;
+            if (!fontData.empty()) {
+                _rawLffFontList[QString(ch)] = fontData;
             }
-
-
         }
     }
-    f.close();
+    file.close();
 }
 
 void RS_Font::generateAllFonts() {
-    QMap<QString, QStringList>::const_iterator i = rawLffFontList.constBegin();
-    while (i != rawLffFontList.constEnd()) {
+    QMap<QString, QStringList>::const_iterator i = _rawLffFontList.constBegin();
+    while (i != _rawLffFontList.constEnd()) {
         generateLffFont(i.key());
         ++i;
     }
 }
 
 RS_Block *RS_Font::generateLffFont(const QString &ch) {
-    if (rawLffFontList.contains(ch) == false) {
+    if (!_rawLffFontList.contains(ch)) {
         RS_DEBUG->print("RS_Font::generateLffFont(QChar %s ) : can not find the letter in given lff font file",
                         qPrintable(ch));
         return nullptr;
     }
     // create new letter:
-    RS_FontChar *letter =
-            new RS_FontChar(nullptr, ch, RS_Vector(0.0, 0.0));
+    auto *letter = new RS_FontChar(nullptr, ch, RS_Vector(0.0, 0.0));
 
     // Read entities of this letter:
-    QStringList vertex;
-    QStringList coords;
-    QStringList fontData = rawLffFontList[ch];
-    QString line;
+    QStringList fontData = _rawLffFontList[ch];
 
-    while (fontData.isEmpty() == false) {
-        line = fontData.takeFirst();
+    while (!fontData.isEmpty()) {
+        QString line = fontData.takeFirst();
 
         if (line.isEmpty()) {
             continue;
@@ -389,68 +383,68 @@ RS_Block *RS_Font::generateLffFont(const QString &ch) {
 
         // Defined char:
         if (line.at(0) == 'C') {
-            line.remove(0, 1);
-            int uCode = line.toInt(nullptr, 16);
-            QChar ch = QChar(uCode);
-            RS_Block *bk = letterList.find(ch);
-            if (!bk && rawLffFontList.contains(ch)) {
-                generateLffFont(ch);
-                bk = letterList.find(ch);
-            }
-            if (bk) {
-                RS_Entity *bk2 = bk->clone();
-                bk2->setPen(RS_Pen(RS2::FlagInvalid));
-                bk2->setLayer(nullptr);
-                letter->addEntity(bk2);
-            }
-        }
+            handleChar(letter, line);
+        } else {
             //sequence:
-        else {
-            vertex = line.split(';', QString::SkipEmptyParts);
+            QStringList vertex = line.split(';', QString::SkipEmptyParts);
             //at least is required two vertex
-            if (vertex.size() < 2)
+            if (vertex.size() < 2) {
                 continue;
-            RS_Polyline *pline = new RS_Polyline(letter, RS_PolylineData());
+            }
+            auto *pline = new RS_Polyline(letter, RS_PolylineData());
             pline->setPen(RS_Pen(RS2::FlagInvalid));
             pline->setLayer(nullptr);
             for (int i = 0; i < vertex.size(); ++i) {
-                double x1, y1;
-                double bulge = 0;
-
-                coords = vertex.at(i).split(',', QString::SkipEmptyParts);
+                QStringList coords = vertex.at(i).split(',', QString::SkipEmptyParts);
                 //at least X,Y is required
-                if (coords.size() < 2)
+                if (coords.size() < 2) {
                     continue;
-                x1 = coords.at(0).toDouble();
-                y1 = coords.at(1).toDouble();
+                }
                 //check presence of bulge
+                double bulge = 0;
                 if (coords.size() == 3 && coords.at(2).at(0) == QChar('A')) {
                     QString bulgeStr = coords.at(2);
                     bulge = bulgeStr.remove(0, 1).toDouble();
                 }
                 pline->setNextBulge(bulge);
-                pline->addVertex(RS_Vector(x1, y1), bulge);
+                pline->addVertex(RS_Vector(coords.at(0).toDouble(),
+                                           coords.at(1).toDouble()), bulge);
             }
             letter->addEntity(pline);
         }
-
     }
 
     if (letter->isEmpty()) {
         delete letter;
         return nullptr;
-    } else {
-        letter->calculateBorders();
-        letterList.add(letter, true);
-        return letter;
+    }
+
+    letter->calculateBorders();
+    _letterList.add(letter, true);
+    return letter;
+}
+
+void RS_Font::handleChar(RS_FontChar *letter, QString &line) {
+    line.remove(0, 1);
+    int uCode = line.toInt(nullptr, 16);
+    QChar u_char = QChar(uCode);
+    RS_Block *block = _letterList.find(u_char);
+    if (!block && _rawLffFontList.contains(u_char)) {
+        generateLffFont(u_char);
+        block = _letterList.find(u_char);
+    }
+
+    if (block) {
+        RS_Entity *bk2 = block->clone();
+        bk2->setPen(RS_Pen(RS2::FlagInvalid));
+        bk2->setLayer(nullptr);
+        letter->addEntity(bk2);
     }
 }
 
 RS_Block *RS_Font::findLetter(const QString &name) {
-    RS_Block *ret = letterList.find(name);
-    if (ret) return ret;
-    return generateLffFont(name);
-
+    RS_Block *ret = _letterList.find(name);
+    return (ret) ? ret :generateLffFont(name);
 }
 
 /**
