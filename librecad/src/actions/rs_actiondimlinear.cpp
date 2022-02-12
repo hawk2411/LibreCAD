@@ -69,8 +69,8 @@ void RS_ActionDimLinear::reset() {
     RS_ActionDimension::reset();
 
 	edata.reset(new RS_DimLinearData(RS_Vector(false),
-                             RS_Vector(false),
-							 (fixedAngle ? edata->angle : 0.0), 0.0)
+                                     RS_Vector(false),
+                                     (fixedAngle ? edata->_angle : 0.0), 0.0)
 				);
 
 	GetDialogFactory()->requestOptions(this, true, true);
@@ -105,13 +105,13 @@ void RS_ActionDimLinear::trigger() {
 
 
 void RS_ActionDimLinear::preparePreview() {
-	RS_Vector dirV = RS_Vector::polar(100., edata->angle+M_PI_2);
+	RS_Vector dirV = RS_Vector::polar(100., edata->_angle + M_PI_2);
 
     RS_ConstructionLine cl(
         NULL,
         RS_ConstructionLineData(
-			edata->extensionPoint2,
-			edata->extensionPoint2+dirV));
+			edata->_extensionPoint2,
+            edata->_extensionPoint2 + dirV));
 
 	data->definitionPoint =
 		cl.getNearestPointOnEntity(data->definitionPoint, true, nullptr, nullptr);
@@ -130,16 +130,16 @@ void RS_ActionDimLinear::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetExtPoint2:
-		if (edata->extensionPoint1.valid) {
+		if (edata->_extensionPoint1.valid) {
             deletePreview();
 			preview->addEntity(new RS_Line{preview.get(),
-										   edata->extensionPoint1, mouse});
+                                           edata->_extensionPoint1, mouse});
             drawPreview();
         }
         break;
 
     case SetDefPoint:
-		if (edata->extensionPoint1.valid && edata->extensionPoint2.valid) {
+		if (edata->_extensionPoint1.valid && edata->_extensionPoint2.valid) {
             deletePreview();
 			data->definitionPoint = mouse;
 
@@ -179,13 +179,13 @@ void RS_ActionDimLinear::coordinateEvent(RS_CoordinateEvent* e) {
 
     switch (getStatus()) {
     case SetExtPoint1:
-		edata->extensionPoint1 = pos;
+		edata->_extensionPoint1 = pos;
         graphicView->moveRelativeZero(pos);
         setStatus(SetExtPoint2);
         break;
 
     case SetExtPoint2:
-		edata->extensionPoint2 = pos;
+		edata->_extensionPoint2 = pos;
         graphicView->moveRelativeZero(pos);
         setStatus(SetDefPoint);
         break;
@@ -203,11 +203,11 @@ void RS_ActionDimLinear::coordinateEvent(RS_CoordinateEvent* e) {
 }
 
 double RS_ActionDimLinear::getAngle() const{
-	return edata->angle;
+	return edata->_angle;
 }
 
 void RS_ActionDimLinear::setAngle(double a) {
-	edata->angle = a;
+	edata->_angle = a;
 }
 
 bool RS_ActionDimLinear::hasFixedAngle() const{

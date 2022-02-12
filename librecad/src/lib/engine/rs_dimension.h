@@ -167,7 +167,7 @@ public:
         return _data.style;
     }
 
-    double getAngle() const {
+    virtual double getAngle() const {
         return _data.angle;
     }
 
