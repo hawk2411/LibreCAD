@@ -112,8 +112,8 @@ void RS_ActionDimRadial::preparePreview() {
             radius = ((RS_Circle*)entity)->getRadius();
         }
 
-		edata->definitionPoint.setPolar(radius, angle);
-		edata->definitionPoint += data->definitionPoint;
+		edata->_definitionPoint.setPolar(radius, angle);
+		edata->_definitionPoint += data->definitionPoint;
     }
 }
 

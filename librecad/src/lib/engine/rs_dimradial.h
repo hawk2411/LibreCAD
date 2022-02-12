@@ -37,7 +37,7 @@ struct RS_DimRadialData {
     /**
      * Default constructor. Leaves the data object uninitialized.
      */
-	RS_DimRadialData();
+    RS_DimRadialData();
 
     /**
      * Constructor with initialisation.
@@ -45,17 +45,17 @@ struct RS_DimRadialData {
      * @param definitionPoint Definition point of the radial dimension.
      * @param leader Leader length.
      */
-    RS_DimRadialData(const RS_Vector& definitionPoint,
-					 double leader);
+    RS_DimRadialData(const RS_Vector &definitionPoint,
+                     double leader);
 
     /** Definition point. */
-    RS_Vector definitionPoint;
+    RS_Vector _definitionPoint;
     /** Leader length. */
-    double leader;
+    double _leader;
 };
 
-std::ostream& operator << (std::ostream& os,
-									  const RS_DimRadialData& dd);
+std::ostream &operator<<(std::ostream &os,
+                         const RS_DimRadialData &dd);
 
 /**
  * Class for radial dimension entities.
@@ -64,14 +64,14 @@ std::ostream& operator << (std::ostream& os,
  */
 class RS_DimRadial : public RS_Dimension {
 public:
-    RS_DimRadial(RS_EntityContainer* parent,
-                 const RS_DimensionData& d,
-                 const RS_DimRadialData& ed);
+    RS_DimRadial(RS_EntityContainer *parent,
+                 const RS_DimensionData &d,
+                 const RS_DimRadialData &ed);
 
-	RS_Entity* clone() const override;
+    RS_Entity *clone() const override;
 
     /**	@return RS2::EntityDimRadial */
-	RS2::EntityType rtti() const override{
+    RS2::EntityType rtti() const override {
         return RS2::EntityDimRadial;
     }
 
@@ -80,35 +80,41 @@ public:
      * @see getData()
      */
     RS_DimRadialData getEData() const {
-        return edata;
+        return _edata;
     }
 
-	RS_VectorSolutions getRefPoints() const override;
+    RS_VectorSolutions getRefPoints() const override;
 
-	QString getMeasuredLabel() override;
+    QString getMeasuredLabel() override;
 
-	void updateDim(bool autoText=false) override;
+    void updateDim(bool autoText) override;
 
-    RS_Vector getDefinitionPoint() {
-        return edata.definitionPoint;
-    }
-    double getLeader() {
-        return edata.leader;
+    RS_Vector getDefinitionPoint() const override {
+        return _edata._definitionPoint;
     }
 
-	void move(const RS_Vector& offset) override;
-	void rotate(const RS_Vector& center, const double& angle) override;
-	void rotate(const RS_Vector& center, const RS_Vector& angleVector) override;
-	void scale(const RS_Vector& center, const RS_Vector& factor) override;
-	void mirror(const RS_Vector& axisPoint1, const RS_Vector& axisPoint2) override;
-	void moveRef(const RS_Vector& ref, const RS_Vector& offset) override;
+    double getLeader() const {
+        return _edata._leader;
+    }
 
-    friend std::ostream& operator << (std::ostream& os,
-                                      const RS_DimRadial& d);
+    void move(const RS_Vector &offset) override;
 
-protected:
+    void rotate(const RS_Vector &center, const double &angle) override;
+
+    void rotate(const RS_Vector &center, const RS_Vector &angleVector) override;
+
+    void scale(const RS_Vector &center, const RS_Vector &factor) override;
+
+    void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
+
+    void moveRef(const RS_Vector &ref, const RS_Vector &offset) override;
+
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const RS_DimRadial &d);
+
+private:
     /** Extended data. */
-    RS_DimRadialData edata;
+    RS_DimRadialData _edata;
 };
 
 #endif
