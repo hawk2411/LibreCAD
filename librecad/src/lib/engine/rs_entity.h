@@ -599,6 +599,12 @@ m0 x + m1 y + m2 =0
      */
     virtual bool isArcCircleLine() const;
 
+    /**
+     * @brief checks the validation of the coordinates
+     * @return true if the coordinates are valid else false
+     */
+    virtual bool isValid() const;
+
 protected:
     //! Entity's parent entity or nullptr is this entity has no parent.
     RS_EntityContainer *_parent = nullptr;

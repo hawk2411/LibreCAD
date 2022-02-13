@@ -64,7 +64,7 @@ public:
 
     bool save(bool isAutoSave) override;
 
-    bool saveAs(const QString &filename, RS2::FormatType type, bool force) override;
+    bool saveAs(const QString &new_filename, RS2::FormatType new_type, bool force) override;
 
     bool open(const QString &filename, RS2::FormatType type) override;
 
@@ -117,7 +117,7 @@ public:
 
     RS2::LinearFormat getLinearFormat();
 
-    RS2::LinearFormat getLinearFormat(int f);
+    static RS2::LinearFormat getLinearFormat(int f);
 
     int getLinearPrecision();
 
@@ -141,7 +141,7 @@ public:
 
     double getPaperScale();
 
-    void setPaperScale(double s);
+    void setPaperScale(double scaleValue);
 
     virtual void setUnit(RS2::Unit u);
 
@@ -238,20 +238,20 @@ public:
     void setPagesNum(const QString &horizXvert);
 
     int getPagesNumHoriz() const {
-        return pagesNumH;
+        return _pagesNumH;
     }
 
     int getPagesNumVert() const {
-        return pagesNumV;
+        return _pagesNumV;
     }
 
     friend std::ostream &operator<<(std::ostream &os, RS_Graphic &g);
 
-    int clean();
+    unsigned int clean();
 
 private:
 
-    bool BackupDrawingFile(const QString &filename);
+    static bool backupDrawingFile(const QString &filename);
 
     QDateTime _modifiedTime;
     QString _currentFileName; //keep a copy of filename for the modifiedTime
@@ -270,8 +270,12 @@ private:
     double _marginBottom;
 
     // Number of pages drawing occupies
-    int pagesNumH;
-    int pagesNumV;
+    int _pagesNumH;
+    int _pagesNumV;
+
+    void setUnitLocal(const RS2::Unit &u);
+
+    static QString calcAutoSaveFile( const QString &filename);
 };
 
 

@@ -51,18 +51,19 @@ RS_Graphic::RS_Graphic(RS_EntityContainer *parent)
           _marginTop(0.0),
           _marginRight(0.0),
           _marginBottom(0.0),
-          pagesNumH(1),
-          pagesNumV(1) {
+          _pagesNumH(1),
+          _pagesNumV(1) {
 
     RS_SETTINGS->beginGroup("/Defaults");
-    setUnit(RS_Units::stringToUnit(RS_SETTINGS->readEntry("/Unit", "None")));
+    setUnitLocal(RS_Units::stringToUnit(RS_SETTINGS->readEntry("/Unit", "None")));
+
     RS_SETTINGS->endGroup();
     RS_SETTINGS->beginGroup("/Appearance");
     //$ISOMETRICGRID == $SNAPSTYLE
     addVariable("$SNAPSTYLE", static_cast<int>(RS_SETTINGS->readNumEntry("/IsometricGrid", 0)), 70);
     _crosshairType = static_cast<RS2::CrosshairType>(RS_SETTINGS->readNumEntry("/CrosshairType", 0));
     RS_SETTINGS->endGroup();
-    RS2::Unit unit = getUnit();
+    RS2::Unit unit = (RS2::Unit) getVariableInt("$INSUNITS", 0);
 
     if (unit == RS2::Inch) {
         addVariable("$DIMASZ", 0.1, 40);
@@ -86,8 +87,7 @@ RS_Graphic::RS_Graphic(RS_EntityContainer *parent)
     //initialize printer vars bug #3602444
     setPaperScale(getPaperScale());
     setPaperInsertionBase(getPaperInsertionBase());
-
-    setModified(false);
+    _modified = false;
 }
 
 
@@ -113,7 +113,7 @@ void RS_Graphic::removeLayer(RS_Layer *layer) {
             }
         }
         // remove all entities on that layer:
-        if (toRemove.size()) {
+        if (!toRemove.empty()) {
             startUndoCycle();
             for (auto e: toRemove) {
                 e->setUndoState(true);
@@ -171,76 +171,32 @@ void RS_Graphic::newDoc() {
  * Author(s):		Claude Sylvain
  * Created:			13 July 2011
  * Last modified:
+ * Redesigned:      13 February 2022 by Harry Wagner
  *
  * Parameters:		const QString &filename:
- * 						Name of the drawing file to backup.
+ * 						Name of the drawing file to be backup.
  *
  * Returns:			bool:
  * 						false	: Operation failed.
  * 						true	: Operation successful.
  */
 
-bool RS_Graphic::BackupDrawingFile(const QString &filename) {
-    static const char *msg_err =
-            "RS_Graphic::BackupDrawingFile: Can't create object!";
-
-    bool ret = false;        /*	Operation failed, by default. */
-
-
-    /*	- Create backup only if drawing file name exist.
-     *	- Remark: Not really necessary to check if the drawing file
-     *	  name have been defined.
-     *	----------------------------------------------------------- */
-    if (filename.length() > 0) {
-        /*	Built Backup File Name.
-         *	*/
-        QString *qs_backup_fn = new QString(filename + '~');
-
-        /*	Create "Drawing File" object.
-         *	*/
-        QFile *qf_df = new QFile(filename);
-
-        /*	If able to create the objects, process...
-         *	----------------------------------------- */
-        if ((qs_backup_fn != NULL) && (qf_df != NULL)) {
-            /*	Create backup file only if drawing file already exist.
-             *	------------------------------------------------------ */
-            if (qf_df->exists() == true) {
-                /*	Create "Drawing File Backup" object.
-                 *	*/
-                QFile *qf_dfb = new QFile(*qs_backup_fn);
-
-                /*	If able to create the object, process...
-                 *	---------------------------------------- */
-                if (qf_dfb != NULL) {
-                    /*	If a backup file already exist, remove it!
-                     *	------------------------------------------ */
-                    if (qf_dfb->exists() == true)
-                        qf_dfb->remove();
-
-                    qf_df->copy(*qs_backup_fn);    /*	Create backup file. */
-                    ret = true;                        /*	Operation successful. */
-                    delete qf_dfb;
-                }
-                    /*	Can't create object.
-                     *	-------------------- */
-                else {
-                    RS_DEBUG->print("%s", msg_err);
-                }
-            }
-
-        }
-            /*	Can't create object(s).
-             *	----------------------- */
-        else {
-            RS_DEBUG->print("%s", msg_err);
-        }
-
-        delete qs_backup_fn;
-        delete qf_df;
+bool RS_Graphic::backupDrawingFile(const QString &filename) {
+    if (filename.isEmpty()) {
+        return false;
     }
 
-    return ret;
+    QFile source(filename);
+    if (!source.exists()) {
+        return false;
+    }
+
+    QFile destination(filename + '~');
+    if (destination.exists()) {
+        destination.remove();
+    }
+
+    return source.copy(destination.fileName());
 }
 
 
@@ -279,9 +235,7 @@ bool RS_Graphic::save(bool isAutoSave) {
 
         if (isAutoSave) {
             actualName = _autosaveFilename;
-
-            if (_formatType == RS2::FormatUnknown)
-                actualType = RS2::FormatDXFRW;
+            actualType = (_formatType == RS2::FormatUnknown) ? RS2::FormatDXFRW : actualType;
         } else {
             //	- This is not an AutoSave operation.  This is a manual
             //	  save operation.  So, ...
@@ -311,7 +265,7 @@ bool RS_Graphic::save(bool isAutoSave) {
 
             actualName = _filename;
             if (RS_SETTINGS->readNumEntry("/AutoBackupDocument", 1) != 0)
-                BackupDrawingFile(_filename);
+                backupDrawingFile(_filename);
         }
 
         /*	Save drawing file if able to created associated object.
@@ -365,73 +319,48 @@ bool RS_Graphic::save(bool isAutoSave) {
     return ret;
 }
 
-
-/*
- *	Description:	- Saves this graphic with the given filename and current
- *						  settings.
- *
- *	Author(s):		..., Claude Sylvain
- *	Created:			?
- *	Last modified:	13 July 2011
- *	Parameters:         QString: name to save
- *                      RS2::FormatType: format to save
- *                      bool:
- *                          false: do not save if not needed
- *                          true: force to save (when called for save as...
- *
- *	Returns:			bool:
- *							false:	Operation failed.
- *							true:		Operation successful.
- *
- * Notes:			Backup the drawing file (if necessary).
- */
-
-bool RS_Graphic::saveAs(const QString &filename, RS2::FormatType type, bool force) {
+/// Saves this graphic with the given filename and current settings.
+/// Backup the drawing file (if necessary).
+/// Author(s):		..., Claude Sylvain
+/// \param new_filename to save as
+/// \param new_type
+/// \param force false: do not save if not needed true: force to save (when called for save as...
+/// \return
+bool RS_Graphic::saveAs(const QString &new_filename, RS2::FormatType new_type, bool force) {
     RS_DEBUG->print("RS_Graphic::saveAs: Entering...");
-
-    // Set to "failed" by default.
-    bool ret = false;
 
     // Check/memorize if file name we want to use as new file
     // name is the same as the actual file name.
-    bool fn_is_same = filename == this->_filename;
-    auto const filenameSaved = this->_filename;
-    auto const autosaveFilenameSaved = this->_autosaveFilename;
-    auto const formatTypeSaved = this->_formatType;
+    bool fn_is_same = (new_filename == _filename);
+    auto const old_filename = _filename;
+    auto const old_autosave_filename = _autosaveFilename;
+    auto const old_format_type = _formatType;
 
-    this->_filename = filename;
-    this->_formatType = type;
-
-    // QString	const oldAutosaveName = this->autosaveFilename;
-    QFileInfo finfo(filename);
-
-    // Construct new autosave filename by prepending # to the filename
-    // part, using the same directory as the destination file.
-    this->_autosaveFilename = finfo.path() + "/#" + finfo.fileName();
+    _filename = new_filename;
+    _formatType = new_type;
+    _autosaveFilename = calcAutoSaveFile(new_filename);
 
     // When drawing is saved using a different name than the actual
     // drawing file name, make LibreCAD think that drawing file
     // has been modified, to make sure the drawing file saved.
-    if (!fn_is_same || force)
+    if (!fn_is_same || force) {
         setModified(true);
+    }
 
-    ret = save(false);        //	Save file.
+    bool ret = save(false);        //	Save file.
 
     if (ret) {
         // Save was successful, remove old autosave file.
-        QFile qf_file(autosaveFilenameSaved);
+        QFile qf_file(old_autosave_filename);
 
         if (qf_file.exists()) {
-            RS_DEBUG->print("RS_Graphic::saveAs: Removing old autosave file %s",
-                            autosaveFilenameSaved.toLatin1().data());
             qf_file.remove();
         }
-
     } else {
         //do not modify filenames:
-        this->_filename = filenameSaved;
-        this->_autosaveFilename = autosaveFilenameSaved;
-        this->_formatType = formatTypeSaved;
+        _filename = old_filename;
+        _autosaveFilename = old_autosave_filename;
+        _formatType = old_format_type;
     }
 
     return ret;
@@ -444,17 +373,13 @@ bool RS_Graphic::saveAs(const QString &filename, RS2::FormatType type, bool forc
 bool RS_Graphic::loadTemplate(const QString &filename, RS2::FormatType type) {
     RS_DEBUG->print("RS_Graphic::loadTemplate(%s)", filename.toLatin1().data());
 
-    bool ret = false;
-
-    // Construct new autosave filename by prepending # to the filename part,
-    // using system temporary dir.
-    this->_autosaveFilename = QDir::tempPath() + "/#" + "Unnamed.dxf";
+    _autosaveFilename = QDir::tempPath() + "/#" + "Unnamed.dxf";
 
     // clean all:
     newDoc();
 
     // import template file:
-    ret = RS_FileIO::instance()->fileImport(*this, filename, type);
+    bool ret = RS_FileIO::instance()->fileImport(*this, filename, type);
 
     setModified(false);
     _layerList->setModified(false);
@@ -473,34 +398,26 @@ bool RS_Graphic::loadTemplate(const QString &filename, RS2::FormatType type) {
 bool RS_Graphic::open(const QString &filename, RS2::FormatType type) {
     RS_DEBUG->print("RS_Graphic::open(%s)", filename.toLatin1().data());
 
-    bool ret = false;
-
-    this->_filename = filename;
-    QFileInfo finfo(filename);
-    // Construct new autosave filename by prepending # to the filename
-    // part, using the same directory as the destination file.
-    this->_autosaveFilename = finfo.path() + "/#" + finfo.fileName();
+    _filename = filename;
+    _autosaveFilename = calcAutoSaveFile(filename);
 
     // clean all:
     newDoc();
 
     // import file:
-    ret = RS_FileIO::instance()->fileImport(*this, filename, type);
-
-    if (ret) {
-        setModified(false);
-        _layerList->setModified(false);
-        _blockList->setModified(false);
-        _modifiedTime = finfo.lastModified();
-        _currentFileName = QString(filename);
-
-        //cout << *((RS_Graphic*)graphic);
-        //calculateBorders();
-
-        RS_DEBUG->print("RS_Graphic::open(%s): OK", filename.toLatin1().data());
+    if (!RS_FileIO::instance()->fileImport(*this, filename, type)) {
+        return false;
     }
+    QFileInfo fileInfo(filename);
 
-    return ret;
+    setModified(false);
+    _layerList->setModified(false);
+    _blockList->setModified(false);
+    _modifiedTime = fileInfo.lastModified();
+    _currentFileName = QString(filename);
+
+    RS_DEBUG->print("RS_Graphic::open(%s): OK", filename.toLatin1().data());
+    return true;
 }
 
 
@@ -546,11 +463,17 @@ RS2::CrosshairType RS_Graphic::getCrosshairType() {
     return _crosshairType;
 }
 
+
 /**
  * Sets the unit of this graphic to 'u'
  */
 void RS_Graphic::setUnit(RS2::Unit u) {
 
+    setUnitLocal(u);
+
+}
+
+void RS_Graphic::setUnitLocal(const RS2::Unit &u) {
     setPaperSize(RS_Units::convert(getPaperSize(), getUnit(), u));
 
     addVariable("$INSUNITS", (int) u, 70);
@@ -583,30 +506,17 @@ RS2::LinearFormat RS_Graphic::getLinearFormat(int f) {
         default:
         case 2:
             return RS2::Decimal;
-            break;
-
         case 1:
             return RS2::Scientific;
-            break;
-
         case 3:
             return RS2::Engineering;
-            break;
-
         case 4:
             return RS2::Architectural;
-            break;
-
         case 5:
             return RS2::Fractional;
-            break;
-
         case 6:
             return RS2::ArchitecturalMetric;
-            break;
     }
-
-    return RS2::Decimal;
 }
 
 
@@ -624,32 +534,21 @@ int RS_Graphic::getLinearPrecision() {
  * This is determined by the variable "$AUNITS".
  */
 RS2::AngleFormat RS_Graphic::getAngleFormat() {
-    int aunits = getVariableInt("$AUNITS", 0);
+    int angle_units = getVariableInt("$AUNITS", 0);
 
-    switch (aunits) {
+    switch (angle_units) {
         default:
         case 0:
             return RS2::DegreesDecimal;
-            break;
-
         case 1:
             return RS2::DegreesMinutesSeconds;
-            break;
-
         case 2:
             return RS2::Gradians;
-            break;
-
         case 3:
             return RS2::Radians;
-            break;
-
         case 4:
             return RS2::Surveyors;
-            break;
     }
-
-    return RS2::DegreesDecimal;
 }
 
 
@@ -730,8 +629,8 @@ RS_Vector RS_Graphic::getPrintAreaSize(bool total) {
     printArea.x -= RS_Units::convert(_marginLeft + _marginRight, RS2::Millimeter, getUnit());
     printArea.y -= RS_Units::convert(_marginTop + _marginBottom, RS2::Millimeter, getUnit());
     if (total) {
-        printArea.x *= pagesNumH;
-        printArea.y *= pagesNumV;
+        printArea.x *= _pagesNumH;
+        printArea.y *= _pagesNumV;
     }
     return printArea;
 }
@@ -787,8 +686,8 @@ double RS_Graphic::getPaperScale() {
 /**
  * Sets a new scale factor for the paper space.
  */
-void RS_Graphic::setPaperScale(double s) {
-    if (_paperScaleFixed == false) addVariable("$PSVPSCALE", s, 40);
+void RS_Graphic::setPaperScale(double scaleValue) {
+    if (!_paperScaleFixed) addVariable("$PSVPSCALE", scaleValue, 40);
 }
 
 
@@ -868,8 +767,8 @@ void RS_Graphic::addEntity(RS_Entity *entity) {
     RS_EntityContainer::addEntity(entity);
     if (entity->rtti() == RS2::EntityBlock ||
         entity->rtti() == RS2::EntityContainer) {
-        RS_EntityContainer *e = static_cast<RS_EntityContainer *>(entity);
-        for (auto e1: *e) {
+        auto entityContainer = dynamic_cast<RS_EntityContainer *>(entity);
+        for (auto e1: *entityContainer) {
             addEntity(e1);
         }
     }
@@ -893,27 +792,17 @@ std::ostream &operator<<(std::ostream &os, RS_Graphic &g) {
  * Removes invalid objects.
  * @return how many objects were removed
  */
-int RS_Graphic::clean() {
+unsigned int RS_Graphic::clean() {
     // author: ravas
 
-    int how_many = 0;
-
-            foreach (RS_Entity *e, _entities) {
-            if (e->getMin().x > e->getMax().x
-                || e->getMin().y > e->getMax().y
-                || e->getMin().x > RS_MAXDOUBLE
-                || e->getMax().x > RS_MAXDOUBLE
-                || e->getMin().x < RS_MINDOUBLE
-                || e->getMax().x < RS_MINDOUBLE
-                || e->getMin().y > RS_MAXDOUBLE
-                || e->getMax().y > RS_MAXDOUBLE
-                || e->getMin().y < RS_MINDOUBLE
-                || e->getMax().y < RS_MINDOUBLE) {
-                removeEntity(e);
-                how_many += 1;
-            }
+    int count_removed_entities = 0;
+    for (RS_Entity *entity: _entities) {
+        if (!entity->isValid()) {
+            removeEntity(entity);
+            count_removed_entities += 1;
         }
-    return how_many;
+    }
+    return count_removed_entities;
 }
 
 /**
@@ -945,9 +834,9 @@ double RS_Graphic::getMarginBottomInUnits() {
 
 void RS_Graphic::setPagesNum(int horiz, int vert) {
     if (horiz > 0)
-        pagesNumH = horiz;
+        _pagesNumH = horiz;
     if (vert > 0)
-        pagesNumV = vert;
+        _pagesNumV = vert;
 }
 
 void RS_Graphic::setPagesNum(const QString &horizXvert) {
@@ -960,4 +849,11 @@ void RS_Graphic::setPagesNum(const QString &horizXvert) {
         if (ok1 && ok2)
             setPagesNum(h, v);
     }
+}
+
+// Construct new autosave filename by prepending # to the filename
+// part, using the same directory as the destination file.
+QString RS_Graphic::calcAutoSaveFile(const QString &filename) {
+    QFileInfo file_info_new_file(filename);
+    return file_info_new_file.path() + "/#" + file_info_new_file.fileName();
 }

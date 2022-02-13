@@ -959,3 +959,17 @@ void RS_Entity::setPenLineWidthByBlock(RS_Pen &pen) const {
 
 }
 
+bool RS_Entity::isValid() const {
+    return !((_minV.x > _maxV.x)
+             || (_minV.y > _maxV.y)
+             || (_minV.x > RS_MAXDOUBLE)
+             || (_maxV.x > RS_MAXDOUBLE)
+             || (_minV.x < RS_MINDOUBLE)
+             || (_maxV.x < RS_MINDOUBLE)
+             || (_minV.y > RS_MAXDOUBLE)
+             || (_maxV.y > RS_MAXDOUBLE)
+             || (_minV.y < RS_MINDOUBLE)
+             || (_maxV.y < RS_MINDOUBLE)
+             );
+}
+

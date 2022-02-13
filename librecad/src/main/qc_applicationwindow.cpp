@@ -1699,7 +1699,8 @@ void QC_ApplicationWindow::fileOpen(const QString &fileName, RS2::FormatType typ
         layerWidget->slotUpdateLayerList();
         auto graphic = w->getGraphic();
         if (graphic) {
-            if (int objects_removed = graphic->clean()) {
+            auto objects_removed = graphic->clean();
+            if (objects_removed) {
                 auto msg = QObject::tr("Invalid objects removed:");
                 commandWidget->appendHistory(msg + " " + QString::number(objects_removed));
             }
