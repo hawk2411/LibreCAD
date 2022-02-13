@@ -38,28 +38,28 @@ struct RS_HatchData {
     /**
      * Default constructor. Leaves the data object uninitialized.
      */
-	RS_HatchData() = default;
-	~RS_HatchData() = default;
+    RS_HatchData() = default;
 
-        /**
-         * @param solid true: solid fill, false: pattern.
-         * @param scale Pattern scale or spacing.
-         * @param pattern Pattern name.
-         */
-	RS_HatchData(bool solid,
-				 double scale,
-				 double angle,
-				 const QString& pattern);
+    ~RS_HatchData() = default;
+
+    /**
+     * @param solid true: solid fill, false: pattern.
+     * @param scale Pattern scale or spacing.
+     * @param pattern Pattern name.
+     */
+    RS_HatchData(bool solid,
+                 double scale,
+                 double angle,
+                 const QString &pattern);
 
 
-	bool solid;
-	double scale;
-	double angle;
-	QString pattern;
+    bool solid;
+    double scale;
+    double angle;
+    QString pattern;
 };
 
-std::ostream& operator << (std::ostream& os, const RS_HatchData& td);
-
+std::ostream &operator<<(std::ostream &os, const RS_HatchData &td);
 
 
 /**
@@ -69,22 +69,24 @@ std::ostream& operator << (std::ostream& os, const RS_HatchData& td);
  */
 class RS_Hatch : public RS_EntityContainer {
 public:
-    enum RS_HatchError { HATCH_UNDEFINED = -1,
-                         HATCH_OK,
-                         HATCH_INVALID_CONTOUR,
-                         HATCH_PATTERN_NOT_FOUND,
-                         HATCH_TOO_SMALL,
-                         HATCH_AREA_TOO_BIG };
+    enum RS_HatchError {
+        HATCH_UNDEFINED = -1,
+        HATCH_OK,
+        HATCH_INVALID_CONTOUR,
+        HATCH_PATTERN_NOT_FOUND,
+        HATCH_TOO_SMALL,
+        HATCH_AREA_TOO_BIG
+    };
 
-	RS_Hatch() = default;
+    RS_Hatch() = default;
 
-    RS_Hatch(RS_EntityContainer* parent,
-            const RS_HatchData& d);
+    RS_Hatch(RS_EntityContainer *parent,
+             const RS_HatchData &d);
 
-	RS_Entity* clone() const override;
+    RS_Entity *clone() const override;
 
     /**	@return RS2::EntityHatch */
-	RS2::EntityType rtti() const override{
+    RS2::EntityType rtti() const override {
         return RS2::EntityHatch;
     }
 
@@ -92,84 +94,97 @@ public:
      * @return true: if this is a hatch with lines (hatch pattern),
      *         false: if this is filled with a solid color.
      */
-	bool isContainer() const override;
+    bool isContainer() const override;
 
     /** @return Copy of data that defines the hatch. */
     RS_HatchData getData() const {
         return data;
     }
 
-        bool validate();
+    bool validate();
 
-		int countLoops() const;
+    int countLoops() const;
 
-        /** @return true if this is a solid fill. false if it is a pattern hatch. */
-        bool isSolid() const {
-                return data.solid;
-        }
-        void setSolid(bool solid) {
-                data.solid = solid;
-        }
+    /** @return true if this is a solid fill. false if it is a pattern hatch. */
+    bool isSolid() const {
+        return data.solid;
+    }
 
-        QString getPattern() {
-                return data.pattern;
-        }
-        void setPattern(const QString& pattern) {
-                data.pattern = pattern;
-        }
+    void setSolid(bool solid) {
+        data.solid = solid;
+    }
 
-        double getScale() {
-                return data.scale;
-        }
-        void setScale(double scale) {
-                data.scale = scale;
-        }
+    QString getPattern() {
+        return data.pattern;
+    }
 
-        double getAngle() {
-                return data.angle;
-        }
-        void setAngle(double angle) {
-                data.angle = angle;
-        }
-		double getTotalArea();
+    void setPattern(const QString &pattern) {
+        data.pattern = pattern;
+    }
 
-		void calculateBorders() override;
-		void update() override;
-        int getUpdateError() {
-                return updateError;
-        }
-        void activateContour(bool on);
+    double getScale() {
+        return data.scale;
+    }
 
-		void draw(RS_Painter* painter, RS_GraphicView* view,
-						  double& patternOffset) override;
+    void setScale(double scale) {
+        data.scale = scale;
+    }
 
-		//	double getLength() {
-        //		return -1.0;
-        //	}
+    double getAngle() {
+        return data.angle;
+    }
 
-		double getDistanceToPoint(const RS_Vector& coord,
-                                          RS_Entity** entity = NULL,
-                                          RS2::ResolveLevel level = RS2::ResolveNone,
-										  double solidDist = RS_MAXDOUBLE) const override;
+    void setAngle(double angle) {
+        data.angle = angle;
+    }
+
+    double getTotalArea();
+
+    void calculateBorders() override;
+
+    void update() override;
+
+    int getUpdateError() {
+        return updateError;
+    }
+
+    void activateContour(bool on);
+
+    void draw(RS_Painter *painter, RS_GraphicView *view,
+              double &patternOffset) override;
+
+    //	double getLength() {
+    //		return -1.0;
+    //	}
+
+    double getDistanceToPoint(const RS_Vector &coord,
+                              RS_Entity **entity = NULL,
+                              RS2::ResolveLevel level = RS2::ResolveNone,
+                              double solidDist = RS_MAXDOUBLE) const override;
 
 
-		void move(const RS_Vector& offset) override;
-		void rotate(const RS_Vector& center, const double& angle) override;
-		void rotate(const RS_Vector& center, const RS_Vector& angleVector) override;
-		void scale(const RS_Vector& center, const RS_Vector& factor) override;
-		void mirror(const RS_Vector& axisPoint1, const RS_Vector& axisPoint2) override;
-		void stretch(const RS_Vector& firstCorner,
-                             const RS_Vector& secondCorner,
-							 const RS_Vector& offset) override;
+    void move(const RS_Vector &offset) override;
 
-        friend std::ostream& operator << (std::ostream& os, const RS_Hatch& p);
+    void rotate(const RS_Vector &center, const double &angle) override;
+
+    void rotate(const RS_Vector &center, const RS_Vector &angleVector) override;
+
+    void scale(const RS_Vector &center, const RS_Vector &factor) override;
+
+    void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
+
+    void stretch(const RS_Vector &firstCorner,
+                 const RS_Vector &secondCorner,
+                 const RS_Vector &offset) override;
+
+    friend std::ostream &operator<<(std::ostream &os, const RS_Hatch &p);
 
 protected:
-        RS_HatchData data;
-        RS_EntityContainer* hatch;
-        bool updateRunning;
-        bool needOptimization;
-        int  updateError;
+    RS_HatchData data;
+    RS_EntityContainer *hatch;
+    bool updateRunning;
+    bool needOptimization;
+    int updateError;
 };
 
 #endif
