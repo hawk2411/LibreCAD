@@ -39,7 +39,7 @@ class RS_LeaderData {
 public:
     RS_LeaderData() = default;
 
-    RS_LeaderData(bool arrowHeadFlag) {
+    explicit RS_LeaderData(bool arrowHeadFlag) {
         arrowHead = arrowHeadFlag;
     }
 
@@ -47,7 +47,7 @@ public:
                                     const RS_LeaderData & /*ld*/);
 
     /** true: leader has an arrow head. false: no arrow. */
-    bool arrowHead;
+    bool arrowHead{false};
 };
 
 
@@ -58,7 +58,7 @@ public:
  */
 class RS_Leader : public RS_EntityContainer {
 public:
-    RS_Leader(RS_EntityContainer *parent = NULL);
+    explicit RS_Leader(RS_EntityContainer *parent = nullptr);
 
     RS_Leader(RS_EntityContainer *parent,
               const RS_LeaderData &d);
@@ -74,22 +74,17 @@ public:
 
     /** @return Copy of data that defines the leader. */
     RS_LeaderData getData() const {
-        return data;
+        return _data;
     }
 
     /** @return true: if this leader has an arrow at the beginning. */
-    bool hasArrowHead() {
-        return data.arrowHead;
+    bool hasArrowHead() const {
+        return _data.arrowHead;
     }
 
     RS_Entity *addVertex(const RS_Vector &v);
 
     void addEntity(RS_Entity *entity) override;
-
-    //	double getLength() const {
-    //		return -1.0;
-    //	}
-
 
     void move(const RS_Vector &offset) override;
 
@@ -107,9 +102,9 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const RS_Leader &l);
 
-protected:
-    RS_LeaderData data;
-    bool empty;
+private:
+    RS_LeaderData _data;
+    bool _empty;
 };
 
 #endif

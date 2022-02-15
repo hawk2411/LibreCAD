@@ -36,7 +36,7 @@
  * Constructor.
  */
 RS_Leader::RS_Leader(RS_EntityContainer *parent)
-        : RS_EntityContainer(parent), empty(true) {
+        : RS_EntityContainer(parent), _empty(true) {
 }
 
 
@@ -46,16 +46,16 @@ RS_Leader::RS_Leader(RS_EntityContainer *parent)
  */
 RS_Leader::RS_Leader(RS_EntityContainer *parent,
                      const RS_LeaderData &d)
-        : RS_EntityContainer(parent), data(d) {
-    empty = true;
+        : RS_EntityContainer(parent), _data(d) {
+    _empty = true;
 }
 
 RS_Entity *RS_Leader::clone() const {
-    RS_Leader *p = new RS_Leader(*this);
-    p->setOwner(isOwner());
-    p->initId();
-    p->detach();
-    return p;
+    auto *copy = new RS_Leader(*this);
+    copy->setOwner(isOwner());
+    copy->initId();
+    copy->detach();
+    return copy;
 }
 
 /**
@@ -64,9 +64,9 @@ RS_Entity *RS_Leader::clone() const {
 void RS_Leader::update() {
 
     // find and delete arrow:
-    for (auto e: _entities) {
-        if (e->rtti() == RS2::EntitySolid) {
-            removeEntity(e);
+    for (auto entity: _entities) {
+        if (entity->rtti() == RS2::EntitySolid) {
+            removeEntity(entity);
             break;
         }
     }
@@ -82,7 +82,7 @@ void RS_Leader::update() {
 
         // first entity must be the line which gets the arrow:
         if (hasArrowHead()) {
-            RS_Solid *s = new RS_Solid(this, RS_SolidData());
+            auto *s = new RS_Solid(this, RS_SolidData());
             s->shapeArrow(p1,
                           p2.angleTo(p1),
                           getGraphicVariableDouble("$DIMASZ", 2.5) * getGraphicVariableDouble("$DIMSCALE", 1.0));
@@ -111,23 +111,19 @@ RS_Entity *RS_Leader::addVertex(const RS_Vector &v) {
     RS_Entity *entity{nullptr};
     static RS_Vector last = RS_Vector{false};
 
-    if (empty) {
-        last = v;
-        empty = false;
-    } else {
-        // add line to the leader:
-        entity = new RS_Line{this, {last, v}};
-        entity->setPen(RS_Pen(RS2::FlagInvalid));
-        entity->setLayer(nullptr);
-        RS_EntityContainer::addEntity(entity);
-
-        if (count() == 1 && hasArrowHead()) {
-            update();
-        }
-
-        last = v;
+    if (_empty) {
+        _empty = false;
+        return entity;
     }
+    // add line to the leader:
+    entity = new RS_Line{this, {last, v}};
+    entity->setPen(RS_Pen(RS2::FlagInvalid));
+    entity->setLayer(nullptr);
+    RS_EntityContainer::addEntity(entity);
 
+    if (count() == 1 && hasArrowHead()) {
+        update();
+    }
     return entity;
 }
 
