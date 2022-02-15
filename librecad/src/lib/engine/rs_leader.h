@@ -32,24 +32,23 @@
 #include "rs_entitycontainer.h"
 
 
-
 /**
  * Holds the data that defines a leader.
  */
 class RS_LeaderData {
 public:
-	RS_LeaderData() = default;
-	RS_LeaderData(bool arrowHeadFlag) {
-		arrowHead = arrowHeadFlag;
-	}
+    RS_LeaderData() = default;
 
-	friend std::ostream& operator << (std::ostream& os,
-									  const RS_LeaderData& /*ld*/);
+    RS_LeaderData(bool arrowHeadFlag) {
+        arrowHead = arrowHeadFlag;
+    }
 
-	/** true: leader has an arrow head. false: no arrow. */
-	bool arrowHead;
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const RS_LeaderData & /*ld*/);
+
+    /** true: leader has an arrow head. false: no arrow. */
+    bool arrowHead;
 };
-
 
 
 /**
@@ -59,51 +58,58 @@ public:
  */
 class RS_Leader : public RS_EntityContainer {
 public:
-	RS_Leader(RS_EntityContainer* parent=NULL);
-	RS_Leader(RS_EntityContainer* parent,
-			  const RS_LeaderData& d);
+    RS_Leader(RS_EntityContainer *parent = NULL);
 
-	RS_Entity* clone() const override;
+    RS_Leader(RS_EntityContainer *parent,
+              const RS_LeaderData &d);
 
-	/**	@return RS2::EntityDimLeader */
-	RS2::EntityType rtti() const override{
-		return RS2::EntityDimLeader;
-	}
+    RS_Entity *clone() const override;
 
-	void update() override;
+    /**	@return RS2::EntityDimLeader */
+    RS2::EntityType rtti() const override {
+        return RS2::EntityDimLeader;
+    }
 
-	/** @return Copy of data that defines the leader. */
-	RS_LeaderData getData() const {
-		return data;
-	}
+    void update() override;
 
-	/** @return true: if this leader has an arrow at the beginning. */
-	bool hasArrowHead() {
-		return data.arrowHead;
-	}
+    /** @return Copy of data that defines the leader. */
+    RS_LeaderData getData() const {
+        return data;
+    }
 
-	RS_Entity* addVertex(const RS_Vector& v);
-	void addEntity(RS_Entity* entity) override;
+    /** @return true: if this leader has an arrow at the beginning. */
+    bool hasArrowHead() {
+        return data.arrowHead;
+    }
 
-	//	double getLength() const {
-	//		return -1.0;
-	//	}
+    RS_Entity *addVertex(const RS_Vector &v);
+
+    void addEntity(RS_Entity *entity) override;
+
+    //	double getLength() const {
+    //		return -1.0;
+    //	}
 
 
-	void move(const RS_Vector& offset) override;
-	void rotate(const RS_Vector& center, const double& angle) override;
-	void rotate(const RS_Vector& center, const RS_Vector& angleVector) override;
-	void scale(const RS_Vector& center, const RS_Vector& factor) override;
-	void mirror(const RS_Vector& axisPoint1, const RS_Vector& axisPoint2) override;
-	void stretch(const RS_Vector& firstCorner,
-				 const RS_Vector& secondCorner,
-				 const RS_Vector& offset) override;
+    void move(const RS_Vector &offset) override;
 
-	friend std::ostream& operator << (std::ostream& os, const RS_Leader& l);
+    void rotate(const RS_Vector &center, const double &angle) override;
+
+    void rotate(const RS_Vector &center, const RS_Vector &angleVector) override;
+
+    void scale(const RS_Vector &center, const RS_Vector &factor) override;
+
+    void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
+
+    void stretch(const RS_Vector &firstCorner,
+                 const RS_Vector &secondCorner,
+                 const RS_Vector &offset) override;
+
+    friend std::ostream &operator<<(std::ostream &os, const RS_Leader &l);
 
 protected:
-	RS_LeaderData data;
-	bool empty;
+    RS_LeaderData data;
+    bool empty;
 };
 
 #endif
