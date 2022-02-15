@@ -58,34 +58,34 @@ std::ostream &operator<<(std::ostream &os, const RS_ImageData &ld) {
  */
 RS_Image::RS_Image(RS_EntityContainer *parent,
                    const RS_ImageData &d)
-        : RS_AtomicEntity(parent), data(d) {
+        : RS_AtomicEntity(parent), _data(d) {
 
     update();
     calculateBorders();
 }
 
-RS_Image::RS_Image(const RS_Image &_image) :
-        RS_AtomicEntity(_image.getParent()), data(_image.data),
-        img(_image.img.get() ? new QImage(*_image.img) : nullptr) {
+RS_Image::RS_Image(const RS_Image &image) :
+        RS_AtomicEntity(image.getParent()), _data(image._data),
+        _img(image._img.get() ? new QImage(*image._img) : nullptr) {
 }
 
-RS_Image &RS_Image::operator=(const RS_Image &_image) {
-    data = _image.data;
-    if (_image.img.get()) {
-        img.reset(new QImage(*_image.img));
+RS_Image &RS_Image::operator=(const RS_Image &image) {
+    _data = image._data;
+    if (image._img.get()) {
+        _img.reset(new QImage(*image._img));
     } else {
-        img.reset();
+        _img.reset();
     }
     return *this;
 }
 
-RS_Image::RS_Image(RS_Image &&_image) :
-        RS_AtomicEntity(_image.getParent()), data(std::move(_image.data)), img(std::move(_image.img)) {
+RS_Image::RS_Image(RS_Image &&image) :
+        RS_AtomicEntity(image.getParent()), _data(std::move(image._data)), _img(std::move(image._img)) {
 }
 
-RS_Image &RS_Image::operator=(RS_Image &&_image) {
-    data = _image.data;
-    img = std::move(_image.img);
+RS_Image &RS_Image::operator=(RS_Image &&image) {
+    _data = image._data;
+    _img = std::move(image._img);
     return *this;
 }
 
@@ -100,9 +100,9 @@ RS_Entity *RS_Image::clone() const {
 
 
 void RS_Image::updateData(RS_Vector size, RS_Vector Uv, RS_Vector Vv) {
-    data.size = size;
-    data.uVector = Uv;
-    data.vVector = Vv;
+    _data.size = size;
+    _data.uVector = Uv;
+    _data.vVector = Vv;
     update();
     calculateBorders();
 }
@@ -114,9 +114,9 @@ void RS_Image::update() {
 
     // the whole image:
     //QImage image = QImage(data.file);
-    img.reset(new QImage(data.file));
-    if (!img->isNull()) {
-        data.size = RS_Vector(img->width(), img->height());
+    _img.reset(new QImage(_data.file));
+    if (!_img->isNull()) {
+        _data.size = RS_Vector(_img->width(), _img->height());
         calculateBorders(); // image update need this.
     }
 
@@ -174,12 +174,12 @@ void RS_Image::calculateBorders() {
 RS_VectorSolutions RS_Image::getCorners() const {
     RS_VectorSolutions sol(4);
 
-    sol.set(0, data.insertionPoint);
+    sol.set(0, _data.insertionPoint);
     sol.set(1,
-            data.insertionPoint + data.uVector * RS_Math::round(data.size.x));
+            _data.insertionPoint + _data.uVector * RS_Math::round(_data.size.x));
     sol.set(3,
-            data.insertionPoint + data.vVector * RS_Math::round(data.size.y));
-    sol.set(2, sol.get(3) + data.uVector * RS_Math::round(data.size.x));
+            _data.insertionPoint + _data.vVector * RS_Math::round(_data.size.y));
+    sol.set(2, sol.get(3) + _data.uVector * RS_Math::round(_data.size.x));
 
     return sol;
 }
@@ -316,47 +316,47 @@ double RS_Image::getDistanceToPoint(const RS_Vector &coord,
 
 
 void RS_Image::move(const RS_Vector &offset) {
-    data.insertionPoint.move(offset);
+    _data.insertionPoint.move(offset);
     moveBorders(offset);
 }
 
 
 void RS_Image::rotate(const RS_Vector &center, const double &angle) {
     RS_Vector angleVector(angle);
-    data.insertionPoint.rotate(center, angleVector);
-    data.uVector.rotate(angleVector);
-    data.vVector.rotate(angleVector);
+    _data.insertionPoint.rotate(center, angleVector);
+    _data.uVector.rotate(angleVector);
+    _data.vVector.rotate(angleVector);
     calculateBorders();
 }
 
 void RS_Image::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
-    data.insertionPoint.rotate(center, angleVector);
-    data.uVector.rotate(angleVector);
-    data.vVector.rotate(angleVector);
+    _data.insertionPoint.rotate(center, angleVector);
+    _data.uVector.rotate(angleVector);
+    _data.vVector.rotate(angleVector);
     calculateBorders();
 }
 
 
 void RS_Image::scale(const RS_Vector &center, const RS_Vector &factor) {
-    data.insertionPoint.scale(center, factor);
-    data.uVector.scale(factor);
-    data.vVector.scale(factor);
+    _data.insertionPoint.scale(center, factor);
+    _data.uVector.scale(factor);
+    _data.vVector.scale(factor);
     scaleBorders(center, factor);
 }
 
 
 void RS_Image::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) {
-    data.insertionPoint.mirror(axisPoint1, axisPoint2);
+    _data.insertionPoint.mirror(axisPoint1, axisPoint2);
     RS_Vector vp0(0., 0.);
     RS_Vector vp1(axisPoint2 - axisPoint1);
-    data.uVector.mirror(vp0, vp1);
-    data.vVector.mirror(vp0, vp1);
+    _data.uVector.mirror(vp0, vp1);
+    _data.vVector.mirror(vp0, vp1);
     calculateBorders();
 }
 
 
 void RS_Image::draw(RS_Painter *painter, RS_GraphicView *view, double & /*patternOffset*/) {
-    if (!(painter && view) || !img.get() || img->isNull())
+    if (!(painter && view) || !_img.get() || _img->isNull())
         return;
 
     // erase image:
@@ -365,12 +365,12 @@ void RS_Image::draw(RS_Painter *painter, RS_GraphicView *view, double & /*patter
     //
     //}
 
-    RS_Vector scale{view->toGuiDX(data.uVector.magnitude()),
-                    view->toGuiDY(data.vVector.magnitude())};
-    double angle = data.uVector.angle();
+    RS_Vector scale{view->toGuiDX(_data.uVector.magnitude()),
+                    view->toGuiDY(_data.vVector.magnitude())};
+    double angle = _data.uVector.angle();
 
-    painter->drawImg(*img,
-                     view->toGui(data.insertionPoint),
+    painter->drawImg(*_img,
+                     view->toGui(_data.insertionPoint),
                      angle, scale);
 
     if (isSelected() && !(view->isPrinting() || view->isPrintPreview())) {

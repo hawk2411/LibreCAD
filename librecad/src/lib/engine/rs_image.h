@@ -51,7 +51,7 @@ struct RS_ImageData {
                  int fade);
 
     /** Handle of image definition. */
-    int handle;
+    int handle{0};
     /** Insertion point. */
     RS_Vector insertionPoint;
     /** u vector. Points along visual bottom of image. */
@@ -63,11 +63,11 @@ struct RS_ImageData {
     /** Path to image file. */
     QString file;
     /** Brightness (0..100, default: 50). */
-    int brightness;
+    int brightness{0};
     /** Contrast (0..100, default: 50). */
-    int contrast;
+    int contrast{0};
     /** Fade (0..100, default: 0). */
-    int fade;
+    int fade{0};
 };
 
 
@@ -81,13 +81,13 @@ public:
     RS_Image(RS_EntityContainer *parent,
              const RS_ImageData &d);
 
-    RS_Image(const RS_Image &_image);
+    RS_Image(const RS_Image &image);
 
-    RS_Image(RS_Image &&_image);
+    RS_Image(RS_Image &&image);
 
-    RS_Image &operator=(const RS_Image &_image);
+    RS_Image &operator=(const RS_Image &image);
 
-    RS_Image &operator=(RS_Image &&_image);
+    RS_Image &operator=(RS_Image &&image);
 
     RS_Entity *clone() const override;
 
@@ -100,17 +100,17 @@ public:
 
     /** @return Copy of data that defines the image. */
     RS_ImageData getData() const {
-        return data;
+        return _data;
     }
 
     /** @return Insertion point of the entity */
     RS_Vector getInsertionPoint() const {
-        return data.insertionPoint;
+        return _data.insertionPoint;
     }
 
     /** Sets the insertion point for the image. */
     void setInsertionPoint(RS_Vector ip) {
-        data.insertionPoint = ip;
+        _data.insertionPoint = ip;
         calculateBorders();
     }
 
@@ -119,57 +119,57 @@ public:
 
     /** @return File name of the image. */
     QString getFile() const {
-        return data.file;
+        return _data.file;
     }
 
     /** Sets the file name of the image.  */
     void setFile(const QString &file) {
-        data.file = file;
+        _data.file = file;
     }
 
     /** @return u Vector. Points along bottom, 1 pixel long. */
     RS_Vector getUVector() const {
-        return data.uVector;
+        return _data.uVector;
     }
 
     /** @return v Vector. Points along left, 1 pixel long. */
     RS_Vector getVVector() const {
-        return data.vVector;
+        return _data.vVector;
     }
 
     /** @return Width of image in pixels. */
     int getWidth() const {
-        return (int) data.size.x;
+        return (int) _data.size.x;
     }
 
     /** @return Height of image in pixels. */
     int getHeight() const {
-        return (int) data.size.y;
+        return (int) _data.size.y;
     }
 
     /** @return Brightness. */
     int getBrightness() const {
-        return data.brightness;
+        return _data.brightness;
     }
 
     /** @return Contrast. */
     int getContrast() const {
-        return data.contrast;
+        return _data.contrast;
     }
 
     /** @return Fade. */
     int getFade() const {
-        return data.fade;
+        return _data.fade;
     }
 
     /** @return Image definition handle. */
     int getHandle() const {
-        return data.handle;
+        return _data.handle;
     }
 
     /** Sets the image definition handle. */
     void setHandle(int h) {
-        data.handle = h;
+        _data.handle = h;
     }
 
 
@@ -179,15 +179,15 @@ public:
     /**
      * @return image with in graphic units.
      */
-    double getImageWidth() {
-        return data.size.x * data.uVector.magnitude();
+    double getImageWidth() const {
+        return _data.size.x * _data.uVector.magnitude();
     }
 
     /**
      * @return image height in graphic units.
      */
-    double getImageHeight() {
-        return data.size.y * data.vVector.magnitude();
+    double getImageHeight() const {
+        return _data.size.y * _data.vVector.magnitude();
     }
 
 
@@ -214,10 +214,6 @@ public:
                               RS2::ResolveLevel level = RS2::ResolveNone,
                               double solidDist = RS_MAXDOUBLE) const override;
 
-//        double getLength() const {
-//                return -1.0;
-//        }
-
     void move(const RS_Vector &offset) override;
 
     void rotate(const RS_Vector &center, const double &angle) override;
@@ -227,10 +223,6 @@ public:
     void scale(const RS_Vector &center, const RS_Vector &factor) override;
 
     void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
-
-    /*void stretch(RS_Vector firstCorner,
-                         RS_Vector secondCorner,
-                         RS_Vector offset);*/
 
     void draw(RS_Painter *painter, RS_GraphicView *view, double &patternOffset) override;
 
@@ -243,11 +235,8 @@ protected:
     // whether the point is within image
     bool containsPoint(const RS_Vector &coord) const;
 
-    RS_ImageData data;
-    std::unique_ptr<QImage> img;
-    //QImage** img;
-    //int nx;
-    //int ny;
+    RS_ImageData _data;
+    std::unique_ptr<QImage> _img;
 };
 
 #endif
