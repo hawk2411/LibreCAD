@@ -268,6 +268,8 @@ public:
 
     const QList<RS_Entity *> &getEntityList();
 
+    bool isAnySelected(RS2::ResolveLevel level);
+
 protected:
 
     void calculateBordersLocal();

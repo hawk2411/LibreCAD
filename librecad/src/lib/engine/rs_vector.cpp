@@ -484,23 +484,6 @@ RS_Vector RS_Vector::operator /= (double s) {
 }
 
 /**
- * == operator
- */
-bool RS_Vector::operator == (const RS_Vector& v) const {
-	return (x==v.x && y==v.y && z==v.z && valid && v.valid);
-}
-
-bool RS_Vector::operator == (bool valid) const
-{
-	return this->valid == valid;
-}
-
-bool RS_Vector::operator != (bool valid) const
-{
-	return this->valid != valid;
-}
-
-/**
  * @return A vector with the minimum components from the vectors v1 and v2.
  * These might be mixed components from both vectors.
  */

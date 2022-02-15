@@ -63,6 +63,12 @@ public:
 private:
 	std::unique_ptr<RS_HatchData> data;
 	bool m_bShowArea{true};
+
+    void deselectUnhatchAbleEntities();
+
+    static bool isEntityUnhatchAble(const RS_Entity &entity) ;
+
+    RS_EntityContainer* collectAllSelectedEntities(RS_Hatch *hatch);
 };
 
 #endif

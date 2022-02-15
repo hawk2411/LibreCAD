@@ -387,8 +387,7 @@ bool RS_EntityContainer::removeEntity(RS_Entity *entity) {
     //RLZ TODO: in Q3PtrList if 'entity' is nullptr remove the current item-> at.(entIdx)
     //    and sets 'entIdx' in next() or last() if 'entity' is the last item in the list.
     //    in LibreCAD is never called with nullptr
-    bool ret;
-    ret = _entities.removeOne(entity);
+    bool ret = _entities.removeOne(entity);
 
     if (_autoDelete && ret) {
         delete entity;
@@ -1391,10 +1390,6 @@ RS_Entity *RS_EntityContainer::getNearestEntity(const RS_Vector &coord,
  * to do: find closed contour by flood-fill
  */
 bool RS_EntityContainer::optimizeContours() {
-//    std::cout<<"RS_EntityContainer::optimizeContours: begin"<<std::endl;
-
-//    DEBUG_HEADER
-//    std::cout<<"loop with count()="<<count()<<std::endl;
     RS_DEBUG->print("RS_EntityContainer::optimizeContours");
 
     RS_EntityContainer tmp;
@@ -1425,14 +1420,11 @@ bool RS_EntityContainer::optimizeContours() {
         }
 
     }
-    //    std::cout<<"RS_EntityContainer::optimizeContours: 1"<<std::endl;
-
     /** remove unsupported entities */
     for (RS_Entity *it: enList)
         removeEntity(it);
 
     /** check and form a closed contour **/
-//    std::cout<<"RS_EntityContainer::optimizeContours: 2"<<std::endl;
     /** the first entity **/
     RS_Entity *current(nullptr);
     if (count() > 0) {
@@ -1442,7 +1434,6 @@ bool RS_EntityContainer::optimizeContours() {
     } else {
         if (tmp.count() == 0) return false;
     }
-//    std::cout<<"RS_EntityContainer::optimizeContours: 3"<<std::endl;
     RS_Vector vpStart;
     RS_Vector vpEnd;
     if (current) {
@@ -1450,7 +1441,6 @@ bool RS_EntityContainer::optimizeContours() {
         vpEnd = current->getEndpoint();
     }
     RS_Entity *next(nullptr);
-//    std::cout<<"RS_EntityContainer::optimizeContours: 4"<<std::endl;
     /** connect entities **/
     const QString errMsg = QObject::tr("Hatch failed due to a gap=%1 between (%2, %3) and (%4, %5)");
 
@@ -1743,44 +1733,36 @@ QList<RS_Entity *>::iterator RS_EntityContainer::end() {
 /**
  * Dumps the entities to stdout.
  */
-std::ostream &operator<<(std::ostream &os, RS_EntityContainer &ec) {
+std::ostream &operator<<(std::ostream &os, RS_EntityContainer &container) {
 
     static int indent = 0;
 
-    char *tab = new char[indent * 2 + 1];
-    for (int i = 0; i < indent * 2; ++i) {
-        tab[i] = ' ';
-    }
-    tab[indent * 2] = '\0';
+    std::string tab;
+    tab.resize(indent * 2, ' ');
 
     ++indent;
 
-    unsigned long int id = ec.getId();
+    auto id = container.getId();
 
     os << tab << "EntityContainer[" << id << "]: \n";
     os << tab << "Borders[" << id << "]: "
-       << ec._minV << " - " << ec._maxV << "\n";
-    //os << tab << "Unit[" << id << "]: "
-    //<< RS_Units::unit2string (ec.unit) << "\n";
-    if (ec.getLayer()) {
+       << container._minV << " - " << container._maxV << "\n";
+    if (container.getLayer()) {
         os << tab << "Layer[" << id << "]: "
-           << ec.getLayer()->getName().toLatin1().data() << "\n";
+           << container.getLayer()->getName().toLatin1().data() << "\n";
     } else {
         os << tab << "Layer[" << id << "]: <nullptr>\n";
     }
-    //os << ec.layerList << "\n";
 
     os << tab << " Flags[" << id << "]: "
-       << (ec.getFlag(RS2::FlagVisible) ? "RS2::FlagVisible" : "");
-    os << (ec.getFlag(RS2::FlagUndone) ? " RS2::FlagUndone" : "");
-    os << (ec.getFlag(RS2::FlagSelected) ? " RS2::FlagSelected" : "");
+       << (container.getFlag(RS2::FlagVisible) ? "RS2::FlagVisible" : "");
+    os << (container.getFlag(RS2::FlagUndone) ? " RS2::FlagUndone" : "");
+    os << (container.getFlag(RS2::FlagSelected) ? " RS2::FlagSelected" : "");
     os << "\n";
 
 
     os << tab << "Entities[" << id << "]: \n";
-    for (auto t: ec) {
-
-
+    for (auto t: container) {
         switch (t->rtti()) {
             case RS2::EntityInsert:
                 os << tab << *((RS_Insert *) t);
@@ -1799,7 +1781,6 @@ std::ostream &operator<<(std::ostream &os, RS_EntityContainer &ec) {
     os << tab << "\n\n";
     --indent;
 
-    delete[] tab;
     return os;
 }
 
@@ -1841,6 +1822,15 @@ bool RS_EntityContainer::hasEntitiesInArea(RS_EntityContainer *entityContainer, 
 
     }
     return included;
+}
+
+bool RS_EntityContainer::isAnySelected(RS2::ResolveLevel level) {
+    for (RS_Entity *e = firstEntity(level); e != nullptr; e = nextEntity(level)) {
+        if(e->isSelected()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void RS_EntityContainer::calculateBordersLocal() {

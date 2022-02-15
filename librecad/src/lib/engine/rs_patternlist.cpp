@@ -71,22 +71,21 @@ void RS_PatternList::init() {
 RS_Pattern* RS_PatternList::requestPattern(const QString& name) {
     RS_DEBUG->print("RS_PatternList::requestPattern %s", name.toLatin1().data());
 
-    QString name2 = name.toLower();
+    QString lowered_name = name.toLower();
 
-	RS_DEBUG->print("name2: %s", name2.toLatin1().data());
-	if (patterns.count(name2)) {
-		if (!patterns[name2]) {
-			RS_Pattern* p = new RS_Pattern(name2);
-			p->loadPattern();
-			patterns[name2].reset(p);
-		}
-		RS_DEBUG->print("name2: %s, size= %d", name2.toLatin1().data(),
-						patterns[name2]->countDeep());
-		return patterns[name2].get();
-	}
-
-	return nullptr;
-
+	RS_DEBUG->print("name2: %s", lowered_name.toLatin1().data());
+    auto it = patterns.find(lowered_name);
+    if(it != patterns.end()) {
+        if(it->second == nullptr) {
+            auto p = std::make_unique<RS_Pattern>(lowered_name);
+            p->loadPattern();
+            it->second = std::move(p);
+        }
+        RS_DEBUG->print("name2: %s, size= %d", lowered_name.toLatin1().data(),
+                        patterns[lowered_name]->countDeep());
+        return it->second.get();
+    }
+    return nullptr;
 }
 
 	

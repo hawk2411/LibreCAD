@@ -28,16 +28,15 @@
 #ifndef RS_HATCH_H
 #define RS_HATCH_H
 
+#include <memory>
 #include "rs_entity.h"
 #include "rs_entitycontainer.h"
+#include "rs_pattern.h"
 
 /**
  * Holds the data that defines a hatch entity.
  */
 struct RS_HatchData {
-    /**
-     * Default constructor. Leaves the data object uninitialized.
-     */
     RS_HatchData() = default;
 
     ~RS_HatchData() = default;
@@ -50,13 +49,13 @@ struct RS_HatchData {
     RS_HatchData(bool solid,
                  double scale,
                  double angle,
-                 const QString &pattern);
+                 QString pattern);
 
 
-    bool solid;
-    double scale;
-    double angle;
-    QString pattern;
+    bool _solid{false};
+    double _scale{1.0};
+    double _angle{0.0};
+    QString _pattern;
 };
 
 std::ostream &operator<<(std::ostream &os, const RS_HatchData &td);
@@ -69,7 +68,7 @@ std::ostream &operator<<(std::ostream &os, const RS_HatchData &td);
  */
 class RS_Hatch : public RS_EntityContainer {
 public:
-    enum RS_HatchError {
+    enum class RS_HatchError {
         HATCH_UNDEFINED = -1,
         HATCH_OK,
         HATCH_INVALID_CONTOUR,
@@ -98,7 +97,7 @@ public:
 
     /** @return Copy of data that defines the hatch. */
     RS_HatchData getData() const {
-        return data;
+        return _data;
     }
 
     bool validate();
@@ -107,35 +106,35 @@ public:
 
     /** @return true if this is a solid fill. false if it is a pattern hatch. */
     bool isSolid() const {
-        return data.solid;
+        return _data._solid;
     }
 
     void setSolid(bool solid) {
-        data.solid = solid;
+        _data._solid = solid;
     }
 
-    QString getPattern() {
-        return data.pattern;
+    QString getPattern() const {
+        return _data._pattern;
     }
 
     void setPattern(const QString &pattern) {
-        data.pattern = pattern;
+        _data._pattern = pattern;
     }
 
-    double getScale() {
-        return data.scale;
+    double getScale() const {
+        return _data._scale;
     }
 
     void setScale(double scale) {
-        data.scale = scale;
+        _data._scale = scale;
     }
 
-    double getAngle() {
-        return data.angle;
+    double getAngle() const {
+        return _data._angle;
     }
 
     void setAngle(double angle) {
-        data.angle = angle;
+        _data._angle = angle;
     }
 
     double getTotalArea();
@@ -144,8 +143,8 @@ public:
 
     void update() override;
 
-    int getUpdateError() {
-        return updateError;
+    RS_HatchError getUpdateError() const {
+        return _updateError;
     }
 
     void activateContour(bool on);
@@ -153,14 +152,10 @@ public:
     void draw(RS_Painter *painter, RS_GraphicView *view,
               double &patternOffset) override;
 
-    //	double getLength() {
-    //		return -1.0;
-    //	}
-
     double getDistanceToPoint(const RS_Vector &coord,
-                              RS_Entity **entity = NULL,
-                              RS2::ResolveLevel level = RS2::ResolveNone,
-                              double solidDist = RS_MAXDOUBLE) const override;
+                              RS_Entity **entity,
+                              RS2::ResolveLevel level,
+                              double solidDist) const override;
 
 
     void move(const RS_Vector &offset) override;
@@ -179,12 +174,45 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const RS_Hatch &p);
 
-protected:
-    RS_HatchData data;
-    RS_EntityContainer *hatch;
-    bool updateRunning;
-    bool needOptimization;
-    int updateError;
+private:
+    RS_HatchData _data;
+    RS_EntityContainer* _hatch{nullptr};
+    bool _updateRunning{false};
+    bool _needOptimization{false};
+    RS_HatchError _updateError{RS_HatchError::HATCH_OK};
+
+    void optimize();
+    bool isValid(RS_Pattern* pat, RS_Hatch *copy);
+
+    RS_EntityContainer *createPatternCarpet();
+
+    struct EntityInfo {
+        RS_Entity* entity;
+        RS_Vector startPoint;
+        RS_Vector endPoint;
+        RS_Vector center = RS_Vector(false);
+        bool reversed = false;
+    };
+    std::unique_ptr<RS_Hatch::EntityInfo> getEntityInfo(RS_Entity *patternEntity) const;
+
+    static double
+    getDistance(const std::unique_ptr<RS_Hatch::EntityInfo> &info, const RS_Vector &sp, double sa,
+                const RS_Vector &v) ;
+
+    QList<RS_Vector> calcIntersections(const RS_Entity *patternEntity);
+
+    QList<RS_Vector>
+    sortIntersections(const std::unique_ptr<RS_Hatch::EntityInfo> &info, QList<RS_Vector> &intersections) const;
+
+    static RS_EntityContainer &
+    addSmallCutLines(RS_EntityContainer &smallCutLines, const std::unique_ptr<RS_Hatch::EntityInfo> &info,
+                     const QList<RS_Vector> &sortedIntersections) ;
+
+    RS_EntityContainer &
+    collectSmallCutLines(const RS_EntityContainer *patternCarpet, RS_EntityContainer &smallCutLines);
+
+    void
+    addSmallCutLinesToHatch(const RS_EntityContainer &smallCutLines, RS_EntityContainer *hatch);
 };
 
 #endif

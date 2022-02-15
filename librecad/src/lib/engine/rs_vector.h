@@ -102,17 +102,16 @@ public:
 	RS_Vector operator *= (double s);
 	RS_Vector operator /= (double s);
 
-    bool operator == (const RS_Vector& v) const;
-    bool operator != (const RS_Vector& v) const {
-        return !operator==(v);
-    }
+    bool operator == (const RS_Vector& v) const { return (x == v.x && y == v.y && z == v.z && valid && v.valid); }
+    bool operator != (const RS_Vector& v) const { return !operator==(v); }
 	//!
 	//! \brief operator == comparison of validity with bool
 	//! \param valid boolean parameter
 	//! \return true is the parameter valid is the same as validity
 	//!
-	bool operator == (bool valid) const;
-	bool operator != (bool valid) const;
+	bool operator == (bool valid) const { return this->valid == valid; }
+	bool operator != (bool valid) const { return this->valid != valid; }
+
 
     static RS_Vector minimum(const RS_Vector& v1, const RS_Vector& v2);
     static RS_Vector maximum(const RS_Vector& v1, const RS_Vector& v2);

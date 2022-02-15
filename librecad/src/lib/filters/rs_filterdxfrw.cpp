@@ -2754,7 +2754,7 @@ void RS_FilterDXFRW::writeHatch(RS_Hatch * h, dxfWriter* writer) {
 
     bool writeIt = true;
     if (h->countLoops()>0) {
-        // check if all of the loops contain entities:
+        // check if all the loops contain entities:
         for (RS_Entity* l=h->firstEntity(RS2::ResolveNone);
                 l;
                 l=h->nextEntity(RS2::ResolveNone)) {
