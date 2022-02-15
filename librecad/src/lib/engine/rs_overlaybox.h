@@ -73,17 +73,17 @@ public:
 
     /** @return Start point of the entity */
     RS_Vector getCorner1() const {
-        return data.corner1;
+        return _data.corner1;
     }
 
     /** @return End point of the entity */
     RS_Vector getCorner2() const {
-        return data.corner2;
+        return _data.corner2;
     }
 
     /** @return Copy of data that defines the line. */
     RS_OverlayBoxData getData() const {
-        return data;
+        return _data;
     }
 
     /** We should make a separate drawing mechanism for overlays and not use entities */
@@ -112,8 +112,8 @@ public:
     double getDistanceToPoint(const RS_Vector &, RS_Entity **, RS2::ResolveLevel,
                               double) const override { return -1; }//is -1 right here
 
-protected:
-    RS_OverlayBoxData data;
+private:
+    RS_OverlayBoxData _data;
 };
 
 #endif

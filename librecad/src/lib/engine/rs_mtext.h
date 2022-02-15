@@ -160,7 +160,7 @@ public:
 
     /** @return Copy of data that defines the text. */
     RS_MTextData getData() const {
-        return data;
+        return _data;
     }
 
     void update() override;
@@ -169,19 +169,19 @@ public:
 
 
     RS_Vector getInsertionPoint() const {
-        return data.insertionPoint;
+        return _data.insertionPoint;
     }
 
     double getHeight() const {
-        return data.height;
+        return _data.height;
     }
 
     void setHeight(double h) {
-        data.height = h;
+        _data.height = h;
     }
 
     double getWidth() const {
-        return data.width;
+        return _data.width;
     }
 
     void setAlignment(int a);
@@ -189,61 +189,61 @@ public:
     int getAlignment() const;
 
     RS_MTextData::VAlign getVAlign() const {
-        return data.valign;
+        return _data.valign;
     }
 
     void setVAlign(RS_MTextData::VAlign va) {
-        data.valign = va;
+        _data.valign = va;
     }
 
     RS_MTextData::HAlign getHAlign() const {
-        return data.halign;
+        return _data.halign;
     }
 
     RS_MTextData::MTextDrawingDirection getDrawingDirection() const {
-        return data.drawingDirection;
+        return _data.drawingDirection;
     }
 
     RS_MTextData::MTextLineSpacingStyle getLineSpacingStyle() const {
-        return data.lineSpacingStyle;
+        return _data.lineSpacingStyle;
     }
 
     void setLineSpacingFactor(double f) {
-        data.lineSpacingFactor = f;
+        _data.lineSpacingFactor = f;
     }
 
     double getLineSpacingFactor() const {
-        return data.lineSpacingFactor;
+        return _data.lineSpacingFactor;
     }
 
     void setText(const QString &t);
 
     QString getText() const {
-        return data.text;
+        return _data.text;
     }
 
     void setStyle(const QString &s) {
-        data.style = s;
+        _data.style = s;
     }
 
     QString getStyle() const {
-        return data.style;
+        return _data.style;
     }
 
     void setAngle(double a) {
-        data.angle = a;
+        _data.angle = a;
     }
 
     double getAngle() const {
-        return data.angle;
+        return _data.angle;
     }
 
     double getUsedTextWidth() const {
-        return usedTextWidth;
+        return _usedTextWidth;
     }
 
     double getUsedTextHeight() const {
-        return usedTextHeight;
+        return _usedTextHeight;
     }
 
     /**
@@ -276,21 +276,21 @@ public:
 private:
     double updateAddLine(RS_EntityContainer *textLine, int lineCounter);
 
-protected:
-    RS_MTextData data;
+private:
+    RS_MTextData _data;
 
     /**
      * Text width used by the current contents of this text entity.
      * This property is updated by the update method.
      * @see update
      */
-    double usedTextWidth;
+    double _usedTextWidth;
     /**
      * Text height used by the current contents of this text entity.
      * This property is updated by the update method.
      * @see update
      */
-    double usedTextHeight;
+    double _usedTextHeight;
 };
 
 #endif

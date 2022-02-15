@@ -38,17 +38,17 @@
  */
 RS_OverlayBox::RS_OverlayBox(RS_EntityContainer *parent,
                              const RS_OverlayBoxData &d)
-        : RS_AtomicEntity(parent), data(d) {
+        : RS_AtomicEntity(parent), _data(d) {
 }
 
 RS_Entity *RS_OverlayBox::clone() const {
-    RS_OverlayBox *l = new RS_OverlayBox(*this);
-    l->initId();
-    return l;
+    auto *copy = new RS_OverlayBox(*this);
+    copy->initId();
+    return copy;
 }
 
 void RS_OverlayBox::draw(RS_Painter *painter, RS_GraphicView *view, double & /*patternOffset*/) {
-    if (painter == NULL || view == NULL) {
+    if (painter == nullptr || view == nullptr) {
         return;
     }
 
