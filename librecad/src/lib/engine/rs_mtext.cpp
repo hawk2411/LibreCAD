@@ -26,6 +26,7 @@
 
 #include<iostream>
 #include<cmath>
+#include <utility>
 #include "rs_font.h"
 #include "rs_mtext.h"
 
@@ -44,13 +45,13 @@ RS_MTextData::RS_MTextData(const RS_Vector &_insertionPoint,
                            MTextDrawingDirection _drawingDirection,
                            MTextLineSpacingStyle _lineSpacingStyle,
                            double _lineSpacingFactor,
-                           const QString &_text,
-                           const QString &_style,
+                           QString _text,
+                           QString _style,
                            double _angle,
                            RS2::UpdateMode _updateMode) :
         insertionPoint(_insertionPoint), height(_height), width(_width), valign(_valign), halign(_halign),
         drawingDirection(_drawingDirection), lineSpacingStyle(_lineSpacingStyle), lineSpacingFactor(_lineSpacingFactor),
-        text(_text), style(_style), angle(_angle), updateMode(_updateMode) {
+        text(std::move(_text)), style(std::move(_style)), angle(_angle), updateMode(_updateMode) {
 }
 
 std::ostream &operator<<(std::ostream &os, const RS_MTextData &td) {
@@ -75,8 +76,8 @@ std::ostream &operator<<(std::ostream &os, const RS_MTextData &td) {
  * Constructor.
  */
 RS_MText::RS_MText(RS_EntityContainer *parent,
-                   const RS_MTextData &d)
-        : RS_EntityContainer(parent), data(d) {
+                   RS_MTextData d)
+        : RS_EntityContainer(parent), data(std::move(d)) {
 
     usedTextHeight = 0.0;
     usedTextWidth = 0.0;
@@ -84,11 +85,11 @@ RS_MText::RS_MText(RS_EntityContainer *parent,
 }
 
 RS_Entity *RS_MText::clone() const {
-    RS_MText *t = new RS_MText(*this);
-    t->setOwner(isOwner());
-    t->initId();
-    t->detach();
-    return t;
+    auto *copy = new RS_MText(*this);
+    copy->setOwner(isOwner());
+    copy->initId();
+    copy->detach();
+    return copy;
 }
 
 /**
@@ -122,7 +123,7 @@ void RS_MText::setText(const QString &t) {
  *
  * @return  1: top left ... 9: bottom right
  */
-int RS_MText::getAlignment() {
+int RS_MText::getAlignment() const {
     if (data.valign == RS_MTextData::VATop) {
         if (data.halign == RS_MTextData::HALeft) {
             return 1;
@@ -191,16 +192,16 @@ void RS_MText::setAlignment(int a) {
 /**
  * @return Number of lines in this text entity.
  */
-int RS_MText::getNumberOfLines() {
-    int c = 1;
+int RS_MText::getNumberOfLines() const {
+    int lines = 1;
 
-    for (int i = 0; i < (int) data.text.length(); ++i) {
-        if (data.text.at(i).unicode() == 0x0A) {
-            c++;
+    for (auto item : data.text) {
+        if (item.unicode() == 0x0A) {
+            lines++;
         }
     }
 
-    return c;
+    return lines;
 }
 
 
@@ -292,9 +293,6 @@ void RS_MText::update() {
                             RS_Font *fontNew{RS_FONTLIST->requestFont(fontName)};
                             if (nullptr != fontNew) {
                                 font = fontNew;
-                            }
-                            if (nullptr == font) {
-                                font = RS_FONTLIST->requestFont("standard");
                             }
                             i = j;
                         }
@@ -536,7 +534,7 @@ double RS_MText::updateAddLine(RS_EntityContainer *textLine, int lineCounter) {
     // Move:
     textLine->move(data.insertionPoint);
     textLine->setPen(RS_Pen(RS2::FlagInvalid));
-    textLine->setLayer(NULL);
+    textLine->setLayer(nullptr);
     textLine->forcedCalculateBorders();
 
     addEntity(textLine);
