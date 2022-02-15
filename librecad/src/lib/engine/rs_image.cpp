@@ -25,11 +25,11 @@
 **********************************************************************/
 #include<iostream>
 #include <QImage>
+#include <utility>
 #include "rs_image.h"
 #include "rs_line.h"
 #include "rs_settings.h"
 
-#include "rs_constructionline.h"
 #include "rs_debug.h"
 #include "rs_graphicview.h"
 #include "rs_painterqt.h"
@@ -40,12 +40,12 @@ RS_ImageData::RS_ImageData(int _handle,
                            const RS_Vector &_uVector,
                            const RS_Vector &_vVector,
                            const RS_Vector &_size,
-                           const QString &_file,
+                           QString _file,
                            int _brightness,
                            int _contrast,
                            int _fade) :
         handle(_handle), insertionPoint(_insertionPoint), uVector(_uVector), vVector(_vVector), size(_size),
-        file(_file), brightness(_brightness), contrast(_contrast), fade(_fade) {
+        file(std::move(_file)), brightness(_brightness), contrast(_contrast), fade(_fade) {
 }
 
 std::ostream &operator<<(std::ostream &os, const RS_ImageData &ld) {
@@ -57,45 +57,20 @@ std::ostream &operator<<(std::ostream &os, const RS_ImageData &ld) {
  * Constructor.
  */
 RS_Image::RS_Image(RS_EntityContainer *parent,
-                   const RS_ImageData &d)
-        : RS_AtomicEntity(parent), _data(d) {
+                   RS_ImageData d)
+        : RS_AtomicEntity(parent), _data(std::move(d)) {
 
-    update();
-    calculateBorders();
-}
-
-RS_Image::RS_Image(const RS_Image &image) :
-        RS_AtomicEntity(image.getParent()), _data(image._data),
-        _img(image._img.get() ? new QImage(*image._img) : nullptr) {
-}
-
-RS_Image &RS_Image::operator=(const RS_Image &image) {
-    _data = image._data;
-    if (image._img.get()) {
-        _img.reset(new QImage(*image._img));
-    } else {
-        _img.reset();
-    }
-    return *this;
-}
-
-RS_Image::RS_Image(RS_Image &&image) :
-        RS_AtomicEntity(image.getParent()), _data(std::move(image._data)), _img(std::move(image._img)) {
-}
-
-RS_Image &RS_Image::operator=(RS_Image &&image) {
-    _data = image._data;
-    _img = std::move(image._img);
-    return *this;
+    update_local();
+    calculateBorders_local();
 }
 
 
 RS_Entity *RS_Image::clone() const {
-    RS_Image *i = new RS_Image(*this);
-    i->setHandle(getHandle());
-    i->initId();
-    i->update();
-    return i;
+    auto *copy = new RS_Image(*this);
+    copy->setHandle(getHandle());
+    copy->initId();
+    copy->update();
+    return copy;
 }
 
 
@@ -110,56 +85,30 @@ void RS_Image::updateData(RS_Vector size, RS_Vector Uv, RS_Vector Vv) {
 
 void RS_Image::update() {
 
+    update_local();
+
+}
+
+void RS_Image::update_local() {
     RS_DEBUG->print("RS_Image::update");
 
     // the whole image:
-    //QImage image = QImage(data.file);
-    _img.reset(new QImage(_data.file));
-    if (!_img->isNull()) {
-        _data.size = RS_Vector(_img->width(), _img->height());
+    _img.load(_data.file);
+    if (!_img.isNull()) {
+        _data.size = RS_Vector(_img.width(), _img.height());
         calculateBorders(); // image update need this.
     }
 
     RS_DEBUG->print("RS_Image::update: OK");
-
-    /*
-    // number of small images:
-    nx = image.width()/100;
-    ny = image.height()/100;
-
-    // create small images:
-    img = new QImage*[nx];
-    QPixmap pm;
-    int w,h;
-    for (int x = 0; x<nx; ++x) {
-        img[x] = new QImage[ny];
-        for (int y = 0; y<ny; ++y) {
-                if (x<nx-1) {
-                        w = 100;
-                }
-                else {
-                        w = image.width()%100;
-                }
-
-                if (y<ny-1) {
-                        h = 100;
-                }
-                else {
-                        h = image.height()%100;
-                }
-
-                pm = QPixmap(w, h);
-                RS_PainterQt painter(&pm);
-                painter.drawImage(-x*100, -y*100, image);
-                img[x][y] = pm.convertToImage();
-        }
-    }
-    */
 }
 
 
 void RS_Image::calculateBorders() {
 
+    calculateBorders_local();
+}
+
+void RS_Image::calculateBorders_local() {
     RS_VectorSolutions sol = getCorners();
     _minV = RS_Vector::minimum(
             RS_Vector::minimum(sol.get(0), sol.get(1)),
@@ -356,20 +305,14 @@ void RS_Image::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) 
 
 
 void RS_Image::draw(RS_Painter *painter, RS_GraphicView *view, double & /*patternOffset*/) {
-    if (!(painter && view) || !_img.get() || _img->isNull())
+    if (!(painter && view) || _img.isNull())
         return;
-
-    // erase image:
-    //if (painter->getPen().getColor()==view->getBackground()) {
-    //	RS_VectorSolutions sol = getCorners();
-    //
-    //}
 
     RS_Vector scale{view->toGuiDX(_data.uVector.magnitude()),
                     view->toGuiDY(_data.vVector.magnitude())};
     double angle = _data.uVector.angle();
 
-    painter->drawImg(*_img,
+    painter->drawImg(_img,
                      view->toGui(_data.insertionPoint),
                      angle, scale);
 

@@ -26,6 +26,7 @@
 #ifndef RS_IMAGE_H
 #define RS_IMAGE_H
 
+#include <QImage>
 #include <memory>
 #include "rs_atomicentity.h"
 
@@ -45,7 +46,7 @@ struct RS_ImageData {
                  const RS_Vector &uVector,
                  const RS_Vector &vVector,
                  const RS_Vector &size,
-                 const QString &file,
+                 QString file,
                  int brightness,
                  int contrast,
                  int fade);
@@ -79,15 +80,7 @@ struct RS_ImageData {
 class RS_Image : public RS_AtomicEntity {
 public:
     RS_Image(RS_EntityContainer *parent,
-             const RS_ImageData &d);
-
-    RS_Image(const RS_Image &image);
-
-    RS_Image(RS_Image &&image);
-
-    RS_Image &operator=(const RS_Image &image);
-
-    RS_Image &operator=(RS_Image &&image);
+             RS_ImageData d);
 
     RS_Entity *clone() const override;
 
@@ -192,27 +185,27 @@ public:
 
 
     RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                 double *dist = NULL) const override;
+                                 double *dist) const override;
 
     RS_Vector getNearestPointOnEntity(const RS_Vector &coord,
-                                      bool onEntity = true, double *dist = NULL,
-                                      RS_Entity **entity = NULL) const override;
+                                      bool onEntity, double *dist,
+                                      RS_Entity **entity) const override;
 
     RS_Vector getNearestCenter(const RS_Vector &coord,
-                               double *dist = NULL) const override;
+                               double *dist) const override;
 
     RS_Vector getNearestMiddle(const RS_Vector &coord,
-                               double *dist = NULL,
-                               int middlePoints = 1) const override;
+                               double *dist,
+                               int middlePoints) const override;
 
     RS_Vector getNearestDist(double distance,
                              const RS_Vector &coord,
-                             double *dist = NULL) const override;
+                             double *dist) const override;
 
     double getDistanceToPoint(const RS_Vector &coord,
-                              RS_Entity **entity = NULL,
-                              RS2::ResolveLevel level = RS2::ResolveNone,
-                              double solidDist = RS_MAXDOUBLE) const override;
+                              RS_Entity **entity,
+                              RS2::ResolveLevel level,
+                              double solidDist) const override;
 
     void move(const RS_Vector &offset) override;
 
@@ -236,7 +229,11 @@ protected:
     bool containsPoint(const RS_Vector &coord) const;
 
     RS_ImageData _data;
-    std::unique_ptr<QImage> _img;
+    QImage _img;
+
+    void update_local();
+
+    void calculateBorders_local();
 };
 
 #endif
