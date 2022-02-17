@@ -49,14 +49,14 @@ void RS_PatternList::init() {
 
     QStringList list = RS_SYSTEM->getPatternList();
 
-    patterns.clear();
+    _patterns.clear();
 
     for (auto const &s: list) {
         RS_DEBUG->print("pattern: %s:", s.toLatin1().data());
 
         QFileInfo fi(s);
         QString const name = fi.baseName().toLower();
-        patterns[name] = std::unique_ptr<RS_Pattern>{};
+        _patterns[name] = std::unique_ptr<RS_Pattern>{};
 
         RS_DEBUG->print("base: %s", name.toLatin1().data());
     }
@@ -74,15 +74,15 @@ RS_Pattern *RS_PatternList::requestPattern(const QString &name) {
     QString lowered_name = name.toLower();
 
     RS_DEBUG->print("name2: %s", lowered_name.toLatin1().data());
-    auto it = patterns.find(lowered_name);
-    if (it != patterns.end()) {
+    auto it = _patterns.find(lowered_name);
+    if (it != _patterns.end()) {
         if (it->second == nullptr) {
             auto p = std::make_unique<RS_Pattern>(lowered_name);
             p->loadPattern();
             it->second = std::move(p);
         }
         RS_DEBUG->print("name2: %s, size= %d", lowered_name.toLatin1().data(),
-                        patterns[lowered_name]->countDeep());
+                        _patterns[lowered_name]->countDeep());
         return it->second.get();
     }
     return nullptr;
@@ -91,7 +91,7 @@ RS_Pattern *RS_PatternList::requestPattern(const QString &name) {
 
 bool RS_PatternList::contains(const QString &name) const {
 
-    return patterns.count(name.toLower());
+    return _patterns.count(name.toLower());
 
 }
 
@@ -102,7 +102,7 @@ bool RS_PatternList::contains(const QString &name) const {
 std::ostream &operator<<(std::ostream &os, RS_PatternList &l) {
 
     os << "Patternlist: \n";
-    for (auto const &pa: l.patterns)
+    for (auto const &pa: l._patterns)
         if (pa.second)
             os << *pa.second << '\n';
 

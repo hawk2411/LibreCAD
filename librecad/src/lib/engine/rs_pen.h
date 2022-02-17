@@ -44,24 +44,14 @@ public:
     /**
      * Creates a default pen (black, solid, width 0).
      */
-    RS_Pen() : RS_Flags() {
-        setColor(RS_Color(0, 0, 0));
-        setWidth(RS2::Width00);
-        setLineType(RS2::SolidLine);
-        setScreenWidth(0);
-    }
+    RS_Pen() : _lineType(RS2::SolidLine), _width(RS2::Width00), _screenWidth(0), _color(0, 0, 0) {}
 
     /**
      * Creates a pen with the given attributes.
      */
     RS_Pen(const RS_Color &c,
            RS2::LineWidth w,
-           RS2::LineType t) : RS_Flags() {
-        setColor(c);
-        setWidth(w);
-        setLineType(t);
-        setScreenWidth(0);
-    }
+           RS2::LineType t) : _lineType(t), _width(w), _screenWidth(0), _color(c) {}
 
     /**
      * Creates a default pen with the given flags. This is 
@@ -72,67 +62,49 @@ public:
      *   RS_Pen p(RS2::FlagInvalid);
      * </pre>
      */
-    RS_Pen(unsigned int f) : RS_Flags(f) {
-        setColor(RS_Color(0, 0, 0));
-        setWidth(RS2::Width00);
-        setLineType(RS2::SolidLine);
-        setScreenWidth(0);
-    }
+    explicit RS_Pen(unsigned int f) : RS_Flags(f), _lineType(RS2::SolidLine), _width(RS2::Width00), _screenWidth(0),
+                                      _color(0, 0, 0) {}
 
-    //RS_Pen(const RS_Pen& pen) : RS_Flags(pen.getFlags()) {
-    //    lineType = pen.lineType;
-    //    width = pen.width;
-    //    color = pen.color;
-    //}
-    virtual ~RS_Pen() {}
+    virtual ~RS_Pen() = default;
 
     RS2::LineType getLineType() const {
-        return lineType;
+        return _lineType;
     }
 
     void setLineType(RS2::LineType t) {
-        lineType = t;
+        _lineType = t;
     }
 
     RS2::LineWidth getWidth() const {
-        return width;
+        return _width;
     }
 
     void setWidth(RS2::LineWidth w) {
-        width = w;
+        _width = w;
     }
 
     double getScreenWidth() const {
-        return screenWidth;
+        return _screenWidth;
     }
 
     void setScreenWidth(double w) {
-        screenWidth = w;
+        _screenWidth = w;
     }
 
     const RS_Color &getColor() const {
-        return color;
+        return _color;
     }
 
     void setColor(const RS_Color &c) {
-        color = c;
+        _color = c;
     }
 
     bool isValid() {
         return !getFlag(RS2::FlagInvalid);
     }
 
-    //RS_Pen& operator = (const RS_Pen& p) {
-    //    lineType = p.lineType;
-    //    width = p.width;
-    //    color = p.color;
-    //    setFlags(p.getFlags());
-
-    //    return *this;
-    //}
-
     bool operator==(const RS_Pen &p) const {
-        return (lineType == p.lineType && width == p.width && color == p.color);
+        return (_lineType == p._lineType && _width == p._width && _color == p._color);
     }
 
     bool operator!=(const RS_Pen &p) const {
@@ -142,11 +114,11 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const RS_Pen &p);
 
 
-protected:
-    RS2::LineType lineType;
-    RS2::LineWidth width;
-    double screenWidth;
-    RS_Color color;
+private:
+    RS2::LineType _lineType;
+    RS2::LineWidth _width;
+    double _screenWidth{};
+    RS_Color _color;
 };
 
 #endif

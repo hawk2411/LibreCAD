@@ -68,19 +68,19 @@ public:
 
     //! \{ range based loop support
     PTN_MAP::iterator begin() {
-        return patterns.begin();
+        return _patterns.begin();
     }
 
     PTN_MAP::const_iterator begin() const {
-        return patterns.begin();
+        return _patterns.begin();
     }
 
     PTN_MAP::iterator end() {
-        return patterns.end();
+        return _patterns.end();
     }
 
     PTN_MAP::const_iterator end() const {
-        return patterns.end();
+        return _patterns.end();
     }
     //! \}
 
@@ -93,7 +93,7 @@ public:
 
 private:
     //! patterns in the graphic
-    PTN_MAP patterns;
+    PTN_MAP _patterns;
 };
 
 #endif
