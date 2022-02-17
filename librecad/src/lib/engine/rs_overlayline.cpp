@@ -38,7 +38,7 @@ RS_OverlayLine::RS_OverlayLine(RS_EntityContainer *parent,
 
 
 void RS_OverlayLine::draw(RS_Painter *painter, RS_GraphicView *view, double & /*patternOffset*/) {
-    if (painter == NULL || view == NULL) {
+    if (painter == nullptr || view == nullptr) {
         return;
     }
 
