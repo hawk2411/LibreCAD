@@ -66,10 +66,6 @@ public:
 
     void init();
 
-    int countPatterns() const {
-        return patterns.size();
-    }
-
     //! \{ range based loop support
     PTN_MAP::iterator begin() {
         return patterns.begin();
