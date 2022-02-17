@@ -38,12 +38,9 @@
  *
  * @param fileName File name of a DXF file defining the pattern
  */
-RS_Pattern::RS_Pattern(const QString& fileName)
-		: RS_EntityContainer(NULL)
-		,fileName(fileName)
-		,loaded(false)
-{
-	RS_DEBUG->print("RS_Pattern::RS_Pattern() ");
+RS_Pattern::RS_Pattern(const QString &fileName)
+        : RS_EntityContainer(NULL), fileName(fileName), loaded(false) {
+    RS_DEBUG->print("RS_Pattern::RS_Pattern() ");
 }
 
 
@@ -68,10 +65,10 @@ bool RS_Pattern::loadPattern() {
         QStringList patterns = RS_SYSTEM->getPatternList();
         QFileInfo file;
         for (QStringList::Iterator it = patterns.begin();
-                it!=patterns.end();
-                it++) {
+             it != patterns.end();
+             it++) {
 
-            if (QFileInfo(*it).baseName().toLower()==fileName.toLower()) {
+            if (QFileInfo(*it).baseName().toLower() == fileName.toLower()) {
                 path = *it;
                 RS_DEBUG->print("Pattern found: %s", path.toLatin1().data());
                 break;
@@ -79,7 +76,7 @@ bool RS_Pattern::loadPattern() {
         }
     }
 
-    // We have the full path of the pattern:
+        // We have the full path of the pattern:
     else {
         path = fileName;
     }
@@ -90,22 +87,22 @@ bool RS_Pattern::loadPattern() {
         return false;
     }
 
-	RS_Graphic gr;
-	RS_FileIO::instance()->fileImport(gr, path);
-	for(auto e: gr){
-		if (e->rtti()==RS2::EntityLine ||
-				e->rtti()==RS2::EntityArc||
-				e->rtti()==RS2::EntityEllipse
-				) {
-            RS_Layer* l = e->getLayer();
-            RS_Entity* cl = e->clone();
+    RS_Graphic gr;
+    RS_FileIO::instance()->fileImport(gr, path);
+    for (auto e: gr) {
+        if (e->rtti() == RS2::EntityLine ||
+            e->rtti() == RS2::EntityArc ||
+            e->rtti() == RS2::EntityEllipse
+                ) {
+            RS_Layer *l = e->getLayer();
+            RS_Entity *cl = e->clone();
             cl->reparent(this);
-			if (l) {
+            if (l) {
                 cl->setLayer(l->getName());
             }
             addEntity(cl);
         }
-	}
+    }
 
     loaded = true;
     RS_DEBUG->print("RS_Pattern::loadPattern: OK");
@@ -114,6 +111,6 @@ bool RS_Pattern::loadPattern() {
 }
 
 QString RS_Pattern::getFileName() const {
-	return fileName;
+    return fileName;
 }
 
