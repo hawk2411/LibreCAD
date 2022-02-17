@@ -32,6 +32,7 @@
 #include<memory>
 
 class RS_Pattern;
+
 class QString;
 
 #define RS_PATTERNLIST RS_PatternList::instance()
@@ -43,52 +44,60 @@ class QString;
  * @author Andrew Mustun
  */
 class RS_PatternList {
-	using PTN_MAP = std::map<QString, std::unique_ptr<RS_Pattern>>;
-	RS_PatternList() = default;
+    using PTN_MAP = std::map<QString, std::unique_ptr<RS_Pattern>>;
+
+    RS_PatternList() = default;
 
 public:
     /**
      * @return Instance to the unique pattern list.
      */
-	static RS_PatternList* instance();
+    static RS_PatternList *instance();
 
-	~RS_PatternList();
-	RS_PatternList(RS_PatternList const&) = delete;
-	RS_PatternList& operator = (RS_PatternList const&) = delete;
-	RS_PatternList(RS_PatternList &&) = delete;
-	RS_PatternList& operator = (RS_PatternList &&) = delete;
+    ~RS_PatternList();
 
-	void init();
+    RS_PatternList(RS_PatternList const &) = delete;
 
-	int countPatterns() const {
-		return patterns.size();
+    RS_PatternList &operator=(RS_PatternList const &) = delete;
+
+    RS_PatternList(RS_PatternList &&) = delete;
+
+    RS_PatternList &operator=(RS_PatternList &&) = delete;
+
+    void init();
+
+    int countPatterns() const {
+        return patterns.size();
     }
 
-	//! \{ range based loop support
-	PTN_MAP::iterator begin() {
-		return patterns.begin();
-	}
-	PTN_MAP::const_iterator begin() const{
-		return patterns.begin();
-	}
-	PTN_MAP::iterator end() {
-		return patterns.end();
-	}
-	PTN_MAP::const_iterator end() const{
-		return patterns.end();
-	}
-	//! \}
+    //! \{ range based loop support
+    PTN_MAP::iterator begin() {
+        return patterns.begin();
+    }
 
-	RS_Pattern* requestPattern(const QString& name);
+    PTN_MAP::const_iterator begin() const {
+        return patterns.begin();
+    }
 
-	bool contains(const QString& name) const;
+    PTN_MAP::iterator end() {
+        return patterns.end();
+    }
 
-    friend std::ostream& operator << (std::ostream& os, RS_PatternList& l);
+    PTN_MAP::const_iterator end() const {
+        return patterns.end();
+    }
+    //! \}
+
+    RS_Pattern *requestPattern(const QString &name);
+
+    bool contains(const QString &name) const;
+
+    friend std::ostream &operator<<(std::ostream &os, RS_PatternList &l);
 
 
 private:
     //! patterns in the graphic
-	PTN_MAP patterns;
+    PTN_MAP patterns;
 };
 
 #endif

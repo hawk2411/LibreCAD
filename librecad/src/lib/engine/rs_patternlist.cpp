@@ -32,9 +32,9 @@
 #include "rs_pattern.h"
 #include "rs_debug.h"
 
-RS_PatternList* RS_PatternList::instance() {
-	static RS_PatternList instance;
-	return &instance;
+RS_PatternList *RS_PatternList::instance() {
+    static RS_PatternList instance;
+    return &instance;
 }
 
 
@@ -47,18 +47,18 @@ RS_PatternList::~RS_PatternList() = default;
 void RS_PatternList::init() {
     RS_DEBUG->print("RS_PatternList::initPatterns");
 
-	QStringList list = RS_SYSTEM->getPatternList();
+    QStringList list = RS_SYSTEM->getPatternList();
 
-	patterns.clear();
+    patterns.clear();
 
-	for (auto const& s: list) {
-		RS_DEBUG->print("pattern: %s:", s.toLatin1().data());
+    for (auto const &s: list) {
+        RS_DEBUG->print("pattern: %s:", s.toLatin1().data());
 
-		QFileInfo fi(s);
-		QString const name = fi.baseName().toLower();
-		patterns[name] = std::unique_ptr<RS_Pattern>{};
+        QFileInfo fi(s);
+        QString const name = fi.baseName().toLower();
+        patterns[name] = std::unique_ptr<RS_Pattern>{};
 
-		RS_DEBUG->print("base: %s", name.toLatin1().data());
+        RS_DEBUG->print("base: %s", name.toLatin1().data());
     }
 }
 
@@ -68,15 +68,15 @@ void RS_PatternList::init() {
  * \p NULL if no such pattern was found. The pattern will be loaded into
  * memory if it's not already.
  */
-RS_Pattern* RS_PatternList::requestPattern(const QString& name) {
+RS_Pattern *RS_PatternList::requestPattern(const QString &name) {
     RS_DEBUG->print("RS_PatternList::requestPattern %s", name.toLatin1().data());
 
     QString lowered_name = name.toLower();
 
-	RS_DEBUG->print("name2: %s", lowered_name.toLatin1().data());
+    RS_DEBUG->print("name2: %s", lowered_name.toLatin1().data());
     auto it = patterns.find(lowered_name);
-    if(it != patterns.end()) {
-        if(it->second == nullptr) {
+    if (it != patterns.end()) {
+        if (it->second == nullptr) {
             auto p = std::make_unique<RS_Pattern>(lowered_name);
             p->loadPattern();
             it->second = std::move(p);
@@ -88,10 +88,10 @@ RS_Pattern* RS_PatternList::requestPattern(const QString& name) {
     return nullptr;
 }
 
-	
-bool RS_PatternList::contains(const QString& name) const {
 
-	return patterns.count(name.toLower());
+bool RS_PatternList::contains(const QString &name) const {
+
+    return patterns.count(name.toLower());
 
 }
 
@@ -99,12 +99,12 @@ bool RS_PatternList::contains(const QString& name) const {
 /**
  * Dumps the patterns to stdout.
  */
-std::ostream& operator << (std::ostream& os, RS_PatternList& l) {
+std::ostream &operator<<(std::ostream &os, RS_PatternList &l) {
 
     os << "Patternlist: \n";
-	for (auto const& pa: l.patterns)
-		if (pa.second)
-			os<< *pa.second << '\n';
+    for (auto const &pa: l.patterns)
+        if (pa.second)
+            os << *pa.second << '\n';
 
     return os;
 }
