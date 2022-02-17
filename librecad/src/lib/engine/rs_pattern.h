@@ -39,27 +39,30 @@ class RS_PatternList;
  * @author Andrew Mustun
  */
 class RS_Pattern : public RS_EntityContainer {
+
+private:
+    //! Pattern file name
+    QString _fileName;
+
+    //! Is this pattern currently loaded into memory?
+    bool _loaded;
+
 public:
-    RS_Pattern(const QString &fileName);
+    explicit RS_Pattern(QString fileName);
 
-    virtual ~RS_Pattern() = default;
+    ~RS_Pattern() override = default;
 
-    RS2::EntityType rtti() const {
+    RS2::EntityType rtti() const override {
         return RS2::EntityPattern;
     }
 
     virtual bool loadPattern();
 
     /** @return the fileName of this pattern. */
-    QString getFileName() const;
+    QString getFileName() const { return _fileName; }
 
-protected:
-    //! Pattern file name
-    QString fileName;
-
-    //! Is this pattern currently loaded into memory?
-    bool loaded;
-
+private:
+    QString getPath() const;
 
 };
 

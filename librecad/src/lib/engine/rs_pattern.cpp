@@ -27,6 +27,8 @@
 
 #include "rs_pattern.h"
 
+#include <utility>
+
 #include "rs_system.h"
 #include "rs_fileio.h"
 #include "rs_layer.h"
@@ -38,8 +40,8 @@
  *
  * @param fileName File name of a DXF file defining the pattern
  */
-RS_Pattern::RS_Pattern(const QString &fileName)
-        : RS_EntityContainer(NULL), fileName(fileName), loaded(false) {
+RS_Pattern::RS_Pattern(QString fileName)
+        : RS_EntityContainer(nullptr), _fileName(std::move(fileName)), _loaded(false) {
     RS_DEBUG->print("RS_Pattern::RS_Pattern() ");
 }
 
@@ -52,65 +54,68 @@ RS_Pattern::RS_Pattern(const QString &fileName)
  * extension or full path.
  */
 bool RS_Pattern::loadPattern() {
-    if (loaded) {
+    if (_loaded) {
         return true;
     }
 
     RS_DEBUG->print("RS_Pattern::loadPattern");
 
+    QString path = getPath();
+
+    // No pattern paths found:
+    if (path.isEmpty()) {
+        RS_DEBUG->print("No pattern \"%s\"available.", _fileName.toLatin1().data());
+        return false;
+    }
+
+    RS_Graphic graphic;
+    RS_FileIO::instance()->fileImport(graphic, path);
+    for (auto entity: graphic) {
+        switch(entity->rtti()) {
+            case RS2::EntityLine:
+            case RS2::EntityArc:
+            case RS2::EntityEllipse:
+            {
+                RS_Layer *layer = entity->getLayer();
+                RS_Entity *clone = entity->clone();
+                clone->reparent(this);
+                if (layer) {
+                    clone->setLayer(layer->getName());
+                }
+                addEntity(clone);
+            }
+                break;
+            default:
+                break;
+        }
+    }
+    _loaded = true;
+    RS_DEBUG->print("RS_Pattern::loadPattern: OK");
+
+    return _loaded;
+}
+
+QString RS_Pattern::getPath() const {
     QString path;
 
     // Search for the appropriate pattern if we have only the name of the pattern:
-    if (!fileName.toLower().contains(".dxf")) {
-        QStringList patterns = RS_SYSTEM->getPatternList();
-        QFileInfo file;
-        for (QStringList::Iterator it = patterns.begin();
-             it != patterns.end();
-             it++) {
 
-            if (QFileInfo(*it).baseName().toLower() == fileName.toLower()) {
-                path = *it;
+    if (!_fileName.contains(".dxf", Qt::CaseInsensitive)) {
+        QStringList patterns = RS_SYSTEM->getPatternList();
+        for (auto & pattern : patterns) {
+
+            if (QFileInfo(pattern).baseName().toLower() == _fileName.toLower()) {
+                path = pattern;
                 RS_DEBUG->print("Pattern found: %s", path.toLatin1().data());
                 break;
             }
         }
     }
-
-        // We have the full path of the pattern:
     else {
-        path = fileName;
+        // We have the full path of the pattern:
+        path = _fileName;
     }
-
-    // No pattern paths found:
-    if (path.isEmpty()) {
-        RS_DEBUG->print("No pattern \"%s\"available.", fileName.toLatin1().data());
-        return false;
-    }
-
-    RS_Graphic gr;
-    RS_FileIO::instance()->fileImport(gr, path);
-    for (auto e: gr) {
-        if (e->rtti() == RS2::EntityLine ||
-            e->rtti() == RS2::EntityArc ||
-            e->rtti() == RS2::EntityEllipse
-                ) {
-            RS_Layer *l = e->getLayer();
-            RS_Entity *cl = e->clone();
-            cl->reparent(this);
-            if (l) {
-                cl->setLayer(l->getName());
-            }
-            addEntity(cl);
-        }
-    }
-
-    loaded = true;
-    RS_DEBUG->print("RS_Pattern::loadPattern: OK");
-
-    return true;
+    return path;
 }
 
-QString RS_Pattern::getFileName() const {
-    return fileName;
-}
 
