@@ -756,7 +756,7 @@ void RS_Snapper::drawSnapper() {
                 circle->setPen(snap_indicator->shape_pen);
                 container->addEntity(circle);
             } else if (type == "Point") {
-                RS_Point *point = new RS_Point(container, pImpData->snapCoord);
+                RS_Point *point = new RS_Point(container, RS_PointData(pImpData->snapCoord));
                 point->setPen(snap_indicator->shape_pen);
                 container->addEntity(point);
             } else if (type == "Square") {

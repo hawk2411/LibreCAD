@@ -202,7 +202,7 @@ void RS_Spline::update() {
 		if (prev.valid) {
 			RS_Line* line = new RS_Line{this, prev, vp};
 			line->setLayer(nullptr);
-			line->setPen(RS2::FlagInvalid);
+			line->setPen(RS_Pen(RS2::FlagInvalid));
 			addEntity(line);
 		}
 		prev = vp;

@@ -34,7 +34,7 @@
  * Holds the data that defines a point.
  */
 struct RS_PointData {
-    RS_PointData(const RS_Vector &pos) : pos(pos) {}
+    explicit RS_PointData(const RS_Vector &pos) : pos(pos) {}
 
     friend std::ostream &operator<<(std::ostream &os, const RS_PointData &pd);
 
@@ -85,30 +85,30 @@ public:
 
     bool isTangent(const RS_CircleData &circleData) const override;
 
-    RS_Vector getMiddlePoint(void) const override;
+    RS_Vector getMiddlePoint() const override;
 
     RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                 double *dist = nullptr) const override;
+                                 double *dist) const override;
 
     RS_Vector getNearestPointOnEntity(const RS_Vector &coord,
-                                      bool onEntity = true, double *dist = nullptr,
-                                      RS_Entity **entity = nullptr) const override;
+                                      bool onEntity, double *dist,
+                                      RS_Entity **entity) const override;
 
     RS_Vector getNearestCenter(const RS_Vector &coord,
-                               double *dist = nullptr) const override;
+                               double *dist) const override;
 
     RS_Vector getNearestMiddle(const RS_Vector &coord,
-                               double *dist = nullptr,
-                               int middlePoints = 1) const override;
+                               double *dist,
+                               int middlePoints) const override;
 
     RS_Vector getNearestDist(double distance,
                              const RS_Vector &coord,
-                             double *dist = nullptr) const override;
+                             double *dist) const override;
 
     double getDistanceToPoint(const RS_Vector &coord,
-                              RS_Entity **entity = nullptr,
-                              RS2::ResolveLevel level = RS2::ResolveNone,
-                              double solidDist = RS_MAXDOUBLE) const override;
+                              RS_Entity **entity,
+                              RS2::ResolveLevel level,
+                              double solidDist) const override;
 
     void move(const RS_Vector &offset) override;
 
@@ -127,9 +127,8 @@ public:
     /** Recalculates the borders of this entity. */
     void calculateBorders() override;
 
-protected:
-    RS_PointData data;
-    //RS_Vector point;
+private:
+    RS_PointData _data;
 };
 
 #endif
