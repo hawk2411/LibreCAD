@@ -31,18 +31,18 @@
 /**
  * Constructor.
  */
-RS_OverlayLine::RS_OverlayLine(RS_EntityContainer* parent,
-                 const RS_LineData& d)
-        :RS_Line(parent, d) {
+RS_OverlayLine::RS_OverlayLine(RS_EntityContainer *parent,
+                               const RS_LineData &d)
+        : RS_Line(parent, d) {
 }
 
 
-void RS_OverlayLine::draw(RS_Painter* painter, RS_GraphicView* view, double& /*patternOffset*/) {
-    if (painter==NULL || view==NULL) {
+void RS_OverlayLine::draw(RS_Painter *painter, RS_GraphicView *view, double & /*patternOffset*/) {
+    if (painter == NULL || view == NULL) {
         return;
     }
 
-        painter->drawLine(getStartpoint(),
-                                          getEndpoint());
+    painter->drawLine(getStartpoint(),
+                      getEndpoint());
 
 }
