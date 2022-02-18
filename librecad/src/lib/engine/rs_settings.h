@@ -37,17 +37,16 @@ class QVariant;
 // Default Settings
 // ---------------------------------------------------------------------------
 
-namespace Colors
-{
-    const QString snap_indicator   = "#FFC200";
-    const QString background       = "Black";
-    const QString grid             = "Gray";
-    const QString meta_grid        = "#404040";
-    const QString select           = "#A54747";
-    const QString highlight        = "#739373";
-    const QString start_handle     = "Cyan";
-    const QString handle           = "Blue";
-    const QString end_handle       = "Blue";
+namespace Colors {
+    const QString snap_indicator = "#FFC200";
+    const QString background = "Black";
+    const QString grid = "Gray";
+    const QString meta_grid = "#404040";
+    const QString select = "#A54747";
+    const QString highlight = "#739373";
+    const QString start_handle = "Cyan";
+    const QString handle = "Blue";
+    const QString end_handle = "Blue";
 }
 
 // ---------------------------------------------------------------------------
@@ -65,12 +64,14 @@ namespace Colors
 class RS_Settings {
 
 public:
-    RS_Settings(RS_Settings const&) = delete;
-	~RS_Settings();
-	/**
+    RS_Settings(RS_Settings const &) = delete;
+
+    ~RS_Settings();
+
+    /**
      * @return Instance to the unique settings object.
      */
-	static RS_Settings* instance();
+    static RS_Settings *instance();
 
     /**
      * Initialize the system.
@@ -78,34 +79,43 @@ public:
      * @param company_key Company Key
      * @param app_key Application key
      */
-    void init(const QString& company_key, const QString& app_key);
+    void init(const QString &company_key, const QString &app_key);
 
-    void beginGroup(const QString& group_name);
+    void beginGroup(const QString &group_name);
+
     void endGroup();
 
-    void writeEntry(const QString& key, int value);
-    void writeEntry(const QString& key, double value);
-    void writeEntry(const QString& key, const QVariant& value);
-    void writeEntry(const QString& key, const QString& value);
-    QString readEntry(const QString& key,
-                        const QString& def = QString(),
-                        bool* ok = 0);
+    void writeEntry(const QString &key, int value);
 
-    int readNumEntry(const QString& key, int def=0);
+    void writeEntry(const QString &key, double value);
+
+    void writeEntry(const QString &key, const QVariant &value);
+
+    void writeEntry(const QString &key, const QString &value);
+
+    QString readEntry(const QString &key,
+                      const QString &def = QString(),
+                      bool *ok = 0);
+
+    int readNumEntry(const QString &key, int def = 0);
+
     void clear_all();
+
     void clear_geometry();
+
     static bool save_is_allowed;
 
 private:
     RS_Settings();
 
-	RS_Settings& operator = (RS_Settings const&) = delete;
-	QVariant readEntryCache(const QString& key);
+    RS_Settings &operator=(RS_Settings const &) = delete;
+
+    QVariant readEntryCache(const QString &key);
 
 protected:
-    static RS_Settings* uniqueInstance;
+    static RS_Settings *uniqueInstance;
 
-	std::map<QString, QVariant> cache;
+    std::map<QString, QVariant> cache;
     QString companyKey;
     QString appKey;
     QString group;
