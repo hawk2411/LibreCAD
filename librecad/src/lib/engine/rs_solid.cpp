@@ -76,11 +76,11 @@ RS_Solid::RS_Solid(RS_EntityContainer *parent,
                    const RS_SolidData &d) :
         RS_AtomicEntity(parent),
         _data(d) {
-    calculateBorders();
+    calculateBordersLocal();
 }
 
 RS_Entity *RS_Solid::clone() const {
-    RS_Solid *s = new RS_Solid(*this);
+    auto *s = new RS_Solid(*this);
     s->initId();
 
     return s;
@@ -123,6 +123,11 @@ void RS_Solid::shapeArrow(const RS_Vector &point,
 }
 
 void RS_Solid::calculateBorders() {
+    calculateBordersLocal();
+
+}
+
+void RS_Solid::calculateBordersLocal() {
     resetBorders();
 
     for (int i = RS_SolidData::FirstCorner; i < RS_SolidData::MaxCorners; ++i) {
@@ -134,13 +139,13 @@ void RS_Solid::calculateBorders() {
 }
 
 RS_Vector RS_Solid::getNearestEndpoint(const RS_Vector &coord, double *dist /*= nullptr*/) const {
-    double minDist{RS_MAXDOUBLE};
-    double curDist{0.0};
+
+    double minDist = RS_MAXDOUBLE;
     RS_Vector ret;
 
     for (int i = RS_SolidData::FirstCorner; i < RS_SolidData::MaxCorners; ++i) {
         if (_data.corner[i].valid) {
-            curDist = _data.corner[i].distanceTo(coord);
+            double curDist = _data.corner[i].distanceTo(coord);
             if (curDist < minDist) {
                 ret = _data.corner[i];
                 minDist = curDist;
@@ -241,7 +246,7 @@ bool RS_Solid::isInCrossWindow(const RS_Vector &v1, const RS_Vector &v2) const {
 *
 * @return true if positive o zero, false if negative.
 */
-bool RS_Solid::sign(const RS_Vector &v1, const RS_Vector &v2, const RS_Vector &v3) const {
+bool RS_Solid::sign(const RS_Vector &v1, const RS_Vector &v2, const RS_Vector &v3) {
     double res = (v1.x - v3.x) * (v2.y - v3.y) - (v2.x - v3.x) * (v1.y - v3.y);
 
     return (res >= 0.0);
@@ -281,9 +286,9 @@ RS_Vector RS_Solid::getNearestPointOnEntity(const RS_Vector &coord,
     }
 
     RS_Vector ret(false);
-    double currDist{RS_MAXDOUBLE};
-    double tmpDist{0.0};
+    double currDist = RS_MAXDOUBLE;
     int totalV{isTriangle() ? RS_SolidData::Triangle : RS_SolidData::MaxCorners};
+
     for (int i = RS_SolidData::FirstCorner, next = i + 1; i <= totalV; ++i, ++next) {
         //closing edge
         if (next == totalV) {
@@ -300,7 +305,7 @@ RS_Vector RS_Solid::getNearestPointOnEntity(const RS_Vector &coord,
             //find projection on line
             vpc = _data.corner[i] + direction * RS_Vector::dotP(vpc, direction) / a;
         }
-        tmpDist = vpc.distanceTo(coord);
+        double tmpDist = vpc.distanceTo(coord);
         if (tmpDist < currDist) {
             currDist = tmpDist;
             ret = vpc;
@@ -437,7 +442,7 @@ void RS_Solid::draw(RS_Painter *painter,
     }
 }
 
-void RS_Solid::setDistPtr(double *dist, const double value) const {
+void RS_Solid::setDistPtr(double *dist, const double value) {
     if (nullptr != dist) {
         *dist = value;
     }

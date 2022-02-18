@@ -104,28 +104,28 @@ public:
                     double arrowSize);
 
     RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                 double *dist = nullptr) const override;
+                                 double *dist) const override;
 
     RS_Vector getNearestPointOnEntity(const RS_Vector &coord,
-                                      bool onEntity = true,
-                                      double *dist = nullptr,
-                                      RS_Entity **entity = nullptr) const override;
+                                      bool onEntity,
+                                      double *dist,
+                                      RS_Entity **entity) const override;
 
     RS_Vector getNearestCenter(const RS_Vector &coord,
-                               double *dist = nullptr) const override;
+                               double *dist) const override;
 
     RS_Vector getNearestMiddle(const RS_Vector &coord,
-                               double *dist = nullptr,
-                               int middlePoints = 1) const override;
+                               double *dist,
+                               int middlePoints) const override;
 
     RS_Vector getNearestDist(double distance,
                              const RS_Vector &coord,
-                             double *dist = nullptr) const override;
+                             double *dist) const override;
 
     double getDistanceToPoint(const RS_Vector &coord,
-                              RS_Entity **entity = nullptr,
-                              RS2::ResolveLevel level = RS2::ResolveNone,
-                              double solidDist = RS_MAXDOUBLE) const override;
+                              RS_Entity **entity,
+                              RS2::ResolveLevel level,
+                              double solidDist) const override;
 
     void move(const RS_Vector &offset) override;
 
@@ -151,9 +151,11 @@ public:
 
 private:
     //helper method for getNearestPointOnEntity
-    bool sign(const RS_Vector &v1, const RS_Vector &v2, const RS_Vector &v3) const;
+    static bool sign(const RS_Vector &v1, const RS_Vector &v2, const RS_Vector &v3);
 
-    void setDistPtr(double *dist, const double value) const;
+    static void setDistPtr(double *dist, double value);
+
+    void calculateBordersLocal();
 
 private:
     RS_SolidData _data;
