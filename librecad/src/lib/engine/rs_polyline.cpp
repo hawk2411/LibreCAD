@@ -285,8 +285,7 @@ void RS_Polyline::endPolyline() {
 }
 
 //RLZ: rewrite this:
-void RS_Polyline::setClosedPolyLine(bool cl, double bulge) {
-    Q_UNUSED(bulge);
+void RS_Polyline::setClosedPolyLine(bool cl) {
     bool areClosed = isClosed();
     setClosedFlag(cl);
     if (isClosed()) {
@@ -447,14 +446,14 @@ bool RS_Polyline::offset(const RS_Vector &coord, const double &distance) {
 
     //trim
     //connect and trim        RS_Modification m(*container, graphicView);
-    for (int i = 0; i < count(); i++) {
+    for (unsigned int i = 0; i < count(); i++) {
 
         if ((i >= count()- 1) && !isClosed()) {
             break;
         }
 
-        RS_Entity *en0 = polyline->entityAt(i);
-        RS_Entity *en1 = polyline->entityAt((i < count() - 1) ? i + 1 : 0);
+        RS_Entity *en0 = polyline->entityAt(static_cast<int>(i));
+        RS_Entity *en1 = polyline->entityAt((i < count() - 1) ? static_cast<int>(i + 1) : 0);
 
         RS_VectorSolutions sol0 = RS_Information::getIntersection(en0, en1, true);
         if (sol0.getNumber() == 0) {
@@ -486,9 +485,9 @@ std::vector<RS_Vector> RS_Polyline::getSortedIntersections() {
         if (d0 < d1) {
             en0->revertDirection();
         }
-        for (auto i = 1; i < count(); i++) {
+        for (unsigned int i = 1; i < count(); i++) {
             //linked to head-tail chain
-            en1 = entityAt(i);
+            en1 = entityAt(static_cast<int>(i));
             vStart = en1->getStartpoint();
             vEnd = en1->getEndpoint();
             en0->getNearestEndpoint(vStart, &d0);
@@ -512,13 +511,13 @@ void RS_Polyline::setAllOffsets(RS_Polyline *polyline, const RS_Entity *en, cons
     polyline->entityAt(indexNearest)->offset(coord, distance);
     //offset all
     for (int i = indexNearest - 1; i >= 0; i--) {
-        int previousIndex = i + 1;
+        auto previousIndex = i + 1;
         setOffsets(polyline, distance, i, previousIndex);
     }
 
-    for (int i = indexNearest + 1; i < count(); i++) {
-        int previousIndex = i - 1;
-        setOffsets(polyline, distance, i, previousIndex);
+    for (unsigned int i = indexNearest + 1; i < count(); i++) {
+        auto previousIndex = i - 1;
+        setOffsets(polyline, distance, static_cast<int>(i), static_cast<int>(previousIndex));
     }
 }
 

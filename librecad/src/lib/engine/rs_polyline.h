@@ -100,7 +100,7 @@ public:
 
     void setClosedFlag(bool cl);
 
-    void setClosedPolyLine(bool cl, double bulge);//RLZ: rewrite this:
+    void setClosedPolyLine(bool cl);//RLZ: rewrite this:
 
     RS_VectorSolutions getRefPoints() const override;
 
