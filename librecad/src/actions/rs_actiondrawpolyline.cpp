@@ -490,7 +490,7 @@ void RS_ActionDrawPolyline::close() {
 				Mode=Line;
 			RS_CoordinateEvent e(pPoints->polyline->getStartpoint());
 			coordinateEvent(&e);
-			pPoints->polyline->setClosed(true);
+            pPoints->polyline->setClosedFlag(true);
 		}
 		trigger();
         setStatus(SetStartpoint);

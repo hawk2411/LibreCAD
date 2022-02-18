@@ -254,7 +254,7 @@ bool RS_ActionPolylineEquidistant::makeContour() {
                     newPolyline->setNextBulge(arc1.getBulge());
                     bulge = arc1.getBulge();
                 }
-                newPolyline->setClosed(true, bulge);
+                newPolyline->setClosedPolyLine(true, bulge);
             } else {
                 newPolyline->addVertex(currEntity->getEndpoint(), bulge);
             }

@@ -237,7 +237,7 @@ bool RS_ActionPolylineSegment::convertPolyline(RS_Entity* selectedEntity, bool u
         }
 
         if (closed)
-            newPolyline->setClosed(true);
+            newPolyline->setClosedFlag(true);
         else
             newPolyline->addVertex(end, bulge);
         newPolyline->endPolyline();

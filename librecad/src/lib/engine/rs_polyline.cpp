@@ -61,7 +61,7 @@ std::ostream &operator<<(std::ostream &os,
  * Constructor.
  */
 RS_Polyline::RS_Polyline(RS_EntityContainer *parent)
-        : RS_EntityContainer(parent, true), closingEntity(nullptr), nextBulge(0.) {
+        : RS_EntityContainer(parent, true), _closingEntity(nullptr), _nextBulge(0.) {
 }
 
 
@@ -71,12 +71,12 @@ RS_Polyline::RS_Polyline(RS_EntityContainer *parent)
  */
 RS_Polyline::RS_Polyline(RS_EntityContainer *parent,
                          const RS_PolylineData &d)
-        : RS_EntityContainer(parent, true), data(d), closingEntity(nullptr), nextBulge(0.) {
-    calculateBorders();
+        : RS_EntityContainer(parent, true), _data(d), _closingEntity(nullptr), _nextBulge(0.) {
+    RS_EntityContainer::calculateBordersLocal();
 }
 
 RS_Entity *RS_Polyline::clone() const {
-    RS_Polyline *p = new RS_Polyline(*this);
+    auto *p = new RS_Polyline(*this);
     p->setOwner(isOwner());
     p->initId();
     p->detach();
@@ -87,19 +87,18 @@ RS_Entity *RS_Polyline::clone() const {
  * Removes the last vertex of this polyline.
  */
 void RS_Polyline::removeLastVertex() {
-    RS_Entity *l = last();
-    if (l) {
-        removeEntity(l);
-        l = last();
-        if (l) {
-            if (l->isAtomic()) {
-                data.endpoint = l->getEndpoint();
-            } else {
-                RS_DEBUG->print(RS_Debug::D_WARNING,
-                                "RS_Polyline::removeLastVertex: "
-                                "polyline contains non-atomic entity");
-            }
-        }
+    RS_Entity *lastEntity = last();
+    if (!lastEntity) {
+        return;
+    }
+    removeEntity(lastEntity);
+    lastEntity = last();
+    if (!lastEntity) {
+        return;
+    }
+
+    if (lastEntity->isAtomic()) {
+        _data.endpoint = lastEntity->getEndpoint();
     }
 }
 
@@ -121,32 +120,24 @@ void RS_Polyline::removeLastVertex() {
 RS_Entity *RS_Polyline::addVertex(const RS_Vector &v, double bulge, bool prepend) {
 
     RS_Entity *entity = nullptr;
-    //static double nextBulge = 0.0;
-
     // very first vertex:
-    if (!data.startpoint.valid) {
-        data.startpoint = data.endpoint = v;
-        nextBulge = bulge;
-    }
-
+    if (!_data.startpoint.valid) {
+        _data.startpoint = _data.endpoint = v;
+        _nextBulge = bulge;
+    } else {
         // consequent vertices:
-    else {
         // add entity to the polyline:
-        entity = createVertex(v, nextBulge, prepend);
-        if (entity) {
-            if (!prepend) {
-                RS_EntityContainer::addEntity(entity);
-                data.endpoint = v;
-            } else {
-                RS_EntityContainer::insertEntity(0, entity);
-                data.startpoint = v;
-            }
+        entity = createVertex(v, _nextBulge, prepend);
+        if (!prepend) {
+            RS_EntityContainer::addEntity(entity);
+            _data.endpoint = v;
+        } else {
+            RS_EntityContainer::insertEntity(0, entity);
+            _data.startpoint = v;
         }
-        nextBulge = bulge;
+        _nextBulge = bulge;
         endPolyline();
     }
-    //data.endpoint = v;
-
     return entity;
 }
 
@@ -163,22 +154,22 @@ RS_Entity *RS_Polyline::addVertex(const RS_Vector &v, double bulge, bool prepend
  * @return None
  */
 void RS_Polyline::appendVertexs(const std::vector<std::pair<RS_Vector, double> > &vl) {
-    RS_Entity *entity = nullptr;
-    //static double nextBulge = 0.0;
-    if (!vl.size()) return;
+    if (vl.empty()) {
+        return;
+    }
     size_t idx = 0;
     // very first vertex:
-    if (!data.startpoint.valid) {
-        data.startpoint = data.endpoint = vl.at(idx).first;
-        nextBulge = vl.at(idx++).second;
+    if (!_data.startpoint.valid) {
+        _data.startpoint = _data.endpoint = vl.at(idx).first;
+        _nextBulge = vl.at(idx++).second;
     }
 
     // consequent vertices:
     for (; idx < vl.size(); idx++) {
-        entity = createVertex(vl.at(idx).first, nextBulge, false);
-        data.endpoint = entity->getEndpoint();
+        RS_Entity *entity = createVertex(vl.at(idx).first, _nextBulge, false);
+        _data.endpoint = entity->getEndpoint();
         RS_EntityContainer::addEntity(entity);
-        nextBulge = vl.at(idx).second;
+        _nextBulge = vl.at(idx).second;
     }
 
     endPolyline();
@@ -200,83 +191,70 @@ void RS_Polyline::appendVertexs(const std::vector<std::pair<RS_Vector, double> >
  */
 RS_Entity *RS_Polyline::createVertex(const RS_Vector &v, double bulge, bool prepend) {
 
-    RS_Entity *entity = nullptr;
-
     RS_DEBUG->print("RS_Polyline::createVertex: %f/%f to %f/%f bulge: %f",
-                    data.endpoint.x, data.endpoint.y, v.x, v.y, bulge);
+                    _data.endpoint.x, _data.endpoint.y, v.x, v.y, bulge);
 
     // create line for the polyline:
     if (fabs(bulge) < RS_TOLERANCE) {
-        if (prepend) {
-            entity = new RS_Line{this, v, data.startpoint};
-        } else {
-            entity = new RS_Line{this, data.endpoint, v};
-        }
+        RS_Entity *entity = (prepend)
+                            ?
+                            new RS_Line{this, v, _data.startpoint}
+                            :
+                            new RS_Line{this, _data.endpoint, v};
+
         entity->setSelected(isSelected());
         entity->setPen(RS_Pen(RS2::FlagInvalid));
         entity->setLayer(nullptr);
-        //RS_EntityContainer::addEntity(entity);
-        //data.endpoint = v;
+        return entity;
     }
 
-        // create arc for the polyline:
-    else {
-        bool reversed = (bulge < 0.0);
-        double alpha = atan(bulge) * 4.0;
+    // create arc for the polyline:
+    const bool reversed = (bulge < 0.0);
+    const double alpha = atan(bulge) * 4.0;
 
-        RS_Vector middle;
-        double dist;
-        double angle;
+    RS_Vector middle;
+    double dist;
+    double angle;
 
-        if (!prepend) {
-            middle = (data.endpoint + v) / 2.0;
-            dist = data.endpoint.distanceTo(v) / 2.0;
-            angle = data.endpoint.angleTo(v);
-        } else {
-            middle = (data.startpoint + v) / 2.0;
-            dist = data.startpoint.distanceTo(v) / 2.0;
-            angle = v.angleTo(data.startpoint);
-        }
-
-        // alpha can't be 0.0 at this point
-        double const radius = fabs(dist / sin(alpha / 2.0));
-
-        double const wu = fabs(radius * radius - dist * dist);
-        double h = sqrt(wu);
-
-        if (bulge > 0.0) {
-            angle += M_PI_2;
-        } else {
-            angle -= M_PI_2;
-        }
-
-        if (fabs(alpha) > M_PI) {
-            h *= -1.0;
-        }
-
-        RS_Vector center = RS_Vector::polar(h, angle);
-        center += middle;
-
-        double a1;
-        double a2;
-
-        if (!prepend) {
-            a1 = center.angleTo(data.endpoint);
-            a2 = center.angleTo(v);
-        } else {
-            a1 = center.angleTo(v);
-            a2 = center.angleTo(data.startpoint);
-        }
-
-        RS_ArcData const d(center, radius,
-                           a1, a2,
-                           reversed);
-
-        entity = new RS_Arc(this, d);
-        entity->setSelected(isSelected());
-        entity->setPen(RS_Pen(RS2::FlagInvalid));
-        entity->setLayer(nullptr);
+    if (!prepend) {
+        middle = (_data.endpoint + v) / 2.0;
+        dist = _data.endpoint.distanceTo(v) / 2.0;
+        angle = _data.endpoint.angleTo(v);
+    } else {
+        middle = (_data.startpoint + v) / 2.0;
+        dist = _data.startpoint.distanceTo(v) / 2.0;
+        angle = v.angleTo(_data.startpoint);
     }
+
+    // alpha can't be 0.0 at this point
+    const double radius = fabs(dist / sin(alpha / 2.0));
+
+    const double wu = fabs(radius * radius - dist * dist);
+    double h = sqrt(wu);
+    angle = (bulge > 0.0) ? angle + M_PI_2 : angle - M_PI_2;
+
+    if (fabs(alpha) > M_PI) {
+        h *= -1.0;
+    }
+
+    RS_Vector center = RS_Vector::polar(h, angle);
+    center += middle;
+
+    double a1;
+    double a2;
+
+    if (!prepend) {
+        a1 = center.angleTo(_data.endpoint);
+        a2 = center.angleTo(v);
+    } else {
+        a1 = center.angleTo(v);
+        a2 = center.angleTo(_data.startpoint);
+    }
+
+    RS_Entity *entity = new RS_Arc(this, {center, radius, a1, a2, reversed});
+    entity->setSelected(isSelected());
+    entity->setPen(RS_Pen(RS2::FlagInvalid));
+    entity->setLayer(nullptr);
 
     return entity;
 }
@@ -292,14 +270,14 @@ void RS_Polyline::endPolyline() {
         RS_DEBUG->print("RS_Polyline::endPolyline: adding closing entity");
 
         // remove old closing entity:
-        if (closingEntity) {
-            removeEntity(closingEntity);
+        if (_closingEntity) {
+            removeEntity(_closingEntity);
         }
 
         // add closing entity to the polyline:
-        closingEntity = createVertex(data.startpoint, nextBulge);
-        if (closingEntity && closingEntity->getLength() > 1.0E-4) {
-            RS_EntityContainer::addEntity(closingEntity);
+        _closingEntity = createVertex(_data.startpoint, _nextBulge);
+        if (_closingEntity && _closingEntity->getLength() > 1.0E-4) {
+            RS_EntityContainer::addEntity(_closingEntity);
             //data.endpoint = data.startpoint;
         }
     }
@@ -307,10 +285,10 @@ void RS_Polyline::endPolyline() {
 }
 
 //RLZ: rewrite this:
-void RS_Polyline::setClosed(bool cl, double bulge) {
+void RS_Polyline::setClosedPolyLine(bool cl, double bulge) {
     Q_UNUSED(bulge);
     bool areClosed = isClosed();
-    setClosed(cl);
+    setClosedFlag(cl);
     if (isClosed()) {
         endPolyline();
     } else if (areClosed) {
@@ -318,22 +296,31 @@ void RS_Polyline::setClosed(bool cl, double bulge) {
     }
 }
 
+void RS_Polyline::setClosedFlag(bool cl) {
+    if (cl) {
+        _data.setFlag(RS2::FlagClosed);
+    } else {
+        _data.delFlag(RS2::FlagClosed);
+    }
+}
+
+
 /** sets a new start point of the polyline */
 void RS_Polyline::setStartpoint(RS_Vector const &v) {
-    data.startpoint = v;
-    if (!data.endpoint.valid) {
-        data.endpoint = v;
+    _data.startpoint = v;
+    if (!_data.endpoint.valid) {
+        _data.endpoint = v;
     }
 }
 
 /** @return Start point of the entity */
 RS_Vector RS_Polyline::getStartpoint() const {
-    return data.startpoint;
+    return _data.startpoint;
 }
 
 /** sets a new end point of the polyline */
 void RS_Polyline::setEndpoint(RS_Vector const &v) {
-    data.endpoint = v;
+    _data.endpoint = v;
 }
 
 void RS_Polyline::setLayer(const QString &name) {
@@ -354,33 +341,24 @@ void RS_Polyline::setLayer(RS_Layer *l) {
 
 /** @return End point of the entity */
 RS_Vector RS_Polyline::getEndpoint() const {
-    return data.endpoint;
+    return _data.endpoint;
 }
 
 /**
  * @return The bulge of the closing entity.
  */
 double RS_Polyline::getClosingBulge() const {
-    if (isClosed()) {
-        RS_Entity const *e = last();
-        if (e && e->rtti() == RS2::EntityArc) {
-            return static_cast<RS_Arc const *>(e)->getBulge();
-        }
+    if (!isClosed()) {
+        return 0.0;
     }
-
-    return 0.0;
+    const RS_Entity *e = last();
+    return (e && e->rtti() == RS2::EntityArc)
+           ? dynamic_cast<RS_Arc const *>(e)->getBulge()
+           : 0.0;
 }
 
 bool RS_Polyline::isClosed() const {
-    return data.getFlag(RS2::FlagClosed);
-}
-
-void RS_Polyline::setClosed(bool cl) {
-    if (cl) {
-        data.setFlag(RS2::FlagClosed);
-    } else {
-        data.delFlag(RS2::FlagClosed);
-    }
+    return _data.getFlag(RS2::FlagClosed);
 }
 
 /**
@@ -418,26 +396,15 @@ void RS_Polyline::addEntity(RS_Entity * /*entity*/) {
     assert(false);
 }
 
-
-/**
- * Adds a segment to the polyline.
- */
-/*void RS_Polyline::addSegment(RS_Entity* entity) {
-        RS_EntityContainer::addEntity(entity);
-        // TODO: reorder and check polyline
-}*/
-
-
-
 RS_VectorSolutions RS_Polyline::getRefPoints() const {
-    RS_VectorSolutions ret{{data.startpoint}};
+    RS_VectorSolutions ret{{_data.startpoint}};
     for (auto e: *this) {
         if (e->isAtomic()) {
             ret.push_back(e->getEndpoint());
         }
     }
 
-    ret.push_back(data.endpoint);
+    ret.push_back(_data.endpoint);
 
     return ret;
 }
@@ -446,6 +413,7 @@ RS_Vector RS_Polyline::getNearestRef(const RS_Vector &coord,
                                      double *dist /*= nullptr*/) const {
     // override the RS_EntityContainer method
     // use RS_Entity instead for vertex dragging
+    //NOLINTNEXTLINE
     return RS_Entity::getNearestRef(coord, dist);
 }
 
@@ -453,20 +421,9 @@ RS_Vector RS_Polyline::getNearestSelectedRef(const RS_Vector &coord,
                                              double *dist /*= nullptr*/) const {
     // override the RS_EntityContainer method
     // use RS_Entity instead for vertex dragging
+    //NOLINTNEXTLINE
     return RS_Entity::getNearestSelectedRef(coord, dist);
 }
-
-/*
-void RS_Polyline::reorder() {
-        // current point:
-        RS_Vector cp;
-
-        bool done = false;
-        do {
-
-        } while(!done);
-}
-*/
 
 
 /**
@@ -477,12 +434,47 @@ void RS_Polyline::reorder() {
   *@Author, Dongxu Li
   */
 bool RS_Polyline::offset(const RS_Vector &coord, const double &distance) {
-    double dist;
     //find the nearest one
-    int length = count();
-    std::vector<RS_Vector> intersections(length);
-    if (length > 1) {//sort the polyline entity start/end point order
-        int i(0);
+    std::vector<RS_Vector> intersections = getSortedIntersections();
+    double dist;    //fixme this is an input and output value why is not initialized???
+    RS_Entity *en = getNearestEntity(coord, &dist, RS2::ResolveNone);
+    if (!en) {
+        return false;
+    }
+
+    auto *polyline = dynamic_cast<RS_Polyline *>(clone());
+    setAllOffsets(polyline, en, coord, distance);
+
+    //trim
+    //connect and trim        RS_Modification m(*container, graphicView);
+    for (int i = 0; i < count(); i++) {
+
+        if ((i >= count()- 1) && !isClosed()) {
+            break;
+        }
+
+        RS_Entity *en0 = polyline->entityAt(i);
+        RS_Entity *en1 = polyline->entityAt((i < count() - 1) ? i + 1 : 0);
+
+        RS_VectorSolutions sol0 = RS_Information::getIntersection(en0, en1, true);
+        if (sol0.getNumber() == 0) {
+            sol0 = RS_Information::getIntersection(en0, en1);
+            if (sol0.getNumber() == 0) {
+                continue;
+            }
+        }
+        RS_Vector trimP(sol0.getClosest(intersections.at(i)));
+        dynamic_cast<RS_AtomicEntity *>(en0)->trimEndpoint(trimP);
+        dynamic_cast<RS_AtomicEntity *>(en1)->trimStartpoint(trimP);
+    }
+
+    *this = *polyline;  //fixme polyline is new created pointer. what happens with the memory of *this
+    return true;
+}
+
+std::vector<RS_Vector> RS_Polyline::getSortedIntersections() {
+    std::vector<RS_Vector> intersections(count());
+    if (count() > 1) {//sort the polyline entity start/end point order
         double d0, d1;
         RS_Entity *en0(entityAt(0));
         RS_Entity *en1(entityAt(1));
@@ -491,153 +483,76 @@ bool RS_Polyline::offset(const RS_Vector &coord, const double &distance) {
         RS_Vector vEnd(en0->getEndpoint());
         en1->getNearestEndpoint(vStart, &d0);
         en1->getNearestEndpoint(vEnd, &d1);
-        if (d0 < d1) en0->revertDirection();
-        for (i = 1; i < length; i++) {
+        if (d0 < d1) {
+            en0->revertDirection();
+        }
+        for (auto i = 1; i < count(); i++) {
             //linked to head-tail chain
             en1 = entityAt(i);
             vStart = en1->getStartpoint();
             vEnd = en1->getEndpoint();
             en0->getNearestEndpoint(vStart, &d0);
             en0->getNearestEndpoint(vEnd, &d1);
-            if (d0 > d1) en1->revertDirection();
+            if (d0 > d1) {
+                en1->revertDirection();
+            }
             intersections[i - 1] = (en0->getEndpoint() + en1->getStartpoint()) * 0.5;
             en0 = en1;
         }
         if (isClosed()) {
             en1 = entityAt(0);
-            intersections[length - 1] = (en0->getEndpoint() + en1->getStartpoint()) * 0.5;
+            intersections[count() - 1] = (en0->getEndpoint() + en1->getStartpoint()) * 0.5;
         }
-
     }
-    RS_Entity *en(getNearestEntity(coord, &dist, RS2::ResolveNone));
-    if (!en) return false;
+    return intersections;
+}
+
+void RS_Polyline::setAllOffsets(RS_Polyline *polyline, const RS_Entity *en, const RS_Vector &coord, double distance) {
     int indexNearest = findEntity(en);
-    //        RS_Vector vp(en->getNearestPointOnEntity(coord,false));
-    //        RS_Vector direction(en->getTangentDirection(vp));
-    //        RS_Vector vp1(-direction.y,direction.x);//normal direction
-    //        double a2(vp1.squared());
-    //        if(a2<RS_TOLERANCE2) return false;
-    //        vp1 *= distance/sqrt(a2);
-    //        move(vp1);
-    //        return true;
-
-    RS_Polyline *pnew = static_cast<RS_Polyline *>(clone());
-    int i;
-    i = indexNearest;
-    int previousIndex(i);
-    pnew->entityAt(i)->offset(coord, distance);
-    RS_Vector vp;
+    polyline->entityAt(indexNearest)->offset(coord, distance);
     //offset all
-    //fixme, this is too ugly
-    for (i = indexNearest - 1; i >= 0; i--) {
-        RS_VectorSolutions sol0 = RS_Information::getIntersection(pnew->entityAt(previousIndex), entityAt(i), true);
-//        RS_VectorSolutions sol1;
-        double dmax(RS_TOLERANCE15);
-        RS_Vector trimP(false);
-        for (const RS_Vector &vp: sol0) {
-
-            double d0((vp -
-                       pnew->entityAt(previousIndex)->getStartpoint()).squared());//potential bug, need to trim better
-            if (d0 > dmax) {
-                dmax = d0;
-                trimP = vp;
-            }
-        }
-        if (trimP.valid) {
-            static_cast<RS_AtomicEntity *>(pnew->entityAt(previousIndex))->trimStartpoint(trimP);
-            static_cast<RS_AtomicEntity *>(pnew->entityAt(i))->trimEndpoint(trimP);
-            vp = pnew->entityAt(previousIndex)->getMiddlePoint();
-        } else {
-            vp = pnew->entityAt(previousIndex)->getStartpoint();
-            vp.rotate(entityAt(previousIndex)->getStartpoint(),
-                      entityAt(i)->getDirection2() - entityAt(previousIndex)->getDirection1() + M_PI);
-        }
-        pnew->entityAt(i)->offset(vp, distance);
-        previousIndex = i;
+    for (int i = indexNearest - 1; i >= 0; i--) {
+        int previousIndex = i + 1;
+        setOffsets(polyline, distance, i, previousIndex);
     }
 
-    previousIndex = indexNearest;
-    for (i = indexNearest + 1; i < length; i++) {
-        RS_VectorSolutions sol0 = RS_Information::getIntersection(pnew->entityAt(previousIndex), entityAt(i), true);
-//        RS_VectorSolutions sol1;
-        double dmax(RS_TOLERANCE15);
-        RS_Vector trimP(false);
-        for (const RS_Vector &vp: sol0) {
-            double d0(
-                    (vp - pnew->entityAt(previousIndex)->getEndpoint()).squared());//potential bug, need to trim better
-            if (d0 > dmax) {
-                dmax = d0;
-                trimP = vp;
-            }
-        }
-        if (trimP.valid) {
-            static_cast<RS_AtomicEntity *>(pnew->entityAt(previousIndex))->trimEndpoint(trimP);
-            static_cast<RS_AtomicEntity *>(pnew->entityAt(i))->trimStartpoint(trimP);
-            vp = pnew->entityAt(previousIndex)->getMiddlePoint();
-        } else {
-            vp = pnew->entityAt(previousIndex)->getEndpoint();
-            vp.rotate(entityAt(previousIndex)->getEndpoint(),
-                      entityAt(i)->getDirection1() - entityAt(previousIndex)->getDirection2() + M_PI);
-        }
-        pnew->entityAt(i)->offset(vp, distance);
-        previousIndex = i;
+    for (int i = indexNearest + 1; i < count(); i++) {
+        int previousIndex = i - 1;
+        setOffsets(polyline, distance, i, previousIndex);
     }
-    //trim
-    //connect and trim        RS_Modification m(*container, graphicView);
-    for (i = 0; i < length; i++) {
-        RS_Entity *en0;
-        RS_Entity *en1;
-        if (i < length - 1) {
-            en0 = pnew->entityAt(i);
-            en1 = pnew->entityAt(i + 1);
-        } else {
-            if (isClosed()) {
-                en0 = pnew->entityAt(i);
-                en1 = pnew->entityAt(0);
-            } else {
-                break;
-            }
-        }
-        RS_VectorSolutions sol0 = RS_Information::getIntersection(en0, en1, true);
-        if (sol0.getNumber() == 0) {
-            sol0 = RS_Information::getIntersection(en0, en1);
-//            RS_Vector vp0(pnew->entityAt(i)->getEndpoint());
-//            RS_Vector vp1(pnew->entityAt(i+1)->getStartpoint());
-//            double a0(intersections.at(i).angleTo(vp0));
-//            double a1(intersections.at(i).angleTo(vp1));
-            RS_VectorSolutions sol1;
-            //This lead result isn't connected.
-            //for(const RS_Vector& vp: sol0){
-            //	if(!RS_Math::isAngleBetween(intersections.at(i).angleTo(vp),
-            //                               pnew->entityAt(i)->getDirection2(),
-            //                               pnew->entityAt(i+1)->getDirection1(),
-            //							   false)){
-            //		sol1.push_back(vp);
-            //    }
-            //}
-            sol1 = sol0;
-            if (sol1.getNumber() == 0) continue;
-            RS_Vector trimP(sol1.getClosest(intersections.at(i)));
-            static_cast<RS_AtomicEntity *>(en0)->trimEndpoint(trimP);
-            static_cast<RS_AtomicEntity *>(en1)->trimStartpoint(trimP);
-        } else {
-            RS_Vector trimP(sol0.getClosest(intersections.at(i)));
-            static_cast<RS_AtomicEntity *>(en0)->trimEndpoint(trimP);
-            static_cast<RS_AtomicEntity *>(en1)->trimStartpoint(trimP);
-        }
+}
 
+void RS_Polyline::setOffsets(RS_Polyline *polyline, double distance, int currentEntityIndex, int previousEntityIndex) {
+    RS_VectorSolutions sol0 = RS_Information::getIntersection(polyline->entityAt(previousEntityIndex),
+                                                              entityAt(currentEntityIndex), true);
+    double max = RS_TOLERANCE15;    //near null number
+    RS_Vector trimP;
+    for (const RS_Vector &solVector: sol0) {
+        double d0 = (solVector - polyline->entityAt(
+                previousEntityIndex)->getStartpoint()).squared();//potential bug, need to trim better
+        if (d0 > max) {
+            max = d0;
+            trimP = solVector;
+        }
     }
-
-    *this = *pnew;
-    return true;
-
-
+    RS_Vector position;
+    if (trimP.valid) {
+        dynamic_cast<RS_AtomicEntity *>(polyline->entityAt(previousEntityIndex))->trimStartpoint(trimP);
+        dynamic_cast<RS_AtomicEntity *>(polyline->entityAt(currentEntityIndex))->trimEndpoint(trimP);
+        position = polyline->entityAt(previousEntityIndex)->getMiddlePoint();
+    } else {
+        position = polyline->entityAt(previousEntityIndex)->getStartpoint();
+        position.rotate(entityAt(previousEntityIndex)->getStartpoint(),
+                        entityAt(currentEntityIndex)->getDirection2() - entityAt(previousEntityIndex)->getDirection1() +
+                        M_PI);
+    }
+    polyline->entityAt(currentEntityIndex)->offset(position, distance);
 }
 
 void RS_Polyline::move(const RS_Vector &offset) {
     RS_EntityContainer::move(offset);
-    data.startpoint.move(offset);
-    data.endpoint.move(offset);
+    _data.startpoint.move(offset);
+    _data.endpoint.move(offset);
     calculateBorders();
 }
 
@@ -649,35 +564,35 @@ void RS_Polyline::rotate(const RS_Vector &center, const double &angle) {
 
 void RS_Polyline::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
     RS_EntityContainer::rotate(center, angleVector);
-    data.startpoint.rotate(center, angleVector);
-    data.endpoint.rotate(center, angleVector);
+    _data.startpoint.rotate(center, angleVector);
+    _data.endpoint.rotate(center, angleVector);
     calculateBorders();
 }
 
 
 void RS_Polyline::scale(const RS_Vector &center, const RS_Vector &factor) {
     RS_EntityContainer::scale(center, factor);
-    data.startpoint.scale(center, factor);
-    data.endpoint.scale(center, factor);
+    _data.startpoint.scale(center, factor);
+    _data.endpoint.scale(center, factor);
     calculateBorders();
 }
 
 
 void RS_Polyline::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) {
     RS_EntityContainer::mirror(axisPoint1, axisPoint2);
-    data.startpoint.mirror(axisPoint1, axisPoint2);
-    data.endpoint.mirror(axisPoint1, axisPoint2);
+    _data.startpoint.mirror(axisPoint1, axisPoint2);
+    _data.endpoint.mirror(axisPoint1, axisPoint2);
     calculateBorders();
 }
 
 
 void RS_Polyline::moveRef(const RS_Vector &ref, const RS_Vector &offset) {
     RS_EntityContainer::moveRef(ref, offset);
-    if (ref.distanceTo(data.startpoint) < 1.0e-4) {
-        data.startpoint.move(offset);
+    if (ref.distanceTo(_data.startpoint) < 1.0e-4) {
+        _data.startpoint.move(offset);
     }
-    if (ref.distanceTo(data.endpoint) < 1.0e-4) {
-        data.endpoint.move(offset);
+    if (ref.distanceTo(_data.endpoint) < 1.0e-4) {
+        _data.endpoint.move(offset);
     }
     calculateBorders();
     //update();
@@ -685,20 +600,20 @@ void RS_Polyline::moveRef(const RS_Vector &ref, const RS_Vector &offset) {
 
 void RS_Polyline::revertDirection() {
     RS_EntityContainer::revertDirection();
-    RS_Vector tmp = data.startpoint;
-    data.startpoint = data.endpoint;
-    data.endpoint = tmp;
+    RS_Vector tmp = _data.startpoint;
+    _data.startpoint = _data.endpoint;
+    _data.endpoint = tmp;
 }
 
 void RS_Polyline::stretch(const RS_Vector &firstCorner,
                           const RS_Vector &secondCorner,
                           const RS_Vector &offset) {
 
-    if (data.startpoint.isInWindow(firstCorner, secondCorner)) {
-        data.startpoint.move(offset);
+    if (_data.startpoint.isInWindow(firstCorner, secondCorner)) {
+        _data.startpoint.move(offset);
     }
-    if (data.endpoint.isInWindow(firstCorner, secondCorner)) {
-        data.endpoint.move(offset);
+    if (_data.endpoint.isInWindow(firstCorner, secondCorner)) {
+        _data.endpoint.move(offset);
     }
 
     RS_EntityContainer::stretch(firstCorner, secondCorner, offset);

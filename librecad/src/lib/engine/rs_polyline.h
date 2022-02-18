@@ -57,7 +57,7 @@ std::ostream &operator<<(std::ostream &os, const RS_PolylineData &pd);
  */
 class RS_Polyline : public RS_EntityContainer {
 public:
-    RS_Polyline(RS_EntityContainer *parent = nullptr);
+    explicit RS_Polyline(RS_EntityContainer *parent = nullptr);
 
     RS_Polyline(RS_EntityContainer *parent,
                 const RS_PolylineData &d);
@@ -71,7 +71,7 @@ public:
 
     /** @return Copy of data that defines the polyline. */
     RS_PolylineData getData() const {
-        return data;
+        return _data;
     }
 
     /** sets a new start point of the polyline */
@@ -98,21 +98,21 @@ public:
     /** @return true if the polyline is closed. false otherwise */
     bool isClosed() const;
 
-    void setClosed(bool cl);
+    void setClosedFlag(bool cl);
 
-    void setClosed(bool cl, double bulge);//RLZ: rewrite this:
+    void setClosedPolyLine(bool cl, double bulge);//RLZ: rewrite this:
 
     RS_VectorSolutions getRefPoints() const override;
 
-    RS_Vector getMiddlePoint(void) const override {
+    RS_Vector getMiddlePoint() const override {
         return RS_Vector(false);
     }
 
     RS_Vector getNearestRef(const RS_Vector &coord,
-                            double *dist = nullptr) const override;
+                            double *dist) const override;
 
     RS_Vector getNearestSelectedRef(const RS_Vector &coord,
-                                    double *dist = nullptr) const override;
+                                    double *dist ) const override;
 
     RS_Entity *addVertex(const RS_Vector &v,
                          double bulge = 0.0, bool prepend = false);
@@ -120,7 +120,7 @@ public:
     void appendVertexs(const std::vector<std::pair<RS_Vector, double> > &vl);
 
     void setNextBulge(double bulge) {
-        nextBulge = bulge;
+        _nextBulge = bulge;
     }
 
     void addEntity(RS_Entity *entity) override;
@@ -162,10 +162,17 @@ protected:
     RS_Entity *createVertex(const RS_Vector &v,
                             double bulge = 0.0, bool prepend = false);
 
-protected:
-    RS_PolylineData data;
-    RS_Entity *closingEntity;
-    double nextBulge;
+private:
+    RS_PolylineData _data;
+    RS_Entity *_closingEntity;
+    double _nextBulge;
+
+    void setOffsets(RS_Polyline *polyline, double distance, int currentEntityIndex, int previousEntityIndex);
+
+    void
+    setAllOffsets(RS_Polyline *polyline, const RS_Entity *en, const RS_Vector &coord, double distance);
+
+    std::vector<RS_Vector> getSortedIntersections();
 };
 
 #endif

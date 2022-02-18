@@ -73,7 +73,7 @@ void RS_ActionDrawLineRectangle::trigger() {
 	polyline->addVertex({pPoints->corner2.x, pPoints->corner1.y});
 	polyline->addVertex(pPoints->corner2);
 	polyline->addVertex({pPoints->corner1.x, pPoints->corner2.y});
-	polyline->setClosed(true);
+    polyline->setClosedFlag(true);
 	polyline->endPolyline();
 	container->addEntity(polyline);
 

@@ -469,9 +469,9 @@ void PluginEntity::updateData(QHash<int, QVariant> *data) {
         case RS2::EntityPolyline: {
             RS_Polyline *pl = static_cast<RS_Polyline *>(ec);
             if (hash.take(DPI::CLOSEPOLY).toBool()) {
-                pl->setClosed(true);
+                pl->setClosedFlag(true);
             } else {
-                pl->setClosed(false);
+                pl->setClosedFlag(false);
             }
             break;
         }

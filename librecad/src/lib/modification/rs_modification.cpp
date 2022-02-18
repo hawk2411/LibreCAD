@@ -885,7 +885,7 @@ RS_Polyline* RS_Modification::addPolylineNode(RS_Polyline& polyline,
     }
 
     RS_Polyline* newPolyline = new RS_Polyline(container);
-    newPolyline->setClosed(polyline.isClosed());
+    newPolyline->setClosedFlag(polyline.isClosed());
     newPolyline->setSelected(polyline.isSelected());
     newPolyline->setLayer(polyline.getLayer());
     newPolyline->setPen(polyline.getPen());
@@ -1019,7 +1019,7 @@ RS_Polyline* RS_Modification::deletePolylineNode(RS_Polyline& polyline,
     }
 
     RS_Polyline* newPolyline = new RS_Polyline(container);
-    newPolyline->setClosed(polyline.isClosed());
+    newPolyline->setClosedFlag(polyline.isClosed());
     newPolyline->setSelected(polyline.isSelected());
     newPolyline->setLayer(polyline.getLayer());
     newPolyline->setPen(polyline.getPen());
@@ -1210,7 +1210,7 @@ RS_Polyline* RS_Modification::deletePolylineNodesBetween(RS_Polyline& polyline,
     }
 
     RS_Polyline* newPolyline = new RS_Polyline(container);
-    newPolyline->setClosed(polyline.isClosed());
+    newPolyline->setClosedFlag(polyline.isClosed());
     newPolyline->setSelected(polyline.isSelected());
     newPolyline->setLayer(polyline.getLayer());
     newPolyline->setPen(polyline.getPen());
@@ -1401,7 +1401,7 @@ RS_Polyline* RS_Modification::polylineTrim(RS_Polyline& polyline,
 	//	segment2.getStartpoint().angleTo(sol.get(0)), M_PI_2);
 
     RS_Polyline* newPolyline = new RS_Polyline(container);
-    newPolyline->setClosed(polyline.isClosed());
+    newPolyline->setClosedFlag(polyline.isClosed());
     newPolyline->setSelected(polyline.isSelected());
     newPolyline->setLayer(polyline.getLayer());
     newPolyline->setPen(polyline.getPen());

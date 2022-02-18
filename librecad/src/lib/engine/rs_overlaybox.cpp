@@ -31,7 +31,6 @@
 #include "rs_graphicview.h"
 #include "rs_painter.h"
 #include "rs_graphic.h"
-#include <QBrush>
 
 /**
  * Constructor.
