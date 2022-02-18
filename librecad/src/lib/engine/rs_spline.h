@@ -44,12 +44,12 @@ struct RS_SplineData {
 
 
     /** Degree of the spline (1, 2, 3) */
-    size_t degree;
+    size_t degree = 0;
     /** Closed flag. */
-    bool closed;
+    bool closed = false;
     /** Control points of the spline. */
     std::vector<RS_Vector> controlPoints;
-    std::vector<double> knotslist;
+    std::vector<double> knots;
 };
 
 std::ostream &operator<<(std::ostream &os, const RS_SplineData &ld);
@@ -62,7 +62,7 @@ std::ostream &operator<<(std::ostream &os, const RS_SplineData &ld);
 class RS_Spline : public RS_EntityContainer {
 public:
     RS_Spline(RS_EntityContainer *parent,
-              const RS_SplineData &d);
+              RS_SplineData data);
 
     RS_Entity *clone() const override;
 
@@ -79,7 +79,7 @@ public:
 
     /** @return Copy of data that defines the spline. */
     const RS_SplineData &getData() const {
-        return data;
+        return _data;
     }
 
     /** Sets the splines degree (1-3). */
@@ -87,11 +87,6 @@ public:
 
     /** @return Degree of this spline curve (1-3).*/
     size_t getDegree() const;
-
-    /** @return 0. */
-    int getNumberOfKnots() {
-        return 0;
-    }
 
     /** @return Number of control points. */
     size_t getNumberOfControlPoints() const;
@@ -109,9 +104,9 @@ public:
 
     RS_VectorSolutions getRefPoints() const override;
 
-    RS_Vector getNearestRef(const RS_Vector &coord, double *dist = nullptr) const override;
+    RS_Vector getNearestRef(const RS_Vector &coord, double *dist) const override;
 
-    RS_Vector getNearestSelectedRef(const RS_Vector &coord, double *dist = nullptr) const override;
+    RS_Vector getNearestSelectedRef(const RS_Vector &coord, double *dist) const override;
 
     /** @return Start point of the entity */
     RS_Vector getStartpoint() const override;
@@ -123,20 +118,20 @@ public:
     void update() override;
 
     RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                 double *dist = nullptr) const override;
+                                 double *dist) const override;
 
     //RS_Vector getNearestPointOnEntity(const RS_Vector& coord,
     //        bool onEntity=true, double* dist = nullptr, RS_Entity** entity=nullptr);
     RS_Vector getNearestCenter(const RS_Vector &coord,
-                               double *dist = nullptr) const override;
+                               double *dist) const override;
 
     RS_Vector getNearestMiddle(const RS_Vector &coord,
-                               double *dist = nullptr,
-                               int middlePoints = 1) const override;
+                               double *dist,
+                               int middlePoints) const override;
 
     RS_Vector getNearestDist(double distance,
                              const RS_Vector &coord,
-                             double *dist = nullptr) const override;
+                             double *dist) const override;
 
     void addControlPoint(const RS_Vector &v);
 
@@ -165,7 +160,7 @@ public:
     void calculateBorders() override;
 
 private:
-    std::vector<double> knot(size_t num, size_t order) const;
+    std::vector<double> knot(int num, int order) const;
 
     void rbspline(size_t npts, size_t k, size_t p1,
                   const std::vector<RS_Vector> &b,
@@ -179,8 +174,12 @@ private:
                   const std::vector<double> &h,
                   std::vector<RS_Vector> &p) const;
 
-protected:
-    RS_SplineData data;
+private:
+    RS_SplineData _data;
+
+    static void
+    wtf(size_t npts, size_t k, const std::vector<RS_Vector> &b, const std::vector<double> &h, std::vector<RS_Vector> &p,
+        size_t nplusc, const std::vector<double> &x, double t, double step) ;
 };
 
 #endif

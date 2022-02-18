@@ -637,7 +637,7 @@ void RS_FilterDXFRW::addSpline(const DRW_Spline* data) {
         if (data->degree>=1 && data->degree<=3) {
         RS_SplineData d(data->degree, ((data->flags&0x1)==0x1));
 		if (data->knotslist.size())
-			d.knotslist = data->knotslist;
+			d.knots = data->knotslist;
         spline = new RS_Spline(currentContainer, d);
         setEntityAttributes(spline, data);
 
@@ -2307,8 +2307,8 @@ void RS_FilterDXFRW::writeSpline(RS_Spline *s, dxfWriter* writer) {
     sp.nknots = sp.ncontrol + sp.degree + 1;
 
     // write spline knots:
-	if (s->getData().knotslist.size()) {
-		sp.knotslist = s->getData().knotslist;
+	if (s->getData().knots.size()) {
+		sp.knotslist = s->getData().knots;
 	} else {
 		int k = sp.degree+1;
 		for (int i=1; i<=sp.nknots; i++) {
