@@ -38,15 +38,15 @@ class QVariant;
 // ---------------------------------------------------------------------------
 
 namespace Colors {
-    const QString snap_indicator = "#FFC200";
-    const QString background = "Black";
-    const QString grid = "Gray";
-    const QString meta_grid = "#404040";
-    const QString select = "#A54747";
-    const QString highlight = "#739373";
-    const QString start_handle = "Cyan";
-    const QString handle = "Blue";
-    const QString end_handle = "Blue";
+    const QString snap_indicator = "#FFC200";   //NOLINT
+    const QString background = "Black";         //NOLINT
+    const QString grid = "Gray";                //NOLINT
+    const QString meta_grid = "#404040";        //NOLINT
+    const QString select = "#A54747";           //NOLINT
+    const QString highlight = "#739373";        //NOLINT
+    const QString start_handle = "Cyan";        //NOLINT
+    const QString handle = "Blue";              //NOLINT
+    const QString end_handle = "Blue";          //NOLINT
 }
 
 // ---------------------------------------------------------------------------
@@ -95,7 +95,7 @@ public:
 
     QString readEntry(const QString &key,
                       const QString &def = QString(),
-                      bool *ok = 0);
+                      bool *ok = nullptr);
 
     int readNumEntry(const QString &key, int def = 0);
 
@@ -103,23 +103,22 @@ public:
 
     void clear_geometry();
 
+    RS_Settings &operator=(RS_Settings const &) = delete;
+
     static bool save_is_allowed;
 
 private:
-    RS_Settings();
-
-    RS_Settings &operator=(RS_Settings const &) = delete;
+    RS_Settings() = default;
 
     QVariant readEntryCache(const QString &key);
 
-protected:
-    static RS_Settings *uniqueInstance;
+private:
+    static RS_Settings *_uniqueInstance;
 
-    std::map<QString, QVariant> cache;
-    QString companyKey;
-    QString appKey;
-    QString group;
-    bool initialized;
+    std::map<QString, QVariant> _cache;
+    QString _companyKey;
+    QString _appKey;
+    QString _group;
 };
 
 #endif
