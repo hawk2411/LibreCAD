@@ -56,20 +56,23 @@ public:
     /**
      * @return Instance to the unique system object.
      */
-    static RS_System* instance() {
-        if (uniqueInstance==NULL) {
+    static RS_System *instance() {
+        if (uniqueInstance == NULL) {
             uniqueInstance = new RS_System();
         }
         return uniqueInstance;
     }
 
-    void init(const QString& appName, const QString& appVersion,
-              const QString& appDirName, const QString& appDir="");
+    void init(const QString &appName, const QString &appVersion,
+              const QString &appDirName, const QString &appDir = "");
+
     void initLanguageList();
+
     void initAllLanguagesList();
 
     bool checkInit();
-    bool createPaths(const QString& p);
+
+    bool createPaths(const QString &p);
 
     /**
      * @return Users home directory.
@@ -143,10 +146,9 @@ public:
     QString getDocPath() {
         QStringList lst = getDirectoryList("doc");
 
-        if( !lst.isEmpty()) {
+        if (!lst.isEmpty()) {
             return lst.first();
-        }
-        else {
+        } else {
             return QString();
         }
     }
@@ -165,34 +167,35 @@ public:
         return appVersion;
     }
 
-    QStringList getFileList(const QString& subDirectory,
-                            const QString& fileExtension);
+    QStringList getFileList(const QString &subDirectory,
+                            const QString &fileExtension);
 
-    QStringList getDirectoryList(const QString& subDirectory);
+    QStringList getDirectoryList(const QString &subDirectory);
 
     QStringList getLanguageList() {
         return languageList;
     }
 
-    static QString languageToSymbol(const QString& lang);
-    static QString symbolToLanguage(const QString& symb);
+    static QString languageToSymbol(const QString &lang);
 
-    static QString getEncoding(const QString& str);
+    static QString symbolToLanguage(const QString &symb);
 
-    void loadTranslation(const QString& lang, const QString& langCmd);
+    static QString getEncoding(const QString &str);
+
+    void loadTranslation(const QString &lang, const QString &langCmd);
 
     static bool test();
 
     /** Returns ISO code for given locale. Needed for win32 to convert
      *  from system encodings.
      */
-    static QByteArray localeToISO(const QByteArray& locale);
+    static QByteArray localeToISO(const QByteArray &locale);
 
 private:
     void addLocale(RS_Locale *locale);
 
 protected:
-    static RS_System* uniqueInstance;
+    static RS_System *uniqueInstance;
 
     QString appName;
     QString appVersion;
