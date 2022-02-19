@@ -68,7 +68,7 @@ struct RS_TextData {
     /**
      * Default constructor. Leaves the data object uninitialized.
      */
-	RS_TextData() = default;
+    RS_TextData() = default;
 
     /**
      * Constructor with initialisation.
@@ -89,17 +89,17 @@ struct RS_TextData {
      *    often the case since you might want to adjust attributes
      *    after creating a text entity.
      */
-    RS_TextData(const RS_Vector& insertionPoint,
-                const RS_Vector& secondPoint,
+    RS_TextData(const RS_Vector &insertionPoint,
+                const RS_Vector &secondPoint,
                 double height,
                 double widthRel,
                 VAlign valign,
                 HAlign halign,
                 TextGeneration textGeneration,
-                const QString& text,
-                const QString& style,
+                const QString &text,
+                const QString &style,
                 double angle,
-				RS2::UpdateMode updateMode = RS2::Update);
+                RS2::UpdateMode updateMode = RS2::Update);
 
     /** Insertion point */
     RS_Vector insertionPoint;
@@ -125,7 +125,7 @@ struct RS_TextData {
     RS2::UpdateMode updateMode;
 };
 
-std::ostream& operator << (std::ostream& os, const RS_TextData& td);
+std::ostream &operator<<(std::ostream &os, const RS_TextData &td);
 
 /**
  * Class for a text entity.
@@ -137,14 +137,15 @@ std::ostream& operator << (std::ostream& os, const RS_TextData& td);
  */
 class RS_Text : public RS_EntityContainer {
 public:
-    RS_Text(RS_EntityContainer* parent,
-            const RS_TextData& d);
-	virtual ~RS_Text() = default;
+    RS_Text(RS_EntityContainer *parent,
+            const RS_TextData &d);
 
-    virtual RS_Entity* clone() const override;
+    virtual ~RS_Text() = default;
+
+    virtual RS_Entity *clone() const override;
 
     /**	@return RS2::EntityText */
-    virtual RS2::EntityType rtti() const override{
+    virtual RS2::EntityType rtti() const override {
         return RS2::EntityText;
     }
 
@@ -161,59 +162,78 @@ public:
     RS_Vector getInsertionPoint() {
         return data.insertionPoint;
     }
+
     RS_Vector getSecondPoint() {
         return data.secondPoint;
     }
+
     double getHeight() {
         return data.height;
     }
+
     void setHeight(double h) {
         data.height = h;
     }
+
     double getWidthRel() {
         return data.widthRel;
     }
+
     void setWidthRel(double w) {
         data.widthRel = w;
     }
+
     //RLZ: bad functions, this is MText style align
     void setAlignment(int a);
+
     int getAlignment();
 
     RS_TextData::VAlign getVAlign() {
         return data.valign;
     }
+
     void setVAlign(RS_TextData::VAlign va) {
         data.valign = va;
     }
+
     RS_TextData::HAlign getHAlign() {
         return data.halign;
     }
+
     void setHAlign(RS_TextData::HAlign ha) {
         data.halign = ha;
     }
+
     RS_TextData::TextGeneration getTextGeneration() {
         return data.textGeneration;
     }
-    void setText(const QString& t);
+
+    void setText(const QString &t);
+
     QString getText() {
         return data.text;
     }
-    void setStyle(const QString& s) {
+
+    void setStyle(const QString &s) {
         data.style = s;
     }
+
     QString getStyle() {
         return data.style;
     }
-        void setAngle(double a) {
-                data.angle = a;
-        }
+
+    void setAngle(double a) {
+        data.angle = a;
+    }
+
     double getAngle() {
         return data.angle;
     }
+
     double getUsedTextWidth() {
         return usedTextWidth;
     }
+
     double getUsedTextHeight() {
         return usedTextHeight;
     }
@@ -225,23 +245,30 @@ public:
     /**
      * @return The insertion point as endpoint.
      */
-    virtual RS_Vector getNearestEndpoint(const RS_Vector& coord,
-                                         double* dist = NULL)const override;
+    virtual RS_Vector getNearestEndpoint(const RS_Vector &coord,
+                                         double *dist = NULL) const override;
+
     virtual RS_VectorSolutions getRefPoints() const override;
 
-    virtual void move(const RS_Vector& offset) override;
-    virtual void rotate(const RS_Vector& center, const double& angle) override;
-    virtual void rotate(const RS_Vector& center, const RS_Vector& angleVector) override;
-    virtual void scale(const RS_Vector& center, const RS_Vector& factor) override;
-    virtual void mirror(const RS_Vector& axisPoint1, const RS_Vector& axisPoint2) override;
-    virtual bool hasEndpointsWithinWindow(const RS_Vector& v1, const RS_Vector& v2) override;
-    virtual void stretch(const RS_Vector& firstCorner,
-                         const RS_Vector& secondCorner,
-                         const RS_Vector& offset) override;
+    virtual void move(const RS_Vector &offset) override;
 
-    friend std::ostream& operator << (std::ostream& os, const RS_Text& p);
+    virtual void rotate(const RS_Vector &center, const double &angle) override;
 
-    void draw(RS_Painter* painter, RS_GraphicView* view, double& patternOffset) override;
+    virtual void rotate(const RS_Vector &center, const RS_Vector &angleVector) override;
+
+    virtual void scale(const RS_Vector &center, const RS_Vector &factor) override;
+
+    virtual void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
+
+    virtual bool hasEndpointsWithinWindow(const RS_Vector &v1, const RS_Vector &v2) override;
+
+    virtual void stretch(const RS_Vector &firstCorner,
+                         const RS_Vector &secondCorner,
+                         const RS_Vector &offset) override;
+
+    friend std::ostream &operator<<(std::ostream &os, const RS_Text &p);
+
+    void draw(RS_Painter *painter, RS_GraphicView *view, double &patternOffset) override;
 
 protected:
     RS_TextData data;
