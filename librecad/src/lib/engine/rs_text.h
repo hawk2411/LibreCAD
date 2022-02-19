@@ -96,8 +96,8 @@ struct RS_TextData {
                 VAlign valign,
                 HAlign halign,
                 TextGeneration textGeneration,
-                const QString &text,
-                const QString &style,
+                QString text,
+                QString style,
                 double angle,
                 RS2::UpdateMode updateMode = RS2::Update);
 
@@ -106,23 +106,23 @@ struct RS_TextData {
     /** Second point for fit or aligned*/
     RS_Vector secondPoint;
     /** Nominal (initial) text height */
-    double height;
+    double height = 0.0;
     /** Width/Height relation */
-    double widthRel;
+    double widthRel = 0.0;
     /** Vertical alignment */
-    VAlign valign;
+    VAlign valign = VABaseline;
     /** Horizontal alignment */
-    HAlign halign;
+    HAlign halign = HALeft;
     /** Text Generation */
-    TextGeneration textGeneration;
+    TextGeneration textGeneration = None;
     /** Text string */
     QString text;
     /** Text style name */
     QString style;
     /** Rotation angle */
-    double angle;
+    double angle = 0.0;
     /** Update mode */
-    RS2::UpdateMode updateMode;
+    RS2::UpdateMode updateMode = RS2::NoUpdate;
 };
 
 std::ostream &operator<<(std::ostream &os, const RS_TextData &td);
@@ -138,131 +138,109 @@ std::ostream &operator<<(std::ostream &os, const RS_TextData &td);
 class RS_Text : public RS_EntityContainer {
 public:
     RS_Text(RS_EntityContainer *parent,
-            const RS_TextData &d);
+            RS_TextData d);
 
-    virtual ~RS_Text() = default;
+    ~RS_Text() override = default;
 
-    virtual RS_Entity *clone() const override;
+    RS_Entity *clone() const override;
 
     /**	@return RS2::EntityText */
-    virtual RS2::EntityType rtti() const override {
+    RS2::EntityType rtti() const override {
         return RS2::EntityText;
     }
 
     /** @return Copy of data that defines the text. */
     RS_TextData getData() const {
-        return data;
+        return _data;
     }
 
     void update() override;
 
-    int getNumberOfLines();
 
-
-    RS_Vector getInsertionPoint() {
-        return data.insertionPoint;
+    RS_Vector getInsertionPoint() const {
+        return _data.insertionPoint;
     }
 
-    RS_Vector getSecondPoint() {
-        return data.secondPoint;
+    RS_Vector getSecondPoint() const {
+        return _data.secondPoint;
     }
 
-    double getHeight() {
-        return data.height;
+    double getHeight() const {
+        return _data.height;
     }
 
     void setHeight(double h) {
-        data.height = h;
+        _data.height = h;
     }
 
-    double getWidthRel() {
-        return data.widthRel;
+    double getWidthRel() const {
+        return _data.widthRel;
     }
 
     void setWidthRel(double w) {
-        data.widthRel = w;
+        _data.widthRel = w;
     }
 
     //RLZ: bad functions, this is MText style align
     void setAlignment(int a);
 
-    int getAlignment();
+    int getAlignment() const;
 
-    RS_TextData::VAlign getVAlign() {
-        return data.valign;
+    RS_TextData::VAlign getVAlign() const {
+        return _data.valign;
     }
 
     void setVAlign(RS_TextData::VAlign va) {
-        data.valign = va;
+        _data.valign = va;
     }
 
-    RS_TextData::HAlign getHAlign() {
-        return data.halign;
-    }
-
-    void setHAlign(RS_TextData::HAlign ha) {
-        data.halign = ha;
-    }
-
-    RS_TextData::TextGeneration getTextGeneration() {
-        return data.textGeneration;
+    RS_TextData::HAlign getHAlign() const {
+        return _data.halign;
     }
 
     void setText(const QString &t);
 
-    QString getText() {
-        return data.text;
+    QString getText() const {
+        return _data.text;
     }
 
     void setStyle(const QString &s) {
-        data.style = s;
+        _data.style = s;
     }
 
-    QString getStyle() {
-        return data.style;
+    QString getStyle() const {
+        return _data.style;
     }
 
     void setAngle(double a) {
-        data.angle = a;
+        _data.angle = a;
     }
 
-    double getAngle() {
-        return data.angle;
+    double getAngle() const {
+        return _data.angle;
     }
-
-    double getUsedTextWidth() {
-        return usedTextWidth;
-    }
-
-    double getUsedTextHeight() {
-        return usedTextHeight;
-    }
-
-//	virtual double getLength() const {
-//		return -1.0;
-//	}
 
     /**
      * @return The insertion point as endpoint.
      */
-    virtual RS_Vector getNearestEndpoint(const RS_Vector &coord,
-                                         double *dist = NULL) const override;
+    RS_Vector getNearestEndpoint(const RS_Vector &coord,
+                                         double *dist) const override;
 
-    virtual RS_VectorSolutions getRefPoints() const override;
+    RS_VectorSolutions getRefPoints() const override;
 
-    virtual void move(const RS_Vector &offset) override;
+    void move(const RS_Vector &offset) override;
 
-    virtual void rotate(const RS_Vector &center, const double &angle) override;
+    void rotate(const RS_Vector &center, const double &angle) override;
 
-    virtual void rotate(const RS_Vector &center, const RS_Vector &angleVector) override;
+    void rotate(const RS_Vector &center, const RS_Vector &angleVector) override;
 
-    virtual void scale(const RS_Vector &center, const RS_Vector &factor) override;
+    void scale(const RS_Vector &center, const RS_Vector &factor) override;
 
-    virtual void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
+    void mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) override;
 
-    virtual bool hasEndpointsWithinWindow(const RS_Vector &v1, const RS_Vector &v2) override;
+    bool hasEndpointsWithinWindow(const RS_Vector &v1, const RS_Vector &v2) override;
 
-    virtual void stretch(const RS_Vector &firstCorner,
+    void stretch(const RS_Vector &firstCorner,
                          const RS_Vector &secondCorner,
                          const RS_Vector &offset) override;
 
@@ -271,20 +249,7 @@ public:
     void draw(RS_Painter *painter, RS_GraphicView *view, double &patternOffset) override;
 
 protected:
-    RS_TextData data;
-
-    /**
-     * Text width used by the current contents of this text entity.
-     * This property is updated by the update method.
-     * @see update
-     */
-    double usedTextWidth;
-    /**
-     * Text height used by the current contents of this text entity.
-     * This property is updated by the update method.
-     * @see update
-     */
-    double usedTextHeight;
+    RS_TextData _data;
 };
 
 #endif
