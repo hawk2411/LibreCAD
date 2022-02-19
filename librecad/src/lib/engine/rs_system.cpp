@@ -38,7 +38,7 @@
 
 #include <QStandardPaths>
 
-RS_System *RS_System::uniqueInstance = NULL;
+RS_System *RS_System::s_uniqueInstance = nullptr;
 
 /**
  * Initializes the system.
@@ -52,18 +52,18 @@ RS_System *RS_System::uniqueInstance = NULL;
  */
 void RS_System::init(const QString &appName, const QString &appVersion,
                      const QString &appDirName, const QString &appDir) {
-    this->appName = appName;
-    this->appVersion = appVersion;
-    this->appDirName = appDirName;
+    this->_appName = appName;
+    this->_appVersion = appVersion;
+    this->_appDirName = appDirName;
     if (appDir == "") {
-        this->appDir = QDir::currentPath();
+        this->_appDir = QDir::currentPath();
     } else {
-        this->appDir = appDir;
+        this->_appDir = appDir;
     }
 
     RS_DEBUG->print("RS_System::init: System %s initialized.", appName.toLatin1().data());
     RS_DEBUG->print("RS_System::init: App dir: %s", appDir.toLatin1().data());
-    initialized = true;
+    _initialized = true;
 
     initAllLanguagesList();
     initLanguageList();
@@ -75,38 +75,31 @@ void RS_System::init(const QString &appName, const QString &appVersion,
  */
 void RS_System::initLanguageList() {
     RS_DEBUG->print("RS_System::initLanguageList");
-    QStringList lst = getFileList("qm", "qm");
+    QStringList fileList = getFileList("qm", "qm");
 
     RS_SETTINGS->beginGroup("/Paths");
-    lst += (RS_SETTINGS->readEntry("/Translations", "")).split(";", QString::SkipEmptyParts);
+    fileList += (RS_SETTINGS->readEntry("/Translations", "")).split(";", QString::SkipEmptyParts);
     RS_SETTINGS->endGroup();
 
-    for (QStringList::Iterator it = lst.begin();
-         it != lst.end();
-         ++it) {
+    for (auto &file: fileList) {
 
-        RS_DEBUG->print("RS_System::initLanguageList: qm file: %s",
-                        (*it).toLatin1().data());
-
-        int i0 = (*it).lastIndexOf(QString("librecad"), -1, Qt::CaseInsensitive);
-        int i1 = (*it).indexOf('_', i0);
-        int i2 = (*it).indexOf('.', i1);
+        int i0 = file.lastIndexOf(QString("librecad"), -1, Qt::CaseInsensitive);
+        int i1 = file.indexOf('_', i0);
+        int i2 = file.indexOf('.', i1);
         if (i1 == -1 || i2 == -1) {
             continue;
         }
-        QString l = (*it).mid(i1 + 1, i2 - i1 - 1);
+        QString language = file.mid(i1 + 1, i2 - i1 - 1);
 
-        if (!(languageList.contains(l))) {
-            RS_DEBUG->print("RS_System::initLanguageList: append language: %s",
-                            l.toLatin1().data());
-            languageList.append(l);
+        if (!(_languageList.contains(language))) {
+            _languageList.append(language);
         }
     }
     RS_DEBUG->print("RS_System::initLanguageList: OK");
 }
 
 void RS_System::addLocale(RS_Locale *locale) {
-    allKnownLocales.push_back(QSharedPointer<RS_Locale>(locale));
+    _allKnownLocales.push_back(QSharedPointer<RS_Locale>(locale));
 }
 
 #define LNG(canonical, direction, name) \
@@ -119,7 +112,7 @@ void RS_System::addLocale(RS_Locale *locale) {
 void RS_System::initAllLanguagesList() {
     // RVT uk_AU renamed to uk so that we don't have to change the pootle server
 
-    allKnownLocales.clear();
+    _allKnownLocales.clear();
     RS_Locale *locale;
     LNG("ab", RS2::locLeftToRight, "Abkhazian")
     LNG("aa", RS2::locLeftToRight, "Afar")
@@ -362,9 +355,9 @@ void RS_System::initAllLanguagesList() {
  *fixme, need to support command language
  */
 void RS_System::loadTranslation(const QString &lang, const QString & /*langCmd*/) {
-    static QTranslator *tQt = NULL;
-    static QTranslator *tLibreCAD = NULL;
-    static QTranslator *tPlugIns = NULL;
+    static QTranslator *tQt = nullptr;
+    static QTranslator *tLibreCAD = nullptr;
+    static QTranslator *tPlugIns = nullptr;
 
     //make translation filenames case insensitive, #276
     QString langLower("");
@@ -385,15 +378,18 @@ void RS_System::loadTranslation(const QString &lang, const QString & /*langCmd*/
     lst += (RS_SETTINGS->readEntry("/Translations", "")).split(";", QString::SkipEmptyParts);
     RS_SETTINGS->endGroup();
 
-    if (tLibreCAD != NULL) {
+    if (tLibreCAD != nullptr) {
+        //NOLINTNEXTLINE
         qApp->removeTranslator(tLibreCAD);
         delete tLibreCAD;
     }
-    if (tPlugIns != NULL) {
+    if (tPlugIns != nullptr) {
+        //NOLINTNEXTLINE
         qApp->removeTranslator(tPlugIns);
         delete tPlugIns;
     }
-    if (tQt != NULL) {
+    if (tQt != nullptr) {
+        //NOLINTNEXTLINE
         qApp->removeTranslator(tQt);
         delete tQt;
     }
@@ -403,50 +399,51 @@ void RS_System::loadTranslation(const QString &lang, const QString & /*langCmd*/
             langPlugInsUpper = "plugins_" + langUpper + ".qm",
             langQtLower = "qt_" + langLower + ".qm",
             langQtUpper = "qt_" + langUpper + ".qm";
-    QTranslator *t = new QTranslator(0);
-    for (QStringList::Iterator it = lst.begin();
-         it != lst.end();
-         ++it) {
+
+    auto *t = new QTranslator(nullptr);
+    for (auto &it: lst) {
 
         // load LibreCAD translations
-        if (NULL == tLibreCAD) {
-            if (t->load(langFileLower, *it) == true
+        if (nullptr == tLibreCAD) {
+            if (t->load(langFileLower, it)
                 || (!langUpper.isEmpty()
-                    && t->load(langFileUpper, *it) == true)) {
+                    && t->load(langFileUpper, it))) {
                 tLibreCAD = t;
+                //NOLINTNEXTLINE
                 qApp->installTranslator(tLibreCAD);
-                t = new QTranslator(0);
+                t = new QTranslator(nullptr);
             }
         }
 
         // load PlugIns translations
-        if (NULL == tPlugIns) {
-            if (t->load(langPlugInsLower, *it) == true
+        if (nullptr == tPlugIns) {
+            if (t->load(langPlugInsLower, it)
                 || (!langUpper.isEmpty()
-                    && t->load(langPlugInsUpper, *it) == true)) {
+                    && t->load(langPlugInsUpper, it))) {
                 tPlugIns = t;
+                //NOLINTNEXTLINE
                 qApp->installTranslator(tPlugIns);
-                t = new QTranslator(0);
+                t = new QTranslator(nullptr);
             }
         }
 
         // load Qt standard dialog translations
-        if (NULL == tQt) {
-            if (t->load(langQtLower, *it) == true
+        if (nullptr == tQt) {
+            if (t->load(langQtLower, it)
                 || (!langUpper.isEmpty()
-                    && t->load(langQtUpper, *it) == true)) {
+                    && t->load(langQtUpper, it))) {
                 tQt = t;
+                //NOLINTNEXTLINE
                 qApp->installTranslator(tQt);
-                t = new QTranslator(0);
+                t = new QTranslator(nullptr);
             }
         }
-        if (NULL != tLibreCAD && NULL != tPlugIns && NULL != tQt) {
+        if (nullptr != tLibreCAD && nullptr != tPlugIns && nullptr != tQt) {
             break;
         }
     }
-    if (NULL != t) {
-        delete t;
-    }
+
+    delete t;
 }
 
 
@@ -454,13 +451,13 @@ void RS_System::loadTranslation(const QString &lang, const QString & /*langCmd*/
  * Checks if the system has been initialized and prints a warning
  * otherwise to stderr.
  */
-bool RS_System::checkInit() {
-    if (!initialized) {
+bool RS_System::checkInit() const {
+    if (!_initialized) {
         RS_DEBUG->print(RS_Debug::D_WARNING,
                         "RS_System::checkInit: System not initialized.\n"
                         "Use RS_SYSTEM->init(appname, appdirname) to do so.");
     }
-    return initialized;
+    return _initialized;
 }
 
 
@@ -489,7 +486,7 @@ QString RS_System::getAppDataDir() {
     QDir dir(appData);
     if (!dir.exists()) {
         if (!dir.mkpath(appData))
-            return QString();
+            return {};
     }
     return appData;
 }
@@ -506,7 +503,7 @@ QStringList RS_System::getFileList(const QString &subDirectory,
     checkInit();
 
     RS_DEBUG->print("RS_System::getFileList: subdirectory %s ", subDirectory.toLatin1().data());
-    RS_DEBUG->print("RS_System::getFileList: appDirName %s ", appDirName.toLatin1().data());
+    RS_DEBUG->print("RS_System::getFileList: appDirName %s ", _appDirName.toLatin1().data());
     RS_DEBUG->print("RS_System::getFileList: getCurrentDir %s ", getCurrentDir().toLatin1().data());
 
     QStringList dirList = getDirectoryList(subDirectory);
@@ -515,21 +512,17 @@ QStringList RS_System::getFileList(const QString &subDirectory,
     QString path;
     QDir dir;
 
-    for (QStringList::Iterator it = dirList.begin();
-         it != dirList.end();
-         ++it) {
+    for (auto & it : dirList) {
 
         //path = QString(*it) + "/" + subDirectory;
-        path = QString(*it);
+        path = QString(it);
         dir = QDir(path);
 
         if (dir.exists() && dir.isReadable()) {
             QStringList files = dir.entryList(QStringList("*." + fileExtension));
-            for (QStringList::Iterator it2 = files.begin();
-                 it2 != files.end();
-                 it2++) {
+            for (auto & file : files) {
 
-                fileList += path + "/" + (*it2);
+                fileList += path + "/" + file;
             }
         }
     }
@@ -556,31 +549,31 @@ QStringList RS_System::getDirectoryList(const QString &_subDirectory) {
 #endif // Q_OS_WIN32
 
     // Unix home directory, it's old style but some people might have stuff there.
-    dirList.append(getHomeDir() + "/." + appDirName + "/" + subDirectory);
+    dirList.append(getHomeDir() + "/." + _appDirName + "/" + subDirectory);
 
     //local (application) directory has priority over other dirs:
-    if (!appDir.isEmpty() && appDir != "/" && appDir != getHomeDir()) {
-        if (appDir != getCurrentDir() && subDirectory !=
-                                         QString("plugins")) {// 17 Aug, 2011, Dongxu Li, do not look for plugins in the current folder, we should install plugins to system or ~/.LibreCAD/plugins/
-            dirList.append(appDir + "/" + subDirectory);
+    if (!_appDir.isEmpty() && _appDir != "/" && _appDir != getHomeDir()) {
+        if (_appDir != getCurrentDir() && subDirectory !=
+                                          QString("plugins")) {// 17 Aug, 2011, Dongxu Li, do not look for plugins in the current folder, we should install plugins to system or ~/.LibreCAD/plugins/
+            dirList.append(_appDir + "/" + subDirectory);
         }
     }
 
 #ifdef Q_OS_UNIX
-    RS_DEBUG->print(RS_Debug::D_ERROR, "RS_System::getDirectoryList: %s", appDir.toStdString().c_str());
+    RS_DEBUG->print(RS_Debug::D_ERROR, "RS_System::getDirectoryList: %s", _appDir.toStdString().c_str());
     // for AppImage use relative paths from executable
     // from packet manager the executable is in /usr/bin
     // in AppImage the executable is APPDIR/usr/bin
     // so this should work for paket manager and AppImage distribution
-    dirList.append(QDir::cleanPath(appDir + "/../share/doc/" + appDirName + "/" + subDirectory));
+    dirList.append(QDir::cleanPath(_appDir + "/../share/doc/" + _appDirName + "/" + subDirectory));
 
     // Redhat style:
-    dirList.append(QDir::cleanPath(appDir + "/../share/" + appDirName + "/" + subDirectory));
+    dirList.append(QDir::cleanPath(_appDir + "/../share/" + _appDirName + "/" + subDirectory));
     // Debian style:
-    dirList.append(QDir::cleanPath(appDir + "/../lib/" + appDirName + "/" + subDirectory));
+    dirList.append(QDir::cleanPath(_appDir + "/../lib/" + _appDirName + "/" + subDirectory));
 
-    if (QStringLiteral("plugins") == subDirectory) {
-        dirList.append(QDir::cleanPath(appDir + "/../lib/" + appDirName));
+    if (QString("plugins") == subDirectory) {
+        dirList.append(QDir::cleanPath(_appDir + "/../lib/" + _appDirName));
     }
 #endif
 
@@ -594,7 +587,7 @@ QStringList RS_System::getDirectoryList(const QString &_subDirectory) {
 #ifndef Q_OS_MAC
     // Add support directory if librecad is run-in-place,
     // not for Apple because it uses resources this is more for unix systems
-    dirList.append(appDir + "/resources/" + subDirectory);
+    dirList.append(_appDir + "/resources/" + subDirectory);
 #endif
 
     // Individual directories:
@@ -620,41 +613,15 @@ QStringList RS_System::getDirectoryList(const QString &_subDirectory) {
     QStringList ret;
 
     RS_DEBUG->print("RS_System::getDirectoryList: Paths:");
-    for (QStringList::Iterator it = dirList.begin();
-         it != dirList.end();
-         ++it) {
-        if (QFileInfo(*it).isDir()) {
-            ret += (*it);
-            RS_DEBUG->print((*it).toLatin1());
+    for (auto & it : dirList) {
+        if (QFileInfo(it).isDir()) {
+            ret += it;
+            RS_DEBUG->print(it.toLatin1());
         }
     }
 
     return ret;
 }
-
-
-/**
- * Converts a language string to a symbol (e.g. Deutsch or German to 'de').
- * Languages taken from RFC3066
- */
-QString RS_System::languageToSymbol(const QString &lang) {
-    int i1 = lang.indexOf(' ');
-    QString l = lang;
-    if (i1 >= 2) {
-        l = lang.mid(0, i1);
-    }
-    return l;
-
-//    RS_Locale *locale;
-//    foreach (locale, *RS_SYSTEM->allKnownLocales) {
-//        if (locale->getName().toLower() == l) {
-//            return locale->getCanonical();
-//        }
-//    }
-
-//    return "";
-}
-
 
 /**
  * Converts a locale code into a readable string

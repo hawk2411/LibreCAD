@@ -49,7 +49,7 @@ class RS_System {
 
 protected:
     RS_System() {
-        initialized = false;
+        _initialized = false;
     }
 
 public:
@@ -57,10 +57,10 @@ public:
      * @return Instance to the unique system object.
      */
     static RS_System *instance() {
-        if (uniqueInstance == NULL) {
-            uniqueInstance = new RS_System();
+        if (s_uniqueInstance == nullptr) {
+            s_uniqueInstance = new RS_System();
         }
-        return uniqueInstance;
+        return s_uniqueInstance;
     }
 
     void init(const QString &appName, const QString &appVersion,
@@ -70,35 +70,28 @@ public:
 
     void initAllLanguagesList();
 
-    bool checkInit();
+    bool checkInit() const;
 
-    bool createPaths(const QString &p);
+    static bool createPaths(const QString &p);
 
     /**
      * @return Users home directory.
      */
-    QString getHomeDir() {
+    static QString getHomeDir() {
         return QDir::homePath();
     }
 
     /**
      * @return Current directory.
      */
-    QString getCurrentDir() {
+    static QString getCurrentDir() {
         return QDir::currentPath();
-    }
-
-    /**
-     * @return Application directory.
-     */
-    QString getAppDir() {
-        return appDir;
     }
 
     /**
      * @return Application Data directory.
      */
-    QString getAppDataDir();
+    static QString getAppDataDir();
 
     /**
      * @return A list of absolute paths to all font files found.
@@ -125,46 +118,17 @@ public:
     }
 
     /**
-     * @return A list of absolute paths to all script files found.
-     */
-    QStringList getScriptList() {
-        QStringList ret = getFileList("scripts/qsa", "qs");
-        return ret;
-    }
-
-    /**
-     * @return A list of absolute paths to all machine configuration files found.
-     */
-    QStringList getMachineList() {
-        QStringList ret = getFileList("machines", "cxm");
-        return ret;
-    }
-
-    /**
-     * @return Absolute path to the documentation.
-     */
-    QString getDocPath() {
-        QStringList lst = getDirectoryList("doc");
-
-        if (!lst.isEmpty()) {
-            return lst.first();
-        } else {
-            return QString();
-        }
-    }
-
-    /**
      * @return The application name.
      */
     QString getAppName() {
-        return appName;
+        return _appName;
     }
 
     /**
      * @return The application version.
      */
     QString getAppVersion() {
-        return appVersion;
+        return _appVersion;
     }
 
     QStringList getFileList(const QString &subDirectory,
@@ -173,18 +137,14 @@ public:
     QStringList getDirectoryList(const QString &subDirectory);
 
     QStringList getLanguageList() {
-        return languageList;
+        return _languageList;
     }
-
-    static QString languageToSymbol(const QString &lang);
 
     static QString symbolToLanguage(const QString &symb);
 
     static QString getEncoding(const QString &str);
 
     void loadTranslation(const QString &lang, const QString &langCmd);
-
-    static bool test();
 
     /** Returns ISO code for given locale. Needed for win32 to convert
      *  from system encodings.
@@ -194,17 +154,17 @@ public:
 private:
     void addLocale(RS_Locale *locale);
 
-protected:
-    static RS_System *uniqueInstance;
+private:
+    static RS_System *s_uniqueInstance;
 
-    QString appName;
-    QString appVersion;
-    QString appDirName;
-    QString appDir;
+    QString _appName;
+    QString _appVersion;
+    QString _appDirName;
+    QString _appDir;
 
-    QStringList languageList;   //< List of available translations
-    bool initialized;
-    QList<QSharedPointer<RS_Locale> > allKnownLocales;
+    QStringList _languageList;   //< List of available translations
+    bool _initialized;
+    QList<QSharedPointer<RS_Locale> > _allKnownLocales;
 };
 
 #endif
