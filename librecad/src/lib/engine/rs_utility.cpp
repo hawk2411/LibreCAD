@@ -37,15 +37,15 @@ QString RS_Utility::doubleToString(double value, int precision) {
 
     ret.setNum(value, 'f', precision);
 
-    if(ret.contains('.')) {
+    if (ret.contains('.')) {
         // remove trailing zeros:
-        while(ret.at(ret.length()-1)=='0') {
-            ret.truncate(ret.length()-1);
+        while (ret.at(ret.length() - 1) == '0') {
+            ret.truncate(ret.length() - 1);
         }
 
         // remove trailing .
-        if(ret.at(ret.length()-1)=='.') {
-            ret.truncate(ret.length()-1);
+        if (ret.at(ret.length() - 1) == '.') {
+            ret.truncate(ret.length() - 1);
         }
     }
 

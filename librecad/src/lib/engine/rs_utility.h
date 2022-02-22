@@ -37,7 +37,7 @@ class QString;
  */
 class RS_Utility {
 public:
-    static QString doubleToString(double value, int precision=6);
+    static QString doubleToString(double value, int precision = 6);
 };
 
 #endif
