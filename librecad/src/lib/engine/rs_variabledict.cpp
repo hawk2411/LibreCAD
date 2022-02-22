@@ -33,7 +33,7 @@
  * Removes all variables in the blocklist.
  */
 void RS_VariableDict::clear() {
-    variables.clear();
+    _variables.clear();
 }
 
 
@@ -51,7 +51,7 @@ void RS_VariableDict::add(const QString &key,
         return;
     }
 
-    variables.insert(key, RS_Variable(value, code));
+    _variables.insert(key, RS_Variable(value, code));
 }
 
 
@@ -68,7 +68,7 @@ void RS_VariableDict::add(const QString &key, int value, int code) {
         return;
     }
 
-    variables.insert(key, RS_Variable(value, code));
+    _variables.insert(key, RS_Variable(value, code));
 }
 
 
@@ -85,7 +85,7 @@ void RS_VariableDict::add(const QString &key, double value, int code) {
         return;
     }
 
-    variables.insert(key, RS_Variable(value, code));
+    _variables.insert(key, RS_Variable(value, code));
 }
 
 
@@ -103,7 +103,7 @@ void RS_VariableDict::add(const QString &key,
         return;
     }
 
-    variables.insert(key, RS_Variable(value, code));
+    _variables.insert(key, RS_Variable(value, code));
 }
 
 
@@ -119,8 +119,8 @@ void RS_VariableDict::add(const QString &key,
 RS_Vector RS_VariableDict::getVector(const QString &key, const RS_Vector &def) const {
     RS_Vector ret;
 
-    auto i = variables.find(key);
-    if (variables.end() != i && RS2::VariableVector == i.value().getType()) {
+    auto i = _variables.find(key);
+    if (_variables.end() != i && RS2::VariableVector == i.value().getType()) {
         ret = i.value().getVector();
     } else {
         ret = def;
@@ -144,8 +144,8 @@ QString RS_VariableDict::getString(const QString &key, const QString &def) const
 
     RS_DEBUG->print("RS_VariableDict::getString: key: '%s'", key.toLatin1().data());
 
-    auto i = variables.find(key);
-    if (variables.end() != i && RS2::VariableString == i.value().getType()) {
+    auto i = _variables.find(key);
+    if (_variables.end() != i && RS2::VariableString == i.value().getType()) {
         ret = i.value().getString();
     } else {
         ret = def;
@@ -164,8 +164,8 @@ QString RS_VariableDict::getString(const QString &key, const QString &def) const
  * if the variable couldn't be found.
  */
 int RS_VariableDict::getInt(const QString &key, int def) const {
-    auto i = variables.find(key);
-    return (variables.end() != i && RS2::VariableInt == i.value().getType()) ? i.value().getInt() : def;
+    auto i = _variables.find(key);
+    return (_variables.end() != i && RS2::VariableInt == i.value().getType()) ? i.value().getInt() : def;
 }
 
 /**
@@ -178,15 +178,10 @@ int RS_VariableDict::getInt(const QString &key, int def) const {
  * if the variable couldn't be found.
  */
 double RS_VariableDict::getDouble(const QString &key, double def) const {
-    double ret = 0.0;
-
-    auto i = variables.find(key);
-    if (variables.end() != i && RS2::VariableDouble == i.value().getType()) {
-        ret = i.value().getDouble();
-    } else {
-        ret = def;
-    }
-
+    auto it = _variables.find(key);
+    double ret = (_variables.end() != it && RS2::VariableDouble == it.value().getType())
+          ? it.value().getDouble()
+          : def;
     return ret;
 }
 
@@ -199,7 +194,7 @@ void RS_VariableDict::remove(const QString &key) {
     RS_DEBUG->print("RS_VariableDict::removeVariable()");
 
     // here the block is removed from the list but not deleted
-    variables.remove(key);
+    _variables.remove(key);
 }
 
 /**
@@ -207,8 +202,8 @@ void RS_VariableDict::remove(const QString &key) {
  */
 std::ostream &operator<<(std::ostream &os, RS_VariableDict &d) {
     os << "Variables: \n";
-    auto it = d.variables.begin();
-    while (it != d.variables.end()) {
+    auto it = d._variables.begin();
+    while (it != d._variables.end()) {
         os << it.key().toLatin1().data() << ": ";
         switch (it.value().getType()) {
             case RS2::VariableVoid:

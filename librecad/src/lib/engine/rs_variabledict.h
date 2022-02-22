@@ -52,7 +52,7 @@ public:
      * @return Number of variables available.
      */
     int count() const {
-        return variables.count();
+        return _variables.count();
     }
 
     void add(const QString &key, const RS_Vector &value, int code);
@@ -73,21 +73,15 @@ public:
 
     void remove(const QString &key);
 
-    QHash<QString, RS_Variable> const &getVariableDict() const {
-        return variables;
-    }
-
     QHash<QString, RS_Variable> &getVariableDict() {
-        return variables;
+        return _variables;
     }
-
-    //void addVariableDictListener(RS_VariableDictListener* listener);
 
     friend std::ostream &operator<<(std::ostream &os, RS_VariableDict &v);
 
 private:
     //! Variables for the graphic
-    QHash<QString, RS_Variable> variables;
+    QHash<QString, RS_Variable> _variables;
 };
 
 #endif
