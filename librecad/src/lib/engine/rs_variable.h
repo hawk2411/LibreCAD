@@ -40,79 +40,86 @@
  * @author Andrew Mustun
  */
 class RS_Variable {
-	struct RS_VariableContents {
-		QString s;
-		int i;
-		double d;
-		RS_Vector v;
-	};
+    struct RS_VariableContents {
+        QString s;
+        int i;
+        double d;
+        RS_Vector v;
+    };
 public:
-	
-	RS_Variable() = default;
-	RS_Variable(const RS_Vector& v, int c):
-		code{c}
-	{
-		setVector(v);
-	}
-	RS_Variable(const QString& v, int c):
-		code{c}
-	{
-		setString(v);
-	}
-	RS_Variable(int v, int c):
-		code{c}
-	 {
-		setInt(v);
-	}
-	RS_Variable(double v, int c):
-		code{c}
-	 {
-		setDouble(v);
-	}
 
-	void setString(const QString& str) {
-		contents.s = str;
-		type = RS2::VariableString;
-	}
-	void setInt(int i) {
-		contents.i = i;
-		type = RS2::VariableInt;
-	}
-	void setDouble(double d) {
-		contents.d = d;
-		type = RS2::VariableDouble;
-	}
-	void setVector(const RS_Vector& v) {
-		contents.v = v;
-		type = RS2::VariableVector;
-	}
+    RS_Variable() = default;
 
-	QString getString() const {
-		return contents.s;
-	}
-	int getInt() const {
-		return contents.i;
-	}
-	double getDouble() const {
-		return contents.d;
-	}
-	RS_Vector getVector() const {
-		return contents.v;
-	}
+    RS_Variable(const RS_Vector &v, int c) :
+            code{c} {
+        setVector(v);
+    }
 
-	RS2::VariableType getType() const {
-		return type;
-	}
-	int getCode() const {
-		return code;
-	}
+    RS_Variable(const QString &v, int c) :
+            code{c} {
+        setString(v);
+    }
+
+    RS_Variable(int v, int c) :
+            code{c} {
+        setInt(v);
+    }
+
+    RS_Variable(double v, int c) :
+            code{c} {
+        setDouble(v);
+    }
+
+    void setString(const QString &str) {
+        contents.s = str;
+        type = RS2::VariableString;
+    }
+
+    void setInt(int i) {
+        contents.i = i;
+        type = RS2::VariableInt;
+    }
+
+    void setDouble(double d) {
+        contents.d = d;
+        type = RS2::VariableDouble;
+    }
+
+    void setVector(const RS_Vector &v) {
+        contents.v = v;
+        type = RS2::VariableVector;
+    }
+
+    QString getString() const {
+        return contents.s;
+    }
+
+    int getInt() const {
+        return contents.i;
+    }
+
+    double getDouble() const {
+        return contents.d;
+    }
+
+    RS_Vector getVector() const {
+        return contents.v;
+    }
+
+    RS2::VariableType getType() const {
+        return type;
+    }
+
+    int getCode() const {
+        return code;
+    }
 
     //friend std::ostream& operator << (std::ostream& os, RS_Variable& v);
 
 private:
-	RS_VariableContents contents;
-	RS2::VariableType type = RS2::VariableVoid;
-	int code = 0;
+    RS_VariableContents contents;
+    RS2::VariableType type = RS2::VariableVoid;
+    int code = 0;
 };
 
 #endif
