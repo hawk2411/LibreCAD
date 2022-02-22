@@ -43,13 +43,6 @@ class QString;
 class RS_Units {
 public:
 
-    //static char* unit2sign(RS2::Unit unit);
-
-    //static RS2::Unit string2unit(const char* str, bool* ok=0);
-    //static char* unit2string(RS2::Unit unit);
-
-    static RS2::Unit dxfint2unit(int dxfint);
-
     static QString unitToString(RS2::Unit u, bool t = true);
 
     static RS2::Unit stringToUnit(const QString &u);
@@ -97,14 +90,16 @@ public:
 
     static QString paperFormatToString(RS2::PaperFormat p);
 
-    static RS2::PaperFormat stringToPaperFormat(const QString &p);
-
     static void test();
 
     static double dpiToScale(double dpi, RS2::Unit unit);
 
     static double scaleToDpi(double scale, RS2::Unit unit);
 
+    static bool convertAngle(double angle, RS2::AngleFormat format, double &value);
+
+    //NOLINTNEXTLINE
+    RS2::PaperFormat stringToPaperFormat(const QString &p);
 };
 
 

@@ -34,60 +34,6 @@
 #include "rs_debug.h"
 
 /**
- * Converts a DXF integer () to a Unit enum.
- */
-RS2::Unit RS_Units::dxfint2unit(int dxfint) {
-    return (RS2::Unit) dxfint;
-
-    /*switch(dxfint) {
-    default:
-    case  0:
-        return RS2::None;
-    case  1:
-        return RS2::Inch;
-    case  2:
-        return RS2::Foot;
-    case  3:
-        return RS2::Mile;
-    case  4:
-        return RS2::Millimeter;
-    case  5:
-        return RS2::Centimeter;
-    case  6:
-        return RS2::Meter;
-    case  7:
-        return RS2::Kilometer;
-    case  8:
-        return RS2::Microinch;
-    case  9:
-        return RS2::Mil;
-    case 10:
-        return RS2::Yard;
-    case 11:
-        return RS2::Angstrom;
-    case 12:
-        return RS2::Nanometer;
-    case 13:
-        return RS2::Micron;
-    case 14:
-        return RS2::Decimeter;
-    case 15:
-        return RS2::Decameter;
-    case 16:
-        return RS2::Hectometer;
-    case 17:
-        return RS2::Gigameter;
-    case 18:
-        return RS2::Astro;
-    case 19:
-        return RS2::Lightyear;
-    case 20:
-        return RS2::Parsec;
-}*/
-}
-
-
-/**
  * @return a short string representing the given unit (e.g. "mm")
  */
 QString RS_Units::unitToSign(RS2::Unit u) {
@@ -372,10 +318,10 @@ double RS_Units::convert(double val, RS2::Unit src, RS2::Unit dest) {
  * Converts the given vector 'val' from unit 'src' to unit 'dest'.
  */
 RS_Vector RS_Units::convert(const RS_Vector &val, RS2::Unit src, RS2::Unit dest) {
-    return RS_Vector(convert(val.x, src, dest),
-                     convert(val.y, src, dest),
-                     convert(val.z, src, dest)
-    );
+    return {convert(val.x, src, dest),
+            convert(val.y, src, dest),
+            convert(val.z, src, dest)
+    };
 }
 
 
@@ -393,11 +339,6 @@ QString RS_Units::formatLinear(double length, RS2::Unit unit,
     QString ret;
 
     // unit appended to value (e.g. 'mm'):
-    /*QString unitString = "";
-    if (showUnit) {
-        unitString = unitToSign(unit);
-}*/
-
     // barbarian display: show as fraction:
     switch (format) {
         case RS2::Scientific:
@@ -445,9 +386,8 @@ QString RS_Units::formatLinear(double length, RS2::Unit unit,
 QString RS_Units::formatScientific(double length, RS2::Unit unit,
                                    int prec, bool showUnit) {
 
-    QString const ret = QString("%1").arg(length, 0, 'E', prec);
-    if (showUnit)
-        return ret + unitToSign(unit);
+    QString ret = QString("%1").arg(length, 0, 'E', prec);
+    if (showUnit) { return ret + unitToSign(unit); }
     return ret;
 }
 
@@ -461,7 +401,7 @@ QString RS_Units::formatScientific(double length, RS2::Unit unit,
  */
 QString RS_Units::formatDecimal(double length, RS2::Unit unit,
                                 int prec, bool showUnit) {
-    QString const ret = RS_Math::doubleToString(length, prec);
+    QString ret = RS_Math::doubleToString(length, prec);
 
     if (showUnit)
         return ret + unitToSign(unit);
@@ -547,15 +487,15 @@ QString RS_Units::formatArchitectural(double length, RS2::Unit /*unit*/,
  */
 QString RS_Units::formatArchitecturalMetric(double length, RS2::Unit unit,
                                             int prec, bool showUnit) {
-    QString ret;
-    bool neg = (length < 0.0);
-    QString zero = "0";
+
+    const bool neg = (length < 0.0);
+    const QString zero = "0";
 
     if (neg)
         length = length * -1.0;
 
-    ret = RS_Math::doubleToString(length, prec + 1);
-    int iLast = QString(ret.right(1)).toInt();
+    QString ret = RS_Math::doubleToString(length, prec + 1);
+    int iLast = ret.rightRef(1).toInt();
 
     // round on 0.005 and use superscript 5
     if ((iLast > 2) && (iLast < 8)) {
@@ -573,7 +513,7 @@ QString RS_Units::formatArchitecturalMetric(double length, RS2::Unit unit,
         }
     }
     if (showUnit) {
-        ret = QString("%1 %2").arg(ret).arg(unitToSign(unit));
+        ret = QString("%1 %2").arg(ret,unitToSign(unit));
     }
     if (neg) {
         ret = QString("-%1").arg(ret);
@@ -591,13 +531,6 @@ QString RS_Units::formatArchitecturalMetric(double length, RS2::Unit unit,
  */
 QString RS_Units::formatFractional(double length, RS2::Unit /*unit*/,
                                    int prec, bool /*showUnit*/) {
-
-    QString ret;
-
-    unsigned num;            // number of complete inches (num' 7/128")
-    unsigned nominator;      // number of fractions (nominator/128)
-    unsigned denominator;    // (7/denominator)
-
     // sign:
     QString neg = "";
     if (length < 0) {
@@ -605,20 +538,19 @@ QString RS_Units::formatFractional(double length, RS2::Unit /*unit*/,
         length = fabs(length);
     }
 
-    num = (unsigned) floor(length);
+    auto num = (unsigned) floor(length);    // number of complete inches (num' 7/128")
 
-    denominator = 2 << prec;
-    nominator = (unsigned) RS_Math::round((length - num) * denominator);
+    unsigned denominator = 2 << prec;   // (7/denominator)
+    auto nominator = (unsigned) RS_Math::round((length - num) * denominator); // number of fractions (nominator/128)
 
     // fraction rounds up to 1:
     if (nominator == denominator) {
-        nominator = 0;
         denominator = 0;
+        nominator = 0;
         ++num;
     }
-
     // Simplify the fraction
-    if (nominator && denominator) {
+    if (nominator != 0 && denominator != 0) {
         unsigned gcd = RS_Math::findGCD(nominator, denominator);
         if (gcd) {
             nominator = nominator / gcd;
@@ -631,17 +563,17 @@ QString RS_Units::formatFractional(double length, RS2::Unit /*unit*/,
         }
     }
 
-    if (num && nominator) {
-        ret = QString("%1%2 %3/%4").arg(neg).arg(num).arg(nominator).arg(denominator);
-    } else if (nominator) {
-        ret = QString("%1%2/%3").arg(neg).arg(nominator).arg(denominator);
-    } else if (num) {
-        ret = QString("%1%2").arg(neg).arg(num);
-    } else {
-        ret = "0";
-    }
 
-    return ret;
+    if (num && nominator) {
+        return QString("%1%2 %3/%4").arg(neg).arg(num).arg(nominator).arg(denominator);
+    }
+    if (nominator) {
+        return QString("%1%2/%3").arg(neg).arg(nominator).arg(denominator);
+    }
+    if (num) {
+        return QString("%1%2").arg(neg).arg(num);
+    }
+    return {"0"};
 }
 
 
@@ -660,23 +592,8 @@ QString RS_Units::formatAngle(double angle, RS2::AngleFormat format,
     QString ret;
     double value;
 
-    switch (format) {
-        case RS2::Surveyors:
-        case RS2::DegreesDecimal:
-        case RS2::DegreesMinutesSeconds:
-            value = RS_Math::rad2deg(angle);
-            break;
-        case RS2::Radians:
-            value = angle;
-            break;
-        case RS2::Gradians:
-            value = RS_Math::rad2gra(angle);
-            break;
-        default:
-            RS_DEBUG->print(RS_Debug::D_WARNING,
-                            "RS_Units::formatAngle: Unknown Angle Unit");
-            return "";
-            break;
+    if(! convertAngle(angle, format, value)) {
+        return "";
     }
 
     switch (format) {
@@ -737,8 +654,7 @@ QString RS_Units::formatAngle(double angle, RS2::AngleFormat format,
             break;
         case RS2::Surveyors: {
             QString prefix, suffix;
-            int quadrant;
-            quadrant = ((int) floor(value) / 90);
+            int quadrant = ((int) floor(value) / 90);
             switch (quadrant) {
                 case 0:
                     prefix = "N";
@@ -758,6 +674,8 @@ QString RS_Units::formatAngle(double angle, RS2::AngleFormat format,
                     prefix = "N";
                     suffix = "W";
                     value = 360. - value;
+                    break;
+                default:
                     break;
             }
             ret = prefix + formatAngle(RS_Math::deg2rad(value), RS2::DegreesMinutesSeconds, prec) + suffix;
@@ -814,49 +732,49 @@ RS_Vector RS_Units::paperFormatToSize(RS2::PaperFormat p) {
 
     switch (p) {
         case RS2::Custom:
-            return RS_Vector(0.0, 0.0);
+            return {0.0, 0.0};
 
         case RS2::A0:
-            return RS_Vector(841.0, 1189.0);
+            return {841.0, 1189.0};
         case RS2::A1:
-            return RS_Vector(594.0, 841.0);
+            return {594.0, 841.0};
         case RS2::A2:
-            return RS_Vector(420.0, 594.0);
+            return {420.0, 594.0};
         case RS2::A3:
-            return RS_Vector(297.0, 420.0);
+            return {297.0, 420.0};
         case RS2::A4:
-            return RS_Vector(210.0, 297.0);
+            return {210.0, 297.0};
 
             /* Removed ISO "B" and "C" series, C5E, Comm10E, DLE, (envelope sizes) */
 
         case RS2::Letter:  /* 8.5 x 11.0 in.  Sizes shown are used for 'hard' conversion to metric */
-            return RS_Vector(215.9, 279.4);
+            return {215.9, 279.4};
         case RS2::Legal:  /* 8.5 x 14.0 in */
-            return RS_Vector(215.9, 355.6);
+            return {215.9, 355.6};
         case RS2::Tabloid:  /* 11.0 x 17.0 */
-            return RS_Vector(279.4, 431.8);
+            return {279.4, 431.8};
 
             //case RS2::Ansi_A:  /* 8.5 x 11.0 in */
             //    return RS_Vector(215.9, 279.4);
             //case RS2::Ansi_B:  /* 11.0 x 17.0 in */
             //    return RS_Vector(279.4, 431.8);
         case RS2::Ansi_C:  /* 17.0 x 22.0 in */
-            return RS_Vector(431.8, 558.8);
+            return {431.8, 558.8};
         case RS2::Ansi_D:  /* 22.0 x 34.0 in */
-            return RS_Vector(558.8, 863.6);
+            return {558.8, 863.6};
         case RS2::Ansi_E:  /* 34.0 x 44.0 in */
-            return RS_Vector(863.6, 1117.6);
+            return {863.6, 1117.6};
 
         case RS2::Arch_A:  /* 9.0 x 12.0 in */
-            return RS_Vector(228.6, 304.8);
+            return {228.6, 304.8};
         case RS2::Arch_B:  /* 12.0 x 18.0 in */
-            return RS_Vector(304.8, 457.2);
+            return {304.8, 457.2};
         case RS2::Arch_C:  /* 18.0 x 24.0 in */
-            return RS_Vector(457.2, 609.6);
+            return {457.2, 609.6};
         case RS2::Arch_D:  /* 24.0 x 36.0 in */
-            return RS_Vector(609.6, 914.4);
+            return {609.6, 914.4};
         case RS2::Arch_E:  /* 36.0 x 48.0 in */
-            return RS_Vector(914.4, 1219.2);
+            return {914.4, 1219.2};
 
         default:
             break;
@@ -940,60 +858,57 @@ QString RS_Units::paperFormatToString(RS2::PaperFormat p) {
             break;
     }
 
-    return QStringLiteral("");
+    return {""};
 }
 
 
 /**
  * Converts a string to a paper format.
+ *
  */
+//NOLINTNEXTLINE
 RS2::PaperFormat RS_Units::stringToPaperFormat(const QString &p) {
     QString ls{p.toLower()};
 
     // use toLower() on localized paper format strings, don't trust that translators keep lower case
-    if (ls == QStringLiteral("custom") || ls == QObject::tr("custom", "Paper format").toLower())
+    if (ls == QString("custom") || ls == QObject::tr("custom", "Paper format").toLower())
         return RS2::Custom;
 
-    if (ls == QStringLiteral("a0") || ls == QObject::tr("a0", "Paper format").toLower())
+    if (ls == QString("a0") || ls == QObject::tr("a0", "Paper format").toLower())
         return RS2::A0;
-    if (ls == QStringLiteral("a1") || ls == QObject::tr("a1", "Paper format").toLower())
+    if (ls == QString("a1") || ls == QObject::tr("a1", "Paper format").toLower())
         return RS2::A1;
-    if (ls == QStringLiteral("a2") || ls == QObject::tr("a2", "Paper format").toLower())
+    if (ls == QString("a2") || ls == QObject::tr("a2", "Paper format").toLower())
         return RS2::A2;
-    if (ls == QStringLiteral("a3") || ls == QObject::tr("a3", "Paper format").toLower())
+    if (ls == QString("a3") || ls == QObject::tr("a3", "Paper format").toLower())
         return RS2::A3;
-    if (ls == QStringLiteral("a4") || ls == QObject::tr("a4", "Paper format").toLower())
+    if (ls == QString("a4") || ls == QObject::tr("a4", "Paper format").toLower())
         return RS2::A4;
 
     /* Removed ISO "B" and "C" series, C5E, Comm10E, DLE, (envelope sizes) */
 
-    if (ls == QStringLiteral("letter") || ls == QObject::tr("letter", "Paper format").toLower())
+    if (ls == QString("letter") || ls == QObject::tr("letter", "Paper format").toLower())
         return RS2::Letter;
-    if (ls == QStringLiteral("legal") || ls == QObject::tr("legal", "Paper format").toLower())
+    if (ls == QString("legal") || ls == QObject::tr("legal", "Paper format").toLower())
         return RS2::Legal;
-    if (ls == QStringLiteral("tabloid") || ls == QObject::tr("tabloid", "Paper format").toLower())
+    if (ls == QString("tabloid") || ls == QObject::tr("tabloid", "Paper format").toLower())
         return RS2::Tabloid;
-
-    //if (ls == QStringLiteral("ansi a") || ls == QObject::tr("ansi a", "Paper format").toLower())
-    //    return RS2::Ansi_A;
-    //if (ls == QStringLiteral("ansi b") || ls == QObject::tr("ansi b", "Paper format").toLower())
-    //    return RS2::Ansi_B;
-    if (ls == QStringLiteral("ansi c") || ls == QObject::tr("ansi c", "Paper format").toLower())
+    if (ls == QString("ansi c") || ls == QObject::tr("ansi c", "Paper format").toLower())
         return RS2::Ansi_C;
-    if (ls == QStringLiteral("ansi d") || ls == QObject::tr("ansi d", "Paper format").toLower())
+    if (ls == QString("ansi d") || ls == QObject::tr("ansi d", "Paper format").toLower())
         return RS2::Ansi_D;
-    if (ls == QStringLiteral("ansi e") || ls == QObject::tr("ansi e", "Paper format").toLower())
+    if (ls == QString("ansi e") || ls == QObject::tr("ansi e", "Paper format").toLower())
         return RS2::Ansi_E;
 
-    if (ls == QStringLiteral("arch a") || ls == QObject::tr("arch a", "Paper format").toLower())
+    if (ls == QString("arch a") || ls == QObject::tr("arch a", "Paper format").toLower())
         return RS2::Arch_A;
-    if (ls == QStringLiteral("arch b") || ls == QObject::tr("arch b", "Paper format").toLower())
+    if (ls == QString("arch b") || ls == QObject::tr("arch b", "Paper format").toLower())
         return RS2::Arch_B;
-    if (ls == QStringLiteral("arch c") || ls == QObject::tr("arch c", "Paper format").toLower())
+    if (ls == QString("arch c") || ls == QObject::tr("arch c", "Paper format").toLower())
         return RS2::Arch_C;
-    if (ls == QStringLiteral("arch d") || ls == QObject::tr("arch d", "Paper format").toLower())
+    if (ls == QString("arch d") || ls == QObject::tr("arch d", "Paper format").toLower())
         return RS2::Arch_D;
-    if (ls == QStringLiteral("arch e") || ls == QObject::tr("arch e", "Paper format").toLower())
+    if (ls == QString("arch e") || ls == QObject::tr("arch e", "Paper format").toLower())
         return RS2::Arch_E;
 
     return RS2::Custom;
@@ -1118,6 +1033,7 @@ void RS_Units::test() {
        assert(s=="10");
     */
 
+    //NOLINTNEXTLINE
     for (v = 11.9999; v < 12.0001; v += 0.0000001) {
         for (int prec = 0; prec <= 6; ++prec) {
             s = RS_Units::formatLinear(v, RS2::Inch, RS2::Architectural,
@@ -1172,4 +1088,24 @@ void RS_Units::test() {
        std::cout << "s: " << s << "\n";
        assert(s=="1∞ 30' 0\"");
     */
+}
+
+bool RS_Units::convertAngle(double angle, RS2::AngleFormat format, double &value) {
+    switch (format) {
+        case RS2::Surveyors:
+        case RS2::DegreesDecimal:
+        case RS2::DegreesMinutesSeconds:
+            value = RS_Math::rad2deg(angle);
+            return true;
+        case RS2::Radians:
+            value = angle;
+            return true;
+        case RS2::Gradians:
+            value = RS_Math::rad2gra(angle);
+            return true;
+        default:
+            RS_DEBUG->print(RS_Debug::D_WARNING,
+                            "RS_Units::formatAngle: Unknown Angle Unit");
+            return false;
+    }
 }
