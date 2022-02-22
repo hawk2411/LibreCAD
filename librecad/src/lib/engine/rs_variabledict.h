@@ -33,6 +33,7 @@
 #include "rs_variable.h"
 
 class RS_Vector;
+
 class QString;
 
 /**
@@ -43,38 +44,46 @@ class QString;
  */
 class RS_VariableDict {
 public:
-	RS_VariableDict() = default;
+    RS_VariableDict() = default;
 
     void clear();
+
     /**
      * @return Number of variables available.
      */
-	int count() const {
+    int count() const {
         return variables.count();
     }
 
-    void add(const QString& key, const RS_Vector& value, int code);
-    void add(const QString& key, const QString& value, int code);
-    void add(const QString& key, int value, int code);
-    void add(const QString& key, double value, int code);
+    void add(const QString &key, const RS_Vector &value, int code);
 
-	RS_Vector getVector(const QString& key, const RS_Vector& def) const;
-	QString getString(const QString& key, const QString& def) const;
-	int getInt(const QString& key, int def) const;
-	double getDouble(const QString& key, double def) const;
+    void add(const QString &key, const QString &value, int code);
 
-	void remove(const QString& key);
+    void add(const QString &key, int value, int code);
 
-	QHash<QString, RS_Variable> const& getVariableDict() const {
+    void add(const QString &key, double value, int code);
+
+    RS_Vector getVector(const QString &key, const RS_Vector &def) const;
+
+    QString getString(const QString &key, const QString &def) const;
+
+    int getInt(const QString &key, int def) const;
+
+    double getDouble(const QString &key, double def) const;
+
+    void remove(const QString &key);
+
+    QHash<QString, RS_Variable> const &getVariableDict() const {
         return variables;
     }
-	QHash<QString, RS_Variable>& getVariableDict() {
-		return variables;
-	}
+
+    QHash<QString, RS_Variable> &getVariableDict() {
+        return variables;
+    }
 
     //void addVariableDictListener(RS_VariableDictListener* listener);
 
-    friend std::ostream& operator << (std::ostream& os, RS_VariableDict& v);
+    friend std::ostream &operator<<(std::ostream &os, RS_VariableDict &v);
 
 private:
     //! Variables for the graphic
