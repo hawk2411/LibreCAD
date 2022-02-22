@@ -42,8 +42,8 @@
 class RS_Variable {
     struct RS_VariableContents {
         QString s;
-        int i;
-        double d;
+        int i = 0;
+        double d = 0.0;
         RS_Vector v;
     };
 public:
@@ -51,75 +51,75 @@ public:
     RS_Variable() = default;
 
     RS_Variable(const RS_Vector &v, int c) :
-            code{c} {
+            _code{c} {
         setVector(v);
     }
 
     RS_Variable(const QString &v, int c) :
-            code{c} {
+            _code{c} {
         setString(v);
     }
 
     RS_Variable(int v, int c) :
-            code{c} {
+            _code{c} {
         setInt(v);
     }
 
     RS_Variable(double v, int c) :
-            code{c} {
+            _code{c} {
         setDouble(v);
     }
 
     void setString(const QString &str) {
-        contents.s = str;
-        type = RS2::VariableString;
+        _contents.s = str;
+        _type = RS2::VariableString;
     }
 
     void setInt(int i) {
-        contents.i = i;
-        type = RS2::VariableInt;
+        _contents.i = i;
+        _type = RS2::VariableInt;
     }
 
     void setDouble(double d) {
-        contents.d = d;
-        type = RS2::VariableDouble;
+        _contents.d = d;
+        _type = RS2::VariableDouble;
     }
 
     void setVector(const RS_Vector &v) {
-        contents.v = v;
-        type = RS2::VariableVector;
+        _contents.v = v;
+        _type = RS2::VariableVector;
     }
 
     QString getString() const {
-        return contents.s;
+        return _contents.s;
     }
 
     int getInt() const {
-        return contents.i;
+        return _contents.i;
     }
 
     double getDouble() const {
-        return contents.d;
+        return _contents.d;
     }
 
     RS_Vector getVector() const {
-        return contents.v;
+        return _contents.v;
     }
 
     RS2::VariableType getType() const {
-        return type;
+        return _type;
     }
 
     int getCode() const {
-        return code;
+        return _code;
     }
 
     //friend std::ostream& operator << (std::ostream& os, RS_Variable& v);
 
 private:
-    RS_VariableContents contents;
-    RS2::VariableType type = RS2::VariableVoid;
-    int code = 0;
+    RS_VariableContents _contents;
+    RS2::VariableType _type = RS2::VariableVoid;
+    int _code = 0;
 };
 
 #endif
