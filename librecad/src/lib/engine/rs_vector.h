@@ -71,8 +71,6 @@ public:
 
     double angleTo(const RS_Vector &v) const;
 
-    double angleBetween(const RS_Vector &v1, const RS_Vector &v2) const;
-
     double magnitude() const;
 
     double squared() const; //return square of length
@@ -82,8 +80,6 @@ public:
     bool isInWindow(const RS_Vector &firstCorner, const RS_Vector &secondCorner) const;
 
     bool isInWindowOrdered(const RS_Vector &vLow, const RS_Vector &vHigh) const;
-
-    RS_Vector toInteger();
 
     RS_Vector move(const RS_Vector &offset);
 
@@ -229,7 +225,7 @@ public:
 
     void push_back(const RS_Vector &v);
 
-    void removeAt(const size_t i);
+    void removeAt(std::vector<RS_Vector>::difference_type i);
 
     RS_VectorSolutions &push_back(const RS_VectorSolutions &v);
 
@@ -267,14 +263,14 @@ public:
     void scale(const RS_Vector &factor);
 
     /** switch x,y for all vectors */
-    RS_VectorSolutions flipXY(void) const;
+    RS_VectorSolutions flipXY() const;
 
     friend std::ostream &operator<<(std::ostream &os,
                                     const RS_VectorSolutions &s);
 
 private:
-    std::vector<RS_Vector> vector;
-    bool tangent;
+    std::vector<RS_Vector> _vector;
+    bool _tangent;
 };
 
 #endif
