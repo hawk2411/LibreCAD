@@ -68,3 +68,7 @@ TEST(DebugTest, deb) {
     RS_DEBUG_VERBOSE->print("Hallo2");
 }
 
+// NOLINTNEXTLINE
+TEST(rs_creation_test, deb2) {
+
+}

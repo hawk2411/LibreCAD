@@ -91,7 +91,7 @@ public:
 
     RS_Entity *createParallelThrough(const RS_Vector &coord,
                                      int number,
-                                     RS_Entity *e);
+                                     RS_Entity *entity);
 
     RS_Entity *createParallel(const RS_Vector &coord,
                               double distance,
@@ -141,7 +141,7 @@ public:
       *@ return nullptr, if failed
       *@ at success return either an ellipse or hyperbola
       */
-    std::vector<RS_Entity *> createCircleTangent2(RS_Entity *circle1, RS_Entity *circle2);
+    static std::vector<RS_Entity *> createCircleTangent2(RS_Entity *circle1, RS_Entity *circle2);
 
     RS_Line *createLineRelAngle(const RS_Vector &coord,
                                 RS_Entity *entity,
@@ -168,14 +168,14 @@ public:
                           const RS_Vector &referencePoint,
                           bool remove);
 
-    RS_Insert *createLibraryInsert(RS_LibraryInsertData &data);
+    void createLibraryInsert(RS_LibraryInsertData &data);
 
 protected:
-    RS_EntityContainer *container;
-    RS_Graphic *graphic;
-    RS_Document *document;
-    RS_GraphicView *graphicView;
-    bool handleUndo;
+    RS_EntityContainer *_container;
+    RS_Graphic *_graphic;
+    RS_Document *_document;
+    RS_GraphicView *_graphicView;
+    bool _handleUndo;
 private:
     void setEntity(RS_Entity *en) const;
 };

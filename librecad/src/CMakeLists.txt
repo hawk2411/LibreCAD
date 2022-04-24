@@ -463,7 +463,7 @@ set(SOURCES
         )
 set(TEST_SOURCES
         test/test.cpp
-        )
+        test/rs_creation_test.cpp)
 
 set(TRANSLATION_DIR ${CMAKE_SOURCE_DIR}/librecad/ts)
 set( TRANSLATIONS ${TRANSLATION_DIR}/librecad_ar.ts
