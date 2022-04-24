@@ -35,10 +35,10 @@
 #include <QDateTime>
 #include <QDebug>
 
-RS_Debug* RS_Debug::uniqueInstance = nullptr;
-void debugHeader(char const* file, char const* func, int line)
-{
-	std::cout<<file<<" : "<<func<<" : line "<<line<<std::endl;
+RS_Debug *RS_Debug::_uniqueInstance = nullptr;
+
+void debugHeader(char const *file, char const *func, int line) {
+    std::cout << file << " : " << func << " : line " << line << std::endl;
 }
 
 /**
@@ -48,57 +48,45 @@ void debugHeader(char const* file, char const* func, int line)
  *  @return Pointer to the single instance of this
  * singleton class
  */
-RS_Debug* RS_Debug::instance() {
-	if(!uniqueInstance) {
-        QDateTime now = QDateTime::currentDateTime();
-        QString nowStr;
-		nowStr = now.toString("yyyyMMdd_hhmmss");
-
-                //QString fName = QString("%1/debug_%2.log")
-		//	.arg(RS_SYSTEM->getHomeDir())
-		//	.arg(nowStr);
-                QString fName = QString("debug_%1.log")
-			.arg(nowStr);
-
-        uniqueInstance = new RS_Debug;
-        //uniqueInstance->stream = fopen(fName.latin1(), "wt");
-        uniqueInstance->stream = stderr;
+RS_Debug *RS_Debug::instance() {
+    if (!_uniqueInstance) {
+        _uniqueInstance = new RS_Debug;
+        _uniqueInstance->_stream = stderr;
     }
-    return uniqueInstance;
+    return _uniqueInstance;
 }
 
 
 /**
  * Deletes the one and only RS_Debug instance.
  */
-void
-RS_Debug::deleteInstance() {
-    if (uniqueInstance) {
-        fclose(uniqueInstance->stream);
-        delete uniqueInstance;
+void RS_Debug::deleteInstance() {
+
+    if (_uniqueInstance) {
+        fclose(_uniqueInstance->_stream);
+        delete _uniqueInstance;
+        _uniqueInstance = nullptr;
     }
 }
 
 /**
  * Constructor setting the default debug level.
  */
-RS_Debug::RS_Debug() {
-    debugLevel = D_DEBUGGING;
-}
+RS_Debug::RS_Debug() : _debugLevel{D_DEBUGGING}, _stream{nullptr} {}
 
 /**
  * Sets the debugging level.
  */
 void RS_Debug::setLevel(RS_DebugLevel level) {
-    if(debugLevel==level) return;
-    debugLevel = level;
-    print( D_NOTHING, "RS_DEBUG::setLevel(%d)", level);
-    print( D_CRITICAL, "RS_DEBUG: Critical");
-    print( D_ERROR, "RS_DEBUG: Errors");
-    print( D_WARNING, "RS_DEBUG: Warnings");
-    print( D_NOTICE, "RS_DEBUG: Notice");
-    print( D_INFORMATIONAL, "RS_DEBUG: Informational");
-    print( D_DEBUGGING, "RS_DEBUG: Debugging");
+    if (_debugLevel == level) return;
+    _debugLevel = level;
+    print(D_NOTHING, "RS_DEBUG::setLevel(%d)", level);
+    print(D_CRITICAL, "RS_DEBUG: Critical");
+    print(D_ERROR, "RS_DEBUG: Errors");
+    print(D_WARNING, "RS_DEBUG: Warnings");
+    print(D_NOTICE, "RS_DEBUG: Notice");
+    print(D_INFORMATIONAL, "RS_DEBUG: Informational");
+    print(D_DEBUGGING, "RS_DEBUG: Debugging");
 }
 
 
@@ -106,21 +94,21 @@ void RS_Debug::setLevel(RS_DebugLevel level) {
  * Gets the current debugging level.
  */
 RS_Debug::RS_DebugLevel RS_Debug::getLevel() {
-    return debugLevel;
+    return _debugLevel;
 }
 
 
 /**
  * Prints the given message to stdout.
  */
-void RS_Debug::print(const char* format ...) {
-    if(debugLevel==D_DEBUGGING) {
+void RS_Debug::print(const char *format ...) {
+    if (_debugLevel == D_DEBUGGING) {
         va_list ap;
         va_start(ap, format);
-        vfprintf(stream, format, ap);
-        fprintf(stream, "\n");
+        vfprintf(_stream, format, ap);
+        fprintf(_stream, "\n");
         va_end(ap);
-        fflush(stream);
+        fflush(_stream);
     }
 
 }
@@ -131,15 +119,15 @@ void RS_Debug::print(const char* format ...) {
  *
  * @param level Debug level.
  */
-void RS_Debug::print(RS_DebugLevel level, const char* format ...) {
+void RS_Debug::print(RS_DebugLevel level, const char *format ...) {
 
-    if(debugLevel>=level) {
+    if (_debugLevel >= level) {
         va_list ap;
         va_start(ap, format);
-        vfprintf(stream, format, ap);
-        fprintf(stream, "\n");
+        vfprintf(_stream, format, ap);
+        fprintf(_stream, "\n");
         va_end(ap);
-        fflush(stream);
+        fflush(_stream);
     }
 
 }
@@ -152,19 +140,19 @@ void RS_Debug::timestamp() {
     QDateTime now = QDateTime::currentDateTime();
     QString nowStr;
 
-	nowStr = now.toString("yyyyMMdd_hh:mm:ss:zzz ");
-    fprintf(stream, "%s", nowStr.toLatin1().data());
-    fprintf(stream, "\n");
-    fflush(stream);
+    nowStr = now.toString("yyyyMMdd_hh:mm:ss:zzz ");
+    fprintf(_stream, "%s", nowStr.toLatin1().data());
+    fprintf(_stream, "\n");
+    fflush(_stream);
 }
 
 
 /**
  * Prints the unicode for every character in the given string.
  */
-void RS_Debug::printUnicode(const QString& text) {
-	for(auto const& v: text){
-		print("[%X] %c", v.unicode(), v.toLatin1());
+void RS_Debug::printUnicode(const QString &text) {
+    for (auto const &v: text) {
+        print("[%X] %c", v.unicode(), v.toLatin1());
     }
 }
 

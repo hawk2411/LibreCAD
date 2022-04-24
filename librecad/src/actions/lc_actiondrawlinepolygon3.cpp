@@ -75,8 +75,7 @@ void LC_ActionDrawLinePolygonCenTan::trigger() {
 
 
 void LC_ActionDrawLinePolygonCenTan::mouseMoveEvent(QMouseEvent* e) {
-    RS_DEBUG->print("RS_ActionDrawLinePolygon::mouseMoveEvent begin");
-
+    RS_DEBUG_VERBOSE->print("RS_ActionDrawLinePolygon::mouseMoveEvent begin");
     RS_Vector mouse = snapPoint(e);
 
     switch (getStatus()) {

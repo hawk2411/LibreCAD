@@ -2,6 +2,7 @@
 // Created by hawk on 07.01.22.
 //
 #include <gtest/gtest.h>
+#include "rs_debug.h"
 #include "rs_undo.h"
 #include "rs_undoable.h"
 
@@ -55,5 +56,14 @@ TEST(UndoTest, Bla) {
     rsUndo.redo();
     ASSERT_EQ(rsUndo.countUndoCycles(), 2) << "Should be 0";
     ASSERT_EQ(rsUndo.countRedoCycles(), 0) << "Should be 0";
+}
+
+// NOLINTNEXTLINE
+TEST(DebugTest, deb) {
+    RS_DEBUG_VERBOSE->print("Hallo");
+    RS_DEBUG_VERBOSE->deleteInstance();
+    RS_DEBUG_VERBOSE->timestamp();
+    RS_DEBUG_VERBOSE->setStream(stderr);
+    RS_DEBUG_VERBOSE->print("Hallo");
 }
 

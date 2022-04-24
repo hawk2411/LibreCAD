@@ -23,12 +23,13 @@
 ** This copyright notice MUST APPEAR in all copies of the script!  
 **
 **********************************************************************/
-
+#pragma once
 
 #ifndef RS_DEBUG_H
 #define RS_DEBUG_H
 
 #include <iosfwd>
+
 #ifdef __hpux
 #include <sys/_size_t.h>
 #endif
@@ -37,10 +38,13 @@ class QString;
 
 /** print out a debug header*/
 #define DEBUG_HEADER debugHeader(__FILE__, __func__, __LINE__);
-void debugHeader(char const* file, char const* func, int line);
+
+void debugHeader(char const *file, char const *func, int line);
+
 #define RS_DEBUG RS_Debug::instance()
+
 #define RS_DEBUG_VERBOSE DEBUG_HEADER \
-	RS_Debug::instance()
+    RS_Debug::instance()
 
 /**
  * Debugging facilities.
@@ -63,40 +67,53 @@ public:
      *  <li>D_DEBUGGING: very verbose
      * </ul>
      */
-    enum RS_DebugLevel { D_NOTHING,
-                         D_CRITICAL,
-                         D_ERROR,
-                         D_WARNING,
-                         D_NOTICE,
-                         D_INFORMATIONAL,
-                         D_DEBUGGING };
+    enum RS_DebugLevel {
+        D_NOTHING,
+        D_CRITICAL,
+        D_ERROR,
+        D_WARNING,
+        D_NOTICE,
+        D_INFORMATIONAL,
+        D_DEBUGGING
+    };
+
+    RS_Debug(const RS_Debug &) = delete;
+
+    RS_Debug(RS_Debug &&) = delete;
+
+    RS_Debug &operator=(const RS_Debug &) = delete;
+
+    RS_Debug &operator=(RS_Debug &&) = delete;
 
 private:
     RS_Debug();
-	RS_Debug(const RS_Debug&)=delete;
-	RS_Debug& operator = (const RS_Debug&)=delete;
-	RS_Debug(RS_Debug&&)=delete;
-	RS_Debug& operator = (RS_Debug&&)=delete;
 
 public:
-    static RS_Debug* instance();
+    static RS_Debug *instance();
 
     static void deleteInstance();
+
     void setLevel(RS_DebugLevel level);
+
     RS_DebugLevel getLevel();
-    void print(RS_DebugLevel level, const char* format ...);
-    void print(const char* format ...);
-    void printUnicode(const QString& text);
+
+    void print(RS_DebugLevel level, const char *format ...);
+
+    void print(const char *format ...);
+
+    void printUnicode(const QString &text);
+
     void timestamp();
-    void setStream(FILE* s) {
-        stream = s;
+
+    void setStream(FILE *s) {
+        _stream = s;
     }
 
 private:
-    static RS_Debug* uniqueInstance;
+    static RS_Debug *_uniqueInstance;
 
-    RS_DebugLevel debugLevel;
-    FILE* stream;
+    RS_DebugLevel _debugLevel;
+    FILE *_stream;
 };
 
 #endif
