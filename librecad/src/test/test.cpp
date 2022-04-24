@@ -65,5 +65,6 @@ TEST(DebugTest, deb) {
     RS_DEBUG_VERBOSE->timestamp();
     RS_DEBUG_VERBOSE->setStream(stderr);
     RS_DEBUG_VERBOSE->print("Hallo");
+    RS_DEBUG_VERBOSE->print("Hallo2");
 }
 

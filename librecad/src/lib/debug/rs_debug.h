@@ -29,6 +29,7 @@
 #define RS_DEBUG_H
 
 #include <iosfwd>
+#include <memory>
 
 #ifdef __hpux
 #include <sys/_size_t.h>
@@ -110,7 +111,7 @@ public:
     }
 
 private:
-    static RS_Debug *_uniqueInstance;
+    static std::unique_ptr<RS_Debug> _uniqueInstance;
 
     RS_DebugLevel _debugLevel;
     FILE *_stream;

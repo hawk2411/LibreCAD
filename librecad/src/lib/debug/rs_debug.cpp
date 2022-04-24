@@ -35,7 +35,7 @@
 #include <QDateTime>
 #include <QDebug>
 
-RS_Debug *RS_Debug::_uniqueInstance = nullptr;
+std::unique_ptr<RS_Debug> RS_Debug::_uniqueInstance{nullptr};
 
 void debugHeader(char const *file, char const *func, int line) {
     std::cout << file << " : " << func << " : line " << line << std::endl;
@@ -49,11 +49,11 @@ void debugHeader(char const *file, char const *func, int line) {
  * singleton class
  */
 RS_Debug *RS_Debug::instance() {
-    if (!_uniqueInstance) {
-        _uniqueInstance = new RS_Debug;
-        _uniqueInstance->_stream = stderr;
+    if (!RS_Debug::_uniqueInstance) {
+        RS_Debug::_uniqueInstance = std::unique_ptr<RS_Debug>(new RS_Debug());
+        RS_Debug::_uniqueInstance->_stream = stderr;
     }
-    return _uniqueInstance;
+    return RS_Debug::_uniqueInstance.get();
 }
 
 
@@ -62,10 +62,10 @@ RS_Debug *RS_Debug::instance() {
  */
 void RS_Debug::deleteInstance() {
 
-    if (_uniqueInstance) {
-        fclose(_uniqueInstance->_stream);
-        delete _uniqueInstance;
-        _uniqueInstance = nullptr;
+    if (RS_Debug::_uniqueInstance) {
+        if(_uniqueInstance->_stream != stderr && _uniqueInstance->_stream != stdout)
+            fclose(RS_Debug::_uniqueInstance->_stream);
+        _uniqueInstance.reset(nullptr);
     }
 }
 
