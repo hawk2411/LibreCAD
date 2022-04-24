@@ -31,21 +31,36 @@
 #include "rs_vector.h"
 
 class RS_Document;
+
 class RS_EntityContainer;
+
 class RS_GraphicView;
+
 class RS_Graphic;
+
 class RS_Entity;
+
 class RS_Arc;
+
 class RS_Circle;
+
 class RS_Ellipse;
+
 class RS_Line;
+
 class LC_SplinePoints;
+
 struct RS_BlockData;
 struct RS_ImageData;
+
 class RS_Image;
+
 struct RS_InsertData;
+
 class RS_Insert;
+
 class RS_Block;
+
 class QString;
 
 /**
@@ -68,97 +83,101 @@ struct RS_LibraryInsertData {
  */
 class RS_Creation {
 public:
-    RS_Creation(RS_EntityContainer* container,
-                RS_GraphicView* graphicView=nullptr,
-                bool handleUndo=true);
-    ~RS_Creation()=default;
+    explicit RS_Creation(RS_EntityContainer *container,
+                         RS_GraphicView *graphicView = nullptr,
+                         bool handleUndo = true);
 
-    RS_Entity* createParallelThrough(const RS_Vector& coord,
+    ~RS_Creation() = default;
+
+    RS_Entity *createParallelThrough(const RS_Vector &coord,
                                      int number,
-                                     RS_Entity* e);
+                                     RS_Entity *e);
 
-    RS_Entity* createParallel(const RS_Vector& coord,
+    RS_Entity *createParallel(const RS_Vector &coord,
                               double distance,
                               int number,
-                              RS_Entity* e);
+                              RS_Entity *e);
 
-    RS_Line* createParallelLine(const RS_Vector& coord,
+    RS_Line *createParallelLine(const RS_Vector &coord,
                                 double distance, int number,
-                                RS_Line* e);
+                                RS_Line *e);
 
-    RS_Arc* createParallelArc(const RS_Vector& coord,
+    RS_Arc *createParallelArc(const RS_Vector &coord,
                               double distance, int number,
-                              RS_Arc* e);
+                              RS_Arc *e);
 
-    RS_Circle* createParallelCircle(const RS_Vector& coord,
+    RS_Circle *createParallelCircle(const RS_Vector &coord,
                                     double distance, int number,
-                                    RS_Circle* e);
+                                    RS_Circle *e);
 
-    LC_SplinePoints* createParallelSplinePoints(const RS_Vector& coord,
+    LC_SplinePoints *createParallelSplinePoints(const RS_Vector &coord,
                                                 double distance, int number,
-                                                LC_SplinePoints* e);
+                                                LC_SplinePoints *e);
 
-    RS_Line* createBisector(const RS_Vector& coord1,
-                            const RS_Vector& coord2,
+    RS_Line *createBisector(const RS_Vector &coord1,
+                            const RS_Vector &coord2,
                             double length,
                             int num,
-                            RS_Line* l1,
-                            RS_Line* l2);
+                            RS_Line *l1,
+                            RS_Line *l2);
 
-    RS_Line* createTangent1(const RS_Vector& coord,
-                            const RS_Vector& point,
-                            RS_Entity* circle);
+    RS_Line *createTangent1(const RS_Vector &coord,
+                            const RS_Vector &point,
+                            RS_Entity *circle);
+
 /**
  * create a tangent line which is orthogonal to the given RS_Line(normal)
  */
-    RS_Line* createLineOrthTan(const RS_Vector& coord,
-                               RS_Line* normal,
-                               RS_Entity* circle);
-    RS_Line* createTangent2(const RS_Vector& coord,
-                            RS_Entity* circle1,
-                            RS_Entity* circle2);
+    RS_Line *createLineOrthTan(const RS_Vector &coord,
+                               RS_Line *normal,
+                               RS_Entity *circle);
+
+    RS_Line *createTangent2(const RS_Vector &coord,
+                            RS_Entity *circle1,
+                            RS_Entity *circle2);
+
     /**
       * create the path of centers of common tangent circles of the two given circles
       *@ return nullptr, if failed
       *@ at success return either an ellipse or hyperbola
       */
-    std::vector<RS_Entity*> createCircleTangent2( RS_Entity* circle1,RS_Entity* circle2);
+    std::vector<RS_Entity *> createCircleTangent2(RS_Entity *circle1, RS_Entity *circle2);
 
-    RS_Line* createLineRelAngle(const RS_Vector& coord,
-                                RS_Entity* entity,
+    RS_Line *createLineRelAngle(const RS_Vector &coord,
+                                RS_Entity *entity,
                                 double angle,
                                 double length);
 
-    RS_Line* createPolygon(const RS_Vector& center,
-                           const RS_Vector& corner,
+    RS_Line *createPolygon(const RS_Vector &center,
+                           const RS_Vector &corner,
                            int number);
 
-    RS_Line* createPolygon2(const RS_Vector& corner1,
-                            const RS_Vector& corner2,
+    RS_Line *createPolygon2(const RS_Vector &corner1,
+                            const RS_Vector &corner2,
                             int number);
 
-    RS_Line* createPolygon3(const RS_Vector& center,
-                            const RS_Vector& tangent,
+    RS_Line *createPolygon3(const RS_Vector &center,
+                            const RS_Vector &tangent,
                             int number);
 
-    RS_Insert* createInsert(const RS_InsertData* pdata);
+    RS_Insert *createInsert(const RS_InsertData *pdata);
 
-    RS_Image* createImage(const RS_ImageData* pdata);
+    RS_Image *createImage(const RS_ImageData *pdata);
 
-    RS_Block* createBlock(const RS_BlockData* data,
-                          const RS_Vector& referencePoint,
-                          const bool remove);
+    RS_Block *createBlock(const RS_BlockData *data,
+                          const RS_Vector &referencePoint,
+                          bool remove);
 
-    RS_Insert* createLibraryInsert(RS_LibraryInsertData& data);
+    RS_Insert *createLibraryInsert(RS_LibraryInsertData &data);
 
 protected:
-    RS_EntityContainer* container;
-    RS_Graphic* graphic;
-    RS_Document* document;
-    RS_GraphicView* graphicView;
+    RS_EntityContainer *container;
+    RS_Graphic *graphic;
+    RS_Document *document;
+    RS_GraphicView *graphicView;
     bool handleUndo;
 private:
-    void setEntity(RS_Entity* en) const;
+    void setEntity(RS_Entity *en) const;
 };
 
 #endif
