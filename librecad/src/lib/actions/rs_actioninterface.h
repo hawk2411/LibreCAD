@@ -33,10 +33,15 @@
 #include "rs_snapper.h"
 
 class QKeyEvent;
+
 class RS_CommandEvent;
+
 class RS_CoordinateEvent;
+
 class RS_Graphic;
+
 class RS_Document;
+
 class QAction;
 
 /**
@@ -50,44 +55,70 @@ class QAction;
  */
 class RS_ActionInterface : public QObject, public RS_Snapper {
 public:
-    RS_ActionInterface(const char* name,
-                       RS_EntityContainer& container,
-                       RS_GraphicView& graphicView);
-	~RS_ActionInterface() override = default;
+    RS_ActionInterface(const char *name,
+                       RS_EntityContainer &container,
+                       RS_GraphicView &graphicView);
+
+    ~RS_ActionInterface() override = default;
 
     virtual RS2::ActionType rtti() const;
 
-    void setName(const char* _name);
+    void setName(const char *_name);
+
     QString getName();
 
     virtual void init(int status);
-    virtual void mouseMoveEvent(QMouseEvent*);
-    virtual void mousePressEvent(QMouseEvent*);
 
-    virtual void mouseReleaseEvent(QMouseEvent*);
-    virtual void keyPressEvent(QKeyEvent* e);
-    virtual void keyReleaseEvent(QKeyEvent* e);
-    virtual void coordinateEvent(RS_CoordinateEvent*);
-    virtual void commandEvent(RS_CommandEvent*);
+    virtual void mouseMoveEvent(QMouseEvent *);
+
+    virtual void mousePressEvent(QMouseEvent *);
+
+    virtual void mouseReleaseEvent(QMouseEvent *);
+
+    virtual void keyPressEvent(QKeyEvent *e);
+
+    virtual void keyReleaseEvent(QKeyEvent *e);
+
+    virtual void coordinateEvent(RS_CoordinateEvent *);
+
+    virtual void commandEvent(RS_CommandEvent *);
+
     virtual QStringList getAvailableCommands();
+
     virtual void setStatus(int status);
+
     virtual int getStatus();
+
     virtual void trigger();
+
     virtual void updateMouseButtonHints();
+
     virtual void updateMouseCursor();
+
     virtual bool isFinished();
+
     virtual void setFinished();
-    virtual void finish(bool updateTB = true );
-    virtual void setPredecessor(RS_ActionInterface* pre);
+
+    virtual void finish(bool updateTB = true);
+
+    virtual void setPredecessor(RS_ActionInterface *pre);
+
     virtual void suspend();
+
     virtual void resume();
+
     virtual void hideOptions();
+
     virtual void showOptions();
-	virtual void setActionType(RS2::ActionType actionType);
-    bool checkCommand(const QString& cmd, const QString& str,
-                             RS2::ActionType action=RS2::ActionNone);
-        QString command(const QString& cmd);
-        QString msgAvailableCommands();
+
+    virtual void setActionType(RS2::ActionType actionType);
+
+    bool checkCommand(const QString &cmd, const QString &str,
+                      RS2::ActionType action = RS2::ActionNone);
+
+    QString command(const QString &cmd);
+
+    QString msgAvailableCommands();
 
 private:
     /**
@@ -115,12 +146,12 @@ protected:
      * Pointer to the graphic is this container is a graphic.
      * NULL otherwise
      */
-    RS_Graphic* graphic;
+    RS_Graphic *graphic;
 
-        /**
-         * Pointer to the document (graphic or block) or NULL.
-         */
-        RS_Document* document;
+    /**
+     * Pointer to the document (graphic or block) or NULL.
+     */
+    RS_Document *document;
 
     /**
      * Pointer to the default mouse cursor for this action or NULL.
@@ -130,7 +161,7 @@ protected:
     /**
      * Predecessor of this action or NULL.
      */
-    RS_ActionInterface* predecessor;
+    RS_ActionInterface *predecessor;
 
     /**
      * String prepended to the help text for currently available commands.
@@ -148,9 +179,9 @@ protected:
     //static QString cmdYes;
     //static QString cmdYes2;
 
-     /**
-     * Command for answering no to a question.
-     */
+    /**
+    * Command for answering no to a question.
+    */
     //static QString cmdNo;
     //static QString cmdNo2;
     RS2::ActionType actionType;

@@ -48,10 +48,10 @@
  *               is suspended and resumed again the cursor will always
  *               be reset to the one given here.
  */
-RS_ActionInterface::RS_ActionInterface(const char* name,
-                                       RS_EntityContainer& container,
-                                       RS_GraphicView& graphicView) :
-RS_Snapper(container, graphicView) {
+RS_ActionInterface::RS_ActionInterface(const char *name,
+                                       RS_EntityContainer &container,
+                                       RS_GraphicView &graphicView) :
+        RS_Snapper(container, graphicView) {
 
     RS_DEBUG->print("RS_ActionInterface::RS_ActionInterface: Setting up action: \"%s\"", name);
 
@@ -70,7 +70,7 @@ RS_Snapper(container, graphicView) {
 
     //this->cursor = cursor;
     //setSnapMode(graphicView.getDefaultSnapMode());
-    actionType=RS2::ActionNone;
+    actionType = RS2::ActionNone;
 
     RS_DEBUG->print("RS_ActionInterface::RS_ActionInterface: Setting up action: \"%s\": OK", name);
 
@@ -81,8 +81,8 @@ RS_Snapper(container, graphicView) {
 *
 * @todo no default implementation
  */
-RS2::ActionType RS_ActionInterface::rtti() const{
-	return actionType;
+RS2::ActionType RS_ActionInterface::rtti() const {
+    return actionType;
 }
 
 /**
@@ -92,8 +92,8 @@ QString RS_ActionInterface::getName() {
     return name;
 }
 
-void RS_ActionInterface::setName(const char* _name) {
-    this->name=_name;
+void RS_ActionInterface::setName(const char *_name) {
+    this->name = _name;
 }
 
 /**
@@ -103,14 +103,13 @@ void RS_ActionInterface::setName(const char* _name) {
  * @param status The status on which to initiate this action.
  * default is 0 to begin the action.
  */
-void RS_ActionInterface::init(int status)
-{
+void RS_ActionInterface::init(int status) {
     setStatus(status);
-    if (status>=0) {
+    if (status >= 0) {
         RS_Snapper::init();
         updateMouseButtonHints();
         updateMouseCursor();
-    }else{
+    } else {
         //delete snapper when finished, bug#3416878
         deleteSnapper();
 
@@ -118,13 +117,12 @@ void RS_ActionInterface::init(int status)
 }
 
 
-
 /**
  * Called when the mouse moves and this is the current action.
  * This function can be overwritten by the implementing action.
  * The default implementation keeps track of the mouse position.
  */
-void RS_ActionInterface::mouseMoveEvent(QMouseEvent*) {}
+void RS_ActionInterface::mouseMoveEvent(QMouseEvent *) {}
 
 /**
  * Called when the left mouse button is pressed and this is the
@@ -132,7 +130,7 @@ void RS_ActionInterface::mouseMoveEvent(QMouseEvent*) {}
  * This function can be overwritten by the implementing action.
  * The default implementation does nothing.
  */
-void RS_ActionInterface::mousePressEvent(QMouseEvent*) {}
+void RS_ActionInterface::mousePressEvent(QMouseEvent *) {}
 
 /**
  * Called when the left mouse button is released and this is
@@ -140,14 +138,14 @@ void RS_ActionInterface::mousePressEvent(QMouseEvent*) {}
  * This function can be overwritten by the implementing action.
  * The default implementation does nothing.
  */
-void RS_ActionInterface::mouseReleaseEvent(QMouseEvent*) {}
+void RS_ActionInterface::mouseReleaseEvent(QMouseEvent *) {}
 
 /**
  * Called when a key is pressed and this is the current action.
  * This function can be overwritten by the implementing action.
  * The default implementation does nothing.
  */
-void RS_ActionInterface::keyPressEvent(QKeyEvent* e) {
+void RS_ActionInterface::keyPressEvent(QKeyEvent *e) {
     e->ignore();
 }
 
@@ -156,7 +154,7 @@ void RS_ActionInterface::keyPressEvent(QKeyEvent* e) {
  * This function can be overwritten by the implementing action.
  * The default implementation does nothing.
  */
-void RS_ActionInterface::keyReleaseEvent(QKeyEvent* e) {
+void RS_ActionInterface::keyReleaseEvent(QKeyEvent *e) {
     e->ignore();
 }
 
@@ -165,7 +163,7 @@ void RS_ActionInterface::keyReleaseEvent(QKeyEvent* e) {
  * This function can be overwritten by the implementing action.
  * The default implementation does nothing.
  */
-void RS_ActionInterface::coordinateEvent(RS_CoordinateEvent*) {}
+void RS_ActionInterface::coordinateEvent(RS_CoordinateEvent *) {}
 
 /**
  * Called when a command from the command line is launched.
@@ -173,7 +171,7 @@ void RS_ActionInterface::coordinateEvent(RS_CoordinateEvent*) {}
  * This function can be overwritten by the implementing action.
  * The default implementation does nothing.
  */
-void RS_ActionInterface::commandEvent(RS_CommandEvent*) {
+void RS_ActionInterface::commandEvent(RS_CommandEvent *) {
 }
 
 /**
@@ -181,7 +179,7 @@ void RS_ActionInterface::commandEvent(RS_CommandEvent*) {
  *  for the command line.
  */
 QStringList RS_ActionInterface::getAvailableCommands() {
-	return QStringList{};
+    return QStringList{};
 }
 
 /**
@@ -200,7 +198,7 @@ void RS_ActionInterface::setStatus(int status) {
     this->status = status;
     updateMouseButtonHints();
     updateMouseCursor();
-    if(status<0) finish();
+    if (status < 0) finish();
 }
 
 /**
@@ -240,31 +238,30 @@ bool RS_ActionInterface::isFinished() {
  * Forces a termination of the action without any cleanup.
  */
 void RS_ActionInterface::setFinished() {
-        status = -1;
+    status = -1;
 }
 
 
 /**
  * Finishes this action.
  */
-void RS_ActionInterface::finish(bool /*updateTB*/)
-{
-	RS_DEBUG->print("RS_ActionInterface::finish");
-	//refuse to quit the default action
-	if(rtti() != RS2::ActionDefault) {
-		status = -1;
-		finished = true;
-		hideOptions();
-		RS_Snapper::finish();
-	}
-	RS_DEBUG->print("RS_ActionInterface::finish: OK");
+void RS_ActionInterface::finish(bool /*updateTB*/) {
+    RS_DEBUG->print("RS_ActionInterface::finish");
+    //refuse to quit the default action
+    if (rtti() != RS2::ActionDefault) {
+        status = -1;
+        finished = true;
+        hideOptions();
+        RS_Snapper::finish();
+    }
+    RS_DEBUG->print("RS_ActionInterface::finish: OK");
 }
 
 /**
  * Called by the event handler to give this action a chance to
  * communicate with its predecessor.
  */
-void RS_ActionInterface::setPredecessor(RS_ActionInterface* pre) {
+void RS_ActionInterface::setPredecessor(RS_ActionInterface *pre) {
     predecessor = pre;
 }
 
@@ -298,14 +295,14 @@ void RS_ActionInterface::showOptions() {
     RS_Snapper::showOptions();
 }
 
-void RS_ActionInterface::setActionType(RS2::ActionType actionType){
-	this->actionType=actionType;
+void RS_ActionInterface::setActionType(RS2::ActionType actionType) {
+    this->actionType = actionType;
 }
 
 /**
  * Calls checkCommand() from the RS_COMMANDS module.
  */
-bool RS_ActionInterface::checkCommand(const QString& cmd, const QString& str,
+bool RS_ActionInterface::checkCommand(const QString &cmd, const QString &str,
                                       RS2::ActionType action) {
     return RS_COMMANDS->checkCommand(cmd, str, action);
 }
@@ -313,7 +310,7 @@ bool RS_ActionInterface::checkCommand(const QString& cmd, const QString& str,
 /**
  * Calls command() from the RS_COMMANDS module.
  */
-QString RS_ActionInterface::command(const QString& cmd) {
+QString RS_ActionInterface::command(const QString &cmd) {
     return RS_COMMANDS->command(cmd);
 }
 
