@@ -39,17 +39,24 @@
  */
 class RS_PreviewActionInterface : public RS_ActionInterface {
 public:
-    RS_PreviewActionInterface(const char* name,
-                              RS_EntityContainer& container,
-                              RS_GraphicView& graphicView);
-	~RS_PreviewActionInterface() override;
+    RS_PreviewActionInterface(const char *name,
+                              RS_EntityContainer &container,
+                              RS_GraphicView &graphicView);
 
-	void init(int status=0) override;
-	void finish(bool updateTB=true) override;
-	void suspend() override;
-	void resume() override;
-	void trigger() override;
+    ~RS_PreviewActionInterface() override;
+
+    void init(int status = 0) override;
+
+    void finish(bool updateTB = true) override;
+
+    void suspend() override;
+
+    void resume() override;
+
+    void trigger() override;
+
     void drawPreview();
+
     void deletePreview();
 
 private:
@@ -58,7 +65,7 @@ protected:
     /**
      * Preview that holds the entities to be previewed.
      */
-	std::unique_ptr<RS_Preview> preview;
+    std::unique_ptr<RS_Preview> preview;
     bool hasPreview;//whether preview is in use
 //    /**
 //     * Current offset of the preview.

@@ -37,15 +37,15 @@
  * Sets the entity container on which the action class inherited
  * from this interface operates.
  */
-RS_PreviewActionInterface::RS_PreviewActionInterface(const char* name,
-													 RS_EntityContainer& container,
-													 RS_GraphicView& graphicView) :
-	RS_ActionInterface(name, container, graphicView)
-  ,preview(new RS_Preview(&container))
+RS_PreviewActionInterface::RS_PreviewActionInterface(const char *name,
+                                                     RS_EntityContainer &container,
+                                                     RS_GraphicView &graphicView) :
+        RS_ActionInterface(name, container, graphicView), preview(new RS_Preview(&container))
 //  ,offset(new RS_Vector{})
 {
 
-    RS_DEBUG->print("RS_PreviewActionInterface::RS_PreviewActionInterface: Setting up action with preview: \"%s\"", name);
+    RS_DEBUG->print("RS_PreviewActionInterface::RS_PreviewActionInterface: Setting up action with preview: \"%s\"",
+                    name);
 
     // preview is linked to the container for getting access to
     //   document settings / dictionary variables
@@ -53,9 +53,9 @@ RS_PreviewActionInterface::RS_PreviewActionInterface(const char* name,
     preview->setLayer(NULL);
     hasPreview = true;
 
-    RS_DEBUG->print("RS_PreviewActionInterface::RS_PreviewActionInterface: Setting up action with preview: \"%s\": OK", name);
+    RS_DEBUG->print("RS_PreviewActionInterface::RS_PreviewActionInterface: Setting up action with preview: \"%s\": OK",
+                    name);
 }
-
 
 
 /** Destructor */
@@ -64,12 +64,10 @@ RS_PreviewActionInterface::~RS_PreviewActionInterface() {
 }
 
 
-
 void RS_PreviewActionInterface::init(int status) {
     deletePreview();
     RS_ActionInterface::init(status);
 }
-
 
 
 void RS_PreviewActionInterface::finish(bool updateTB) {
@@ -78,19 +76,16 @@ void RS_PreviewActionInterface::finish(bool updateTB) {
 }
 
 
-
 void RS_PreviewActionInterface::suspend() {
     RS_ActionInterface::suspend();
     deletePreview();
 }
 
 
-
 void RS_PreviewActionInterface::resume() {
     RS_ActionInterface::resume();
     drawPreview();
 }
-
 
 
 void RS_PreviewActionInterface::trigger() {
@@ -103,28 +98,27 @@ void RS_PreviewActionInterface::trigger() {
  * Deletes the preview from the screen.
  */
 void RS_PreviewActionInterface::deletePreview() {
-		if (hasPreview){
-                //avoid deleting NULL or empty preview
-            preview->clear();
-            hasPreview=false;
-        }
-	if(!graphicView->isCleanUp()){
-		graphicView->getOverlayContainer(RS2::ActionPreviewEntity)->clear();
-	}
+    if (hasPreview) {
+        //avoid deleting NULL or empty preview
+        preview->clear();
+        hasPreview = false;
+    }
+    if (!graphicView->isCleanUp()) {
+        graphicView->getOverlayContainer(RS2::ActionPreviewEntity)->clear();
+    }
 }
-
 
 
 /**
  * Draws / deletes the current preview.
  */
 void RS_PreviewActionInterface::drawPreview() {
-	// RVT_PORT How does offset work??        painter->setOffset(offset);
-	RS_EntityContainer *container=graphicView->getOverlayContainer(RS2::ActionPreviewEntity);
-	container->clear();
-	container->setOwner(false); // Little hack for now so we don't delete the preview twice
-	container->addEntity(preview.get());
-	graphicView->redraw(RS2::RedrawOverlay);
-	hasPreview=true;
+    // RVT_PORT How does offset work??        painter->setOffset(offset);
+    RS_EntityContainer *container = graphicView->getOverlayContainer(RS2::ActionPreviewEntity);
+    container->clear();
+    container->setOwner(false); // Little hack for now so we don't delete the preview twice
+    container->addEntity(preview.get());
+    graphicView->redraw(RS2::RedrawOverlay);
+    hasPreview = true;
 }
 
