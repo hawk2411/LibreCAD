@@ -379,7 +379,7 @@ RS_ActionInterface* RS_EventHandler::getDefaultAction() const{
  */
 void RS_EventHandler::setDefaultAction(RS_ActionInterface* action) {
     if (defaultAction) {
-        defaultAction->finish();
+        defaultAction->finish(true);
         delete defaultAction;
         //        defaultAction = NULL;
     }
@@ -456,7 +456,7 @@ void RS_EventHandler::killSelectActions() {
                 (*it)->rtti()==RS2::ActionSelectIntersected ||
                 (*it)->rtti()==RS2::ActionSelectLayer) {
             if( ! (*it)->isFinished()){
-                (*it)->finish();
+                (*it)->finish(true);
             }
             delete *it;
             it= currentActions.erase(it);
@@ -485,13 +485,13 @@ void RS_EventHandler::killAllActions()
     {
 		if (!p->isFinished())
         {
-			p->finish();
+			p->finish(true);
 		}
 	}
 
     if (!defaultAction->isFinished())
     {
-        defaultAction->finish();
+        defaultAction->finish(true);
     }
 
 	RS_DEBUG->print(__FILE__ ": %s: line %d: begin\n", __func__, __LINE__);

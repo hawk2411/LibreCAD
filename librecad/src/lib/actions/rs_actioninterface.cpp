@@ -198,7 +198,7 @@ void RS_ActionInterface::setStatus(int status) {
     this->status = status;
     updateMouseButtonHints();
     updateMouseCursor();
-    if (status < 0) finish();
+    if (status < 0) finish(true);
 }
 
 /**

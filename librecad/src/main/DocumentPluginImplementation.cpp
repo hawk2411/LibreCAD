@@ -504,7 +504,7 @@ Plug_Entity *DocumentPluginImplementation::getEnt(const QString &message) {
     }
 
     auto *e = reinterpret_cast<Plug_Entity *>(entity->getSelected(this));
-    entity->finish();
+    entity->finish(true);
     gView->killAllActions();
     return e;
 }

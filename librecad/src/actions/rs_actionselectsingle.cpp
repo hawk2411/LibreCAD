@@ -83,9 +83,9 @@ void RS_ActionSelectSingle::mouseReleaseEvent(QMouseEvent* e)
 {
     if (e->button()==Qt::RightButton)
     {
-        finish();
+        finish(true);
         if (actionSelect->rtti() == RS2::ActionSelect)
-            actionSelect->finish();
+            actionSelect->finish(true);
         else
             actionSelect->mouseReleaseEvent(e);
     }

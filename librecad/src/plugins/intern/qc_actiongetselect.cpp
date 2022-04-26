@@ -79,7 +79,7 @@ void QC_ActionGetSelect::mouseReleaseEvent(QMouseEvent* e) {
     if (e->button()==Qt::RightButton) {
         completed = true;
 		GetDialogFactory()->updateMouseWidget();
-        finish();
+        finish(true);
     }
 }
 
@@ -88,7 +88,7 @@ void QC_ActionGetSelect::keyPressEvent(QKeyEvent* e)
     if (e->key()==Qt::Key_Escape || e->key()==Qt::Key_Enter)
     {
 		GetDialogFactory()->updateMouseWidget();
-        finish();
+        finish(true);
         completed = true;
     }
 }

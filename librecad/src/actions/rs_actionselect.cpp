@@ -151,7 +151,7 @@ void RS_ActionSelect::keyPressEvent(QKeyEvent* e)
 {
     if (e->key()==Qt::Key_Enter && countSelected() > 0)
     {
-        finish();
+        finish(true);
         action_handler->setCurrentAction(nextAction);
     }
 }

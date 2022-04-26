@@ -75,7 +75,7 @@ void QC_ActionGetEnt::mouseReleaseEvent(QMouseEvent* e) {
     if (e->button()==Qt::RightButton) {
         completed = true;
         updateMouseButtonHints();
-        finish();
+        finish(true);
     } else {
         en = catchEntity(e);
         trigger();

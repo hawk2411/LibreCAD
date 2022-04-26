@@ -99,7 +99,7 @@ public:
 
     virtual void setFinished();
 
-    virtual void finish(bool updateTB = true);
+    virtual void finish(bool updateTB);
 
     virtual void setPredecessor(RS_ActionInterface *pre);
 

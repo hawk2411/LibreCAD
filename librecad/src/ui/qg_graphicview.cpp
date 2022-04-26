@@ -393,7 +393,7 @@ void QG_GraphicView::tabletEvent(QTabletEvent* e) {
                     QMouseEvent ev(QEvent::MouseButtonRelease, e->pos(),
                                    Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);//RLZ
                     mouseReleaseEvent(&ev);
-                    a->finish();
+                    a->finish(true);
 
                     if (container->countSelected(true, {})>0) {
                         setCurrentAction(
