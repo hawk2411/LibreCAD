@@ -78,11 +78,11 @@ void RS_ActionInfoArea::display() {
     }
 	switch(ia->size()){
     case 2:
-		preview->addEntity(new RS_Line(preview.get(), ia->at(0), ia->at(1)));
+		_preview->addEntity(new RS_Line(_preview.get(), ia->at(0), ia->at(1)));
         break;
     default:
 		for(int i=0;i<ia->size();i++){
-			preview->addEntity(new RS_Line(preview.get(), ia->at(i), ia->at((i+1) % ia->size())));
+			_preview->addEntity(new RS_Line(_preview.get(), ia->at(i), ia->at((i + 1) % ia->size())));
 		}
 		QString const linear = RS_Units::formatLinear(ia->getCircumference(),
                                                       _graphic->getUnit(),

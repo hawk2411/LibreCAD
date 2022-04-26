@@ -106,18 +106,18 @@ void RS_ActionLibraryInsert::mouseMoveEvent(QMouseEvent* e) {
 
         //if (block) {
         deletePreview();
-		preview->addAllFrom(pPoints->prev);
-		preview->move(pPoints->data.insertionPoint);
-		preview->scale(pPoints->data.insertionPoint,
-					   RS_Vector(pPoints->data.factor, pPoints->data.factor));
+		_preview->addAllFrom(pPoints->prev);
+		_preview->move(pPoints->data.insertionPoint);
+		_preview->scale(pPoints->data.insertionPoint,
+                        RS_Vector(pPoints->data.factor, pPoints->data.factor));
         // unit conversion:
         if (_graphic) {
 			double const uf = RS_Units::convert(1.0, pPoints->prev.getUnit(),
                                                 _graphic->getUnit());
-			preview->scale(pPoints->data.insertionPoint,
-			{uf, uf});
+			_preview->scale(pPoints->data.insertionPoint,
+                            {uf, uf});
         }
-		preview->rotate(pPoints->data.insertionPoint, pPoints->data.angle);
+		_preview->rotate(pPoints->data.insertionPoint, pPoints->data.angle);
         // too slow:
         //RS_Creation creation(preview, NULL, false);
         //creation.createInsert(data);

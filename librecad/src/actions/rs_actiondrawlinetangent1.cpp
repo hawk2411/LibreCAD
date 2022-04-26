@@ -121,7 +121,7 @@ void RS_ActionDrawLineTangent1::mouseMoveEvent(QMouseEvent* e) {
 
 			if (tangent) {
 				deletePreview();
-				preview->addEntity(tangent->clone());
+				_preview->addEntity(tangent->clone());
 				drawPreview();
 			}
 		}

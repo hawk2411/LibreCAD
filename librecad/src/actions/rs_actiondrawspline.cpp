@@ -128,11 +128,11 @@ void RS_ActionDrawSpline::mouseMoveEvent(QMouseEvent* e) {
 				RS_Spline* tmpSpline = static_cast<RS_Spline*>(pPoints->spline->clone());
                 tmpSpline->addControlPoint(mouse);
                 tmpSpline->update();
-                preview->addEntity(tmpSpline);
+                _preview->addEntity(tmpSpline);
 
 				auto cpts = tmpSpline->getControlPoints();
 				for (const RS_Vector& vp: cpts) {
-						preview->addEntity(new RS_Point(preview.get(), RS_PointData(vp)));
+						_preview->addEntity(new RS_Point(_preview.get(), RS_PointData(vp)));
                 }
         drawPreview();
     }

@@ -90,7 +90,7 @@ void RS_ActionSelectIntersected::mouseMoveEvent(QMouseEvent* e) {
 	if (getStatus()==SetPoint2 && pPoints->v1.valid) {
 		pPoints->v2 = snapPoint(e);
         deletePreview();
-		preview->addEntity(new RS_Line{preview.get(), pPoints->v1, pPoints->v2});
+		_preview->addEntity(new RS_Line{_preview.get(), pPoints->v1, pPoints->v2});
         drawPreview();
     }
 }

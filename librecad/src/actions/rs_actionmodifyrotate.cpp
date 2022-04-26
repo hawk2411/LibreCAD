@@ -72,8 +72,8 @@ void RS_ActionModifyRotate::mouseMoveEvent(QMouseEvent* e) {
     case setTargetPoint:
         if( ! mouse.valid ) return;
         deletePreview();
-        preview->addSelectionFrom(*container);
-		preview->rotate(data->center,RS_Math::correctAngle((mouse - data->center).angle() - data->angle));
+        _preview->addSelectionFrom(*container);
+		_preview->rotate(data->center, RS_Math::correctAngle((mouse - data->center).angle() - data->angle));
         drawPreview();
     }
 

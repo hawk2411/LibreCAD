@@ -117,8 +117,8 @@ void RS_ActionDrawCircleCR::mouseMoveEvent(QMouseEvent* e) {
     case SetCenter:
 		data->center = mouse;
         deletePreview();
-		preview->addEntity(new RS_Circle(preview.get(),
-										 *data));
+		_preview->addEntity(new RS_Circle(_preview.get(),
+                                          *data));
         drawPreview();
         break;
     }

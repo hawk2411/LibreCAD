@@ -135,10 +135,10 @@ void RS_ActionDrawArc3P::mouseMoveEvent(QMouseEvent* e) {
     case SetPoint2:
 		pPoints->point2 = mouse;
 		if (pPoints->point1.valid) {
-			RS_Line* line = new RS_Line{preview.get(), pPoints->point1, pPoints->point2};
+			RS_Line* line = new RS_Line{_preview.get(), pPoints->point1, pPoints->point2};
 
             deletePreview();
-            preview->addEntity(line);
+            _preview->addEntity(line);
             drawPreview();
         }
         break;
@@ -147,10 +147,10 @@ void RS_ActionDrawArc3P::mouseMoveEvent(QMouseEvent* e) {
 		pPoints->point3 = mouse;
         preparePreview();
 		if (pPoints->data.isValid()) {
-			RS_Arc* arc = new RS_Arc(preview.get(), pPoints->data);
+			RS_Arc* arc = new RS_Arc(_preview.get(), pPoints->data);
 
             deletePreview();
-            preview->addEntity(arc);
+            _preview->addEntity(arc);
             drawPreview();
         }
         break;

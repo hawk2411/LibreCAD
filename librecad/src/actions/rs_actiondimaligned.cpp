@@ -121,8 +121,8 @@ void RS_ActionDimAligned::mouseMoveEvent(QMouseEvent* e) {
     case SetExtPoint2:
 		if (edata->extensionPoint1.valid) {
             deletePreview();
-            preview->addEntity(
-				new RS_Line{preview.get(),edata->extensionPoint1, mouse}
+            _preview->addEntity(
+				new RS_Line{_preview.get(), edata->extensionPoint1, mouse}
             );
             drawPreview();
         }
@@ -136,8 +136,8 @@ void RS_ActionDimAligned::mouseMoveEvent(QMouseEvent* e) {
             preparePreview();
 
 						//data->text = getText();
-			RS_DimAligned* dim = new RS_DimAligned(preview.get(), *data, *edata);
-            preview->addEntity(dim);
+			RS_DimAligned* dim = new RS_DimAligned(_preview.get(), *data, *edata);
+            _preview->addEntity(dim);
             dim->update();
             drawPreview();
         }

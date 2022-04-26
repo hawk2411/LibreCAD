@@ -101,11 +101,11 @@ void LC_ActionDrawSplinePoints::mouseMoveEvent(QMouseEvent* e)
 		LC_SplinePoints*  sp = static_cast<LC_SplinePoints*>(_points->_spline->clone());
 		sp->addPoint(mouse);
 		deletePreview();
-		preview->addEntity(sp);
+		_preview->addEntity(sp);
 
 		for(auto const& v: sp->getPoints())
 		{
-			preview->addEntity(new RS_Point(preview.get(), RS_PointData(v)));
+			_preview->addEntity(new RS_Point(_preview.get(), RS_PointData(v)));
 		}
 		drawPreview();
 	}
@@ -144,7 +144,7 @@ void LC_ActionDrawSplinePoints::coordinateEvent(RS_CoordinateEvent* e)
 		{
 			_points->_spline.reset(new LC_SplinePoints(container, _points->_data));
 			_points->_spline->addPoint(mouse);
-			preview->addEntity(new RS_Point(preview.get(), RS_PointData(mouse)));
+			_preview->addEntity(new RS_Point(_preview.get(), RS_PointData(mouse)));
 		}
 		setStatus(SetNextPoint);
 		graphicView->moveRelativeZero(mouse);

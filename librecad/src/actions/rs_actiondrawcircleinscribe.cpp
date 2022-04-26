@@ -130,8 +130,8 @@ void RS_ActionDrawCircleInscribe::mouseMoveEvent(QMouseEvent* e) {
 		pPoints->lines.push_back(static_cast<RS_Line*>(en));
 		graphicView->drawEntity(pPoints->lines.back());
         if(preparePreview()) {
-			RS_Circle* e=new RS_Circle(preview.get(), pPoints->cData);
-            preview->addEntity(e);
+			RS_Circle* e=new RS_Circle(_preview.get(), pPoints->cData);
+            _preview->addEntity(e);
             drawPreview();
         }
 

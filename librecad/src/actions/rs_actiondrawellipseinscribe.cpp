@@ -133,8 +133,8 @@ void RS_ActionDrawEllipseInscribe::mouseMoveEvent(QMouseEvent* e) {
 		if(preparePreview()) {
 			pPoints->lines.back()->setHighlighted(true);
 			graphicView->drawEntity(pPoints->lines.back());
-			RS_Ellipse* e=new RS_Ellipse(preview.get(), pPoints->eData);
-            preview->addEntity(e);
+			RS_Ellipse* e=new RS_Ellipse(_preview.get(), pPoints->eData);
+            _preview->addEntity(e);
             drawPreview();
         }
 
@@ -146,7 +146,7 @@ void RS_ActionDrawEllipseInscribe::mouseMoveEvent(QMouseEvent* e) {
 bool RS_ActionDrawEllipseInscribe::preparePreview(){
 	pPoints->valid=false;
     if(getStatus() == SetLine4) {
-		RS_Ellipse e{preview.get(), RS_EllipseData()};
+		RS_Ellipse e{_preview.get(), RS_EllipseData()};
 		pPoints->valid= e.createInscribeQuadrilateral(pPoints->lines);
 		if (pPoints->valid){
 			pPoints->eData = e.getData();

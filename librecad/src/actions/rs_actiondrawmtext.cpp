@@ -70,7 +70,7 @@ void RS_ActionDrawMText::init(int status) {
 	case SetPos:
 		GetDialogFactory()->requestOptions(this, true, true);
 		deletePreview();
-		preview->setVisible(true);
+		_preview->setVisible(true);
 		preparePreview();
 		break;
 
@@ -126,9 +126,9 @@ void RS_ActionDrawMText::trigger() {
 
 void RS_ActionDrawMText::preparePreview() {
 	data->insertionPoint = *pos;
-	RS_MText* text = new RS_MText(preview.get(), *data);
+	RS_MText* text = new RS_MText(_preview.get(), *data);
     text->update();
-    preview->addEntity(text);
+    _preview->addEntity(text);
     textChanged = false;
 }
 
@@ -140,12 +140,12 @@ void RS_ActionDrawMText::mouseMoveEvent(QMouseEvent* e) {
         RS_Vector mouse = snapPoint(e);
 		RS_Vector mov = mouse-*pos;
 		*pos = mouse;
-		if (textChanged || pos->valid == false || preview->isEmpty()) {
+		if (textChanged || pos->valid == false || _preview->isEmpty()) {
             deletePreview();
             preparePreview();
         } else {
-            preview->move(mov);
-            preview->setVisible(true);
+            _preview->move(mov);
+            _preview->setVisible(true);
         }
         drawPreview();
     }

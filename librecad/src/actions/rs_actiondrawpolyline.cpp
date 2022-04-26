@@ -156,9 +156,9 @@ void RS_ActionDrawPolyline::mouseMoveEvent(QMouseEvent* e) {
                 //p->reparent(preview);
                 //preview->addEntity(p);
         if (fabs(bulge)<RS_TOLERANCE || Mode==Line) {
-			preview->addEntity(new RS_Line{preview.get(), pPoints->point, mouse});
+			_preview->addEntity(new RS_Line{_preview.get(), pPoints->point, mouse});
         } else
-			preview->addEntity(new RS_Arc(preview.get(), pPoints->arc_data));
+			_preview->addEntity(new RS_Arc(_preview.get(), pPoints->arc_data));
         drawPreview();
     }
 

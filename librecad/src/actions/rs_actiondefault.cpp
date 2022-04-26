@@ -166,12 +166,12 @@ void RS_ActionDefault::mouseMoveEvent(QMouseEvent* e) {
         }
 
         deletePreview();
-        preview->addSelectionFrom(*container);
-		preview->moveRef(pPoints->v1, pPoints->v2 - pPoints->v1);
+        _preview->addSelectionFrom(*container);
+		_preview->moveRef(pPoints->v1, pPoints->v2 - pPoints->v1);
 
         if (e->modifiers() & Qt::ShiftModifier) {
             RS_Line *line = new RS_Line(pPoints->v1, mouse);
-            preview->addEntity(line);
+            _preview->addEntity(line);
             line->setSelected(true);
         }
 
@@ -188,12 +188,12 @@ void RS_ActionDefault::mouseMoveEvent(QMouseEvent* e) {
         }
 
         deletePreview();
-        preview->addSelectionFrom(*container);
-		preview->move(pPoints->v2 - pPoints->v1);
+        _preview->addSelectionFrom(*container);
+		_preview->move(pPoints->v2 - pPoints->v1);
 
         if (e->modifiers() & Qt::ShiftModifier) {
             RS_Line *line = new RS_Line(pPoints->v1, mouse);
-            preview->addEntity(line);
+            _preview->addEntity(line);
             line->setSelected(true);
         }
 
@@ -206,9 +206,9 @@ void RS_ActionDefault::mouseMoveEvent(QMouseEvent* e) {
 
             deletePreview();
 
-			RS_OverlayBox* ob=new RS_OverlayBox(preview.get(),
-												RS_OverlayBoxData(pPoints->v1, pPoints->v2));
-            preview->addEntity(ob);
+			RS_OverlayBox* ob=new RS_OverlayBox(_preview.get(),
+                                                RS_OverlayBoxData(pPoints->v1, pPoints->v2));
+            _preview->addEntity(ob);
 
             drawPreview();
         }

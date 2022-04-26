@@ -89,7 +89,7 @@ void RS_ActionModifyStretch::mouseMoveEvent(QMouseEvent* e) {
 		if (pPoints->firstCorner.valid) {
 			pPoints->secondCorner = snapPoint(e);
 			deletePreview();
-			preview->addRectangle(pPoints->firstCorner, pPoints->secondCorner);
+			_preview->addRectangle(pPoints->firstCorner, pPoints->secondCorner);
             drawPreview();
         }
         break;
@@ -102,9 +102,9 @@ void RS_ActionModifyStretch::mouseMoveEvent(QMouseEvent* e) {
 			pPoints->targetPoint = mouse;
 
             deletePreview();
-			preview->addStretchablesFrom(*container, pPoints->firstCorner, pPoints->secondCorner);
+			_preview->addStretchablesFrom(*container, pPoints->firstCorner, pPoints->secondCorner);
             //preview->move(targetPoint-referencePoint);
-			preview->stretch(pPoints->firstCorner, pPoints->secondCorner,
+			_preview->stretch(pPoints->firstCorner, pPoints->secondCorner,
 							 pPoints->targetPoint-pPoints->referencePoint);
             drawPreview();
         }

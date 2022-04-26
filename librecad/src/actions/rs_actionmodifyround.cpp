@@ -126,14 +126,14 @@ void RS_ActionModifyRound::mouseMoveEvent(QMouseEvent* e) {
             //preview->move(targetPoint-referencePoint);
             RS_Entity* tmp1 = entity1->clone();
             RS_Entity* tmp2 = entity2->clone();
-			tmp1->reparent(preview.get());
-			tmp2->reparent(preview.get());
-            preview->addEntity(tmp1);
-            preview->addEntity(tmp2);
+			tmp1->reparent(_preview.get());
+			tmp2->reparent(_preview.get());
+            _preview->addEntity(tmp1);
+            _preview->addEntity(tmp2);
 
 			bool trim = pPoints->data.trim;
 			pPoints->data.trim = false;
-			RS_Modification m(*preview, nullptr, false);
+			RS_Modification m(*_preview, nullptr, false);
 			m.round(pPoints->coord2,
 					pPoints->coord1,
                     (RS_AtomicEntity*)tmp1,
@@ -142,8 +142,8 @@ void RS_ActionModifyRound::mouseMoveEvent(QMouseEvent* e) {
 					pPoints->data);
 			pPoints->data.trim = trim;
 
-            preview->removeEntity(tmp1);
-            preview->removeEntity(tmp2);
+            _preview->removeEntity(tmp1);
+            _preview->removeEntity(tmp2);
             drawPreview();
         }
         break;

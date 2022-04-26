@@ -77,7 +77,7 @@ void RS_ActionDrawText::init(int status) {
 	case SetPos:
 		GetDialogFactory()->requestOptions(this, true, true);
 		deletePreview();
-		preview->setVisible(true);
+		_preview->setVisible(true);
 		preparePreview();
 		break;
 
@@ -133,13 +133,13 @@ void RS_ActionDrawText::preparePreview() {
 	if (data->halign == RS_TextData::HAFit || data->halign == RS_TextData::HAAligned) {
 		if (pPoints->secPos.valid) {
 			RS_Line* text = new RS_Line(pPoints->pos, pPoints->secPos);
-            preview->addEntity(text);
+            _preview->addEntity(text);
         }
     } else {
 		data->insertionPoint = pPoints->pos;
-		RS_Text* text = new RS_Text(preview.get(), *data);
+		RS_Text* text = new RS_Text(_preview.get(), *data);
         text->update();
-        preview->addEntity(text);
+        _preview->addEntity(text);
     }
     textChanged = false;
 }
@@ -152,12 +152,12 @@ void RS_ActionDrawText::mouseMoveEvent(QMouseEvent* e) {
         RS_Vector mouse = snapPoint(e);
 		RS_Vector mov = mouse - pPoints->pos;
 		pPoints->pos = mouse;
-		if (textChanged || pPoints->pos.valid == false || preview->isEmpty()) {
+		if (textChanged || pPoints->pos.valid == false || _preview->isEmpty()) {
             deletePreview();
             preparePreview();
         } else {
-            preview->move(mov);
-            preview->setVisible(true);
+            _preview->move(mov);
+            _preview->setVisible(true);
         }
         drawPreview();
     } else if (getStatus()==SetSecPos) {

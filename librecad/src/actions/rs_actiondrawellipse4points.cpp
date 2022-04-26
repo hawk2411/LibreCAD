@@ -102,17 +102,17 @@ void RS_ActionDrawEllipse4Points::mouseMoveEvent(QMouseEvent* e) {
         case SetPoint2:
         case SetPoint3:
 			if(pPoints->valid){
-				RS_Circle* circle=new RS_Circle(preview.get(), pPoints->cData);
+				RS_Circle* circle=new RS_Circle(_preview.get(), pPoints->cData);
                 deletePreview();
-                preview->addEntity(circle);
+                _preview->addEntity(circle);
                 drawPreview();
             }
             break;
         case SetPoint4:
 			if(pPoints->evalid){
                 deletePreview();
-				RS_Ellipse* e=new RS_Ellipse(preview.get(), pPoints->eData);
-                preview->addEntity(e);
+				RS_Ellipse* e=new RS_Ellipse(_preview.get(), pPoints->eData);
+                _preview->addEntity(e);
                 drawPreview();
             }
         default:
@@ -149,7 +149,7 @@ bool RS_ActionDrawEllipse4Points::preparePreview(){
 				pPoints->cData = circle->getData();
 			}
 		} else {
-			RS_Ellipse e{preview.get(), pPoints->eData};
+			RS_Ellipse e{_preview.get(), pPoints->eData};
 			pPoints->valid= e.createFrom4P(pPoints->points);
 			if (pPoints->valid) {
 				pPoints->evalid=pPoints->valid;

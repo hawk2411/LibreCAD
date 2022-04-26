@@ -40,7 +40,7 @@
 RS_PreviewActionInterface::RS_PreviewActionInterface(const char *name,
                                                      RS_EntityContainer &container,
                                                      RS_GraphicView &graphicView) :
-        RS_ActionInterface(name, container, graphicView), preview(new RS_Preview(&container))
+        RS_ActionInterface(name, container, graphicView), _preview(new RS_Preview(&container))
 //  ,offset(new RS_Vector{})
 {
 
@@ -50,8 +50,8 @@ RS_PreviewActionInterface::RS_PreviewActionInterface(const char *name,
     // preview is linked to the container for getting access to
     //   document settings / dictionary variables
 
-    preview->setLayer(NULL);
-    hasPreview = true;
+    _preview->setLayer(NULL);
+    _hasPreview = true;
 
     RS_DEBUG->print("RS_PreviewActionInterface::RS_PreviewActionInterface: Setting up action with preview: \"%s\": OK",
                     name);
@@ -98,10 +98,10 @@ void RS_PreviewActionInterface::trigger() {
  * Deletes the preview from the screen.
  */
 void RS_PreviewActionInterface::deletePreview() {
-    if (hasPreview) {
+    if (_hasPreview) {
         //avoid deleting NULL or empty preview
-        preview->clear();
-        hasPreview = false;
+        _preview->clear();
+        _hasPreview = false;
     }
     if (!graphicView->isCleanUp()) {
         graphicView->getOverlayContainer(RS2::ActionPreviewEntity)->clear();
@@ -117,8 +117,8 @@ void RS_PreviewActionInterface::drawPreview() {
     RS_EntityContainer *container = graphicView->getOverlayContainer(RS2::ActionPreviewEntity);
     container->clear();
     container->setOwner(false); // Little hack for now so we don't delete the preview twice
-    container->addEntity(preview.get());
+    container->addEntity(_preview.get());
     graphicView->redraw(RS2::RedrawOverlay);
-    hasPreview = true;
+    _hasPreview = true;
 }
 

@@ -154,7 +154,7 @@ void RS_ActionDrawLine::mouseMoveEvent(QMouseEvent* e)
 
         deletePreview();
         RS_Line *line = new RS_Line(pPoints->data._startpoint, mouse);
-        preview->addEntity(line);
+        _preview->addEntity(line);
         line->setLayerToActive();
         line->setPenToActive();
         drawPreview();

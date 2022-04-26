@@ -108,9 +108,9 @@ void RS_ActionDrawEllipseCenter3Points::mouseMoveEvent(QMouseEvent* e) {
 
         case SetPoint1:
 		{
-			RS_Circle* circle=new RS_Circle(preview.get(), pPoints->cData);
+			RS_Circle* circle=new RS_Circle(_preview.get(), pPoints->cData);
             deletePreview();
-            preview->addEntity(circle);
+            _preview->addEntity(circle);
             drawPreview();
         }
             break;
@@ -119,8 +119,8 @@ void RS_ActionDrawEllipseCenter3Points::mouseMoveEvent(QMouseEvent* e) {
         case SetPoint3:
         {
             deletePreview();
-			RS_Ellipse* e=new RS_Ellipse(preview.get(), pPoints->eData);
-            preview->addEntity(e);
+			RS_Ellipse* e=new RS_Ellipse(_preview.get(), pPoints->eData);
+            _preview->addEntity(e);
             drawPreview();
         }
         default:
@@ -150,7 +150,7 @@ bool RS_ActionDrawEllipseCenter3Points::preparePreview(){
     case SetPoint2:
     case SetPoint3:
     {
-		RS_Ellipse e(preview.get(), pPoints->eData);
+		RS_Ellipse e(_preview.get(), pPoints->eData);
 		pPoints->valid= e.createFromCenter3Points(pPoints->points);
 		if (pPoints->valid){
 			pPoints->eData = e.getData();

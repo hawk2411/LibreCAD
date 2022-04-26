@@ -134,7 +134,7 @@ void LC_ActionDrawCircle2PR::mouseMoveEvent(QMouseEvent* e) {
 	case SelectCenter: {
 		if(preparePreview(mouse)){
 			bool existing=false;
-			for(auto p: *preview){
+			for(auto p: *_preview){
 				if(p->rtti() == RS2::EntityCircle){
 					if( static_cast<RS_Circle*>(p)->getData() == *data)
 						existing=true;
@@ -142,9 +142,9 @@ void LC_ActionDrawCircle2PR::mouseMoveEvent(QMouseEvent* e) {
 			}
 			if(!existing){
 				deletePreview();
-				preview->addEntity(new RS_Point(preview.get(), RS_PointData(data->center)));
-				RS_Circle* circle = new RS_Circle(preview.get(), *data);
-				preview->addEntity(circle);
+				_preview->addEntity(new RS_Point(_preview.get(), RS_PointData(data->center)));
+				RS_Circle* circle = new RS_Circle(_preview.get(), *data);
+				_preview->addEntity(circle);
 				drawPreview();
 			}
 		}else{

@@ -162,10 +162,10 @@ void RS_ActionDrawCircleTan2_1P::mouseMoveEvent(QMouseEvent* e) {
     }
     deletePreview();
     if(preparePreview()){
-		RS_Circle* e=new RS_Circle(preview.get(), pPoints->cData);
+		RS_Circle* e=new RS_Circle(_preview.get(), pPoints->cData);
 		for (auto const& vp: pPoints->centers)
-			preview->addEntity(new RS_Point(preview.get(), RS_PointData(vp)));
-        preview->addEntity(e);
+			_preview->addEntity(new RS_Point(_preview.get(), RS_PointData(vp)));
+        _preview->addEntity(e);
         drawPreview();
     }
     RS_DEBUG->print("RS_ActionDrawCircleTan2_1P::mouseMoveEvent end");

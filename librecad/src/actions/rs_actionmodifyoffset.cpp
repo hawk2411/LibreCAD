@@ -81,7 +81,7 @@ void RS_ActionModifyOffset::mouseMoveEvent(QMouseEvent* e) {
 	m.offset(*data);
 
     deletePreview();
-    preview->addSelectionFrom(ec);
+    _preview->addSelectionFrom(ec);
     drawPreview();
 
 }

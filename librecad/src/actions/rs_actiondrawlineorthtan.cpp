@@ -108,11 +108,11 @@ void RS_ActionDrawLineOrthTan::mouseMoveEvent(QMouseEvent* e) {
 		circle->setHighlighted(true);
 		graphicView->redraw(RS2::RedrawDrawing);
 		deletePreview();
-		RS_Creation creation(preview.get(), graphicView, false);
+		RS_Creation creation(_preview.get(), graphicView, false);
 		tangent = creation.createLineOrthTan(mouse,
 											 normal,
 											 circle);
-		preview->addEntity(tangent);
+		_preview->addEntity(tangent);
 		drawPreview();
 
 	}

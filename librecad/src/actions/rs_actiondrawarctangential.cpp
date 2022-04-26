@@ -140,9 +140,9 @@ void RS_ActionDrawArcTangential::mouseMoveEvent(QMouseEvent* e) {
 		*point = snapPoint(e);
         preparePreview();
 		if (data->isValid()) {
-			RS_Arc* arc = new RS_Arc(preview.get(), *data);
+			RS_Arc* arc = new RS_Arc(_preview.get(), *data);
             deletePreview();
-            preview->addEntity(arc);
+            _preview->addEntity(arc);
             drawPreview();
         }
     }

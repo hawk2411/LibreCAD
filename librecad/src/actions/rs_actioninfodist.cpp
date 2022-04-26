@@ -102,7 +102,7 @@ void RS_ActionInfoDist::mouseMoveEvent(QMouseEvent* e) {
 
                 deletePreview();
 
-				preview->addEntity(new RS_Line{preview.get(), pPoints->point1, pPoints->point2});
+				_preview->addEntity(new RS_Line{_preview.get(), pPoints->point1, pPoints->point2});
 
                 drawPreview();
             }

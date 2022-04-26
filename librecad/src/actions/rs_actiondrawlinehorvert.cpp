@@ -115,7 +115,7 @@ void RS_ActionDrawLineHorVert::mouseMoveEvent(QMouseEvent* e) {
 			pPoints->p2 = p2y;
         deletePreview();
 		pPoints->data = {pPoints->p1, pPoints->p2};
-		preview->addEntity(new RS_Line{preview.get(), pPoints->data});
+		_preview->addEntity(new RS_Line{_preview.get(), pPoints->data});
         drawPreview();
     }
 

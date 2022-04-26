@@ -126,10 +126,10 @@ void RS_ActionDrawCircleTan3::mouseMoveEvent(QMouseEvent* e) {
 		//        circles[getStatus()]=static_cast<RS_Line*>(en);
 		deletePreview();
 		if(preparePreview()) {
-			RS_Circle* e=new RS_Circle(preview.get(), *_points->cData);
-			preview->addEntity(e);
+			RS_Circle* e=new RS_Circle(_preview.get(), *_points->cData);
+			_preview->addEntity(e);
 			for(auto& c: _points->candidates){
-                preview->addEntity(new RS_Point(nullptr, RS_PointData(c->center)));
+                _preview->addEntity(new RS_Point(nullptr, RS_PointData(c->center)));
 			}
 			drawPreview();
 		}
@@ -300,7 +300,7 @@ bool RS_ActionDrawCircleTan3::preparePreview(){
 	double dist=RS_MAXDOUBLE*RS_MAXDOUBLE;
 	for(size_t i=0; i < _points->candidates.size(); ++i){
 
-		preview->addEntity(new RS_Point(preview.get(), RS_PointData(_points->candidates.at(i)->center)));
+		_preview->addEntity(new RS_Point(_preview.get(), RS_PointData(_points->candidates.at(i)->center)));
 		double d;
 		RS_Circle(nullptr, *_points->candidates.at(i)).getNearestPointOnEntity(_points->coord, false, &d, nullptr);
 		double dCenter=_points->coord.distanceTo(_points->candidates.at(i)->center);

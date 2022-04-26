@@ -121,9 +121,9 @@ void RS_ActionSnapIntersectionManual::mouseMoveEvent(QMouseEvent* e) {
 
             if (ip.valid) {
                 deletePreview();
-                preview->addEntity(
-					new RS_Circle(preview.get(),
-				{ip, graphicView->toGraphDX(4)}));
+                _preview->addEntity(
+					new RS_Circle(_preview.get(),
+                                  {ip, graphicView->toGraphDX(4)}));
                 drawPreview();
 
                 GetDialogFactory()->updateCoordinateWidget(ip,

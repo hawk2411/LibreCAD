@@ -94,7 +94,7 @@ void RS_ActionDrawLineParallel::mouseMoveEvent(QMouseEvent* e) {
     case SetEntity: {
             deletePreview();
 
-			RS_Creation creation(preview.get(), nullptr, false);
+			RS_Creation creation(_preview.get(), nullptr, false);
 			creation.createParallel(*coord,
                                     distance, number,
                                     entity);

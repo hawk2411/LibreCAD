@@ -141,7 +141,7 @@ void RS_ActionDrawLineBisector::mouseMoveEvent(QMouseEvent* e) {
 
                 deletePreview();
 
-				RS_Creation creation(preview.get(), nullptr, false);
+				RS_Creation creation(_preview.get(), nullptr, false);
 				creation.createBisector(pPoints->coord1,
 										pPoints->coord2,
                                         length,

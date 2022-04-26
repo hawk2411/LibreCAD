@@ -142,8 +142,8 @@ void RS_ActionDrawEllipseAxis::mouseMoveEvent(QMouseEvent* e) {
     case SetMajor:
 		if (pPoints->center.valid) {
             deletePreview();
-			preview->addEntity(new RS_Ellipse{preview.get(),
-				{pPoints->center, mouse-pPoints->center, 0.5, 0.0,
+			_preview->addEntity(new RS_Ellipse{_preview.get(),
+                                               {pPoints->center, mouse-pPoints->center, 0.5, 0.0,
 											  pPoints->isArc?2.*M_PI:0.
 							   , false}});
             drawPreview();
@@ -156,8 +156,8 @@ void RS_ActionDrawEllipseAxis::mouseMoveEvent(QMouseEvent* e) {
 			RS_Line line{pPoints->center-pPoints->m_vMajorP, pPoints->center+pPoints->m_vMajorP};
             double d = line.getDistanceToPoint(mouse, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
 			pPoints->ratio = d/(line.getLength()/2);
-			preview->addEntity(new RS_Ellipse{preview.get(),
-											  {pPoints->center, pPoints->m_vMajorP, pPoints->ratio, 0., pPoints->isArc?2.*M_PI:0.
+			_preview->addEntity(new RS_Ellipse{_preview.get(),
+                                               {pPoints->center, pPoints->m_vMajorP, pPoints->ratio, 0., pPoints->isArc?2.*M_PI:0.
 											   , false}});
 			drawPreview();
         }
@@ -175,10 +175,10 @@ void RS_ActionDrawEllipseAxis::mouseMoveEvent(QMouseEvent* e) {
 						v.y /= pPoints->ratio;
 						pPoints->angle1 = v.angle(); // + m_vMajorP.angle();
 
-			preview->addEntity(new RS_Line{preview.get(), pPoints->center, mouse});
+			_preview->addEntity(new RS_Line{_preview.get(), pPoints->center, mouse});
 
-			preview->addEntity(new RS_Ellipse{preview.get(),
-				{pPoints->center, pPoints->m_vMajorP, pPoints->ratio, pPoints->angle1, pPoints->angle1+1.0
+			_preview->addEntity(new RS_Ellipse{_preview.get(),
+                                               {pPoints->center, pPoints->m_vMajorP, pPoints->ratio, pPoints->angle1, pPoints->angle1+1.0
 				 , false}});
             drawPreview();
         }
@@ -195,10 +195,10 @@ void RS_ActionDrawEllipseAxis::mouseMoveEvent(QMouseEvent* e) {
 						v.y /= pPoints->ratio;
 						pPoints->angle2 = v.angle(); // + m_vMajorP.angle();
 
-			preview->addEntity(new RS_Line{preview.get(), pPoints->center, mouse});
+			_preview->addEntity(new RS_Line{_preview.get(), pPoints->center, mouse});
 
-			preview->addEntity(new RS_Ellipse{preview.get(),
-											  {pPoints->center, pPoints->m_vMajorP,
+			_preview->addEntity(new RS_Ellipse{_preview.get(),
+                                               {pPoints->center, pPoints->m_vMajorP,
 												  pPoints->ratio,
 												  pPoints->angle1, pPoints->angle2
 							   , false}});

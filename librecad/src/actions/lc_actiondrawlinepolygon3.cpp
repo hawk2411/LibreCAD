@@ -87,7 +87,7 @@ void LC_ActionDrawLinePolygonCenTan::mouseMoveEvent(QMouseEvent* e) {
             pPoints->corner = mouse;
             deletePreview();
 
-            RS_Creation creation(preview.get(), nullptr, false);
+            RS_Creation creation(_preview.get(), nullptr, false);
             creation.createPolygon3(pPoints->center, pPoints->corner, number);
 
             drawPreview();

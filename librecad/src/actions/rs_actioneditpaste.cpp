@@ -78,14 +78,14 @@ void RS_ActionEditPaste::mouseMoveEvent(QMouseEvent* e) {
 		*targetPoint = snapPoint(e);
 
         deletePreview();
-        preview->addAllFrom(*RS_CLIPBOARD->getGraphic());
-		preview->move(*targetPoint);
+        _preview->addAllFrom(*RS_CLIPBOARD->getGraphic());
+		_preview->move(*targetPoint);
 
 		if (_graphic) {
 			RS2::Unit sourceUnit = RS_CLIPBOARD->getGraphic()->getUnit();
 			RS2::Unit targetUnit = _graphic->getUnit();
 			double const f = RS_Units::convert(1.0, sourceUnit, targetUnit);
-			preview->scale(*targetPoint, {f, f});
+			_preview->scale(*targetPoint, {f, f});
 		}
         drawPreview();
         break;

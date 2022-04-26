@@ -98,7 +98,7 @@ void RS_ActionDrawLineRectangle::mouseMoveEvent(QMouseEvent* e) {
 	if (getStatus()==SetCorner2 && pPoints->corner1.valid) {
 		pPoints->corner2 = mouse;
         deletePreview();
-		preview->addRectangle(pPoints->corner1, pPoints->corner2);
+		_preview->addRectangle(pPoints->corner1, pPoints->corner2);
 		drawPreview();
     }
 

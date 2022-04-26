@@ -121,8 +121,8 @@ void RS_ActionDrawEllipseFociPoint::mouseMoveEvent(QMouseEvent* e) {
 						pPoints->focus2.distanceTo(pPoints->point));
 		if (pPoints->d > pPoints->c+ RS_TOLERANCE) {
 			deletePreview();
-			preview->addEntity(new RS_Ellipse{preview.get(),
-											  {pPoints->center,
+			_preview->addEntity(new RS_Ellipse{_preview.get(),
+                                               {pPoints->center,
 											  pPoints->major*pPoints->d,
 											  findRatio(),
 											  0., 0.,false}});

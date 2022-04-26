@@ -87,12 +87,12 @@ void RS_ActionModifyMove::mouseMoveEvent(QMouseEvent* e) {
 				pPoints->targetPoint = mouse;
 
                 deletePreview();
-                preview->addSelectionFrom(*container);
-				preview->move(pPoints->targetPoint-pPoints->referencePoint);
+                _preview->addSelectionFrom(*container);
+				_preview->move(pPoints->targetPoint - pPoints->referencePoint);
 
                 if (e->modifiers() & Qt::ShiftModifier) {
                     RS_Line *line = new RS_Line(pPoints->referencePoint, mouse);
-                    preview->addEntity(line);
+                    _preview->addEntity(line);
                     line->setSelected(true);
                     line->setLayerToActive();
                     line->setPenToActive();

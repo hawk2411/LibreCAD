@@ -100,10 +100,10 @@ void RS_ActionDimAngular::mouseMoveEvent(QMouseEvent* e)
     switch (getStatus()) {
     case SetPos:
         if( setData( snapPoint(e))) {
-            RS_DimAngular *d {new RS_DimAngular( preview.get(), *data, *edata)};
+            RS_DimAngular *d {new RS_DimAngular(_preview.get(), *data, *edata)};
 
             deletePreview();
-            preview->addEntity(d);
+            _preview->addEntity(d);
             d->update();
             drawPreview();
         }

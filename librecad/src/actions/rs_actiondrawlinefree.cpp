@@ -39,7 +39,7 @@ RS_ActionDrawLineFree::RS_ActionDrawLineFree(RS_EntityContainer& container,
 					container, graphicView)
 		,vertex(new RS_Vector{})
 {
-	preview->setOwner(false);
+	_preview->setOwner(false);
     _actionType=RS2::ActionDrawLineFree;
 }
 
@@ -83,7 +83,7 @@ void RS_ActionDrawLineFree::mouseMoveEvent(QMouseEvent* e) {
         }
         auto ent = static_cast<RS_Polyline*>(polyline->addVertex(v));
         if (ent->count()){
-            preview->addCloneOf(ent);
+            _preview->addCloneOf(ent);
             drawPreview();
         }
 

@@ -121,18 +121,18 @@ void RS_ActionDrawImage::mouseMoveEvent(QMouseEvent* e) {
         //creation.createInsert(data);
 		double const w=pImg->img.width();
 		double const h=pImg->img.height();
-		RS_Line* line = new RS_Line{preview.get(), {0., 0.}, {w, 0.}};
-        preview->addEntity(line);
-		line = new RS_Line{preview.get(), {w, 0.}, {w, h}};
-        preview->addEntity(line);
-		line = new RS_Line{preview.get(), {w, h}, {0., h}};
-        preview->addEntity(line);
-		line = new RS_Line{preview.get(), {0., h}, {0., 0.}};
-        preview->addEntity(line);
-		preview->scale({0., 0.},
-			{pImg->data.uVector.magnitude(), pImg->data.uVector.magnitude()});
-		preview->rotate({0.,0.}, pImg->data.uVector.angle());
-		preview->move(pImg->data.insertionPoint);
+		RS_Line* line = new RS_Line{_preview.get(), {0., 0.}, {w, 0.}};
+        _preview->addEntity(line);
+		line = new RS_Line{_preview.get(), {w, 0.}, {w, h}};
+        _preview->addEntity(line);
+		line = new RS_Line{_preview.get(), {w, h}, {0., h}};
+        _preview->addEntity(line);
+		line = new RS_Line{_preview.get(), {0., h}, {0., 0.}};
+        _preview->addEntity(line);
+		_preview->scale({0., 0.},
+                        {pImg->data.uVector.magnitude(), pImg->data.uVector.magnitude()});
+		_preview->rotate({0., 0.}, pImg->data.uVector.angle());
+		_preview->move(pImg->data.insertionPoint);
 		drawPreview();
     }
 }

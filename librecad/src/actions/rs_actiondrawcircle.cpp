@@ -105,8 +105,8 @@ void RS_ActionDrawCircle::mouseMoveEvent(QMouseEvent* e) {
 		if (data->center.valid) {
 			data->radius = data->center.distanceTo(mouse);
             deletePreview();
-			preview->addEntity(new RS_Circle(preview.get(),
-											 *data));
+			_preview->addEntity(new RS_Circle(_preview.get(),
+                                              *data));
             drawPreview();
         }
         break;

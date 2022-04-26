@@ -128,9 +128,9 @@ void RS_ActionDrawCircle2P::mouseMoveEvent(QMouseEvent* e) {
 		pPoints->point2 = mouse;
         preparePreview();
 		if (data->isValid()) {
-			RS_Circle* circle = new RS_Circle(preview.get(), *data);
+			RS_Circle* circle = new RS_Circle(_preview.get(), *data);
             deletePreview();
-            preview->addEntity(circle);
+            _preview->addEntity(circle);
             drawPreview();
         }
         break;

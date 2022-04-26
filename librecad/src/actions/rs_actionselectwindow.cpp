@@ -95,8 +95,8 @@ void RS_ActionSelectWindow::mouseMoveEvent(QMouseEvent* e) {
 	if (getStatus()==SetCorner2 && pPoints->v1.valid) {
 		pPoints->v2 = snapFree(e);
         deletePreview();
-		RS_OverlayBox* ob=new RS_OverlayBox(preview.get(), RS_OverlayBoxData(pPoints->v1, pPoints->v2));
-        preview->addEntity(ob);
+		RS_OverlayBox* ob=new RS_OverlayBox(_preview.get(), RS_OverlayBoxData(pPoints->v1, pPoints->v2));
+        _preview->addEntity(ob);
 
         //RLZ: not needed overlay have contour
         /*                RS_Pen pen(RS_Color(218,105,24), RS2::Width00, RS2::SolidLine);
