@@ -53,7 +53,7 @@ RS_ActionModifyOffset::~RS_ActionModifyOffset() = default;
 void RS_ActionModifyOffset::init(int status) {
     RS_ActionInterface::init(status);
     //finish, if nothing selected
-    if(container->countSelected(true, {})==0) finish();
+    if(container->countSelected(true, {})==0) finish(true);
 
 }
 

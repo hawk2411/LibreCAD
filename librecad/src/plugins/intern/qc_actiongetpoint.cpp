@@ -98,7 +98,7 @@ void QC_ActionGetPoint::mouseReleaseEvent(QMouseEvent* e) {
     } else if (e->button()==Qt::RightButton) {
         canceled = true;
         completed = true;
-        finish();
+        finish(true);
     }
 }
 

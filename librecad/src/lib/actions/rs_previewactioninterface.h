@@ -45,9 +45,9 @@ public:
 
     ~RS_PreviewActionInterface() override;
 
-    void init(int status = 0) override;
+    void init(int status) override;
 
-    void finish(bool updateTB = true) override;
+    void finish(bool updateTB) override;
 
     void suspend() override;
 

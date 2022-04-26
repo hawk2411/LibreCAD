@@ -114,7 +114,7 @@ void RS_ActionModifyScale::coordinateEvent(RS_CoordinateEvent* e) {
 	if (GetDialogFactory()->requestScaleDialog(pPoints->data)) {
 		pPoints->data.referencePoint = mouse;
         trigger();
-        finish();
+        finish(true);
     }
 }
 
