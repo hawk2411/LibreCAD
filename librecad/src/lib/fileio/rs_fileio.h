@@ -60,20 +60,20 @@ public:
     /**
      * @return Filter which can import the given file type.
      */
-    std::unique_ptr<RS_FilterInterface> getImportFilter(const QString &fileName,
-                                                        RS2::FormatType t) const;
+    static std::unique_ptr<RS_FilterInterface> getImportFilter(const QString &fileName,
+                                                        RS2::FormatType t) ;
 
     /**
      * @return Filter which can export the given file type.
      */
-    std::unique_ptr<RS_FilterInterface> getExportFilter(const QString &fileName,
-                                                        RS2::FormatType t) const;
+    static std::unique_ptr<RS_FilterInterface> getExportFilter(const QString &fileName,
+                                                        RS2::FormatType t) ;
 
-    bool fileImport(RS_Graphic &graphic, const QString &file,
-                    RS2::FormatType type = RS2::FormatUnknown);
+    static bool fileImport(RS_Graphic &graphic, const QString &file,
+                    RS2::FormatType type = RS2::FormatUnknown) ;
 
-    bool fileExport(RS_Graphic &graphic, const QString &file,
-                    RS2::FormatType type = RS2::FormatUnknown);
+    static bool fileExport(RS_Graphic &graphic, const QString &file,
+                    RS2::FormatType type = RS2::FormatUnknown) ;
 
     /** \brief detectFormat detect file format type
      * \param file type

@@ -25,7 +25,6 @@
 **
 **********************************************************************/
 
-#include <cstddef>
 #include <QFileInfo>
 #include <QTextStream>
 
@@ -70,6 +69,7 @@ bool RS_FileIO::fileImport(RS_Graphic &graphic, const QString &file,
         if (filter) {
 #ifdef DWGSUPPORT
             if (file.endsWith(".dwg", Qt::CaseInsensitive)) {
+                //NOLINTNEXTLINE
                 QMessageBox::StandardButton sel = QMessageBox::warning(qApp->activeWindow(), QObject::tr("Warning"),
                                                                        QObject::tr(
                                                                                "experimental, save your work first.\nContinue?"),
@@ -81,6 +81,7 @@ bool RS_FileIO::fileImport(RS_Graphic &graphic, const QString &file,
 #endif
             bool bImported{filter->fileImport(graphic, file, t)};
             if (!bImported) {
+                //NOLINTNEXTLINE
                 QMessageBox::critical(qApp->activeWindow(),
                                       QObject::tr("Error"),
                                       QObject::tr("Import error:\n    %1", "fileImport").arg(filter->lastError()),
@@ -198,8 +199,8 @@ RS_FileIO *RS_FileIO::instance() {
  * @return Filter which can import the given file type.
  */
 std::unique_ptr<RS_FilterInterface> RS_FileIO::getImportFilter(const QString &fileName,
-                                                               RS2::FormatType t) const {
-    for (auto f: getFilters()) {
+                                                               RS2::FormatType t) {
+    for (const auto& f: getFilters()) {
         std::unique_ptr<RS_FilterInterface> filter(f());
         if (filter &&
             filter->canImport(fileName, t)) {
@@ -213,8 +214,8 @@ std::unique_ptr<RS_FilterInterface> RS_FileIO::getImportFilter(const QString &fi
  * @return Filter which can export the given file type.
  */
 std::unique_ptr<RS_FilterInterface> RS_FileIO::getExportFilter(const QString &fileName,
-                                                               RS2::FormatType t) const {
-    for (auto f: getFilters()) {
+                                                               RS2::FormatType t) {
+    for (const auto& f: getFilters()) {
         std::unique_ptr<RS_FilterInterface> filter(f());
         if (filter &&
             filter->canExport(fileName, t)) {
