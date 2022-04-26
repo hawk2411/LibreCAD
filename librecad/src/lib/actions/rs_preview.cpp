@@ -38,7 +38,7 @@ RS_Preview::RS_Preview(RS_EntityContainer *parent)
         : RS_EntityContainer(parent, true) {
 
     RS_SETTINGS->beginGroup("/Appearance");
-    maxEntities = RS_SETTINGS->readNumEntry("/MaxPreview", 100);
+    _maxEntities = static_cast<unsigned int>(RS_SETTINGS->readNumEntry("/MaxPreview", 100));
     RS_SETTINGS->endGroup();
 }
 
@@ -62,7 +62,7 @@ void RS_Preview::addEntity(RS_Entity *entity) {
         addBorder = true;
     } else {
         if (entity->isContainer() && entity->rtti() != RS2::EntitySpline) {
-            if (entity->countDeep() > maxEntities - countDeep()) {
+            if (entity->countDeep() > _maxEntities - countDeep()) {
                 addBorder = true;
             }
         }
@@ -72,13 +72,13 @@ void RS_Preview::addEntity(RS_Entity *entity) {
         RS_Vector min = entity->getMin();
         RS_Vector max = entity->getMax();
 
-        RS_Line *l1 =
+        auto *l1 =
                 new RS_Line(this, {min.x, min.y}, {max.x, min.y});
-        RS_Line *l2 =
+        auto *l2 =
                 new RS_Line(this, {max.x, min.y}, {max.x, max.y});
-        RS_Line *l3 =
+        auto *l3 =
                 new RS_Line(this, {max.x, max.y}, {min.x, max.y});
-        RS_Line *l4 =
+        auto *l4 =
                 new RS_Line(this, {min.x, max.y}, {min.x, min.y});
 
         RS_EntityContainer::addEntity(l1);
@@ -87,7 +87,6 @@ void RS_Preview::addEntity(RS_Entity *entity) {
         RS_EntityContainer::addEntity(l4);
 
         delete entity;
-        entity = nullptr;
     } else {
         entity->setLayer(nullptr);
         entity->setSelected(false);
@@ -114,10 +113,10 @@ void RS_Preview::addCloneOf(RS_Entity *entity) {
  * Adds all entities from 'container' to the preview (unselected).
  */
 void RS_Preview::addAllFrom(RS_EntityContainer &container) {
-    int c = 0;
+    unsigned int c = 0;
     for (auto e: container) {
 
-        if (c < maxEntities) {
+        if (c < _maxEntities) {
             RS_Entity *clone = e->clone();
             clone->setSelected(false);
             clone->reparent(this);
@@ -133,10 +132,10 @@ void RS_Preview::addAllFrom(RS_EntityContainer &container) {
  * Adds all selected entities from 'container' to the preview (unselected).
  */
 void RS_Preview::addSelectionFrom(RS_EntityContainer &container) {
-    int c = 0;
+    unsigned int c = 0;
     for (auto e: container) {
 
-        if (e->isSelected() && c < maxEntities) {
+        if (e->isSelected() && c < _maxEntities) {
             RS_Entity *clone = e->clone();
             clone->setSelected(false);
             clone->reparent(this);
@@ -154,7 +153,7 @@ void RS_Preview::addSelectionFrom(RS_EntityContainer &container) {
  */
 void RS_Preview::addStretchablesFrom(RS_EntityContainer &container,
                                      const RS_Vector &v1, const RS_Vector &v2) {
-    int c = 0;
+    unsigned int c = 0;
 
     for (auto e: container) {
 
@@ -163,7 +162,7 @@ void RS_Preview::addStretchablesFrom(RS_EntityContainer &container,
             ((e->isInWindow(v1, v2)) ||
              e->hasEndpointsWithinWindow(v1, v2)) &&
 
-            c < maxEntities) {
+            c < _maxEntities) {
 
             RS_Entity *clone = e->clone();
             //clone->setSelected(false);

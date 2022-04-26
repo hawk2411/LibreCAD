@@ -47,7 +47,7 @@ public:
         return RS2::EntityPreview;
     }
 
-    virtual void addEntity(RS_Entity *entity) override;
+    void addEntity(RS_Entity *entity) override;
 
     void addCloneOf(RS_Entity *entity);
 
@@ -61,7 +61,7 @@ public:
     void draw(RS_Painter *painter, RS_GraphicView *view, double &patternOffset) override;
 
 private:
-    int maxEntities;
+    unsigned int _maxEntities;
 };
 
 #endif
