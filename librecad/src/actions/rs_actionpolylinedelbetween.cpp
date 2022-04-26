@@ -47,7 +47,7 @@ RS_ActionPolylineDelBetween::RS_ActionPolylineDelBetween(RS_EntityContainer& con
 												   container, graphicView)
 				, pPoints(new Points{})
 {
-	actionType=RS2::ActionPolylineDelBetween;
+    _actionType=RS2::ActionPolylineDelBetween;
 }
 
 RS_ActionPolylineDelBetween::~RS_ActionPolylineDelBetween()=default;

@@ -41,7 +41,7 @@ RS_ActionSelectContour::RS_ActionSelectContour(RS_EntityContainer& container,
 		:RS_ActionInterface("Select Contours", container, graphicView)
 		,en(nullptr)
 {
-	actionType=RS2::ActionSelectContour;
+    _actionType=RS2::ActionSelectContour;
 }
 
 

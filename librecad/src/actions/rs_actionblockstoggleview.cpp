@@ -43,20 +43,20 @@ RS_ActionBlocksToggleView::RS_ActionBlocksToggleView(
 
 void RS_ActionBlocksToggleView::trigger() {
     RS_DEBUG->print("toggle block");
-    if (graphic) {
-        RS_BlockList* bl = graphic->getBlockList();
+    if (_graphic) {
+        RS_BlockList* bl = _graphic->getBlockList();
         unsigned cnt = 0;
         // toggle selected blocks
         for (auto block: *bl) {
             if (!block) continue;
             if (!block->isVisibleInBlockList()) continue;
             if (!block->isSelectedInBlockList()) continue;
-            graphic->getBlockList()->toggle(block);
+            _graphic->getBlockList()->toggle(block);
             cnt++;
         }
         // if there wasn't selected blocks, toggle active block
         if (!cnt) {
-            graphic->getBlockList()->toggle(graphic->getBlockList()->getActive());
+            _graphic->getBlockList()->toggle(_graphic->getBlockList()->getActive());
         }
     }
     graphicView->redraw(RS2::RedrawDrawing);

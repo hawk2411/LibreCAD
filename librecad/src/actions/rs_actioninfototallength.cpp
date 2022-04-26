@@ -37,7 +37,7 @@ RS_ActionInfoTotalLength::RS_ActionInfoTotalLength(RS_EntityContainer& container
         :RS_ActionInterface("Info Total Length",
 					container, graphicView)
 {
-	actionType=RS2::ActionInfoTotalLength;
+    _actionType=RS2::ActionInfoTotalLength;
 }
 
 void RS_ActionInfoTotalLength::init(int status) {
@@ -52,8 +52,8 @@ void RS_ActionInfoTotalLength::trigger() {
 
 	if (l>0.0) {
 		QString len= RS_Units::formatLinear(l,
-											graphic->getUnit(),
-											graphic->getLinearFormat(), graphic->getLinearPrecision());
+                                            _graphic->getUnit(),
+                                            _graphic->getLinearFormat(), _graphic->getLinearPrecision());
         GetDialogFactory()->commandMessage(
             tr("Total Length of selected entities: %1").arg(len));
     } else {

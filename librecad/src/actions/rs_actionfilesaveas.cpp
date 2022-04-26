@@ -39,8 +39,8 @@ void RS_ActionFileSaveAs::trigger() {
     RS_DEBUG->print("RS_ActionFileSaveAs::trigger");
 
     QString fileName; // = GetDialogFactory()->requestFileSaveAsDialog();
-    if (graphic && !fileName.isEmpty()) {
-        graphic->saveAs(fileName, RS2::FormatUnknown, false);
+    if (_graphic && !fileName.isEmpty()) {
+        _graphic->saveAs(fileName, RS2::FormatUnknown, false);
     }
     finish(false);
 }

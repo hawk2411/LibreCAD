@@ -42,7 +42,7 @@ RS_ActionModifyRotate::RS_ActionModifyRotate(RS_EntityContainer& container,
 							   container, graphicView)
 	,data(new RS_RotateData())
 {
-	actionType=RS2::ActionModifyRotate;
+    _actionType=RS2::ActionModifyRotate;
 }
 
 RS_ActionModifyRotate::~RS_ActionModifyRotate() = default;

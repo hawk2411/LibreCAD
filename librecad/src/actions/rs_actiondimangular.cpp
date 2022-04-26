@@ -53,7 +53,7 @@ void RS_ActionDimAngular::reset()
 {
     RS_ActionDimension::reset();
 
-    actionType = RS2::ActionDimAngular;
+    _actionType = RS2::ActionDimAngular;
     edata.reset( new RS_DimAngularData( RS_Vector( false),
                                         RS_Vector( false),
                                         RS_Vector( false),
@@ -76,10 +76,10 @@ void RS_ActionDimAngular::trigger()
         container->addEntity(newEntity);
 
         // upd. undo list:
-        if (document) {
-            document->startUndoCycle();
-            document->addUndoable(newEntity);
-            document->endUndoCycle();
+        if (_document) {
+            _document->startUndoCycle();
+            _document->addUndoable(newEntity);
+            _document->endUndoCycle();
         }
 
         RS_Vector rz {graphicView->getRelativeZero()};

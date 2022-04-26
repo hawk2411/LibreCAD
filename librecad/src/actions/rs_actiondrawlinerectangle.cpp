@@ -55,7 +55,7 @@ RS_ActionDrawLineRectangle::RS_ActionDrawLineRectangle(
 						   container, graphicView)
 		, pPoints(new Points{})
 {
-	actionType=RS2::ActionDrawLineRectangle;
+    _actionType=RS2::ActionDrawLineRectangle;
 }
 
 RS_ActionDrawLineRectangle::~RS_ActionDrawLineRectangle() = default;
@@ -78,10 +78,10 @@ void RS_ActionDrawLineRectangle::trigger() {
 	container->addEntity(polyline);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-		document->addUndoable(polyline);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+		_document->addUndoable(polyline);
+        _document->endUndoCycle();
     }
 
     // upd. view

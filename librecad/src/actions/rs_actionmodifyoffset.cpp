@@ -40,7 +40,7 @@ RS_ActionModifyOffset::RS_ActionModifyOffset(RS_EntityContainer& container,
 							   container, graphicView)
 	,data(new RS_OffsetData())
 {
-	actionType=RS2::ActionModifyOffset;
+    _actionType=RS2::ActionModifyOffset;
 
 	data->distance=0.;
 	data->number=1;

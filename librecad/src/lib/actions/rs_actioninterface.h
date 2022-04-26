@@ -103,13 +103,13 @@ public:
 
     virtual void setPredecessor(RS_ActionInterface *pre);
 
-    virtual void suspend();
+    void suspend() override;
 
-    virtual void resume();
+    void resume() override;
 
-    virtual void hideOptions();
+    void hideOptions() override;
 
-    virtual void showOptions();
+    void showOptions() override;
 
     virtual void setActionType(RS2::ActionType actionType);
 
@@ -130,28 +130,28 @@ private:
      * first corner (status 0), and selecting the second
      * corner (status 1).
      */
-    int status;
+    int _status;
 
 protected:
     /** Action name. Used internally for debugging */
-    QString name;
+    QString _name;
 
     /**
      * This flag is set when the action has terminated and
      * can be deleted.
      */
-    bool finished;
+    bool _finished;
 
     /**
      * Pointer to the graphic is this container is a graphic.
      * NULL otherwise
      */
-    RS_Graphic *graphic;
+    RS_Graphic *_graphic;
 
     /**
      * Pointer to the document (graphic or block) or NULL.
      */
-    RS_Document *document;
+    RS_Document *_document;
 
     /**
      * Pointer to the default mouse cursor for this action or NULL.
@@ -161,7 +161,7 @@ protected:
     /**
      * Predecessor of this action or NULL.
      */
-    RS_ActionInterface *predecessor;
+    RS_ActionInterface *_predecessor;
 
     /**
      * String prepended to the help text for currently available commands.
@@ -184,7 +184,7 @@ protected:
     */
     //static QString cmdNo;
     //static QString cmdNo2;
-    RS2::ActionType actionType;
+    RS2::ActionType _actionType;
 };
 
 

@@ -44,21 +44,21 @@ RS_ActionLayersToggleLock::RS_ActionLayersToggleLock(
 
 void RS_ActionLayersToggleLock::trigger() {
     RS_DEBUG->print("toggle layer");
-    if (graphic) {
-        RS_LayerList* ll = graphic->getLayerList();
+    if (_graphic) {
+        RS_LayerList* ll = _graphic->getLayerList();
         unsigned cnt = 0;
         // toggle selected layers
         for (auto layer: *ll) {
             if (!layer) continue;
             if (!layer->isVisibleInLayerList()) continue;
             if (!layer->isSelectedInLayerList()) continue;
-            graphic->getLayerList()->toggleLock(layer);
+            _graphic->getLayerList()->toggleLock(layer);
             deselectEntitiesOnLockedLayer(layer);
             cnt++;
         }
         // if there wasn't selected layers, toggle active layer
         if (!cnt) {
-            graphic->getLayerList()->toggleLock(a_layer);
+            _graphic->getLayerList()->toggleLock(a_layer);
             deselectEntitiesOnLockedLayer(a_layer);
         }
     }

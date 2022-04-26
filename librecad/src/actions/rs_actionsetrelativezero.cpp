@@ -38,7 +38,7 @@ RS_ActionSetRelativeZero::RS_ActionSetRelativeZero(RS_EntityContainer& container
 						   container, graphicView)
 		, pt(new RS_Vector{})
 {
-	actionType=RS2::ActionSetRelativeZero;
+    _actionType=RS2::ActionSetRelativeZero;
 }
 
 RS_ActionSetRelativeZero::~RS_ActionSetRelativeZero() = default;

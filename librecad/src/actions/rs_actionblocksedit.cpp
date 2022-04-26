@@ -41,12 +41,12 @@ void RS_ActionBlocksEdit::trigger() {
 
     RS_DEBUG->print(RS_Debug::D_DEBUGGING, "RS_ActionBlocksEdit::trigger(): edit block");
 
-    if (!graphic) {
+    if (!_graphic) {
         RS_DEBUG->print(RS_Debug::D_ERROR, "RS_ActionBlocksEdit::trigger(): nullptr graphic");
         return;
     }
 
-    RS_BlockList *bl = graphic->getBlockList();
+    RS_BlockList *bl = _graphic->getBlockList();
 
     if (!bl) {
         RS_DEBUG->print(RS_Debug::D_ERROR, "RS_ActionBlocksEdit::trigger(): nullptr block list in graphic");

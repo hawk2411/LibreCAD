@@ -45,22 +45,22 @@ RS_ActionLayersToggleView::RS_ActionLayersToggleView(
 
 void RS_ActionLayersToggleView::trigger() {
     RS_DEBUG->print("toggle layer");
-    if (graphic) {
-        RS_LayerList* ll = graphic->getLayerList();
+    if (_graphic) {
+        RS_LayerList* ll = _graphic->getLayerList();
         unsigned cnt = 0;
         // toggle selected layers
         for (auto layer: *ll) {
             if (!layer) continue;
             if (!layer->isVisibleInLayerList()) continue;
             if (!layer->isSelectedInLayerList()) continue;
-            graphic->getLayerList()->toggle(layer);
+            _graphic->getLayerList()->toggle(layer);
             cnt++;
         }
         // if there wasn't selected layers, toggle active layer
         if (!cnt) {
-            graphic->getLayerList()->toggle(a_layer);
+            _graphic->getLayerList()->toggle(a_layer);
         }
-        graphic->updateInserts();
+        _graphic->updateInserts();
         container->calculateBorders();
     }
     finish(false);

@@ -49,7 +49,7 @@ RS_ActionModifyMoveRotate::RS_ActionModifyMoveRotate(
 						   container, graphicView)
 		, pPoints(new Points())
 {
-	actionType=RS2::ActionModifyMoveRotate;
+    _actionType=RS2::ActionModifyMoveRotate;
 }
 
 RS_ActionModifyMoveRotate::~RS_ActionModifyMoveRotate() = default;

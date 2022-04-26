@@ -48,7 +48,7 @@ RS_ActionDrawEllipseInscribe::RS_ActionDrawEllipseInscribe(
 						   container, graphicView)
 		, pPoints(new Points{})
 {
-	actionType=RS2::ActionDrawEllipseInscribe;
+    _actionType=RS2::ActionDrawEllipseInscribe;
 }
 
 RS_ActionDrawEllipseInscribe::~RS_ActionDrawEllipseInscribe() = default;
@@ -88,10 +88,10 @@ void RS_ActionDrawEllipseInscribe::trigger() {
     container->addEntity(ellipse);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(ellipse);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(ellipse);
+        _document->endUndoCycle();
     }
 
 	for(RS_Line*const p: pPoints->lines) {

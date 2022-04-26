@@ -44,7 +44,7 @@ RS_ActionDrawLineTangent1::RS_ActionDrawLineTangent1(
 	,point(new RS_Vector{})
 	,circle(nullptr)
 {
-	actionType=RS2::ActionDrawLineTangent1;
+    _actionType=RS2::ActionDrawLineTangent1;
 }
 
 RS_ActionDrawLineTangent1::~RS_ActionDrawLineTangent1() = default;
@@ -69,10 +69,10 @@ void RS_ActionDrawLineTangent1::trigger() {
 			container->addEntity(newEntity);
 
 			// upd. undo list:
-			if (document) {
-				document->startUndoCycle();
-				document->addUndoable(newEntity);
-				document->endUndoCycle();
+			if (_document) {
+				_document->startUndoCycle();
+				_document->addUndoable(newEntity);
+				_document->endUndoCycle();
 			}
 
 			graphicView->redraw(RS2::RedrawDrawing);

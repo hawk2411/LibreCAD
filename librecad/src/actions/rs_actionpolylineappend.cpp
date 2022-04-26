@@ -74,7 +74,7 @@ struct RS_ActionDrawPolyline::Points {
 RS_ActionPolylineAppend::RS_ActionPolylineAppend(RS_EntityContainer& container,
 	RS_GraphicView& graphicView)
 	:RS_ActionDrawPolyline(container, graphicView) {
-	actionType=RS2::ActionPolylineAppend;
+    _actionType=RS2::ActionPolylineAppend;
 }
 
 void RS_ActionPolylineAppend::trigger() {
@@ -93,13 +93,13 @@ void RS_ActionPolylineAppend::trigger() {
 	pPoints->polyline->setPenToActive();
 
 	// upd. undo list:
-	if (document) {
-		document->startUndoCycle();
+	if (_document) {
+		_document->startUndoCycle();
                 // RVT_PORT need to decide on how to handle undo cycles
                 originalPolyline->setUndoState(true);
-		document->addUndoable(originalPolyline);
-		document->addUndoable(pPoints->polyline);
-                document->endUndoCycle();
+		_document->addUndoable(originalPolyline);
+		_document->addUndoable(pPoints->polyline);
+                _document->endUndoCycle();
 	}
 
 	// upd view

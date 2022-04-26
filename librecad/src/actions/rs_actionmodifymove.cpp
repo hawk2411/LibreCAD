@@ -51,7 +51,7 @@ RS_ActionModifyMove::RS_ActionModifyMove(RS_EntityContainer& container,
 						   container, graphicView)
 		, pPoints(new Points{})
 {
-	actionType=RS2::ActionModifyMove;
+    _actionType=RS2::ActionModifyMove;
 }
 
 RS_ActionModifyMove::~RS_ActionModifyMove() = default;

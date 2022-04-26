@@ -42,7 +42,7 @@ RS_ActionDimAligned::RS_ActionDimAligned(RS_EntityContainer& container,
         RS_GraphicView& graphicView)
         :RS_ActionDimension("Draw aligned dimensions",
                     container, graphicView) {
-	actionType=RS2::ActionDimAligned;
+    _actionType=RS2::ActionDimAligned;
 	reset();
 }
 
@@ -77,10 +77,10 @@ void RS_ActionDimAligned::trigger() {
     container->addEntity(dim);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(dim);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(dim);
+        _document->endUndoCycle();
     }
 
     RS_Vector rz = graphicView->getRelativeZero();

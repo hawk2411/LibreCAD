@@ -43,7 +43,7 @@ RS_ActionDrawLineParallelThrough::RS_ActionDrawLineParallelThrough(
 		,coord(new RS_Vector{})
 		,lastStatus(SetEntity)
 {
-	actionType=RS2::ActionDrawLineParallelThrough;
+    _actionType=RS2::ActionDrawLineParallelThrough;
 	m_SnapDistance=1.;
 }
 

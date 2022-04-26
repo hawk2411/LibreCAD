@@ -55,7 +55,7 @@ RS_ActionDrawImage::RS_ActionDrawImage(RS_EntityContainer& container,
 	, pImg(new ImageData{})
 	, lastStatus(ShowDialog)
 {
-	actionType=RS2::ActionDrawImage;
+    _actionType=RS2::ActionDrawImage;
 }
 
 RS_ActionDrawImage::~RS_ActionDrawImage() = default;
@@ -219,7 +219,7 @@ void RS_ActionDrawImage::commandEvent(RS_CommandEvent* e) {
         double dpi = RS_Math::eval(c, &ok);
 
 		if(ok) {
-            setFactor(RS_Units::dpiToScale(dpi, document->getGraphicUnit()));
+            setFactor(RS_Units::dpiToScale(dpi, _document->getGraphicUnit()));
         } else {
             GetDialogFactory()->commandMessage(tr("Not a valid expression"));
         }
@@ -255,13 +255,13 @@ void RS_ActionDrawImage::setFactor(double f) const {
 }
 
 double RS_ActionDrawImage::dpiToScale(double dpi) const {
-	return RS_Units::dpiToScale(dpi, document->getGraphicUnit());
+	return RS_Units::dpiToScale(dpi, _document->getGraphicUnit());
 }
 
 
 
 double RS_ActionDrawImage::scaleToDpi(double scale) const {
-	return RS_Units::scaleToDpi(scale, document->getGraphicUnit());
+	return RS_Units::scaleToDpi(scale, _document->getGraphicUnit());
 }
 
 

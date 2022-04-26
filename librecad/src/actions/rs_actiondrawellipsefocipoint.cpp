@@ -54,7 +54,7 @@ RS_ActionDrawEllipseFociPoint::RS_ActionDrawEllipseFociPoint(
 						   container, graphicView)
 		, pPoints(new Points{})
 {
-	actionType=RS2::ActionDrawEllipseFociPoint;
+    _actionType=RS2::ActionDrawEllipseFociPoint;
 }
 
 RS_ActionDrawEllipseFociPoint::~RS_ActionDrawEllipseFociPoint() = default;
@@ -88,10 +88,10 @@ void RS_ActionDrawEllipseFociPoint::trigger() {
     container->addEntity(ellipse);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(ellipse);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(ellipse);
+        _document->endUndoCycle();
     }
 
 //    RS_Vector rz = graphicView->getRelativeZero();

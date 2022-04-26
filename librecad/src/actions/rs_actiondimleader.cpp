@@ -47,7 +47,7 @@ RS_ActionDimLeader::RS_ActionDimLeader(RS_EntityContainer& container,
                            container, graphicView)
 	, pPoints(new Points{})
  {
-	actionType=RS2::ActionDimLeader;
+     _actionType=RS2::ActionDimLeader;
     reset();
 }
 
@@ -84,10 +84,10 @@ void RS_ActionDimLeader::trigger() {
         container->addEntity(leader);
 
         // upd. undo list:
-		if (document) {
-            document->startUndoCycle();
-            document->addUndoable(leader);
-            document->endUndoCycle();
+		if (_document) {
+            _document->startUndoCycle();
+            _document->addUndoable(leader);
+            _document->endUndoCycle();
         }
 
         deletePreview();

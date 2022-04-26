@@ -41,16 +41,16 @@ RS_ActionLayersEdit::RS_ActionLayersEdit(RS_EntityContainer& container,
 void RS_ActionLayersEdit::trigger() {
     RS_DEBUG->print("RS_ActionLayersEdit::trigger");
 
-    if (graphic) {
+    if (_graphic) {
 	RS_Layer* layer =
-            GetDialogFactory()->requestEditLayerDialog(graphic->getLayerList());
+            GetDialogFactory()->requestEditLayerDialog(_graphic->getLayerList());
 
         if (layer) {
-            graphic->getLayerList()->edit(graphic->getLayerList()->getActive(), *layer);
+            _graphic->getLayerList()->edit(_graphic->getLayerList()->getActive(), *layer);
 
             // update updateable entities on the layer that has changed
 
-			for(auto e: *graphic){
+			for(auto e: *_graphic){
 
                 RS_Layer* l = e->getLayer();
                 if (l && l->getName()==layer->getName()) {
@@ -61,7 +61,7 @@ void RS_ActionLayersEdit::trigger() {
     }
     finish(false);
 
-    graphic->getLayerList()->getLayerWitget()->slotUpdateLayerList();
+    _graphic->getLayerList()->getLayerWitget()->slotUpdateLayerList();
 
 	graphicView->redraw(RS2::RedrawDrawing); 
 

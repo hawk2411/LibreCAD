@@ -41,12 +41,12 @@ RS_ActionBlocksRemove::RS_ActionBlocksRemove(RS_EntityContainer& container,
 void RS_ActionBlocksRemove::trigger() {
 	RS_DEBUG->print("RS_ActionBlocksRemove::trigger");
 
-	if (!(graphic && document)) {
+	if (!(_graphic && _document)) {
 		finish(false);
 		return;
 	}
 
-	RS_BlockList* bl = graphic->getBlockList();
+	RS_BlockList* bl = _graphic->getBlockList();
 	QList<RS_Block*> blocks =
             GetDialogFactory()->requestSelectedBlocksRemovalDialog(bl);
 
@@ -57,12 +57,12 @@ void RS_ActionBlocksRemove::trigger() {
 
 	// list of containers that might refer to the block via inserts:
 	std::vector<RS_EntityContainer*> containerList;
-	containerList.push_back(graphic);
+	containerList.push_back(_graphic);
     for (auto & block: *bl) {
         containerList.push_back(block);
 	}
 
-    document->startUndoCycle();
+    _document->startUndoCycle();
 
 	for (auto block: blocks) {
         if (nullptr == block) {
@@ -78,7 +78,7 @@ void RS_ActionBlocksRemove::trigger() {
 					if (e->rtti()==RS2::EntityInsert) {
 						RS_Insert* ins = (RS_Insert*)e;
 						if (ins->getName()==block->getName() && !ins->isUndone()) {
-                            document->addUndoable(ins);
+                            _document->addUndoable(ins);
                             ins->setUndoState(true);
 							done = false;
 							break;
@@ -99,12 +99,12 @@ void RS_ActionBlocksRemove::trigger() {
 
         // Now remove block from the block list, but do not delete:
         block->setUndoState(true);
-        document->addUndoable(block);
+        _document->addUndoable(block);
     }
-    document->endUndoCycle();
+    _document->endUndoCycle();
 
-    graphic->getBlockList()->addNotification();
-	graphic->updateInserts();
+    _graphic->getBlockList()->addNotification();
+	_graphic->updateInserts();
 	graphicView->redraw(RS2::RedrawDrawing);
     bl->activate(nullptr);
 

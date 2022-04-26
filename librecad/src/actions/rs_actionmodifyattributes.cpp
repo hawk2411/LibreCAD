@@ -39,7 +39,7 @@ RS_ActionModifyAttributes::RS_ActionModifyAttributes(
     RS_GraphicView& graphicView)
         :RS_ActionInterface("Change Attributes",
 					container, graphicView) {
-	actionType=RS2::ActionModifyAttributes;
+    _actionType=RS2::ActionModifyAttributes;
 }
 
 
@@ -63,9 +63,9 @@ void RS_ActionModifyAttributes::trigger() {
     data.changeWidth = false;
     data.changeLayer = false;
 
-    if (graphic) {
+    if (_graphic) {
         if (GetDialogFactory()->requestAttributesDialog(data,
-                *graphic->getLayerList())) {
+                *_graphic->getLayerList())) {
             RS_Modification m(*container, graphicView);
             m.changeAttributes(data);
         }

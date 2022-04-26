@@ -54,7 +54,7 @@ RS_ActionSelectIntersected::RS_ActionSelectIntersected(
 		, pPoints(new Points{})
 		,select(select)
 {
-	actionType=RS2::ActionSelectIntersected;
+    _actionType=RS2::ActionSelectIntersected;
 }
 
 RS_ActionSelectIntersected::~RS_ActionSelectIntersected() = default;

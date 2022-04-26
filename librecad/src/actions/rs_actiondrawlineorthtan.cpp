@@ -49,7 +49,7 @@ RS_ActionDrawLineOrthTan::RS_ActionDrawLineOrthTan(
 	,tangent(nullptr)
 	,circle(nullptr)
 {
-	actionType=RS2::ActionDrawLineOrthTan;
+    _actionType=RS2::ActionDrawLineOrthTan;
 }
 
 
@@ -74,10 +74,10 @@ void RS_ActionDrawLineOrthTan::trigger() {
 	container->addEntity(newEntity);
 
 	// upd. undo list:
-	if (document) {
-		document->startUndoCycle();
-		document->addUndoable(newEntity);
-		document->endUndoCycle();
+	if (_document) {
+		_document->startUndoCycle();
+		_document->addUndoable(newEntity);
+		_document->endUndoCycle();
 	}
 
 	graphicView->redraw(RS2::RedrawDrawing);

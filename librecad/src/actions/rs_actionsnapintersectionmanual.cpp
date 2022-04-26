@@ -80,12 +80,12 @@ void RS_ActionSnapIntersectionManual::trigger() {
 
         entity2 = NULL;
         entity1 = NULL;
-        if (predecessor) {
+        if (_predecessor) {
 			RS_Vector ip = sol.getClosest(*coord);
 
             if (ip.valid) {
                 RS_CoordinateEvent e(ip);
-                predecessor->coordinateEvent(&e);
+                _predecessor->coordinateEvent(&e);
             }
         }
         finish(false);

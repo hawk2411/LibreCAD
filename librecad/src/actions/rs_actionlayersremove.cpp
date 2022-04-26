@@ -40,18 +40,18 @@ RS_ActionLayersRemove::RS_ActionLayersRemove(RS_EntityContainer& container,
 void RS_ActionLayersRemove::trigger() {
     RS_DEBUG->print("RS_ActionLayersRemove::trigger");
 
-    if (graphic) {
-        RS_LayerList *ll = graphic->getLayerList();
+    if (_graphic) {
+        RS_LayerList *ll = _graphic->getLayerList();
         QStringList names =
             GetDialogFactory()->requestSelectedLayersRemovalDialog(ll);
 
         if (!names.isEmpty()) {
             for (auto name: names) {
-                graphic->removeLayer(ll->find(name));
+                _graphic->removeLayer(ll->find(name));
             }
-            graphic->updateInserts();
+            _graphic->updateInserts();
             container->calculateBorders();
-            graphic->getLayerList()->getLayerWitget()->slotUpdateLayerList();
+            _graphic->getLayerList()->getLayerWitget()->slotUpdateLayerList();
         }
     }
     finish(false);

@@ -49,7 +49,7 @@ RS_ActionModifyStretch::RS_ActionModifyStretch(RS_EntityContainer& container,
 							   container, graphicView)
 	, pPoints(new Points{})
 {
-	actionType=RS2::ActionModifyStretch;
+    _actionType=RS2::ActionModifyStretch;
 }
 
 void RS_ActionModifyStretch::init(int status) {

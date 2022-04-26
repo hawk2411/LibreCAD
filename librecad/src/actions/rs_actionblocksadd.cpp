@@ -35,24 +35,24 @@
 RS_ActionBlocksAdd::RS_ActionBlocksAdd(RS_EntityContainer& container,
                                        RS_GraphicView& graphicView)
 		:RS_ActionInterface("Add Block", container, graphicView) {
-	actionType = RS2::ActionBlocksAdd;
+    _actionType = RS2::ActionBlocksAdd;
 }
 
 
 
 void RS_ActionBlocksAdd::trigger() {
     RS_DEBUG->print("adding block");
-    if (graphic) {
-		RS_BlockList* blockList = graphic->getBlockList();
+    if (_graphic) {
+		RS_BlockList* blockList = _graphic->getBlockList();
 		if (blockList) {
 			RS_BlockData d = 
 				GetDialogFactory()->requestNewBlockDialog(blockList);
 			if (d.isValid()) {
                 // Block cannot contain blocks.
                 if (container->rtti() == RS2::EntityBlock) {
-                    graphic->getBlockList()->add(new RS_Block(container->getParent(), d), true);
+                    _graphic->getBlockList()->add(new RS_Block(container->getParent(), d), true);
                 } else {
-                    graphic->getBlockList()->add(new RS_Block(container, d), true);
+                    _graphic->getBlockList()->add(new RS_Block(container, d), true);
                 }
 			}
 		}

@@ -45,7 +45,7 @@ RS_ActionDrawArc::RS_ActionDrawArc(RS_EntityContainer& container,
 						   container, graphicView)
 		,data(new RS_ArcData())
 {
-	actionType= RS2::ActionDrawArc;
+    _actionType= RS2::ActionDrawArc;
 
     reset();
 }
@@ -87,10 +87,10 @@ void RS_ActionDrawArc::trigger() {
     container->addEntity(arc);
 
     // upd. undo list:
-	if (document) {
-        document->startUndoCycle();
-        document->addUndoable(arc);
-        document->endUndoCycle();
+	if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(arc);
+        _document->endUndoCycle();
     }
 
         graphicView->redraw(RS2::RedrawDrawing);

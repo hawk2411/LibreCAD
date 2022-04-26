@@ -39,12 +39,12 @@ RS_ActionLayersAdd::RS_ActionLayersAdd(RS_EntityContainer& container,
 void RS_ActionLayersAdd::trigger() {
 	RS_DEBUG->print("add layer");
 
-	if (graphic) {
+	if (_graphic) {
 		RS_Layer* layer = GetDialogFactory()->requestNewLayerDialog(
-					graphic->getLayerList());
+                _graphic->getLayerList());
 		if (layer)
-			graphic->getLayerList()->add(layer);
-		graphic->getLayerList()->getLayerWitget()->slotUpdateLayerList();
+			_graphic->getLayerList()->add(layer);
+		_graphic->getLayerList()->getLayerWitget()->slotUpdateLayerList();
 	}
 	finish(false);
 }

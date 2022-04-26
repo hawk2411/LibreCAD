@@ -47,7 +47,7 @@ RS_ActionModifyTrimAmount::RS_ActionModifyTrimAmount(
 	,distance(0.0)
 	,byTotal(false)
 {
-	actionType=RS2::ActionModifyTrimAmount;
+    _actionType=RS2::ActionModifyTrimAmount;
 }
 
 RS_ActionModifyTrimAmount::~RS_ActionModifyTrimAmount() = default;

@@ -40,7 +40,7 @@ RS_ActionDrawLineFree::RS_ActionDrawLineFree(RS_EntityContainer& container,
 		,vertex(new RS_Vector{})
 {
 	preview->setOwner(false);
-	actionType=RS2::ActionDrawLineFree;
+    _actionType=RS2::ActionDrawLineFree;
 }
 
 RS_ActionDrawLineFree::~RS_ActionDrawLineFree() = default;
@@ -55,10 +55,10 @@ void RS_ActionDrawLineFree::trigger() {
 		if(sol.getNumber() > 2 ) {
 			RS_Entity* ent=polyline->clone();
 			container->addEntity(ent);
-			if (document) {
-				document->startUndoCycle();
-				document->addUndoable(ent);
-				document->endUndoCycle();
+			if (_document) {
+				_document->startUndoCycle();
+				_document->addUndoable(ent);
+				_document->endUndoCycle();
 			}
 			graphicView->redraw(RS2::RedrawDrawing);
 			RS_DEBUG->print("RS_ActionDrawLineFree::trigger():"

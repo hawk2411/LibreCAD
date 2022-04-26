@@ -39,7 +39,7 @@ RS_ActionInfoInside::RS_ActionInfoInside(RS_EntityContainer& container,
 	, pt(new RS_Vector{})
 	,contour(new RS_EntityContainer(nullptr, false))
 {
-	actionType=RS2::ActionInfoInside;
+    _actionType=RS2::ActionInfoInside;
 	for(auto e: container){
 		if (e->isSelected()) {
 			contour->addEntity(e);

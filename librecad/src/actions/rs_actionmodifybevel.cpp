@@ -52,7 +52,7 @@ RS_ActionModifyBevel::RS_ActionModifyBevel(RS_EntityContainer& container,
 		, pPoints(new Points{})
 		,lastStatus(SetEntity1)
 {
-	actionType=RS2::ActionModifyBevel;
+    _actionType=RS2::ActionModifyBevel;
 }
 
 RS_ActionModifyBevel::~RS_ActionModifyBevel() = default;

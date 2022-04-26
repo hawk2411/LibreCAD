@@ -43,7 +43,7 @@ RS_ActionDrawMText::RS_ActionDrawMText(RS_EntityContainer& container,
 		,pos(new RS_Vector{})
 		,textChanged(true)
 {
-	actionType=RS2::ActionDrawMText;
+    _actionType=RS2::ActionDrawMText;
 }
 
 RS_ActionDrawMText::~RS_ActionDrawMText() = default;
@@ -110,10 +110,10 @@ void RS_ActionDrawMText::trigger() {
         text->update();
         container->addEntity(text);
 
-        if (document) {
-            document->startUndoCycle();
-            document->addUndoable(text);
-            document->endUndoCycle();
+        if (_document) {
+            _document->startUndoCycle();
+            _document->addUndoable(text);
+            _document->endUndoCycle();
         }
 
                 graphicView->redraw(RS2::RedrawDrawing);

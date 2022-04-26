@@ -43,7 +43,7 @@ RS_ActionSelectSingle::RS_ActionSelectSingle(RS_EntityContainer& container,
     ,en(nullptr)
     ,actionSelect(action_select)
 {
-    actionType = RS2::ActionSelectSingle;
+    _actionType = RS2::ActionSelectSingle;
 }
 
 

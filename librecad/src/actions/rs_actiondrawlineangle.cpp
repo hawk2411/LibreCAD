@@ -74,7 +74,7 @@ RS_ActionDrawLineAngle::RS_ActionDrawLineAngle(RS_EntityContainer& container,
 		, pPoints(new Points{})
 {
 
-    this->actionType=actionType;
+    this->_actionType=actionType;
 	pPoints->angle = angle;
 	pPoints->fixedAngle = fixedAngle;
 
@@ -115,10 +115,10 @@ void RS_ActionDrawLineAngle::trigger() {
     container->addEntity(line);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(line);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(line);
+        _document->endUndoCycle();
     }
 
 	graphicView->moveRelativeZero(pPoints->data._startpoint);

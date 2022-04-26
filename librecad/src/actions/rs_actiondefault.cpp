@@ -56,7 +56,7 @@ RS_ActionDefault::RS_ActionDefault(RS_EntityContainer& container,
 {
 
     RS_DEBUG->print("RS_ActionDefault::RS_ActionDefault");
-	actionType=RS2::ActionDefault;
+    _actionType=RS2::ActionDefault;
     RS_DEBUG->print("RS_ActionDefault::RS_ActionDefault: OK");
 }
 

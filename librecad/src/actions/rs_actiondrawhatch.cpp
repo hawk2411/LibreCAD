@@ -35,7 +35,7 @@
 
 RS_ActionDrawHatch::RS_ActionDrawHatch(RS_EntityContainer &container, RS_GraphicView &graphicView)
         : RS_PreviewActionInterface("Draw Hatch", container, graphicView), data{new RS_HatchData{}} {
-    actionType = RS2::ActionDrawHatch;
+    _actionType = RS2::ActionDrawHatch;
 }
 
 RS_ActionDrawHatch::~RS_ActionDrawHatch() = default;
@@ -93,10 +93,10 @@ void RS_ActionDrawHatch::trigger() {
     
     container->addEntity(hatch);
 
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(hatch);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(hatch);
+        _document->endUndoCycle();
     }
     hatch->update();
 

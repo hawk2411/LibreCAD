@@ -39,7 +39,7 @@ RS_ActionSelectLayer::RS_ActionSelectLayer(RS_EntityContainer& container,
 		:RS_ActionInterface("Select Layers", container, graphicView)
 		,en(nullptr)
 {
-	actionType=RS2::ActionSelectLayer;
+    _actionType=RS2::ActionSelectLayer;
 }
 
 void RS_ActionSelectLayer::trigger() {

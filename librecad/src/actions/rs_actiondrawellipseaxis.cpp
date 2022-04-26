@@ -67,7 +67,7 @@ RS_ActionDrawEllipseAxis::RS_ActionDrawEllipseAxis(
 							   container, graphicView)
 	,pPoints(new Points{{}, {}, 0.5, 0., isArc?2.*M_PI:0., isArc})
 {
-	actionType=isArc?RS2::ActionDrawEllipseArcAxis:RS2::ActionDrawEllipseAxis;
+    _actionType= isArc ? RS2::ActionDrawEllipseArcAxis : RS2::ActionDrawEllipseAxis;
 }
 
 RS_ActionDrawEllipseAxis::~RS_ActionDrawEllipseAxis() = default;
@@ -111,10 +111,10 @@ void RS_ActionDrawEllipseAxis::trigger() {
     container->addEntity(ellipse);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(ellipse);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(ellipse);
+        _document->endUndoCycle();
     }
 
     RS_Vector rz = graphicView->getRelativeZero();

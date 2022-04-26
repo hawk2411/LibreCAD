@@ -43,7 +43,7 @@ RS_ActionDrawCircle::RS_ActionDrawCircle(RS_EntityContainer& container,
 						   container, graphicView)
 		,data(new RS_CircleData())
 {
-	actionType=RS2::ActionDrawCircle;
+    _actionType=RS2::ActionDrawCircle;
     reset();
 }
 
@@ -75,10 +75,10 @@ void RS_ActionDrawCircle::trigger() {
     container->addEntity(circle);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(circle);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(circle);
+        _document->endUndoCycle();
     }
         graphicView->redraw(RS2::RedrawDrawing);
     graphicView->moveRelativeZero(circle->getCenter());

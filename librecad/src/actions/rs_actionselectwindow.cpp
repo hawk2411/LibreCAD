@@ -54,7 +54,7 @@ RS_ActionSelectWindow::RS_ActionSelectWindow(RS_EntityContainer& container,
 		, select(select)
 		, pPoints(new Points{})
 {
-	actionType=RS2::ActionSelectWindow;
+    _actionType=RS2::ActionSelectWindow;
 }
 
 RS_ActionSelectWindow::~RS_ActionSelectWindow() = default;

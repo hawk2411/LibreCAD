@@ -84,7 +84,7 @@ RS_ActionDrawPolyline::RS_ActionDrawPolyline(RS_EntityContainer& container,
 		,m_Reversed(1)
 		, pPoints(new Points{})
 {
-	actionType=RS2::ActionDrawPolyline;
+    _actionType=RS2::ActionDrawPolyline;
     reset();
 }
 
@@ -123,10 +123,10 @@ void RS_ActionDrawPolyline::trigger() {
     //container->addEntity(polyline);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-		document->addUndoable(pPoints->polyline);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+		_document->addUndoable(pPoints->polyline);
+        _document->endUndoCycle();
     }
 
         // upd view

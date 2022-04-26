@@ -41,7 +41,7 @@ QC_ActionGetSelect::QC_ActionGetSelect(RS_EntityContainer& container,
 		,completed(false)
 		,message(tr("Select objects:"))
 {
-    actionType = RS2::ActionGetSelect;
+    _actionType = RS2::ActionGetSelect;
 }
 
 QC_ActionGetSelect::~QC_ActionGetSelect()

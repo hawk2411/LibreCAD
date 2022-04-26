@@ -42,7 +42,7 @@ RS_ActionInfoDist2::RS_ActionInfoDist2(RS_EntityContainer& container,
 		,entity(nullptr)
 		,point(new RS_Vector{})
 {
-	actionType=RS2::ActionInfoDist2;
+    _actionType=RS2::ActionInfoDist2;
 }
 
 RS_ActionInfoDist2::~RS_ActionInfoDist2() {
@@ -66,8 +66,8 @@ void RS_ActionInfoDist2::trigger() {
 
 	if (point->valid && entity) {
 		double dist = entity->getDistanceToPoint(*point, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
-		QString str = RS_Units::formatLinear(dist, graphic->getUnit(),
-											 graphic->getLinearFormat(), graphic->getLinearPrecision());
+		QString str = RS_Units::formatLinear(dist, _graphic->getUnit(),
+                                             _graphic->getLinearFormat(), _graphic->getLinearPrecision());
         GetDialogFactory()->commandMessage(tr("Distance: %1").arg(str));
         entity->setHighlighted(false);
         graphicView->redraw(RS2::RedrawDrawing);

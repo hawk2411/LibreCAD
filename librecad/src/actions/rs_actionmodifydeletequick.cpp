@@ -41,7 +41,7 @@ RS_ActionModifyDeleteQuick::RS_ActionModifyDeleteQuick(
 					container, graphicView)
 		,en(nullptr)
 {
-	actionType=RS2::ActionModifyDeleteQuick;
+    _actionType=RS2::ActionModifyDeleteQuick;
 }
 
 /**
@@ -59,10 +59,10 @@ void RS_ActionModifyDeleteQuick::trigger() {
             graphicView->deleteEntity(en);
             en->changeUndoState();
 
-            if (document) {
-                document->startUndoCycle();
-                document->addUndoable(en);
-                document->endUndoCycle();
+            if (_document) {
+                _document->startUndoCycle();
+                _document->addUndoable(en);
+                _document->endUndoCycle();
             }
         }
 

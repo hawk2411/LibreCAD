@@ -65,7 +65,7 @@ RS_ActionDrawSpline::RS_ActionDrawSpline(RS_EntityContainer& container,
 							   container, graphicView)
 	,pPoints(new Points{})
 {
-	actionType=RS2::ActionDrawSpline;
+    _actionType=RS2::ActionDrawSpline;
 	reset();
 }
 
@@ -101,10 +101,10 @@ void RS_ActionDrawSpline::trigger() {
 	container->addEntity(pPoints->spline);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-		document->addUndoable(pPoints->spline);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+		_document->addUndoable(pPoints->spline);
+        _document->endUndoCycle();
     }
 
         // upd view

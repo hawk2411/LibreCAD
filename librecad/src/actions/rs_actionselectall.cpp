@@ -37,7 +37,7 @@ RS_ActionSelectAll::RS_ActionSelectAll(RS_EntityContainer& container,
 					container, graphicView)
 		,select(select)
 {
-	actionType=RS2::ActionSelectAll;
+    _actionType=RS2::ActionSelectAll;
 }
 
 void RS_ActionSelectAll::init(int status) {

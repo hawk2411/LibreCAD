@@ -50,7 +50,7 @@ void LC_ActionFileExportMakerCam::trigger() {
 
 	RS_DEBUG->print("LC_ActionFileExportMakerCam::trigger()");
 
-    if (graphic != NULL) {
+    if (_graphic != NULL) {
 
         bool accepted = GetDialogFactory()->requestOptionsMakerCamDialog();
 
@@ -77,7 +77,7 @@ void LC_ActionFileExportMakerCam::trigger() {
 
                 RS_SETTINGS->endGroup();
 
-                if (generator->generate(graphic)) {
+                if (generator->generate(_graphic)) {
 
                     std::ofstream file;
                     file.open(filename.toStdString());

@@ -41,7 +41,7 @@ RS_ActionPolylineTrim::RS_ActionPolylineTrim(RS_EntityContainer& container,
         RS_GraphicView& graphicView)
         :RS_PreviewActionInterface("Trim segments",
 						   container, graphicView) {
-	actionType=RS2::ActionPolylineTrim;
+    _actionType=RS2::ActionPolylineTrim;
 }
 
 void RS_ActionPolylineTrim::init(int status) {

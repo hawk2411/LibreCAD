@@ -39,7 +39,7 @@ RS_ActionModifyEntity::RS_ActionModifyEntity(RS_EntityContainer& container,
 		:RS_ActionInterface("Modify Entity", container, graphicView)
 		,en(nullptr)
 {
-	actionType=RS2::ActionModifyEntity;
+    _actionType=RS2::ActionModifyEntity;
 }
 
 void RS_ActionModifyEntity::trigger() {
@@ -54,14 +54,14 @@ void RS_ActionModifyEntity::trigger() {
                         clone->setSelected(false);
             graphicView->drawEntity(clone);
 
-            if (document) {
-                document->startUndoCycle();
+            if (_document) {
+                _document->startUndoCycle();
 
-                document->addUndoable(clone);
+                _document->addUndoable(clone);
                 en->setUndoState(true);
-                document->addUndoable(en);
+                _document->addUndoable(en);
 
-                document->endUndoCycle();
+                _document->endUndoCycle();
             }
             GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
         } else {

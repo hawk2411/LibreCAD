@@ -39,8 +39,8 @@ RS_ActionFileSave::RS_ActionFileSave(RS_EntityContainer& container,
 void RS_ActionFileSave::trigger() {
     RS_DEBUG->print("RS_ActionFileSave::trigger");
 
-    if (graphic) {
-        graphic->save(false);
+    if (_graphic) {
+        _graphic->save(false);
     }
     finish(false);
 }

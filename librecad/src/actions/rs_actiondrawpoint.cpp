@@ -40,7 +40,7 @@ RS_ActionDrawPoint::RS_ActionDrawPoint(RS_EntityContainer& container,
 						   container, graphicView)
 		, pt(new RS_Vector{})
 {
-	actionType=RS2::ActionDrawPoint;
+    _actionType=RS2::ActionDrawPoint;
 }
 
 RS_ActionDrawPoint::~RS_ActionDrawPoint() = default;
@@ -51,10 +51,10 @@ void RS_ActionDrawPoint::trigger() {
 		RS_Point* point = new RS_Point(container, RS_PointData(*pt));
         container->addEntity(point);
 
-        if (document) {
-            document->startUndoCycle();
-            document->addUndoable(point);
-            document->endUndoCycle();
+        if (_document) {
+            _document->startUndoCycle();
+            _document->addUndoable(point);
+            _document->endUndoCycle();
         }
 
 		graphicView->moveRelativeZero(*pt);

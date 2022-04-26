@@ -53,7 +53,7 @@ LC_ActionDrawLinePolygonCenTan::LC_ActionDrawLinePolygonCenTan(
         ,number(3)
         ,lastStatus(SetCenter)
 {
-    actionType=RS2::ActionDrawLinePolygonCenCor;
+    _actionType=RS2::ActionDrawLinePolygonCenCor;
 }
 
 LC_ActionDrawLinePolygonCenTan::~LC_ActionDrawLinePolygonCenTan() = default;

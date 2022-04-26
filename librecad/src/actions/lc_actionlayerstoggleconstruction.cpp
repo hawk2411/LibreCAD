@@ -51,21 +51,21 @@ LC_ActionLayersToggleConstruction::LC_ActionLayersToggleConstruction(
 
 void LC_ActionLayersToggleConstruction::trigger() {
     RS_DEBUG->print("toggle layer construction");
-    if (graphic) {
-        RS_LayerList* ll = graphic->getLayerList();
+    if (_graphic) {
+        RS_LayerList* ll = _graphic->getLayerList();
         unsigned cnt = 0;
         // toggle selected layers
         for (auto layer: *ll) {
             if (!layer) continue;
             if (!layer->isVisibleInLayerList()) continue;
             if (!layer->isSelectedInLayerList()) continue;
-            graphic->getLayerList()->toggleConstruction(layer);
+            _graphic->getLayerList()->toggleConstruction(layer);
             deselectEntities(layer);
             cnt++;
         }
         // if there wasn't selected layers, toggle active layer
         if (!cnt) {
-            graphic->getLayerList()->toggleConstruction(a_layer);
+            _graphic->getLayerList()->toggleConstruction(a_layer);
             deselectEntities(a_layer);
         }
     }

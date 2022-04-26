@@ -82,12 +82,12 @@ void RS_ActionModifyDeleteFree::trigger() {
 									*e2, pPoints->v2,
                                     &pl1, &pl2);
 
-                    if (document) {
-                        document->startUndoCycle();
-                        document->addUndoable(polyline);
-                        document->addUndoable(pl1);
-                        document->addUndoable(pl2);
-                        document->endUndoCycle();
+                    if (_document) {
+                        _document->startUndoCycle();
+                        _document->addUndoable(polyline);
+                        _document->addUndoable(pl1);
+                        _document->addUndoable(pl2);
+                        _document->endUndoCycle();
                     }
 
                     // draws the new polylines on the screen:

@@ -41,7 +41,7 @@ RS_ActionPolylineDel::RS_ActionPolylineDel(RS_EntityContainer& container,
 						   container, graphicView)
 		, delPoint(new RS_Vector{})
 {
-	actionType=RS2::ActionPolylineDel;
+    _actionType=RS2::ActionPolylineDel;
 }
 
 RS_ActionPolylineDel::~RS_ActionPolylineDel() = default;

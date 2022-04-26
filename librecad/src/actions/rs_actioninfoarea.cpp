@@ -43,7 +43,7 @@ RS_ActionInfoArea::RS_ActionInfoArea(RS_EntityContainer& container,
 							   container, graphicView)
 	, ia(new RS_InfoArea{})
 {
-	actionType=RS2::ActionInfoArea;
+    _actionType=RS2::ActionInfoArea;
 }
 
 RS_ActionInfoArea::~RS_ActionInfoArea() = default;
@@ -85,13 +85,13 @@ void RS_ActionInfoArea::display() {
 			preview->addEntity(new RS_Line(preview.get(), ia->at(i), ia->at((i+1) % ia->size())));
 		}
 		QString const linear = RS_Units::formatLinear(ia->getCircumference(),
-													  graphic->getUnit(),
-													  graphic->getLinearFormat(),
-													  graphic->getLinearPrecision());
+                                                      _graphic->getUnit(),
+                                                      _graphic->getLinearFormat(),
+                                                      _graphic->getLinearPrecision());
 		GetDialogFactory()->commandMessage(tr("Circumference: %1").arg(linear));
 		GetDialogFactory()->commandMessage(tr("Area: %1 %2^2")
 										 .arg(ia->getArea())
-										 .arg(RS_Units::unitToString(graphic->getUnit())));
+										 .arg(RS_Units::unitToString(_graphic->getUnit())));
         break;
     }
     drawPreview();

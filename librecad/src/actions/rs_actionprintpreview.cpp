@@ -53,7 +53,7 @@ RS_ActionPrintPreview::RS_ActionPrintPreview(RS_EntityContainer& container,
 	, m_bPaperOffset(false)
 	, pPoints(new Points{})
 {
-    actionType=RS2::ActionFilePrintPreview;
+    _actionType=RS2::ActionFilePrintPreview;
     RS_SETTINGS->beginGroup("/PrintPreview");
     bool fixed = (RS_SETTINGS->readNumEntry("/PrintScaleFixed", 0) != 0);
     RS_SETTINGS->endGroup();
@@ -78,12 +78,12 @@ void RS_ActionPrintPreview::mouseMoveEvent(QMouseEvent* e) {
 		// if Ctrl is pressed the paper moves only vertically
 		if (e->modifiers() & Qt::ControlModifier)
 			pPoints->v2.x = pPoints->v1.x;
-        if (graphic) {
-            RS_Vector pinsbase = graphic->getPaperInsertionBase();
+        if (_graphic) {
+            RS_Vector pinsbase = _graphic->getPaperInsertionBase();
 
-            double scale = graphic->getPaperScale();
+            double scale = _graphic->getPaperScale();
 
-			graphic->setPaperInsertionBase(pinsbase-pPoints->v2*scale+pPoints->v1*scale);
+			_graphic->setPaperInsertionBase(pinsbase - pPoints->v2 * scale + pPoints->v1 * scale);
         }
 		pPoints->v1 = pPoints->v2;
         graphicView->redraw(RS2::RedrawGrid); // DRAW Grid also draws paper, background items
@@ -126,20 +126,20 @@ void RS_ActionPrintPreview::mouseReleaseEvent(QMouseEvent* e) {
 
 
 void RS_ActionPrintPreview::coordinateEvent(RS_CoordinateEvent* e) {
-    RS_Vector pinsbase = graphic->getPaperInsertionBase();
+    RS_Vector pinsbase = _graphic->getPaperInsertionBase();
     RS_Vector mouse = e->getCoordinate();
 //    qDebug()<<"coordinateEvent= ("<<mouse.x<<", "<<mouse.y<<")";
 
     if(m_bPaperOffset) {
         GetDialogFactory()->commandMessage(tr("Printout offset in paper coordinates by (%1, %2)").arg(mouse.x).arg(mouse.y));
-        mouse *= graphic->getPaperScale();
+        mouse *= _graphic->getPaperScale();
     }else
         GetDialogFactory()->commandMessage(tr("Printout offset in graph coordinates by (%1, %2)").arg(mouse.x).arg(mouse.y));
 
 //    GetDialogFactory()->commandMessage(tr("old insertion base (%1, %2)").arg(pinsbase.x).arg(pinsbase.y));
 //    GetDialogFactory()->commandMessage(tr("new insertion base (%1, %2)").arg((pinsbase-mouse).x).arg((pinsbase-mouse).y));
 
-    graphic->setPaperInsertionBase(pinsbase-mouse);
+    _graphic->setPaperInsertionBase(pinsbase - mouse);
     graphicView->redraw(RS2::RedrawGrid); // DRAW Grid also draws paper, background items
 
 }
@@ -245,8 +245,8 @@ void RS_ActionPrintPreview::updateMouseCursor() {
 }
 
 void RS_ActionPrintPreview::center() {
-    if (graphic) {
-        graphic->centerToPage();
+    if (_graphic) {
+        _graphic->centerToPage();
         graphicView->zoomPage();
         graphicView->redraw();
     }
@@ -254,8 +254,8 @@ void RS_ActionPrintPreview::center() {
 
 
 void RS_ActionPrintPreview::fit() {
-    if (graphic) {
-        RS_Vector&& paperSize=RS_Units::convert(graphic->getPaperSize(),
+    if (_graphic) {
+        RS_Vector&& paperSize=RS_Units::convert(_graphic->getPaperSize(),
                                                 RS2::Millimeter, getUnit());
 
         if(fabs(paperSize.x)<10.|| fabs(paperSize.y)<10.)
@@ -263,7 +263,7 @@ void RS_ActionPrintPreview::fit() {
                          " Paper is too small for fitting to page\n"
                          "Please set paper size by Menu: Edit->Current Drawing Preferences->Paper");
         //        double f0=graphic->getPaperScale();
-		if ( graphic->fitToPage()==false) {
+		if (_graphic->fitToPage() == false) {
             GetDialogFactory()->commandMessage(
                         tr("RS_ActionPrintPreview::fit(): Invalid paper size")
                         );
@@ -271,16 +271,16 @@ void RS_ActionPrintPreview::fit() {
         //        if(fabs(f0-graphic->getPaperScale())>RS_TOLERANCE){
         //only zoomPage when scale changed
         //        }
-        graphic->centerToPage();
+        _graphic->centerToPage();
         graphicView->zoomPage();
         graphicView->redraw();
     }
 }
 
 bool RS_ActionPrintPreview::setScale(double f, bool autoZoom) {
-    if (graphic) {
-        if( fabs(f - graphic->getPaperScale()) < RS_TOLERANCE ) return false;
-        graphic->setPaperScale(f);
+    if (_graphic) {
+        if(fabs(f - _graphic->getPaperScale()) < RS_TOLERANCE ) return false;
+        _graphic->setPaperScale(f);
 //        graphic->centerToPage();
         if(autoZoom) graphicView->zoomPage();
         graphicView->redraw();
@@ -293,8 +293,8 @@ bool RS_ActionPrintPreview::setScale(double f, bool autoZoom) {
 
 double RS_ActionPrintPreview::getScale() const{
     double ret = 1.0;
-    if (graphic) {
-        ret = graphic->getPaperScale();
+    if (_graphic) {
+        ret = _graphic->getPaperScale();
     }
     return ret;
 }
@@ -318,8 +318,8 @@ void RS_ActionPrintPreview::setBlackWhite(bool bw) {
 
 
 RS2::Unit RS_ActionPrintPreview::getUnit() {
-    if (graphic) {
-        return graphic->getUnit();
+    if (_graphic) {
+        return _graphic->getUnit();
     }
     else {
         return RS2::None;
@@ -329,21 +329,21 @@ RS2::Unit RS_ActionPrintPreview::getUnit() {
 /** set paperscale fixed */
 void RS_ActionPrintPreview::setPaperScaleFixed(bool fixed)
 {
-    graphic->setPaperScaleFixed(fixed);
+    _graphic->setPaperScaleFixed(fixed);
 }
 
 
 /** get paperscale fixed */
 bool RS_ActionPrintPreview::getPaperScaleFixed()
 {
-    return graphic->getPaperScaleFixed();
+    return _graphic->getPaperScaleFixed();
 }
 
 /** calculate number of pages needed to contain a drawing */
 void RS_ActionPrintPreview::calcPagesNum() {
-    if (graphic) {
-        RS_Vector printArea = graphic->getPrintAreaSize(false);
-        RS_Vector graphicSize = graphic->getSize() * graphic->getPaperScale();
+    if (_graphic) {
+        RS_Vector printArea = _graphic->getPrintAreaSize(false);
+        RS_Vector graphicSize = _graphic->getSize() * _graphic->getPaperScale();
         int pX = ceil(graphicSize.x / printArea.x);
         int pY = ceil(graphicSize.y / printArea.y);
 
@@ -353,8 +353,8 @@ void RS_ActionPrintPreview::calcPagesNum() {
             return;
         }
 
-        graphic->setPagesNum(pX, pY);
-        graphic->centerToPage();
+        _graphic->setPagesNum(pX, pY);
+        _graphic->centerToPage();
         graphicView->zoomPage();
         graphicView->redraw();
     }

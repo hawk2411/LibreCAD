@@ -48,7 +48,7 @@ RS_ActionModifyMirror::RS_ActionModifyMirror(RS_EntityContainer& container,
                                    container, graphicView)
         , pPoints(new Points{})
 {
-    actionType=RS2::ActionModifyMirror;
+    _actionType=RS2::ActionModifyMirror;
 }
 
 RS_ActionModifyMirror::~RS_ActionModifyMirror() = default;

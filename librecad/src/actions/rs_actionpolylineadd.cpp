@@ -42,7 +42,7 @@ RS_ActionPolylineAdd::RS_ActionPolylineAdd(RS_EntityContainer& container,
 		,addSegment(nullptr)
 		, addCoord(new RS_Vector{})
 {
-	actionType=RS2::ActionPolylineAdd;
+    _actionType=RS2::ActionPolylineAdd;
 }
 
 RS_ActionPolylineAdd::~RS_ActionPolylineAdd() = default;

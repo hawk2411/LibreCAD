@@ -58,7 +58,7 @@ RS_ActionDrawCircleTan1_2P::RS_ActionDrawCircleTan1_2P(
 	,circle(nullptr)
 	,pPoints(new Points{})
 {
-	actionType = RS2::ActionDrawCircleTan1_2P;
+    _actionType = RS2::ActionDrawCircleTan1_2P;
 }
 
 RS_ActionDrawCircleTan1_2P::~RS_ActionDrawCircleTan1_2P() = default;
@@ -101,10 +101,10 @@ void RS_ActionDrawCircleTan1_2P::trigger() {
     container->addEntity(c);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(c);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(c);
+        _document->endUndoCycle();
     }
 
 

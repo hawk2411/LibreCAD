@@ -45,7 +45,7 @@ RS_ActionPolylineEquidistant::RS_ActionPolylineEquidistant(RS_EntityContainer& c
 	,dist(1.)
 	,number(1)
 {
-	actionType=RS2::ActionPolylineEquidistant;
+    _actionType=RS2::ActionPolylineEquidistant;
 }
 
 RS_ActionPolylineEquidistant::~RS_ActionPolylineEquidistant()=default;
@@ -138,8 +138,8 @@ bool RS_ActionPolylineEquidistant::makeContour() {
     if (entities.isEmpty()) {
         return false;
     }
-	if (document) {
-        document->startUndoCycle();
+	if (_document) {
+        _document->startUndoCycle();
     }
     double neg = 1.0;
     if(bRightSide)
@@ -261,10 +261,10 @@ bool RS_ActionPolylineEquidistant::makeContour() {
         }
         if (!newPolyline->isEmpty()) {
             container->addEntity(newPolyline);
-			if (document) document->addUndoable(newPolyline);
+			if (_document) _document->addUndoable(newPolyline);
         }
     }
-	if (document) document->endUndoCycle();
+	if (_document) _document->endUndoCycle();
 
 	if (graphicView) {
         graphicView->redraw();

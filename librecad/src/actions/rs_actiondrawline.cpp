@@ -101,7 +101,7 @@ RS_ActionDrawLine::RS_ActionDrawLine(RS_EntityContainer& container,
     pPoints( new Points{})
 {
     RS_DEBUG->print("RS_ActionDrawLine::RS_ActionDrawLine");
-    actionType=RS2::ActionDrawLine;
+    _actionType=RS2::ActionDrawLine;
 }
 
 RS_ActionDrawLine::~RS_ActionDrawLine() = default;
@@ -131,10 +131,10 @@ void RS_ActionDrawLine::trigger()
     container->addEntity(line);
 
     // update undo list
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(line);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(line);
+        _document->endUndoCycle();
     }
 
     graphicView->redraw(RS2::RedrawDrawing);

@@ -47,21 +47,21 @@ RS_ActionLayersTogglePrint::RS_ActionLayersTogglePrint(
 
 void RS_ActionLayersTogglePrint::trigger() {
     RS_DEBUG->print("toggle layer printing");
-    if (graphic) {
-        RS_LayerList* ll = graphic->getLayerList();
+    if (_graphic) {
+        RS_LayerList* ll = _graphic->getLayerList();
         unsigned cnt = 0;
         // toggle selected layers
         for (auto layer: *ll) {
             if (!layer) continue;
             if (!layer->isVisibleInLayerList()) continue;
             if (!layer->isSelectedInLayerList()) continue;
-            graphic->getLayerList()->togglePrint(layer);
+            _graphic->getLayerList()->togglePrint(layer);
             deselectEntities(layer);
             cnt++;
         }
         // if there wasn't selected layers, toggle active layer
         if (!cnt) {
-            graphic->getLayerList()->togglePrint(a_layer);
+            _graphic->getLayerList()->togglePrint(a_layer);
             deselectEntities(a_layer);
         }
     }

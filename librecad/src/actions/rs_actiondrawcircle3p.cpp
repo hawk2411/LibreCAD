@@ -58,7 +58,7 @@ RS_ActionDrawCircle3P::RS_ActionDrawCircle3P(RS_EntityContainer& container,
 						   container, graphicView)
 		,pPoints(new Points{})
 {
-	actionType=RS2::ActionDrawCircle3P;
+    _actionType=RS2::ActionDrawCircle3P;
 }
 
 RS_ActionDrawCircle3P::~RS_ActionDrawCircle3P() = default;
@@ -81,10 +81,10 @@ void RS_ActionDrawCircle3P::trigger() {
         container->addEntity(circle);
 
         // upd. undo list:
-        if (document) {
-            document->startUndoCycle();
-            document->addUndoable(circle);
-            document->endUndoCycle();
+        if (_document) {
+            _document->startUndoCycle();
+            _document->addUndoable(circle);
+            _document->endUndoCycle();
         }
         RS_Vector rz = graphicView->getRelativeZero();
                 graphicView->redraw(RS2::RedrawDrawing);

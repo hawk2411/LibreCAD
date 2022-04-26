@@ -53,7 +53,7 @@ RS_ActionDrawEllipse4Points::RS_ActionDrawEllipse4Points(
 							   graphicView)
 	, pPoints(new Points{})
 {
-	actionType=RS2::ActionDrawEllipse4Points;
+    _actionType=RS2::ActionDrawEllipse4Points;
 }
 
 RS_ActionDrawEllipse4Points::~RS_ActionDrawEllipse4Points() = default;
@@ -75,10 +75,10 @@ void RS_ActionDrawEllipse4Points::trigger() {
     // update undo list:
     deletePreview();
     container->addEntity(en);
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(en);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(en);
+        _document->endUndoCycle();
     }
     RS_Vector rz = graphicView->getRelativeZero();
     graphicView->redraw(RS2::RedrawDrawing);

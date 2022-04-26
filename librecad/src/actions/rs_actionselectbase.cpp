@@ -43,7 +43,7 @@ RS_ActionSelectBase::RS_ActionSelectBase(const char* name,
  * action and finishing this one when the enter key is pressed.
  */
 void RS_ActionSelectBase::keyReleaseEvent(QKeyEvent* e) {
-    if (e->key()==Qt::Key_Return && predecessor) {
+    if (e->key()==Qt::Key_Return && _predecessor) {
         finish(false);
     }
 }

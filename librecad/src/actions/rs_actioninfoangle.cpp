@@ -55,7 +55,7 @@ RS_ActionInfoAngle::RS_ActionInfoAngle(RS_EntityContainer& container,
 		,entity2(nullptr)
 		, pPoints(new Points{})
 {
-	actionType=RS2::ActionInfoAngle;
+    _actionType=RS2::ActionInfoAngle;
 }
 
 RS_ActionInfoAngle::~RS_ActionInfoAngle() = default;
@@ -83,12 +83,12 @@ void RS_ActionInfoAngle::trigger() {
 				double angle = remainder(angle2 - angle1, 2.*M_PI);
 
 				QString str = RS_Units::formatAngle(angle,
-													graphic->getAngleFormat(), graphic->getAnglePrecision());
+                                                    _graphic->getAngleFormat(), _graphic->getAnglePrecision());
 
                 if(angle<0.){
 					str += " or ";
 					str += RS_Units::formatAngle(angle + 2.*M_PI,
-												 graphic->getAngleFormat(), graphic->getAnglePrecision());
+                                                 _graphic->getAngleFormat(), _graphic->getAnglePrecision());
                 }
                 GetDialogFactory()->commandMessage(tr("Angle: %1").arg(str));
             }

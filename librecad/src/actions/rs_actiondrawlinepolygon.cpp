@@ -51,7 +51,7 @@ RS_ActionDrawLinePolygonCenCor::RS_ActionDrawLinePolygonCenCor(
 		,number(3)
 		,lastStatus(SetCenter)
 {
-	actionType=RS2::ActionDrawLinePolygonCenCor;
+    _actionType=RS2::ActionDrawLinePolygonCenCor;
 }
 
 RS_ActionDrawLinePolygonCenCor::~RS_ActionDrawLinePolygonCenCor() = default;

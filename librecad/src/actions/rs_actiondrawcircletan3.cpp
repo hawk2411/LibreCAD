@@ -59,7 +59,7 @@ RS_ActionDrawCircleTan3::RS_ActionDrawCircleTan3(
 							   container, graphicView)
 	, _points(new Points{})
 {
-	actionType=RS2::ActionDrawCircleTan3;
+    _actionType=RS2::ActionDrawCircleTan3;
 }
 
 void RS_ActionDrawCircleTan3::init(int status) {
@@ -96,10 +96,10 @@ void RS_ActionDrawCircleTan3::trigger() {
 	container->addEntity(circle);
 
 	// upd. undo list:
-	if (document) {
-		document->startUndoCycle();
-		document->addUndoable(circle);
-		document->endUndoCycle();
+	if (_document) {
+		_document->startUndoCycle();
+		_document->addUndoable(circle);
+		_document->endUndoCycle();
 	}
 
 	for(RS_AtomicEntity* const pc: _points->circles)

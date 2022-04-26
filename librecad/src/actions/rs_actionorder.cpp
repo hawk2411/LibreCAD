@@ -42,7 +42,7 @@ RS_ActionOrder::RS_ActionOrder(RS_EntityContainer& container,
 		,targetEntity(nullptr)
 		,orderType(type)
 {
-	actionType=RS2::ActionOrderBottom;
+    _actionType=RS2::ActionOrderBottom;
 }
 
 void RS_ActionOrder::init(int status) {
@@ -71,12 +71,12 @@ void RS_ActionOrder::trigger() {
 
         switch (orderType) {
         case RS2::ActionOrderLower:
-            index = document->findEntity(targetEntity);
-            document->moveEntity(index, entList);
+            index = _document->findEntity(targetEntity);
+            _document->moveEntity(index, entList);
             break;
         case RS2::ActionOrderRaise:
-            index = document->findEntity(targetEntity)+1;
-            document->moveEntity(index, entList);
+            index = _document->findEntity(targetEntity) + 1;
+            _document->moveEntity(index, entList);
             break;
         default:
             break;
@@ -85,10 +85,10 @@ void RS_ActionOrder::trigger() {
     } else {
         switch (orderType) {
         case RS2::ActionOrderBottom:
-            document->moveEntity(-1, entList);
+            _document->moveEntity(-1, entList);
             break;
         case RS2::ActionOrderTop:
-            document->moveEntity(document->count()+1, entList);
+            _document->moveEntity(_document->count() + 1, entList);
             break;
         default:
             break;

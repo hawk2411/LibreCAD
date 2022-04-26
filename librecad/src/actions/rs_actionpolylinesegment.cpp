@@ -44,7 +44,7 @@ RS_ActionPolylineSegment::RS_ActionPolylineSegment(RS_EntityContainer& container
         RS_GraphicView& graphicView)
         :RS_PreviewActionInterface("Create Polyline Existing from Segments",
 						   container, graphicView) {
-	actionType=RS2::ActionPolylineSegment;
+    _actionType=RS2::ActionPolylineSegment;
 }
 
 void RS_ActionPolylineSegment::init(int status) {
@@ -195,8 +195,8 @@ bool RS_ActionPolylineSegment::convertPolyline(RS_Entity* selectedEntity, bool u
     remaining.clear();
 
     bool closed = false;
-    if (document) {
-        document->startUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
 
         bool revert = false;
         double bulge = 0.0;
@@ -212,7 +212,7 @@ bool RS_ActionPolylineSegment::convertPolyline(RS_Entity* selectedEntity, bool u
         while (!completed.isEmpty()) {
             RS_Entity* e2= completed.takeFirst();
             e2->setUndoState(true);
-            document->addUndoable(e2);
+            _document->addUndoable(e2);
             if (e2->getStartpoint().distanceTo(end) < 1.0e-4) {
                 revert = false;
                 start = e2->getStartpoint();
@@ -247,8 +247,8 @@ bool RS_ActionPolylineSegment::convertPolyline(RS_Entity* selectedEntity, bool u
                 graphicView->drawEntity(newPolyline);
         }
 
-        document->addUndoable(newPolyline);
-        document->endUndoCycle();
+        _document->addUndoable(newPolyline);
+        _document->endUndoCycle();
     }
     RS_DEBUG->print("RS_ActionPolylineSegment::convertPolyline: OK");
     return closed;

@@ -41,7 +41,7 @@ RS_ActionModifyCut::RS_ActionModifyCut(RS_EntityContainer& container,
 ,cutEntity(nullptr)
 ,cutCoord(new RS_Vector{})
 {
-	actionType=RS2::ActionModifyCut;
+    _actionType=RS2::ActionModifyCut;
 }
 
 RS_ActionModifyCut::~RS_ActionModifyCut() = default;

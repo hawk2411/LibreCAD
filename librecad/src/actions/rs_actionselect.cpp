@@ -42,7 +42,7 @@ RS_ActionSelect::RS_ActionSelect(QG_ActionHandler* a_handler,
 	,nextAction(nextAction)
     ,action_handler(a_handler)
 {
-	actionType=RS2::ActionSelect;
+    _actionType=RS2::ActionSelect;
 }
 
 

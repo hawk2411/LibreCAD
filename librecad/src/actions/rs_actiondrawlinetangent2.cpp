@@ -43,7 +43,7 @@ RS_ActionDrawLineTangent2::RS_ActionDrawLineTangent2(
 	,circle2(nullptr)
 	,valid(false)
 {
-	actionType=RS2::ActionDrawLineTangent2;
+    _actionType=RS2::ActionDrawLineTangent2;
     setStatus(SetCircle1);
 }
 
@@ -69,10 +69,10 @@ void RS_ActionDrawLineTangent2::trigger() {
         container->addEntity(newEntity);
 
         // upd. undo list:
-        if (document) {
-            document->startUndoCycle();
-            document->addUndoable(newEntity);
-            document->endUndoCycle();
+        if (_document) {
+            _document->startUndoCycle();
+            _document->addUndoable(newEntity);
+            _document->endUndoCycle();
 		}
 		clearHighlighted();
 

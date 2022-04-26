@@ -36,7 +36,7 @@ RS_ActionBlocksExplode::RS_ActionBlocksExplode(RS_EntityContainer& container,
         RS_GraphicView& graphicView)
         :RS_PreviewActionInterface("Blocks Explode",
                            container, graphicView) {
-	actionType=RS2::ActionBlocksExplode;
+    _actionType=RS2::ActionBlocksExplode;
 }
 
 void RS_ActionBlocksExplode::init(int status) {

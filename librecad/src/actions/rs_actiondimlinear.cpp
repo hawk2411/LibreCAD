@@ -57,7 +57,7 @@ RS_ActionDimLinear::RS_ActionDimLinear(RS_EntityContainer& container,
 		,lastStatus(SetExtPoint1)
 {
 	//TODO: fix dim linear type logic: whether it's for linear only, or should cover horizontal/vertical dim types
-	actionType=RS2::ActionDimLinear;
+	_actionType=RS2::ActionDimLinear;
 	reset();
 }
 
@@ -89,10 +89,10 @@ void RS_ActionDimLinear::trigger() {
     container->addEntity(dim);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(dim);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(dim);
+        _document->endUndoCycle();
     }
 
     RS_Vector rz = graphicView->getRelativeZero();

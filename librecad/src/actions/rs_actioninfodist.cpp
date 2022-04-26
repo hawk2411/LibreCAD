@@ -48,7 +48,7 @@ RS_ActionInfoDist::RS_ActionInfoDist(RS_EntityContainer& container,
 						   container, graphicView)
 		, pPoints(new Points{})
 {
-	actionType=RS2::ActionInfoDist;
+    _actionType=RS2::ActionInfoDist;
 }
 
 RS_ActionInfoDist::~RS_ActionInfoDist()=default;
@@ -67,12 +67,12 @@ void RS_ActionInfoDist::trigger() {
 		auto dV = pPoints->point2 - pPoints->point1;
 		QStringList dists;
 		for(double a: {dV.magnitude(), dV.x, dV.y}){
-			dists<<RS_Units::formatLinear(a, graphic->getUnit(),
-										  graphic->getLinearFormat(), graphic->getLinearPrecision());
+			dists<<RS_Units::formatLinear(a, _graphic->getUnit(),
+                                          _graphic->getLinearFormat(), _graphic->getLinearPrecision());
 		}
 
 		QString&& angle = RS_Units::formatAngle(dV.angle(),
-												graphic->getAngleFormat(), graphic->getAnglePrecision());
+                                                _graphic->getAngleFormat(), _graphic->getAnglePrecision());
 
 		GetDialogFactory()->commandMessage(
                     tr("Distance: %1 Cartesian: (%2 , %3), Polar: (%4<%5)").arg(dists[0])

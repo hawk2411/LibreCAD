@@ -45,7 +45,7 @@ LC_ActionDrawSplinePoints::LC_ActionDrawSplinePoints(RS_EntityContainer& contain
         RS_ActionDrawSpline( container, graphicView)
   , _points(new Points{})
 {
-	actionType=RS2::ActionDrawSplinePoints;
+    _actionType=RS2::ActionDrawSplinePoints;
 	setName("DrawSplinePoints");
 }
 
@@ -73,11 +73,11 @@ void LC_ActionDrawSplinePoints::trigger()
 	container->addEntity(s);
 
 	// upd. undo list:
-	if (document)
+	if (_document)
 	{
-		document->startUndoCycle();
-		document->addUndoable(s);
-		document->endUndoCycle();
+		_document->startUndoCycle();
+		_document->addUndoable(s);
+		_document->endUndoCycle();
 	}
 
 	// upd view

@@ -87,10 +87,10 @@ void RS_ActionDrawLineHorVert::trigger() {
     container->addEntity(line);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(line);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(line);
+        _document->endUndoCycle();
     }
 
         graphicView->redraw(RS2::RedrawDrawing);

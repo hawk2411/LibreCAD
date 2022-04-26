@@ -53,7 +53,7 @@ RS_ActionDrawEllipseCenter3Points::RS_ActionDrawEllipseCenter3Points(
 						   container, graphicView)
 		, pPoints(new Points{})
 {
-	actionType=RS2::ActionDrawEllipseCenter3Points;
+    _actionType=RS2::ActionDrawEllipseCenter3Points;
 }
 
 RS_ActionDrawEllipseCenter3Points::~RS_ActionDrawEllipseCenter3Points() = default;
@@ -79,10 +79,10 @@ void RS_ActionDrawEllipseCenter3Points::trigger() {
     container->addEntity(ellipse);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(ellipse);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(ellipse);
+        _document->endUndoCycle();
     }
 
     graphicView->moveRelativeZero(ellipse->getCenter());

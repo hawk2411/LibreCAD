@@ -48,7 +48,7 @@ RS_ActionDrawLineParallel::RS_ActionDrawLineParallel(
 	, coord(new RS_Vector{})
 	,entity(nullptr)
 {
-	actionType=RS2::ActionDrawLineParallel;
+    _actionType=RS2::ActionDrawLineParallel;
 }
 
 RS_ActionDrawLineParallel::~RS_ActionDrawLineParallel() = default;

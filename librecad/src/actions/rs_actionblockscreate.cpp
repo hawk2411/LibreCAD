@@ -45,7 +45,7 @@ RS_ActionBlocksCreate::RS_ActionBlocksCreate(RS_EntityContainer& container,
 						   container, graphicView)
 		,referencePoint(new RS_Vector{})
 {
-	actionType=RS2::ActionBlocksCreate;
+    _actionType=RS2::ActionBlocksCreate;
 }
 
 RS_ActionBlocksCreate::~RS_ActionBlocksCreate() = default;
@@ -58,8 +58,8 @@ void RS_ActionBlocksCreate::init(int status) {
 
 
 void RS_ActionBlocksCreate::trigger() {
-	if (graphic) {
-        RS_BlockList* blockList = graphic->getBlockList();
+	if (_graphic) {
+        RS_BlockList* blockList = _graphic->getBlockList();
 		if (blockList) {
             RS_BlockData d =
                     GetDialogFactory()->requestNewBlockDialog(blockList);

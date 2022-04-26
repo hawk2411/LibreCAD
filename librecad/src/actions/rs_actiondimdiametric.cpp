@@ -48,7 +48,7 @@ RS_ActionDimDiametric::RS_ActionDimDiametric(
 					container, graphicView)
 		, pos(new RS_Vector{})
 {
-	actionType=RS2::ActionDimDiametric;
+    _actionType=RS2::ActionDimDiametric;
     reset();
 }
 
@@ -84,10 +84,10 @@ void RS_ActionDimDiametric::trigger() {
         container->addEntity(newEntity);
 
         // upd. undo list:
-        if (document) {
-            document->startUndoCycle();
-            document->addUndoable(newEntity);
-            document->endUndoCycle();
+        if (_document) {
+            _document->startUndoCycle();
+            _document->addUndoable(newEntity);
+            _document->endUndoCycle();
         }
         RS_Vector rz = graphicView->getRelativeZero();
 		graphicView->redraw(RS2::RedrawDrawing);

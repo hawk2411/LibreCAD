@@ -46,7 +46,7 @@ RS_ActionModifyScale::RS_ActionModifyScale(RS_EntityContainer& container,
 						   container, graphicView)
 		, pPoints(new Points{})
 {
-	actionType=RS2::ActionModifyScale;
+    _actionType=RS2::ActionModifyScale;
 }
 
 RS_ActionModifyScale::~RS_ActionModifyScale() = default;

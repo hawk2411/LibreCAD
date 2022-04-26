@@ -55,22 +55,22 @@ RS_ActionInterface::RS_ActionInterface(const char *name,
 
     RS_DEBUG->print("RS_ActionInterface::RS_ActionInterface: Setting up action: \"%s\"", name);
 
-    this->name = name;
-    status = 0;
-    finished = false;
+    this->_name = name;
+    _status = 0;
+    _finished = false;
     //triggerOnResume = false;
 
     // graphic provides a pointer to the graphic if the
     // entity container is a graphic (i.e. can also hold
     // layers).
-    graphic = container.getGraphic();
+    _graphic = container.getGraphic();
 
     // document pointer will be used for undo / redo
-    document = container.getDocument();
+    _document = container.getDocument();
 
     //this->cursor = cursor;
     //setSnapMode(graphicView.getDefaultSnapMode());
-    actionType = RS2::ActionNone;
+    _actionType = RS2::ActionNone;
 
     RS_DEBUG->print("RS_ActionInterface::RS_ActionInterface: Setting up action: \"%s\": OK", name);
 
@@ -82,18 +82,18 @@ RS_ActionInterface::RS_ActionInterface(const char *name,
 * @todo no default implementation
  */
 RS2::ActionType RS_ActionInterface::rtti() const {
-    return actionType;
+    return _actionType;
 }
 
 /**
  * @return name of this action
  */
 QString RS_ActionInterface::getName() {
-    return name;
+    return _name;
 }
 
 void RS_ActionInterface::setName(const char *_name) {
-    this->name = _name;
+    this->_name = _name;
 }
 
 /**
@@ -195,7 +195,7 @@ QStringList RS_ActionInterface::getAvailableCommands() {
  *               step back (i.e. presses the right mouse button).
  */
 void RS_ActionInterface::setStatus(int status) {
-    this->status = status;
+    this->_status = status;
     updateMouseButtonHints();
     updateMouseCursor();
     if (status < 0) finish(true);
@@ -205,7 +205,7 @@ void RS_ActionInterface::setStatus(int status) {
  * @return Current status of this action.
  */
 int RS_ActionInterface::getStatus() {
-    return status;
+    return _status;
 }
 
 /**
@@ -230,7 +230,7 @@ void RS_ActionInterface::updateMouseCursor() {}
  * @return true, if the action is finished and can be deleted.
  */
 bool RS_ActionInterface::isFinished() {
-    return finished;
+    return _finished;
 }
 
 
@@ -238,7 +238,7 @@ bool RS_ActionInterface::isFinished() {
  * Forces a termination of the action without any cleanup.
  */
 void RS_ActionInterface::setFinished() {
-    status = -1;
+    _status = -1;
 }
 
 
@@ -249,8 +249,8 @@ void RS_ActionInterface::finish(bool /*updateTB*/) {
     RS_DEBUG->print("RS_ActionInterface::finish");
     //refuse to quit the default action
     if (rtti() != RS2::ActionDefault) {
-        status = -1;
-        finished = true;
+        _status = -1;
+        _finished = true;
         hideOptions();
         RS_Snapper::finish();
     }
@@ -262,7 +262,7 @@ void RS_ActionInterface::finish(bool /*updateTB*/) {
  * communicate with its predecessor.
  */
 void RS_ActionInterface::setPredecessor(RS_ActionInterface *pre) {
-    predecessor = pre;
+    _predecessor = pre;
 }
 
 /**
@@ -296,7 +296,7 @@ void RS_ActionInterface::showOptions() {
 }
 
 void RS_ActionInterface::setActionType(RS2::ActionType actionType) {
-    this->actionType = actionType;
+    this->_actionType = actionType;
 }
 
 /**

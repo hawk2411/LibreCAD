@@ -46,7 +46,7 @@ RS_ActionDrawArcTangential::RS_ActionDrawArcTangential(RS_EntityContainer& conta
 	, point(new RS_Vector{})
 	, data(new RS_ArcData{})
 {
-	actionType=RS2::ActionDrawArcTangential;
+    _actionType=RS2::ActionDrawArcTangential;
     reset();
 }
 
@@ -90,10 +90,10 @@ void RS_ActionDrawArcTangential::trigger() {
     container->addEntity(arc);
 
     // upd. undo list:
-    if (document) {
-        document->startUndoCycle();
-        document->addUndoable(arc);
-        document->endUndoCycle();
+    if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(arc);
+        _document->endUndoCycle();
     }
 
     graphicView->redraw(RS2::RedrawDrawing);

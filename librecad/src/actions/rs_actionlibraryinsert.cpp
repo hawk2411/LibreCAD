@@ -50,7 +50,7 @@ RS_ActionLibraryInsert::RS_ActionLibraryInsert(RS_EntityContainer& container,
 		, pPoints(new Points{})
 		,lastStatus(SetTargetPoint)
 {
-	actionType=RS2::ActionLibraryInsert;
+    _actionType=RS2::ActionLibraryInsert;
 }
 
 RS_ActionLibraryInsert::~RS_ActionLibraryInsert() = default;
@@ -111,9 +111,9 @@ void RS_ActionLibraryInsert::mouseMoveEvent(QMouseEvent* e) {
 		preview->scale(pPoints->data.insertionPoint,
 					   RS_Vector(pPoints->data.factor, pPoints->data.factor));
         // unit conversion:
-        if (graphic) {
+        if (_graphic) {
 			double const uf = RS_Units::convert(1.0, pPoints->prev.getUnit(),
-                                          graphic->getUnit());
+                                                _graphic->getUnit());
 			preview->scale(pPoints->data.insertionPoint,
 			{uf, uf});
         }

@@ -36,7 +36,7 @@ RS_ActionOptionsDrawing::RS_ActionOptionsDrawing(RS_EntityContainer& container,
         RS_GraphicView& graphicView)
         :RS_ActionInterface("Drawing Options",
                     container, graphicView) {
-	actionType=RS2::ActionOptionsDrawing;
+    _actionType=RS2::ActionOptionsDrawing;
 }
 
 void RS_ActionOptionsDrawing::init(int status) {
@@ -48,8 +48,8 @@ void RS_ActionOptionsDrawing::init(int status) {
 
 
 void RS_ActionOptionsDrawing::trigger() {
-    if (graphic) {
-        GetDialogFactory()->requestOptionsDrawingDialog(*graphic);
+    if (_graphic) {
+        GetDialogFactory()->requestOptionsDrawingDialog(*_graphic);
         GetDialogFactory()->updateCoordinateWidget(RS_Vector(0.0,0.0),
                 RS_Vector(0.0,0.0),
                 true);

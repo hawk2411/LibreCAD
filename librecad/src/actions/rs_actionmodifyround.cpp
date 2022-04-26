@@ -56,7 +56,7 @@ RS_ActionModifyRound::RS_ActionModifyRound(RS_EntityContainer& container,
 		, pPoints(new Points{})
 		,lastStatus(SetEntity1)
 {
-	actionType=RS2::ActionModifyRound;
+    _actionType=RS2::ActionModifyRound;
 }
 
 RS_ActionModifyRound::~RS_ActionModifyRound() = default;

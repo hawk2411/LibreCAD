@@ -38,7 +38,7 @@ RS_ActionModifyDelete::RS_ActionModifyDelete(RS_EntityContainer& container,
         RS_GraphicView& graphicView)
         :RS_ActionInterface("Delete Entities",
 					container, graphicView) {
-	actionType=RS2::ActionModifyDelete;
+    _actionType=RS2::ActionModifyDelete;
 }
 
 

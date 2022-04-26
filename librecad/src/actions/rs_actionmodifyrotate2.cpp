@@ -41,7 +41,7 @@ RS_ActionModifyRotate2::RS_ActionModifyRotate2(
 						   container, graphicView)
 		,data(new RS_Rotate2Data())
 {
-	actionType=RS2::ActionModifyRotate2;
+    _actionType=RS2::ActionModifyRotate2;
 }
 
 RS_ActionModifyRotate2::~RS_ActionModifyRotate2() = default;

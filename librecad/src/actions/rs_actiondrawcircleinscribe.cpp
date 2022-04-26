@@ -50,7 +50,7 @@ RS_ActionDrawCircleInscribe::RS_ActionDrawCircleInscribe(
 		, pPoints(new Points{})
 		, valid(false)
 {
-	actionType=RS2::ActionDrawCircleInscribe;
+    _actionType=RS2::ActionDrawCircleInscribe;
 }
 
 RS_ActionDrawCircleInscribe::~RS_ActionDrawCircleInscribe() = default;
@@ -91,10 +91,10 @@ void RS_ActionDrawCircleInscribe::trigger() {
     container->addEntity(circle);
 
     // upd. undo list:
-	if (document) {
-        document->startUndoCycle();
-        document->addUndoable(circle);
-        document->endUndoCycle();
+	if (_document) {
+        _document->startUndoCycle();
+        _document->addUndoable(circle);
+        _document->endUndoCycle();
     }
 
 	clearLines(false);

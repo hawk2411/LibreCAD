@@ -56,7 +56,7 @@ RS_ActionDrawLineBisector::RS_ActionDrawLineBisector(
 		, pPoints(new Points{})
 		,lastStatus(SetLine1)
 {
-	actionType=RS2::ActionDrawLineBisector;
+    _actionType=RS2::ActionDrawLineBisector;
 }
 
 RS_ActionDrawLineBisector::~RS_ActionDrawLineBisector() = default;

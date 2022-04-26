@@ -49,7 +49,7 @@ RS_ActionBlocksInsert::RS_ActionBlocksInsert(RS_EntityContainer& container,
 	,block(nullptr)
 	,lastStatus(SetUndefined)
 {
-	actionType = RS2::ActionBlocksInsert;
+    _actionType = RS2::ActionBlocksInsert;
 	reset();    // init data Member
 }
 
@@ -63,13 +63,13 @@ void RS_ActionBlocksInsert::init(int status) {
 
     reset();
 
-    if (graphic) {
-        block = graphic->getBlockList()->getActive();
+    if (_graphic) {
+        block = _graphic->getBlockList()->getActive();
         if (block) {
             QString blockName = block->getName();
             data->name = blockName;
-            if (document->rtti() == RS2::EntityBlock) {
-                QString parentBlockName = ((RS_Block*)(document))->getName();
+            if (_document->rtti() == RS2::EntityBlock) {
+                QString parentBlockName = ((RS_Block*)(_document))->getName();
                 if (parentBlockName == blockName) {
                     GetDialogFactory()->commandMessage(tr("Block cannot contain an insert of itself."));
                     finish(false);

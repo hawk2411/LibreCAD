@@ -41,9 +41,9 @@ RS_ActionLayersFreezeAll::RS_ActionLayersFreezeAll(bool freeze,
 
 void RS_ActionLayersFreezeAll::trigger() {
     RS_DEBUG->print("RS_ActionLayersFreezeAll::trigger");
-    if (graphic) {
+    if (_graphic) {
         //RS_Layer* layer = graphic->getActiveLayer();
-        graphic->getLayerList()->freezeAll(freeze);
+        _graphic->getLayerList()->freezeAll(freeze);
     }
     finish(false);
 }
