@@ -66,12 +66,12 @@ void RS_ActionDrawLineOrthTan::trigger() {
 	if(circle)
 		circle->setHighlighted(false);
 	circle=nullptr;
-	graphicView->redraw(RS2::RedrawDrawing);
-	RS_Entity* newEntity = new RS_Line(container,
-									   tangent->getData());
+	_graphicView->redraw(RS2::RedrawDrawing);
+	RS_Entity* newEntity = new RS_Line(_container,
+                                       tangent->getData());
 	newEntity->setLayerToActive();
 	newEntity->setPenToActive();
-	container->addEntity(newEntity);
+	_container->addEntity(newEntity);
 
 	// upd. undo list:
 	if (_document) {
@@ -80,7 +80,7 @@ void RS_ActionDrawLineOrthTan::trigger() {
 		_document->endUndoCycle();
 	}
 
-	graphicView->redraw(RS2::RedrawDrawing);
+	_graphicView->redraw(RS2::RedrawDrawing);
 
 	setStatus(SetCircle);
 
@@ -91,8 +91,8 @@ void RS_ActionDrawLineOrthTan::trigger() {
 void RS_ActionDrawLineOrthTan::mouseMoveEvent(QMouseEvent* e) {
     RS_DEBUG->print("RS_ActionDrawLineOrthTan::mouseMoveEvent begin");
 	e->accept();
-	RS_Vector mouse(graphicView->toGraphX(e->x()),
-					graphicView->toGraphY(e->y()));
+	RS_Vector mouse(_graphicView->toGraphX(e->x()),
+                    _graphicView->toGraphY(e->y()));
 
 	switch(getStatus()){
 	case SetLine:
@@ -106,9 +106,9 @@ void RS_ActionDrawLineOrthTan::mouseMoveEvent(QMouseEvent* e) {
 			circle->setHighlighted(false);
 		circle = en;
 		circle->setHighlighted(true);
-		graphicView->redraw(RS2::RedrawDrawing);
+		_graphicView->redraw(RS2::RedrawDrawing);
 		deletePreview();
-		RS_Creation creation(_preview.get(), graphicView, false);
+		RS_Creation creation(_preview.get(), _graphicView, false);
 		tangent = creation.createLineOrthTan(mouse,
 											 normal,
 											 circle);
@@ -128,7 +128,7 @@ void RS_ActionDrawLineOrthTan::clearLines()
 	for(RS_Entity* p: {(RS_Entity*) normal, circle}){
 		if(p){
 			p->setHighlighted(false);
-			graphicView->drawEntity(p);
+			_graphicView->drawEntity(p);
 		}
 	}
 	if(circle) circle=nullptr;
@@ -154,11 +154,11 @@ void RS_ActionDrawLineOrthTan::mouseReleaseEvent(QMouseEvent* e) {
                 }
 				if(normal) {
                     normal->setHighlighted(false);
-                    graphicView->drawEntity(normal);
+                    _graphicView->drawEntity(normal);
                 }
                 normal=static_cast<RS_Line*>(en);
                 normal->setHighlighted(true);
-                graphicView->drawEntity(normal);
+                _graphicView->drawEntity(normal);
                 setStatus(SetCircle);
             }
         }
@@ -199,9 +199,9 @@ void RS_ActionDrawLineOrthTan::updateMouseButtonHints() {
 
 void RS_ActionDrawLineOrthTan::updateMouseCursor() {
         if(isFinished()) {
-    graphicView->setMouseCursor(RS2::ArrowCursor);
+    _graphicView->setMouseCursor(RS2::ArrowCursor);
         }else{
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
         }
 }
 

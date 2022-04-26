@@ -67,22 +67,22 @@ void RS_ActionDrawEllipse4Points::trigger() {
     RS_PreviewActionInterface::trigger();
     RS_Entity* en;
 	if(getStatus()==SetPoint4 && pPoints->evalid){
-		en=new RS_Ellipse(container, pPoints->eData);
+		en=new RS_Ellipse(_container, pPoints->eData);
     }else{
-		en=new RS_Circle(container, pPoints->cData);
+		en=new RS_Circle(_container, pPoints->cData);
     }
 
     // update undo list:
     deletePreview();
-    container->addEntity(en);
+    _container->addEntity(en);
     if (_document) {
         _document->startUndoCycle();
         _document->addUndoable(en);
         _document->endUndoCycle();
     }
-    RS_Vector rz = graphicView->getRelativeZero();
-    graphicView->redraw(RS2::RedrawDrawing);
-    graphicView->moveRelativeZero(rz);
+    RS_Vector rz = _graphicView->getRelativeZero();
+    _graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(rz);
     drawSnapper();
     setStatus(SetPoint1);
     //    RS_DEBUG->print("RS_ActionDrawEllipse4Point::trigger():" " entity added: %d", ellipse->getId());
@@ -196,7 +196,7 @@ void RS_ActionDrawEllipse4Points::coordinateEvent(RS_CoordinateEvent* e) {
 
     switch (getStatus()) {
     case SetPoint1:
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         setStatus(SetPoint2);
         break;
     case SetPoint2:
@@ -204,7 +204,7 @@ void RS_ActionDrawEllipse4Points::coordinateEvent(RS_CoordinateEvent* e) {
     case SetPoint4:
 
         if( preparePreview()) {
-            graphicView->moveRelativeZero(mouse);
+            _graphicView->moveRelativeZero(mouse);
             if(getStatus() == SetPoint4 ||
 					(pPoints->points.get(getStatus()) - pPoints->points.get(getStatus()-1)).squared() <RS_TOLERANCE15) {
                 //also draw the entity, if clicked on the same point twice
@@ -314,7 +314,7 @@ void RS_ActionDrawEllipse4Points::updateMouseButtonHints() {
 
 
 void RS_ActionDrawEllipse4Points::updateMouseCursor() {
-	graphicView->setMouseCursor(RS2::CadCursor);
+	_graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

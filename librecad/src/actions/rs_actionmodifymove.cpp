@@ -60,10 +60,10 @@ void RS_ActionModifyMove::trigger() {
 
     RS_DEBUG->print("RS_ActionModifyMove::trigger()");
 
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
 	m.move(pPoints->data);
 
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
     finish(false);
 }
 
@@ -87,7 +87,7 @@ void RS_ActionModifyMove::mouseMoveEvent(QMouseEvent* e) {
 				pPoints->targetPoint = mouse;
 
                 deletePreview();
-                _preview->addSelectionFrom(*container);
+                _preview->addSelectionFrom(*_container);
 				_preview->move(pPoints->targetPoint - pPoints->referencePoint);
 
                 if (e->modifiers() & Qt::ShiftModifier) {
@@ -136,13 +136,13 @@ void RS_ActionModifyMove::coordinateEvent(RS_CoordinateEvent* e) {
     switch (getStatus()) {
     case SetReferencePoint:
 		pPoints->referencePoint = pos;
-		graphicView->moveRelativeZero(pPoints->referencePoint);
+		_graphicView->moveRelativeZero(pPoints->referencePoint);
         setStatus(SetTargetPoint);
         break;
 
     case SetTargetPoint:
 		pPoints->targetPoint = pos;
-		graphicView->moveRelativeZero(pPoints->targetPoint);
+		_graphicView->moveRelativeZero(pPoints->targetPoint);
         setStatus(ShowDialog);
 		if (GetDialogFactory()->requestMoveDialog(pPoints->data)) {
 			if(pPoints->data.number<0){
@@ -182,8 +182,8 @@ void RS_ActionModifyMove::updateMouseButtonHints() {
 
 
 void RS_ActionModifyMove::updateMouseCursor() {
-        if(graphicView != NULL){
-    graphicView->setMouseCursor(RS2::CadCursor);
+        if(_graphicView != NULL){
+    _graphicView->setMouseCursor(RS2::CadCursor);
         }
 }
 

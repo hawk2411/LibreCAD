@@ -74,7 +74,7 @@ void RS_ActionDrawLineRelAngle::trigger() {
 
     deletePreview();
 
-    RS_Creation creation(container, graphicView);
+    RS_Creation creation(_container, _graphicView);
 	creation.createLineRelAngle(*pos,
                                 entity,
                                 angle,
@@ -116,8 +116,8 @@ void RS_ActionDrawLineRelAngle::trigger() {
 void RS_ActionDrawLineRelAngle::mouseMoveEvent(QMouseEvent* e) {
     RS_DEBUG->print("RS_ActionDrawLineRelAngle::mouseMoveEvent begin");
 
-    RS_Vector mouse(graphicView->toGraphX(e->x()),
-                    graphicView->toGraphY(e->y()));
+    RS_Vector mouse(_graphicView->toGraphX(e->x()),
+                    _graphicView->toGraphY(e->y()));
 
     switch (getStatus()) {
     case SetEntity:
@@ -177,7 +177,7 @@ void RS_ActionDrawLineRelAngle::mouseReleaseEvent(QMouseEvent* e) {
                     entity = en;
 
                     entity->setHighlighted(true);
-                    graphicView->drawEntity(entity);
+                    _graphicView->drawEntity(entity);
 
                     setStatus(SetPos);
                 }
@@ -197,7 +197,7 @@ void RS_ActionDrawLineRelAngle::mouseReleaseEvent(QMouseEvent* e) {
         deletePreview();
         if (entity) {
             entity->setHighlighted(false);
-            graphicView->drawEntity(entity);
+            _graphicView->drawEntity(entity);
         }
         init(getStatus()-1);
     }
@@ -334,10 +334,10 @@ void RS_ActionDrawLineRelAngle::updateMouseCursor()
     switch (getStatus())
     {
         case SetEntity:
-            graphicView->setMouseCursor(RS2::SelectCursor);
+            _graphicView->setMouseCursor(RS2::SelectCursor);
             break;
         case SetPos:
-            graphicView->setMouseCursor(RS2::CadCursor);
+            _graphicView->setMouseCursor(RS2::CadCursor);
             break;
         default:
             break;
@@ -348,7 +348,7 @@ void RS_ActionDrawLineRelAngle::unhighlightEntity()
 {
     if (entity) {
         entity->setHighlighted(false);
-        graphicView->drawEntity(entity);
+        _graphicView->drawEntity(entity);
     }
 }
 

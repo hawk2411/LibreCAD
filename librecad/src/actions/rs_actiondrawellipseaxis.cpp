@@ -98,8 +98,8 @@ void RS_ActionDrawEllipseAxis::init(int status) {
 void RS_ActionDrawEllipseAxis::trigger() {
     RS_PreviewActionInterface::trigger();
 
-	RS_Ellipse* ellipse = new RS_Ellipse{container,
-	{pPoints->center, pPoints->m_vMajorP, pPoints->ratio,
+	RS_Ellipse* ellipse = new RS_Ellipse{_container,
+                                         {pPoints->center, pPoints->m_vMajorP, pPoints->ratio,
 			pPoints->angle1, pPoints->angle2, false}
 };
 	if (pPoints->ratio > 1.){
@@ -108,7 +108,7 @@ void RS_ActionDrawEllipseAxis::trigger() {
     ellipse->setLayerToActive();
     ellipse->setPenToActive();
 
-    container->addEntity(ellipse);
+    _container->addEntity(ellipse);
 
     // upd. undo list:
     if (_document) {
@@ -117,9 +117,9 @@ void RS_ActionDrawEllipseAxis::trigger() {
         _document->endUndoCycle();
     }
 
-    RS_Vector rz = graphicView->getRelativeZero();
-    graphicView->redraw(RS2::RedrawDrawing);
-    graphicView->moveRelativeZero(rz);
+    RS_Vector rz = _graphicView->getRelativeZero();
+    _graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(rz);
     drawSnapper();
 
     setStatus(SetCenter);
@@ -236,7 +236,7 @@ void RS_ActionDrawEllipseAxis::coordinateEvent(RS_CoordinateEvent* e) {
     switch (getStatus()) {
     case SetCenter:
 		pPoints->center = mouse;
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         setStatus(SetMajor);
         break;
 
@@ -387,7 +387,7 @@ void RS_ActionDrawEllipseAxis::updateMouseButtonHints() {
 
 
 void RS_ActionDrawEllipseAxis::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

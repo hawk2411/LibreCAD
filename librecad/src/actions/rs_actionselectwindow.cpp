@@ -73,14 +73,14 @@ void RS_ActionSelectWindow::trigger() {
     RS_PreviewActionInterface::trigger();
 
 	if (pPoints->v1.valid && pPoints->v2.valid) {
-		if (graphicView->toGuiDX(pPoints->v1.distanceTo(pPoints->v2))>10) {
+		if (_graphicView->toGuiDX(pPoints->v1.distanceTo(pPoints->v2)) > 10) {
 
 			bool cross = (pPoints->v1.x>pPoints->v2.x);
 
-            RS_Selection s(*container, graphicView);
+            RS_Selection s(*_container, _graphicView);
 			s.selectWindow(pPoints->v1, pPoints->v2, select, cross);
 
-            GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+            GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 
             init();
         }
@@ -178,7 +178,7 @@ void RS_ActionSelectWindow::updateMouseButtonHints() {
 
 
 void RS_ActionSelectWindow::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

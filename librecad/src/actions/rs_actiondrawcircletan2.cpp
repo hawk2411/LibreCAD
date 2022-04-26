@@ -75,7 +75,7 @@ void RS_ActionDrawCircleTan2::finish(bool updateTB){
 		for(auto p: pPoints->circles){
 			if(p) p->setHighlighted(false);
         }
-        graphicView->redraw(RS2::RedrawDrawing);
+        _graphicView->redraw(RS2::RedrawDrawing);
         pPoints->circles.clear();
     }
     RS_PreviewActionInterface::finish(updateTB);
@@ -87,9 +87,9 @@ void RS_ActionDrawCircleTan2::trigger() {
     RS_PreviewActionInterface::trigger();
 
 
-	RS_Circle* circle=new RS_Circle(container, pPoints->cData);
+	RS_Circle* circle=new RS_Circle(_container, pPoints->cData);
 
-    container->addEntity(circle);
+    _container->addEntity(circle);
 
     // upd. undo list:
     if (_document) {
@@ -100,7 +100,7 @@ void RS_ActionDrawCircleTan2::trigger() {
 
 	for(auto p: pPoints->circles)
 		p->setHighlighted(false);
-    graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->redraw(RS2::RedrawDrawing);
     //    drawSnapper();
 
     pPoints->circles.clear();
@@ -118,7 +118,7 @@ void RS_ActionDrawCircleTan2::mouseMoveEvent(QMouseEvent* e) {
     switch(getStatus() ){
     case SetCenter: {
         //        RS_Entity*  en = catchEntity(e, _enTypeList, RS2::ResolveAll);
-		pPoints->coord= graphicView->toGraph(e->x(), e->y());
+		pPoints->coord= _graphicView->toGraph(e->x(), e->y());
         //        circles[getStatus()]=static_cast<RS_Line*>(en);
         if(preparePreview()) {
             deletePreview();
@@ -189,13 +189,13 @@ void RS_ActionDrawCircleTan2::mouseReleaseEvent(QMouseEvent* e) {
             pPoints->circles.push_back(static_cast<RS_AtomicEntity*>(en));
             if(getStatus()==SetCircle1 || getCenters()){
                 pPoints->circles.at(pPoints->circles.size()-1)->setHighlighted(true);
-                graphicView->redraw(RS2::RedrawDrawing);
+                _graphicView->redraw(RS2::RedrawDrawing);
                 setStatus(getStatus()+1);
             }
         }
             break;
         case SetCenter:
-			pPoints->coord= graphicView->toGraph(e->x(), e->y());
+			pPoints->coord= _graphicView->toGraph(e->x(), e->y());
             if( preparePreview()) trigger();
             break;
 
@@ -207,7 +207,7 @@ void RS_ActionDrawCircleTan2::mouseReleaseEvent(QMouseEvent* e) {
         if(getStatus()>0){
             pPoints->circles[getStatus()-1]->setHighlighted(false);
             pPoints->circles.pop_back();
-            graphicView->redraw(RS2::RedrawDrawing);
+            _graphicView->redraw(RS2::RedrawDrawing);
             deletePreview();
         }
         init(getStatus()-1);
@@ -324,7 +324,7 @@ void RS_ActionDrawCircleTan2::updateMouseButtonHints() {
 
 
 void RS_ActionDrawCircleTan2::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 double RS_ActionDrawCircleTan2::getRadius() const{

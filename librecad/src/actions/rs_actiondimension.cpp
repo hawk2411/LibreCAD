@@ -87,7 +87,7 @@ void RS_ActionDimension::showOptions() {
 
 
 void RS_ActionDimension::updateMouseCursor() {
-	graphicView->setMouseCursor(RS2::SelectCursor);
+	_graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 bool RS_ActionDimension::isDimensionAction(RS2::ActionType type) {

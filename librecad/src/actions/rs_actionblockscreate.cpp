@@ -65,7 +65,7 @@ void RS_ActionBlocksCreate::trigger() {
                     GetDialogFactory()->requestNewBlockDialog(blockList);
 
             if (!d.name.isEmpty()) {
-                RS_Creation creation(container, graphicView);
+                RS_Creation creation(_container, _graphicView);
 				creation.createBlock(&d, *referencePoint, true);
 
                 RS_InsertData id(
@@ -80,11 +80,11 @@ void RS_ActionBlocksCreate::trigger() {
         }
     }
 
-    graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->redraw(RS2::RedrawDrawing);
 
     setStatus(getStatus()+1); // clear mouse button hints
     updateMouseButtonHints();
-    graphicView->killSelectActions();
+    _graphicView->killSelectActions();
     finish(false);
 }
 
@@ -157,7 +157,7 @@ void RS_ActionBlocksCreate::updateMouseButtonHints() {
 
 
 void RS_ActionBlocksCreate::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

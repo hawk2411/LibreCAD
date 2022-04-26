@@ -65,14 +65,14 @@ void RS_ActionModifyStretch::trigger() {
 
     deletePreview();
 
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
 	m.stretch(pPoints->firstCorner,
 			  pPoints->secondCorner,
 			  pPoints->targetPoint - pPoints->referencePoint);
 
     setStatus(SetFirstCorner);
 
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 }
 
 
@@ -102,7 +102,7 @@ void RS_ActionModifyStretch::mouseMoveEvent(QMouseEvent* e) {
 			pPoints->targetPoint = mouse;
 
             deletePreview();
-			_preview->addStretchablesFrom(*container, pPoints->firstCorner, pPoints->secondCorner);
+			_preview->addStretchablesFrom(*_container, pPoints->firstCorner, pPoints->secondCorner);
             //preview->move(targetPoint-referencePoint);
 			_preview->stretch(pPoints->firstCorner, pPoints->secondCorner,
 							 pPoints->targetPoint-pPoints->referencePoint);
@@ -152,13 +152,13 @@ void RS_ActionModifyStretch::coordinateEvent(RS_CoordinateEvent* e) {
 
     case SetReferencePoint:
 		pPoints->referencePoint = mouse;
-		graphicView->moveRelativeZero(pPoints->referencePoint);
+		_graphicView->moveRelativeZero(pPoints->referencePoint);
         setStatus(SetTargetPoint);
         break;
 
     case SetTargetPoint:
 		pPoints->targetPoint = mouse;
-		graphicView->moveRelativeZero(pPoints->targetPoint);
+		_graphicView->moveRelativeZero(pPoints->targetPoint);
         trigger();
         //finish();
         break;
@@ -197,7 +197,7 @@ void RS_ActionModifyStretch::updateMouseButtonHints() {
 
 
 void RS_ActionModifyStretch::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

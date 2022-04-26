@@ -71,12 +71,12 @@ void RS_ActionModifyDeleteFree::trigger() {
                 if(parent->getId() == polyline->getId()) {
 
                     // deletes whole polyline on screen:
-                    graphicView->deleteEntity((RS_Entity*)polyline);
+                    _graphicView->deleteEntity((RS_Entity*)polyline);
 
                     // splits up the polyline in the container:
                     RS_Polyline* pl1;
                     RS_Polyline* pl2;
-                    RS_Modification m(*container);
+                    RS_Modification m(*_container);
                     m.splitPolyline(*polyline,
 									*e1, pPoints->v1,
 									*e2, pPoints->v2,
@@ -91,12 +91,12 @@ void RS_ActionModifyDeleteFree::trigger() {
                     }
 
                     // draws the new polylines on the screen:
-                                        graphicView->redraw(RS2::RedrawDrawing);
+                                        _graphicView->redraw(RS2::RedrawDrawing);
 
                     init();
 
                     GetDialogFactory()->updateSelectionWidget(
-                        container->countSelected(true, {}),container->totalSelectedLength());
+                            _container->countSelected(true, {}), _container->totalSelectedLength());
                 } else {
                                 GetDialogFactory()->commandMessage(tr("Entities not in the same polyline."));
                 }

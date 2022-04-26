@@ -54,11 +54,11 @@ QAction* RS_ActionSetRelativeZero::createGUIAction(RS2::ActionType /*type*/, QOb
 
 
 void RS_ActionSetRelativeZero::trigger() {
-    bool wasLocked = graphicView->isRelativeZeroLocked();
+    bool wasLocked = _graphicView->isRelativeZeroLocked();
 	if (pt->valid) {
-        graphicView->lockRelativeZero(false);
-		graphicView->moveRelativeZero(*pt);
-        graphicView->lockRelativeZero(wasLocked);
+        _graphicView->lockRelativeZero(false);
+		_graphicView->moveRelativeZero(*pt);
+        _graphicView->lockRelativeZero(wasLocked);
     }
     finish(false);
 }
@@ -106,7 +106,7 @@ void RS_ActionSetRelativeZero::updateMouseButtonHints() {
 
 
 void RS_ActionSetRelativeZero::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

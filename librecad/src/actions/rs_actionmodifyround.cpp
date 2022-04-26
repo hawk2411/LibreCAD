@@ -64,8 +64,8 @@ RS_ActionModifyRound::~RS_ActionModifyRound() = default;
 void RS_ActionModifyRound::init(int status) {
     RS_ActionInterface::init(status);
 
-    snapMode.clear();
-    snapMode.restriction = RS2::RestrictNothing;
+    _snapMode.clear();
+    _snapMode.restriction = RS2::RestrictNothing;
 }
 
 
@@ -79,7 +79,7 @@ void RS_ActionModifyRound::trigger() {
 
         deletePreview();
 
-        RS_Modification m(*container, graphicView);
+        RS_Modification m(*_container, _graphicView);
 		m.round(pPoints->coord2,
 				pPoints->coord1,
                 (RS_AtomicEntity*)entity1,
@@ -95,8 +95,8 @@ void RS_ActionModifyRound::trigger() {
         setStatus(SetEntity1);
 
 		GetDialogFactory()->updateSelectionWidget(
-					container->countSelected(true, {}),
-					container->totalSelectedLength());
+                _container->countSelected(true, {}),
+                _container->totalSelectedLength());
     }
 }
 
@@ -105,7 +105,7 @@ void RS_ActionModifyRound::trigger() {
 void RS_ActionModifyRound::mouseMoveEvent(QMouseEvent* e) {
     RS_DEBUG->print("RS_ActionModifyRound::mouseMoveEvent begin");
 
-    RS_Vector mouse = graphicView->toGraph(e->x(), e->y());
+    RS_Vector mouse = _graphicView->toGraph(e->x(), e->y());
     RS_Entity* se = catchEntity(e, eType, RS2::ResolveAllButTextImage);
 
     switch (getStatus()) {
@@ -158,7 +158,7 @@ void RS_ActionModifyRound::mouseMoveEvent(QMouseEvent* e) {
 
 
 void RS_ActionModifyRound::mouseReleaseEvent(QMouseEvent* e) {
-    RS_Vector mouse = graphicView->toGraph(e->x(), e->y());
+    RS_Vector mouse = _graphicView->toGraph(e->x(), e->y());
     RS_Entity* se = catchEntity(e, eType, RS2::ResolveAll);
 
     if (e->button()==Qt::LeftButton) {
@@ -329,7 +329,7 @@ void RS_ActionModifyRound::updateMouseButtonHints() {
 
 
 void RS_ActionModifyRound::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

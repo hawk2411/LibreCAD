@@ -54,7 +54,7 @@ void RS_ActionModifyExplodeText::init(int status) {
 
 
 void RS_ActionModifyExplodeText::trigger() {
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
     m.explodeTextIntoLetters();
 }
 

@@ -65,11 +65,11 @@ void LC_ActionDrawCircle2PR::init(int status) {
 void LC_ActionDrawCircle2PR::trigger() {
 	RS_PreviewActionInterface::trigger();
 
-	RS_Circle* circle = new RS_Circle(container,
-									  *data);
+	RS_Circle* circle = new RS_Circle(_container,
+                                      *data);
 	circle->setLayerToActive();
 	circle->setPenToActive();
-	container->addEntity(circle);
+	_container->addEntity(circle);
 
 	// upd. undo list:
 	if (_document) {
@@ -77,9 +77,9 @@ void LC_ActionDrawCircle2PR::trigger() {
 		_document->addUndoable(circle);
 		_document->endUndoCycle();
 	}
-	RS_Vector rz = graphicView->getRelativeZero();
-	graphicView->redraw(RS2::RedrawDrawing);
-	graphicView->moveRelativeZero(rz);
+	RS_Vector rz = _graphicView->getRelativeZero();
+	_graphicView->redraw(RS2::RedrawDrawing);
+	_graphicView->moveRelativeZero(rz);
 	drawSnapper();
 
 	setStatus(SetPoint1);
@@ -176,14 +176,14 @@ void LC_ActionDrawCircle2PR::coordinateEvent(RS_CoordinateEvent* e) {
 	switch (getStatus()) {
 	case SetPoint1:
 		pPoints->point1 = mouse;
-		graphicView->moveRelativeZero(mouse);
+		_graphicView->moveRelativeZero(mouse);
 		setStatus(SetPoint2);
 		break;
 
 	case SetPoint2:
 		if(mouse.distanceTo(pPoints->point1) <= 2.*data->radius){
 			pPoints->point2 = mouse;
-			graphicView->moveRelativeZero(mouse);
+			_graphicView->moveRelativeZero(mouse);
 			setStatus(SelectCenter);
 		}else{
             GetDialogFactory()->commandMessage(tr("radius=%1 is too small for points selected\ndistance between points=%2 is larger than diameter=%3").
@@ -249,7 +249,7 @@ void LC_ActionDrawCircle2PR::updateMouseButtonHints() {
 
 
 void LC_ActionDrawCircle2PR::updateMouseCursor() {
-	graphicView->setMouseCursor(RS2::CadCursor);
+	_graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

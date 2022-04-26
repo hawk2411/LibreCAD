@@ -50,12 +50,12 @@ void RS_ActionLayersRemove::trigger() {
                 _graphic->removeLayer(ll->find(name));
             }
             _graphic->updateInserts();
-            container->calculateBorders();
+            _container->calculateBorders();
             _graphic->getLayerList()->getLayerWitget()->slotUpdateLayerList();
         }
     }
     finish(false);
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 }
 
 void RS_ActionLayersRemove::init(int status) {

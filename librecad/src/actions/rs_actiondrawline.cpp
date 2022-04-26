@@ -125,10 +125,10 @@ void RS_ActionDrawLine::trigger()
 {
     RS_PreviewActionInterface::trigger();
 
-    RS_Line* line = new RS_Line(container, pPoints->data);
+    RS_Line* line = new RS_Line(_container, pPoints->data);
     line->setLayerToActive();
     line->setPenToActive();
-    container->addEntity(line);
+    _container->addEntity(line);
 
     // update undo list
     if (_document) {
@@ -137,8 +137,8 @@ void RS_ActionDrawLine::trigger()
         _document->endUndoCycle();
     }
 
-    graphicView->redraw(RS2::RedrawDrawing);
-    graphicView->moveRelativeZero(pPoints->history.at(pPoints->index()).currPt);
+    _graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(pPoints->history.at(pPoints->index()).currPt);
     RS_DEBUG->print("RS_ActionDrawLine::trigger(): line added: %d",
                     line->getId());
 }
@@ -210,9 +210,9 @@ void RS_ActionDrawLine::coordinateEvent(RS_CoordinateEvent* e)
     case SetStartpoint:
         pPoints->data._startpoint = mouse;
         pPoints->startOffset = 0;
-        addHistory( HA_SetStartpoint, graphicView->getRelativeZero(), mouse, pPoints->startOffset);
+        addHistory(HA_SetStartpoint, _graphicView->getRelativeZero(), mouse, pPoints->startOffset);
         setStatus(SetEndpoint);
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         updateMouseButtonHints();
         break;
 
@@ -367,7 +367,7 @@ void RS_ActionDrawLine::hideOptions()
 
 void RS_ActionDrawLine::updateMouseCursor()
 {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 void RS_ActionDrawLine::close()
@@ -418,7 +418,7 @@ void RS_ActionDrawLine::undo()
 
         --pPoints->historyIndex;
         deletePreview();
-        graphicView->moveRelativeZero(h.prevPt);
+        _graphicView->moveRelativeZero(h.prevPt);
 
         switch (h.histAct) {
         case HA_SetStartpoint:
@@ -427,7 +427,7 @@ void RS_ActionDrawLine::undo()
 
         case HA_SetEndpoint:
         case HA_Close:
-            graphicView->setCurrentAction( new RS_ActionEditUndo(true, *container, *graphicView));
+            _graphicView->setCurrentAction(new RS_ActionEditUndo(true, *_container, *_graphicView));
             pPoints->data._startpoint = h.prevPt;
             setStatus(SetEndpoint);
             break;
@@ -454,7 +454,7 @@ void RS_ActionDrawLine::redo()
         ++pPoints->historyIndex;
         History h( pPoints->history.at( pPoints->index()));
         deletePreview();
-        graphicView->moveRelativeZero(h.currPt);
+        _graphicView->moveRelativeZero(h.currPt);
         pPoints->data._startpoint = h.currPt;
         pPoints->startOffset = h.startOffset;
         switch (h.histAct) {
@@ -463,12 +463,12 @@ void RS_ActionDrawLine::redo()
             break;
 
         case HA_SetEndpoint:
-            graphicView->setCurrentAction( new RS_ActionEditUndo(false, *container, *graphicView));
+            _graphicView->setCurrentAction(new RS_ActionEditUndo(false, *_container, *_graphicView));
             setStatus(SetEndpoint);
             break;
 
         case HA_Close:
-            graphicView->setCurrentAction( new RS_ActionEditUndo(false, *container, *graphicView));
+            _graphicView->setCurrentAction(new RS_ActionEditUndo(false, *_container, *_graphicView));
             setStatus(SetStartpoint);
             break;
 

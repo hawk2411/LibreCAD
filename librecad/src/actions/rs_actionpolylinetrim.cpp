@@ -58,19 +58,19 @@ void RS_ActionPolylineTrim::trigger() {
         if (delEntity && Segment1->isAtomic() && Segment2->isAtomic()) {
 
                 delEntity->setHighlighted(false);
-                graphicView->drawEntity(delEntity);
+                _graphicView->drawEntity(delEntity);
 
-                RS_Modification m(*container, graphicView);
+                RS_Modification m(*_container, _graphicView);
                 delEntity = m.polylineTrim((RS_Polyline&)*delEntity, *Segment1, *Segment2 );
 
 //		delEntity = NULL;
                 Segment1 = Segment2 = NULL;
                 setStatus(SetSegment1);
 
-                GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
-        graphicView->redraw();
+        _graphicView->redraw();
 ////////////////////////////////////////
 }
 
@@ -110,10 +110,10 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                                         tr("Entity must be a polyline."));
                         } else {
                                 delEntity->setHighlighted(true);
-                                graphicView->drawEntity(delEntity);
+                                _graphicView->drawEntity(delEntity);
                                 setStatus(SetSegment1);
 ////////////////////////////////////////2006/06/15
-                                graphicView->redraw();
+                                _graphicView->redraw();
 ////////////////////////////////////////
                         }
                         break;
@@ -129,9 +129,9 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                                         tr("No Segment found on entity."));
                         }else{
                                 Segment1 = NULL;
-                                        double dist = graphicView->toGraphDX(snapRange)*0.9;
-                                Segment1 =  (RS_AtomicEntity*)((RS_Polyline*)delEntity)->getNearestEntity( RS_Vector(graphicView->toGraphX(e->x()),
-                                 graphicView->toGraphY(e->y())), &dist, RS2::ResolveNone);
+                                        double dist = _graphicView->toGraphDX(_snapRange) * 0.9;
+                                Segment1 =  (RS_AtomicEntity*)((RS_Polyline*)delEntity)->getNearestEntity(RS_Vector(_graphicView->toGraphX(e->x()),
+                                                                                                                    _graphicView->toGraphY(e->y())), &dist, RS2::ResolveNone);
                                 if(Segment1 == NULL)
                                         break;
                                 setStatus(SetSegment2);
@@ -148,9 +148,9 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                                         tr("No Segment found on entity."));
                         }else{
                                 Segment2 = NULL;
-                                        double dist = graphicView->toGraphDX(snapRange)*0.9;
-                                Segment2 =  (RS_AtomicEntity*)((RS_Polyline*)delEntity)->getNearestEntity( RS_Vector(graphicView->toGraphX(e->x()),
-                                 graphicView->toGraphY(e->y())), &dist, RS2::ResolveNone);
+                                        double dist = _graphicView->toGraphDX(_snapRange) * 0.9;
+                                Segment2 =  (RS_AtomicEntity*)((RS_Polyline*)delEntity)->getNearestEntity(RS_Vector(_graphicView->toGraphX(e->x()),
+                                                                                                                    _graphicView->toGraphY(e->y())), &dist, RS2::ResolveNone);
                                 if(Segment2 == NULL)
                                         break;
                                 deleteSnapper();
@@ -165,9 +165,9 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                 deleteSnapper();
                 if (delEntity) {
                         delEntity->setHighlighted(false);
-                        graphicView->drawEntity(delEntity);
+                        _graphicView->drawEntity(delEntity);
 ////////////////////////////////////////2006/06/15
-                        graphicView->redraw();
+                        _graphicView->redraw();
 ////////////////////////////////////////
                 }
                 init(getStatus()-1);
@@ -198,7 +198,7 @@ void RS_ActionPolylineTrim::updateMouseButtonHints() {
 
 
 void RS_ActionPolylineTrim::updateMouseCursor() {
-        graphicView->setMouseCursor(RS2::SelectCursor);
+        _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

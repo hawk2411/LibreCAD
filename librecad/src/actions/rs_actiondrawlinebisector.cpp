@@ -92,7 +92,7 @@ void RS_ActionDrawLineBisector::init(int status) {
 		if(status<0 && line1 && line1->isHighlighted()){
 			line1->setHighlighted(false);
 		}
-		graphicView->redraw(RS2::RedrawDrawing);
+		_graphicView->redraw(RS2::RedrawDrawing);
 	}
 }
 
@@ -104,9 +104,9 @@ void RS_ActionDrawLineBisector::trigger() {
 			p->setHighlighted(false);
 		}
 	}
-	graphicView->redraw(RS2::RedrawDrawing);
+	_graphicView->redraw(RS2::RedrawDrawing);
 
-    RS_Creation creation(container, graphicView);
+    RS_Creation creation(_container, _graphicView);
 	creation.createBisector(pPoints->coord1,
 							pPoints->coord2,
                             length,
@@ -120,8 +120,8 @@ void RS_ActionDrawLineBisector::trigger() {
 void RS_ActionDrawLineBisector::mouseMoveEvent(QMouseEvent* e) {
     RS_DEBUG->print("RS_ActionDrawLineBisector::mouseMoveEvent begin");
 
-    RS_Vector mouse = RS_Vector(graphicView->toGraphX(e->x()),
-                                graphicView->toGraphY(e->y()));
+    RS_Vector mouse = RS_Vector(_graphicView->toGraphX(e->x()),
+                                _graphicView->toGraphY(e->y()));
 
     switch (getStatus()) {
     case SetLine1:
@@ -137,7 +137,7 @@ void RS_ActionDrawLineBisector::mouseMoveEvent(QMouseEvent* e) {
 				}
 				line2 = static_cast<RS_Line*>(en);
 				line2->setHighlighted(true);
-				graphicView->redraw(RS2::RedrawDrawing);
+				_graphicView->redraw(RS2::RedrawDrawing);
 
                 deletePreview();
 
@@ -152,7 +152,7 @@ void RS_ActionDrawLineBisector::mouseMoveEvent(QMouseEvent* e) {
 			}else{
 				if(line2 && line2->isHighlighted()){
 					line2->setHighlighted(false);
-					graphicView->redraw(RS2::RedrawDrawing);
+					_graphicView->redraw(RS2::RedrawDrawing);
 				}
 				line2=nullptr;
 
@@ -176,8 +176,8 @@ void RS_ActionDrawLineBisector::mouseReleaseEvent(QMouseEvent* e) {
         init(getStatus()-1);
     } else {
 
-        RS_Vector mouse = RS_Vector(graphicView->toGraphX(e->x()),
-                                    graphicView->toGraphY(e->y()));
+        RS_Vector mouse = RS_Vector(_graphicView->toGraphX(e->x()),
+                                    _graphicView->toGraphY(e->y()));
 
         switch (getStatus()) {
         case SetLine1: {
@@ -186,7 +186,7 @@ void RS_ActionDrawLineBisector::mouseReleaseEvent(QMouseEvent* e) {
 				if (en && en->rtti()==RS2::EntityLine) {
 					line1 = static_cast<RS_Line*>(en);
 					line1->setHighlighted(true);
-					graphicView->redraw(RS2::RedrawDrawing);
+					_graphicView->redraw(RS2::RedrawDrawing);
 					line2=nullptr;
 					setStatus(SetLine2);
 				}
@@ -325,7 +325,7 @@ void RS_ActionDrawLineBisector::hideOptions() {
 
 
 void RS_ActionDrawLineBisector::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

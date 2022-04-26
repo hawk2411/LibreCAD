@@ -54,13 +54,13 @@ void RS_ActionDrawLineFree::trigger() {
 		RS_VectorSolutions sol=polyline->getRefPoints();
 		if(sol.getNumber() > 2 ) {
 			RS_Entity* ent=polyline->clone();
-			container->addEntity(ent);
+			_container->addEntity(ent);
 			if (_document) {
 				_document->startUndoCycle();
 				_document->addUndoable(ent);
 				_document->endUndoCycle();
 			}
-			graphicView->redraw(RS2::RedrawDrawing);
+			_graphicView->redraw(RS2::RedrawDrawing);
 			RS_DEBUG->print("RS_ActionDrawLineFree::trigger():"
 							" polyline added: %d", ent->getId());
 		}
@@ -77,7 +77,7 @@ void RS_ActionDrawLineFree::mouseMoveEvent(QMouseEvent* e) {
     RS_Vector v = snapPoint(e);
     drawSnapper();
     if (getStatus()==Dragging && polyline.get()) {
-		if( (graphicView->toGui(v) - graphicView->toGui(*vertex)).squared()< 1. ){
+		if((_graphicView->toGui(v) - _graphicView->toGui(*vertex)).squared() < 1. ){
             //do not add the same mouse position
             return;
         }
@@ -104,8 +104,8 @@ void RS_ActionDrawLineFree::mousePressEvent(QMouseEvent* e) {
             // fall-through
         case Dragging:
 			*vertex = snapPoint(e);
-			polyline.reset(new RS_Polyline(container,
-									   RS_PolylineData(*vertex, *vertex, 0))
+			polyline.reset(new RS_Polyline(_container,
+                                           RS_PolylineData(*vertex, *vertex, 0))
 						   );
             polyline->setLayerToActive();
             polyline->setPenToActive();
@@ -147,7 +147,7 @@ void RS_ActionDrawLineFree::updateMouseButtonHints() {
 }
 
 void RS_ActionDrawLineFree::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

@@ -88,10 +88,10 @@ void RS_ActionDrawArc3P::trigger() {
 
     preparePreview();
 	if (pPoints->data.isValid()) {
-		RS_Arc* arc = new RS_Arc{container, pPoints->data};
+		RS_Arc* arc = new RS_Arc{_container, pPoints->data};
         arc->setLayerToActive();
         arc->setPenToActive();
-        container->addEntity(arc);
+        _container->addEntity(arc);
 
         // upd. undo list:
         if (_document) {
@@ -100,8 +100,8 @@ void RS_ActionDrawArc3P::trigger() {
             _document->endUndoCycle();
         }
 
-                graphicView->redraw(RS2::RedrawDrawing);
-        graphicView->moveRelativeZero(arc->getEndpoint());
+                _graphicView->redraw(RS2::RedrawDrawing);
+        _graphicView->moveRelativeZero(arc->getEndpoint());
 
         setStatus(SetPoint1);
         reset();
@@ -183,13 +183,13 @@ void RS_ActionDrawArc3P::coordinateEvent(RS_CoordinateEvent* e) {
     switch (getStatus()) {
     case SetPoint1:
 		pPoints->point1 = mouse;
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         setStatus(SetPoint2);
         break;
 
     case SetPoint2:
 		pPoints->point2 = mouse;
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         setStatus(SetPoint3);
         break;
 
@@ -216,8 +216,8 @@ void RS_ActionDrawArc3P::commandEvent(RS_CommandEvent* e) {
 
     if (RS_COMMANDS->checkCommand("center", c, rtti())) {
         finish(false);
-        graphicView->setCurrentAction(
-            new RS_ActionDrawArc(*container, *graphicView));
+        _graphicView->setCurrentAction(
+            new RS_ActionDrawArc(*_container, *_graphicView));
     }
 }
 
@@ -254,7 +254,7 @@ void RS_ActionDrawArc3P::updateMouseButtonHints() {
 
 
 void RS_ActionDrawArc3P::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

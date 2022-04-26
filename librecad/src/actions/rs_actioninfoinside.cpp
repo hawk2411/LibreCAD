@@ -90,7 +90,7 @@ void RS_ActionInfoInside::updateMouseButtonHints() {
 }
 
 void RS_ActionInfoInside::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

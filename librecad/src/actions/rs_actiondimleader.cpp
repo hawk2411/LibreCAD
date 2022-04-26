@@ -73,7 +73,7 @@ void RS_ActionDimLeader::trigger() {
 
 	if (pPoints->points.size()){
 
-        RS_Leader* leader = new RS_Leader(container, RS_LeaderData(true));
+        RS_Leader* leader = new RS_Leader(_container, RS_LeaderData(true));
         leader->setLayerToActive();
         leader->setPenToActive();
 
@@ -81,7 +81,7 @@ void RS_ActionDimLeader::trigger() {
 			leader->addVertex(vp);
 		}
 
-        container->addEntity(leader);
+        _container->addEntity(leader);
 
         // upd. undo list:
 		if (_document) {
@@ -91,9 +91,9 @@ void RS_ActionDimLeader::trigger() {
         }
 
         deletePreview();
-        RS_Vector rz = graphicView->getRelativeZero();
-		graphicView->redraw(RS2::RedrawDrawing);
-        graphicView->moveRelativeZero(rz);
+        RS_Vector rz = _graphicView->getRelativeZero();
+		_graphicView->redraw(RS2::RedrawDrawing);
+        _graphicView->moveRelativeZero(rz);
         //drawSnapper();
 
         RS_DEBUG->print("RS_ActionDimLeader::trigger(): leader added: %d",
@@ -173,7 +173,7 @@ void RS_ActionDimLeader::coordinateEvent(RS_CoordinateEvent* e) {
 	pPoints->points.push_back(mouse);
         //start = data.startpoint;
         setStatus(SetEndpoint);
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         break;
 
     case SetEndpoint:
@@ -181,7 +181,7 @@ void RS_ActionDimLeader::coordinateEvent(RS_CoordinateEvent* e) {
 	pPoints->points.push_back(mouse);
         //trigger();
         //data.startpoint = data.endpoint;
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         break;
 
     default:
@@ -235,7 +235,7 @@ void RS_ActionDimLeader::updateMouseButtonHints() {
 
 
 void RS_ActionDimLeader::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

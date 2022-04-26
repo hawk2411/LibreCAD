@@ -51,7 +51,7 @@ void RS_ActionZoomAuto::init(int status) {
 
 
 void RS_ActionZoomAuto::trigger() {
-    graphicView->zoomAuto(false, keepAspectRatio);
+    _graphicView->zoomAuto(false, keepAspectRatio);
     finish(false);
 }
 

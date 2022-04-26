@@ -53,10 +53,10 @@ void RS_ActionSelectSingle::trigger() {
 		typeMatch = std::find(entityTypeList.begin(), entityTypeList.end(), en->rtti())
 				!= entityTypeList.end();
 	if (en && typeMatch) {
-        RS_Selection s(*container, graphicView);
+        RS_Selection s(*_container, _graphicView);
         s.selectSingle(en);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
     } else {
         RS_DEBUG->print("RS_ActionSelectSingle::trigger: Entity is NULL\n");
     }
@@ -71,7 +71,7 @@ void RS_ActionSelectSingle::keyPressEvent(QKeyEvent* e)
         actionSelect->keyPressEvent(e);
     }
 
-    if (container->countSelected(true, {}) > 0 && e->key()==Qt::Key_Enter)
+    if (_container->countSelected(true, {}) > 0 && e->key() == Qt::Key_Enter)
     {
         finish(false);
         actionSelect->keyPressEvent(e);
@@ -103,7 +103,7 @@ void RS_ActionSelectSingle::mouseReleaseEvent(QMouseEvent* e)
 
 
 void RS_ActionSelectSingle::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

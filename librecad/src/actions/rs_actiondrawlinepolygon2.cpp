@@ -61,7 +61,7 @@ void RS_ActionDrawLinePolygonCorCor::trigger() {
 
     deletePreview();
 
-    RS_Creation creation(container, graphicView);
+    RS_Creation creation(_container, _graphicView);
 	bool ok = creation.createPolygon2(pPoints->corner1, pPoints->corner2, number);
 
     if (!ok) {
@@ -123,7 +123,7 @@ void RS_ActionDrawLinePolygonCorCor::coordinateEvent(RS_CoordinateEvent* e) {
     case SetCorner1:
 		pPoints->corner1 = mouse;
         setStatus(SetCorner2);
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         break;
 
     case SetCorner2:
@@ -239,7 +239,7 @@ QStringList RS_ActionDrawLinePolygonCorCor::getAvailableCommands() {
 
 
 void RS_ActionDrawLinePolygonCorCor::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

@@ -131,9 +131,9 @@ void RS_ActionDrawPolyline::trigger() {
 
         // upd view
     deleteSnapper();
-	graphicView->moveRelativeZero({0.,0.});
-	graphicView->drawEntity(pPoints->polyline);
-	graphicView->moveRelativeZero(pPoints->polyline->getEndpoint());
+	_graphicView->moveRelativeZero({0., 0.});
+	_graphicView->drawEntity(pPoints->polyline);
+	_graphicView->moveRelativeZero(pPoints->polyline->getEndpoint());
     drawSnapper();
     RS_DEBUG->print("RS_ActionDrawLinePolyline::trigger(): polyline added: %d",
 					pPoints->polyline->getId());
@@ -297,17 +297,17 @@ void RS_ActionDrawPolyline::coordinateEvent(RS_CoordinateEvent* e) {
 		pPoints->bHistory.append(0.0);
 		pPoints->start = pPoints->point;
         setStatus(SetNextPoint);
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         updateMouseButtonHints();
         break;
 
     case SetNextPoint:
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
 		pPoints->point = mouse;
 		pPoints->history.append(mouse);
 		pPoints->bHistory.append(bulge);
 				if (!pPoints->polyline) {
-						pPoints->polyline = new RS_Polyline(container, pPoints->data);
+						pPoints->polyline = new RS_Polyline(_container, pPoints->data);
 						pPoints->polyline->addVertex(pPoints->start, 0.0);
                 }
 				if (pPoints->polyline) {
@@ -317,12 +317,12 @@ void RS_ActionDrawPolyline::coordinateEvent(RS_CoordinateEvent* e) {
 						if (pPoints->polyline->count()==1) {
 						pPoints->polyline->setLayerToActive();
 						pPoints->polyline->setPenToActive();
-								container->addEntity(pPoints->polyline);
+								_container->addEntity(pPoints->polyline);
                         }
                         deletePreview();
                         // clearPreview();
                         deleteSnapper();
-						graphicView->drawEntity(pPoints->polyline);
+						_graphicView->drawEntity(pPoints->polyline);
                         drawSnapper();
                 }
         //trigger();
@@ -478,7 +478,7 @@ void RS_ActionDrawPolyline::hideOptions() {
 
 
 void RS_ActionDrawPolyline::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 void RS_ActionDrawPolyline::close() {
@@ -494,7 +494,7 @@ void RS_ActionDrawPolyline::close() {
 		}
 		trigger();
         setStatus(SetStartpoint);
-		graphicView->moveRelativeZero(pPoints->start);
+		_graphicView->moveRelativeZero(pPoints->start);
     } else {
         GetDialogFactory()->commandMessage(
             tr("Cannot close sequence of lines: "
@@ -510,17 +510,17 @@ void RS_ActionDrawPolyline::undo() {
 		pPoints->point = pPoints->history.last();
 
 		if(pPoints->history.size()==1){
-			graphicView->moveRelativeZero(pPoints->history.front());
+			_graphicView->moveRelativeZero(pPoints->history.front());
             //remove polyline from container,
             //container calls delete over polyline
-			container->removeEntity(pPoints->polyline);
+			_container->removeEntity(pPoints->polyline);
 			pPoints->polyline = nullptr;
-			graphicView->drawEntity(pPoints->polyline);
+			_graphicView->drawEntity(pPoints->polyline);
         }
 		if (pPoints->polyline) {
 			pPoints->polyline->removeLastVertex();
-			graphicView->moveRelativeZero(pPoints->polyline->getEndpoint());
-			graphicView->drawEntity(pPoints->polyline);
+			_graphicView->moveRelativeZero(pPoints->polyline->getEndpoint());
+			_graphicView->drawEntity(pPoints->polyline);
         }
     } else {
         GetDialogFactory()->commandMessage(

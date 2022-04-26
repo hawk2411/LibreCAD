@@ -73,10 +73,10 @@ void RS_ActionDrawEllipseCenter3Points::trigger() {
     RS_PreviewActionInterface::trigger();
 
 
-	RS_Ellipse* ellipse=new RS_Ellipse(container, pPoints->eData);
+	RS_Ellipse* ellipse=new RS_Ellipse(_container, pPoints->eData);
 
     deletePreview();
-    container->addEntity(ellipse);
+    _container->addEntity(ellipse);
 
     // upd. undo list:
     if (_document) {
@@ -85,8 +85,8 @@ void RS_ActionDrawEllipseCenter3Points::trigger() {
         _document->endUndoCycle();
     }
 
-    graphicView->moveRelativeZero(ellipse->getCenter());
-    graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(ellipse->getCenter());
+    _graphicView->redraw(RS2::RedrawDrawing);
     drawSnapper();
 
     setStatus(SetCenter);
@@ -186,7 +186,7 @@ void RS_ActionDrawEllipseCenter3Points::coordinateEvent(RS_CoordinateEvent* e) {
 
     switch (getStatus()) {
     case SetCenter:
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         setStatus(SetPoint1);
         break;
     case SetPoint1:
@@ -305,7 +305,7 @@ void RS_ActionDrawEllipseCenter3Points::updateMouseButtonHints() {
 }
 
 void RS_ActionDrawEllipseCenter3Points::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

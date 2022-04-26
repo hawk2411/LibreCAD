@@ -53,7 +53,7 @@ void RS_ActionToolRegenerateDimensions::trigger() {
     RS_DEBUG->print("RS_ActionToolRegenerateDimensions::trigger()");
 
 	int num = 0;
-	for(auto e: *container){
+	for(auto e: *_container){
 
         if (RS_Information::isDimension(e->rtti()) && e->isVisible()) {
 			num++;
@@ -65,7 +65,7 @@ void RS_ActionToolRegenerateDimensions::trigger() {
     }
 
     if (num>0) {
-    	graphicView->redraw();
+    	_graphicView->redraw();
         GetDialogFactory()->commandMessage(
             tr("Regenerated %1 dimension entities").arg(num));
     } else {

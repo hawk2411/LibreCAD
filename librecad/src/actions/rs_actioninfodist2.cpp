@@ -46,10 +46,10 @@ RS_ActionInfoDist2::RS_ActionInfoDist2(RS_EntityContainer& container,
 }
 
 RS_ActionInfoDist2::~RS_ActionInfoDist2() {
-    if(graphicView != NULL && graphicView->isCleanUp()==false){
+    if(_graphicView != NULL && _graphicView->isCleanUp() == false){
         if( entity && entity->isHighlighted()){
             entity->setHighlighted(false);
-            graphicView->redraw(RS2::RedrawDrawing);
+            _graphicView->redraw(RS2::RedrawDrawing);
         }
     }
 }
@@ -70,7 +70,7 @@ void RS_ActionInfoDist2::trigger() {
                                              _graphic->getLinearFormat(), _graphic->getLinearPrecision());
         GetDialogFactory()->commandMessage(tr("Distance: %1").arg(str));
         entity->setHighlighted(false);
-        graphicView->redraw(RS2::RedrawDrawing);
+        _graphicView->redraw(RS2::RedrawDrawing);
     }
 }
 
@@ -110,7 +110,7 @@ void RS_ActionInfoDist2::mouseReleaseEvent(QMouseEvent* e) {
             entity = catchEntity(e);
             if (entity) {
                 entity->setHighlighted(true);
-                graphicView->redraw(RS2::RedrawDrawing);
+                _graphicView->redraw(RS2::RedrawDrawing);
                 setStatus(SetPoint);
             }
             break;
@@ -138,7 +138,7 @@ void RS_ActionInfoDist2::coordinateEvent(RS_CoordinateEvent* e) {
 
     if (getStatus()==SetPoint && entity) {
 		*point = e->getCoordinate();
-		graphicView->moveRelativeZero(*point);
+		_graphicView->moveRelativeZero(*point);
         trigger();
         setStatus(SetEntity);
     }
@@ -167,7 +167,7 @@ void RS_ActionInfoDist2::updateMouseButtonHints() {
 
 
 void RS_ActionInfoDist2::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

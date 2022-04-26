@@ -72,7 +72,7 @@ void RS_ActionDrawLineParallel::setNumber(int n) {
 void RS_ActionDrawLineParallel::trigger() {
     RS_PreviewActionInterface::trigger();
 
-    RS_Creation creation(container, graphicView);
+    RS_Creation creation(_container, _graphicView);
 	RS_Entity* e = creation.createParallel(*coord,
                                            distance, number,
                                            entity);
@@ -86,7 +86,7 @@ void RS_ActionDrawLineParallel::trigger() {
 void RS_ActionDrawLineParallel::mouseMoveEvent(QMouseEvent* e) {
     RS_DEBUG->print("RS_ActionDrawLineParallel::mouseMoveEvent begin");
 
-	*coord = {graphicView->toGraphX(e->x()), graphicView->toGraphY(e->y())};
+	*coord = {_graphicView->toGraphX(e->x()), _graphicView->toGraphY(e->y())};
 
     entity = catchEntity(e, RS2::ResolveAll);
 
@@ -163,9 +163,9 @@ void RS_ActionDrawLineParallel::commandEvent(RS_CommandEvent* e) {
     case SetEntity: {
             if (checkCommand("through", c)) {
                 finish(false);
-                graphicView->setCurrentAction(
-                    new RS_ActionDrawLineParallelThrough(*container,
-                                                         *graphicView));
+                _graphicView->setCurrentAction(
+                    new RS_ActionDrawLineParallelThrough(*_container,
+                                                         *_graphicView));
             } else if (checkCommand("number", c)) {
                 deletePreview();
                 setStatus(SetNumber);
@@ -222,7 +222,7 @@ QStringList RS_ActionDrawLineParallel::getAvailableCommands() {
 }
 
 void RS_ActionDrawLineParallel::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

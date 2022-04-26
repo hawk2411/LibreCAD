@@ -48,7 +48,7 @@ void RS_ActionBlocksFreezeAll::trigger() {
     if (_graphic) {
         _graphic->getBlockList()->freezeAll(freeze);
     }
-        graphicView->redraw(RS2::RedrawDrawing);
+        _graphicView->redraw(RS2::RedrawDrawing);
 
     finish(false);
 }

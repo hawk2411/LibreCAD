@@ -62,7 +62,7 @@ void RS_ActionModifyBevel::init(int status) {
     RS_ActionInterface::init(status);
 
     //snapMode = RS2::SnapFree;
-    snapMode.restriction = RS2::RestrictNothing;
+    _snapMode.restriction = RS2::RestrictNothing;
 }
 
 void RS_ActionModifyBevel::trigger() {
@@ -72,7 +72,7 @@ void RS_ActionModifyBevel::trigger() {
     if (entity1 && entity1->isAtomic() &&
             entity2 && entity2->isAtomic()) {
 
-        RS_Modification m(*container, graphicView);
+        RS_Modification m(*_container, _graphicView);
 		m.bevel(pPoints->coord1, (RS_AtomicEntity*)entity1,
 				pPoints->coord2, (RS_AtomicEntity*)entity2,
 				pPoints->data);
@@ -83,14 +83,14 @@ void RS_ActionModifyBevel::trigger() {
         entity2 = nullptr;
         setStatus(SetEntity1);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
     }
 }
 
 void RS_ActionModifyBevel::mouseMoveEvent(QMouseEvent* e) {
     RS_DEBUG->print("RS_ActionModifyBevel::mouseMoveEvent begin");
 
-    RS_Vector mouse = graphicView->toGraph(e->x(), e->y());
+    RS_Vector mouse = _graphicView->toGraph(e->x(), e->y());
     RS_Entity* se = catchEntity(e, RS2::ResolveAllButTextImage);
 
     switch (getStatus()) {
@@ -274,7 +274,7 @@ void RS_ActionModifyBevel::updateMouseButtonHints() {
 }
 
 void RS_ActionModifyBevel::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

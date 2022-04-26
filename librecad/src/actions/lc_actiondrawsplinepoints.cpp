@@ -70,7 +70,7 @@ void LC_ActionDrawSplinePoints::trigger()
 	_points->_spline->setPenToActive();
 	_points->_spline->update();
 	RS_Entity* s=_points->_spline->clone();
-	container->addEntity(s);
+	_container->addEntity(s);
 
 	// upd. undo list:
 	if (_document)
@@ -81,9 +81,9 @@ void LC_ActionDrawSplinePoints::trigger()
 	}
 
 	// upd view
-	RS_Vector r = graphicView->getRelativeZero();
-	graphicView->redraw(RS2::RedrawDrawing);
-	graphicView->moveRelativeZero(r);
+	RS_Vector r = _graphicView->getRelativeZero();
+	_graphicView->redraw(RS2::RedrawDrawing);
+	_graphicView->moveRelativeZero(r);
 	RS_DEBUG->print("RS_ActionDrawSplinePoints::trigger(): spline added: %d",
 		s->getId());
 
@@ -142,16 +142,16 @@ void LC_ActionDrawSplinePoints::coordinateEvent(RS_CoordinateEvent* e)
 		_points->_undoBuffer.clear();
 		if(!_points->_spline.get())
 		{
-			_points->_spline.reset(new LC_SplinePoints(container, _points->_data));
+			_points->_spline.reset(new LC_SplinePoints(_container, _points->_data));
 			_points->_spline->addPoint(mouse);
 			_preview->addEntity(new RS_Point(_preview.get(), RS_PointData(mouse)));
 		}
 		setStatus(SetNextPoint);
-		graphicView->moveRelativeZero(mouse);
+		_graphicView->moveRelativeZero(mouse);
 		updateMouseButtonHints();
 		break;
 	case SetNextPoint:
-		graphicView->moveRelativeZero(mouse);
+		_graphicView->moveRelativeZero(mouse);
 		if(_points->_spline.get())
 		{
 			_points->_spline->addPoint(mouse);
@@ -287,7 +287,7 @@ void LC_ActionDrawSplinePoints::hideOptions()
 
 void LC_ActionDrawSplinePoints::updateMouseCursor()
 {
-	graphicView->setMouseCursor(RS2::CadCursor);
+	_graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 /*
@@ -332,9 +332,9 @@ void LC_ActionDrawSplinePoints::undo()
 		else
 		{
 			v = splinePts.back();
-			graphicView->moveRelativeZero(v);
+			_graphicView->moveRelativeZero(v);
 		}
-		graphicView->redraw(RS2::RedrawDrawing);
+		_graphicView->redraw(RS2::RedrawDrawing);
 		drawPreview();
 	}
 	else
@@ -355,8 +355,8 @@ void LC_ActionDrawSplinePoints::redo()
 
 		setStatus(SetNextPoint);
 		v = _points->_data.splinePoints.back();
-		graphicView->moveRelativeZero(v);
-		graphicView->redraw(RS2::RedrawDrawing);
+		_graphicView->moveRelativeZero(v);
+		_graphicView->redraw(RS2::RedrawDrawing);
 	}
 	else
 	{

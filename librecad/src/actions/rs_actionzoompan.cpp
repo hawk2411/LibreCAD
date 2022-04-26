@@ -41,8 +41,8 @@ RS_ActionZoomPan::RS_ActionZoomPan(RS_EntityContainer& container,
 
 void RS_ActionZoomPan::init(int status) {
     RS_ActionInterface::init(status);
-    snapMode.clear();
-    snapMode.restriction = RS2::RestrictNothing;
+    _snapMode.clear();
+    _snapMode.restriction = RS2::RestrictNothing;
     //v1 = v2 = RS_Vector(false);
     x1 = y1 = x2 = y2 = -1;
     //graphicView->saveView();
@@ -58,15 +58,15 @@ void RS_ActionZoomPan::trigger() {
         v1 = v2;
 }*/
     if (getStatus()==SetPanning && (abs(x2-x1)>7 || abs(y2-y1)>7)) {
-        graphicView->zoomPan(x2-x1, y2-y1);
+        _graphicView->zoomPan(x2 - x1, y2 - y1);
         x1 = x2;
         y1 = y2;
     }
     if(getStatus()==SetPanEnd)
     {
         finish(false);
-        graphicView->setPanning(false);
-        graphicView->redraw();
+        _graphicView->setPanning(false);
+        _graphicView->redraw();
     }
 }
 
@@ -92,7 +92,7 @@ void RS_ActionZoomPan::mousePressEvent(QMouseEvent* e) {
         x1 = e->x();
         y1 = e->y();
         setStatus(SetPanning);
-        graphicView->setPanning(true);
+        _graphicView->setPanning(true);
     }
 }
 
@@ -131,10 +131,10 @@ void RS_ActionZoomPan::updateMouseButtonHints()
 void RS_ActionZoomPan::updateMouseCursor() {
     switch (getStatus()){
     case SetPanStart:
-        graphicView->setMouseCursor(RS2::OpenHandCursor);
+        _graphicView->setMouseCursor(RS2::OpenHandCursor);
         break;
     case SetPanning:
-        graphicView->setMouseCursor(RS2::ClosedHandCursor);
+        _graphicView->setMouseCursor(RS2::ClosedHandCursor);
         break;
     default:
         break;

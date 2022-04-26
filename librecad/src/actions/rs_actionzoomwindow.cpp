@@ -80,8 +80,8 @@ void RS_ActionZoomWindow::trigger() {
 	if (pPoints->v1.valid && pPoints->v2.valid) {
         deletePreview();
         //deleteSnapper();
-		if (graphicView->toGuiDX(pPoints->v1.distanceTo(pPoints->v2))>5) {
-			graphicView->zoomWindow(pPoints->v1, pPoints->v2, keepAspectRatio);
+		if (_graphicView->toGuiDX(pPoints->v1.distanceTo(pPoints->v2)) > 5) {
+			_graphicView->zoomWindow(pPoints->v1, pPoints->v2, keepAspectRatio);
             init();
         }
     }
@@ -164,7 +164,7 @@ void RS_ActionZoomWindow::updateMouseButtonHints() {
 
 
 void RS_ActionZoomWindow::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::MagnifierCursor);
+    _graphicView->setMouseCursor(RS2::MagnifierCursor);
 }
 
 

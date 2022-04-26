@@ -71,7 +71,7 @@ void RS_ActionPrintPreview::init(int status) {
 void RS_ActionPrintPreview::mouseMoveEvent(QMouseEvent* e) {
     switch (getStatus()) {
     case Moving:
-		pPoints->v2 = graphicView->toGraph(e->x(), e->y());
+		pPoints->v2 = _graphicView->toGraph(e->x(), e->y());
 		// if Shift is pressed the paper moves only horizontally
 		if (e->modifiers() & Qt::ShiftModifier)
 			pPoints->v2.y = pPoints->v1.y;
@@ -86,7 +86,7 @@ void RS_ActionPrintPreview::mouseMoveEvent(QMouseEvent* e) {
 			_graphic->setPaperInsertionBase(pinsbase - pPoints->v2 * scale + pPoints->v1 * scale);
         }
 		pPoints->v1 = pPoints->v2;
-        graphicView->redraw(RS2::RedrawGrid); // DRAW Grid also draws paper, background items
+        _graphicView->redraw(RS2::RedrawGrid); // DRAW Grid also draws paper, background items
         break;
 
     default:
@@ -100,7 +100,7 @@ void RS_ActionPrintPreview::mousePressEvent(QMouseEvent* e) {
     if (e->button()==Qt::LeftButton) {
         switch (getStatus()) {
         case Neutral:
-			pPoints->v1 = graphicView->toGraph(e->x(), e->y());
+			pPoints->v1 = _graphicView->toGraph(e->x(), e->y());
             setStatus(Moving);
             break;
 
@@ -140,7 +140,7 @@ void RS_ActionPrintPreview::coordinateEvent(RS_CoordinateEvent* e) {
 //    GetDialogFactory()->commandMessage(tr("new insertion base (%1, %2)").arg((pinsbase-mouse).x).arg((pinsbase-mouse).y));
 
     _graphic->setPaperInsertionBase(pinsbase - mouse);
-    graphicView->redraw(RS2::RedrawGrid); // DRAW Grid also draws paper, background items
+    _graphicView->redraw(RS2::RedrawGrid); // DRAW Grid also draws paper, background items
 
 }
 
@@ -237,18 +237,18 @@ void RS_ActionPrintPreview::hideOptions() {
 void RS_ActionPrintPreview::updateMouseCursor() {
     switch (getStatus()){
     case Moving:
-        graphicView->setMouseCursor(RS2::ClosedHandCursor);
+        _graphicView->setMouseCursor(RS2::ClosedHandCursor);
         break;
     default:
-        graphicView->setMouseCursor(RS2::OpenHandCursor);
+        _graphicView->setMouseCursor(RS2::OpenHandCursor);
     }
 }
 
 void RS_ActionPrintPreview::center() {
     if (_graphic) {
         _graphic->centerToPage();
-        graphicView->zoomPage();
-        graphicView->redraw();
+        _graphicView->zoomPage();
+        _graphicView->redraw();
     }
 }
 
@@ -272,8 +272,8 @@ void RS_ActionPrintPreview::fit() {
         //only zoomPage when scale changed
         //        }
         _graphic->centerToPage();
-        graphicView->zoomPage();
-        graphicView->redraw();
+        _graphicView->zoomPage();
+        _graphicView->redraw();
     }
 }
 
@@ -282,8 +282,8 @@ bool RS_ActionPrintPreview::setScale(double f, bool autoZoom) {
         if(fabs(f - _graphic->getPaperScale()) < RS_TOLERANCE ) return false;
         _graphic->setPaperScale(f);
 //        graphic->centerToPage();
-        if(autoZoom) graphicView->zoomPage();
-        graphicView->redraw();
+        if(autoZoom) _graphicView->zoomPage();
+        _graphicView->redraw();
         return true;
     }
     return false;
@@ -301,19 +301,19 @@ double RS_ActionPrintPreview::getScale() const{
 
 
 void RS_ActionPrintPreview::setLineWidthScaling(bool state) {
-    graphicView->setLineWidthScaling(state);
-    graphicView->redraw();
+    _graphicView->setLineWidthScaling(state);
+    _graphicView->redraw();
 }
 
 
 void RS_ActionPrintPreview::setBlackWhite(bool bw) {
     if (bw) {
-        graphicView->setDrawingMode(RS2::ModeBW);
+        _graphicView->setDrawingMode(RS2::ModeBW);
     }
     else {
-        graphicView->setDrawingMode(RS2::ModeFull);
+        _graphicView->setDrawingMode(RS2::ModeFull);
     }
-    graphicView->redraw();
+    _graphicView->redraw();
 }
 
 
@@ -355,8 +355,8 @@ void RS_ActionPrintPreview::calcPagesNum() {
 
         _graphic->setPagesNum(pX, pY);
         _graphic->centerToPage();
-        graphicView->zoomPage();
-        graphicView->redraw();
+        _graphicView->zoomPage();
+        _graphicView->redraw();
     }
 }
 

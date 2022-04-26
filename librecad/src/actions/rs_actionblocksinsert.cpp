@@ -113,12 +113,12 @@ void RS_ActionBlocksInsert::trigger() {
     //std::cout << *RS_Clipboard::instance();
 
 	if (block) {
-        RS_Creation creation(container, graphicView);
+        RS_Creation creation(_container, _graphicView);
 		data->updateMode = RS2::Update;
 		creation.createInsert(data.get());
     }
 
-	graphicView->redraw(RS2::RedrawDrawing); 
+	_graphicView->redraw(RS2::RedrawDrawing);
 
     //finish();
 }
@@ -414,7 +414,7 @@ void RS_ActionBlocksInsert::updateMouseButtonHints() {
 
 
 void RS_ActionBlocksInsert::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

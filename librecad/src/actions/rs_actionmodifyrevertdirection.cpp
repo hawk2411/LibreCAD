@@ -39,7 +39,7 @@ RS_ActionModifyRevertDirection::RS_ActionModifyRevertDirection(RS_EntityContaine
 void RS_ActionModifyRevertDirection::trigger() {
 	RS_DEBUG->print("RS_ActionModifyRevertDirection::trigger");
 
-	RS_Modification m(*container, graphicView);
+	RS_Modification m(*_container, _graphicView);
 	m.revertDirection();
 	finish(false);
 }

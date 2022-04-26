@@ -71,15 +71,15 @@ void RS_ActionDrawCircleCR::init(int status) {
 void RS_ActionDrawCircleCR::trigger() {
     RS_PreviewActionInterface::trigger();
 
-    RS_Circle* circle = new RS_Circle(container,
-									  *data);
+    RS_Circle* circle = new RS_Circle(_container,
+                                      *data);
     circle->setLayerToActive();
     circle->setPenToActive();
 
     switch(getStatus()) {
     	case SetCenter:
-    		container->addEntity(circle);
-		graphicView->moveRelativeZero(circle->getCenter());
+    		_container->addEntity(circle);
+		_graphicView->moveRelativeZero(circle->getCenter());
 		break;
 	case SetRadius:
 		break;
@@ -91,7 +91,7 @@ void RS_ActionDrawCircleCR::trigger() {
         _document->addUndoable(circle);
         _document->endUndoCycle();
     }
-        graphicView->redraw(RS2::RedrawDrawing);
+        _graphicView->redraw(RS2::RedrawDrawing);
 
     setStatus(SetCenter);
 
@@ -247,7 +247,7 @@ void RS_ActionDrawCircleCR::hideOptions() {
 
 
 void RS_ActionDrawCircleCR::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 

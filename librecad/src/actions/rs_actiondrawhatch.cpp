@@ -47,14 +47,14 @@ void RS_ActionDrawHatch::setShowArea(bool s) {
 void RS_ActionDrawHatch::init(int status) {
     RS_ActionInterface::init(status);
 
-    RS_Hatch tmp(container, *data);
+    RS_Hatch tmp(_container, *data);
     tmp.setLayerToActive();
     tmp.setPenToActive();
     if (GetDialogFactory()->requestHatchDialog(&tmp)) {
         *data = tmp.getData();
         trigger();
         finish(false);
-        graphicView->redraw(RS2::RedrawDrawing);
+        _graphicView->redraw(RS2::RedrawDrawing);
 
     } else {
         finish(false);
@@ -68,14 +68,14 @@ void RS_ActionDrawHatch::trigger() {
     deselectUnhatchAbleEntities();
 
     // look for selected contours:
-    bool isAnySelected = container->isAnySelected(RS2::ResolveAll);
+    bool isAnySelected = _container->isAnySelected(RS2::ResolveAll);
 
     if (!isAnySelected) {
         std::cerr << "no contour selected\n";
         return;
     }
 
-    std::unique_ptr<RS_Hatch> hatch_managed = std::make_unique<RS_Hatch>(container, *data);
+    std::unique_ptr<RS_Hatch> hatch_managed = std::make_unique<RS_Hatch>(_container, *data);
     hatch_managed->setLayerToActive();
     hatch_managed->setPenToActive();
 
@@ -91,7 +91,7 @@ void RS_ActionDrawHatch::trigger() {
 
     RS_Hatch* hatch = hatch_managed.release();  //is no longer responsible for the RS_Hatch pointer
     
-    container->addEntity(hatch);
+    _container->addEntity(hatch);
 
     if (_document) {
         _document->startUndoCycle();
@@ -100,7 +100,7 @@ void RS_ActionDrawHatch::trigger() {
     }
     hatch->update();
 
-    graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->redraw(RS2::RedrawDrawing);
 
     bool printArea = true;
     switch (hatch->getUpdateError()) {
@@ -135,8 +135,8 @@ RS_EntityContainer* RS_ActionDrawHatch::collectAllSelectedEntities(RS_Hatch *hat
     auto *loop = new RS_EntityContainer(hatch);
     loop->setPen(RS_Pen(RS2::FlagInvalid));
 
-    for (RS_Entity *e = container->firstEntity(RS2::ResolveAll);
-         e != nullptr; e = container->nextEntity(RS2::ResolveAll)) {
+    for (RS_Entity *e = _container->firstEntity(RS2::ResolveAll);
+         e != nullptr; e = _container->nextEntity(RS2::ResolveAll)) {
 
         if (!e->isSelected()) {
             continue;
@@ -170,7 +170,7 @@ bool RS_ActionDrawHatch::isEntityUnhatchAble(const RS_Entity& entity) {
 }
 
 void RS_ActionDrawHatch::deselectUnhatchAbleEntities() {
-    for (auto e: *container) {
+    for (auto e: *_container) {
         if(! e->isSelected()) {
             continue;
         }
@@ -179,7 +179,7 @@ void RS_ActionDrawHatch::deselectUnhatchAbleEntities() {
         }
     }
     RS_Entity *e;
-    for (e = container->firstEntity(RS2::ResolveAll); e; e = container->nextEntity(RS2::ResolveAll)) {
+    for (e = _container->firstEntity(RS2::ResolveAll); e; e = _container->nextEntity(RS2::ResolveAll)) {
         if(! e->isSelected()) {
             continue;
         }
@@ -234,7 +234,7 @@ void RS_ActionDrawHatch::updateMouseButtonHints() {
 }
 
 void RS_ActionDrawHatch::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

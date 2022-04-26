@@ -76,8 +76,8 @@ double RS_ActionDrawEllipseFociPoint::findRatio() const
 void RS_ActionDrawEllipseFociPoint::trigger() {
     RS_PreviewActionInterface::trigger();
 
-	RS_Ellipse* ellipse = new RS_Ellipse{container,
-	{pPoints->center,
+	RS_Ellipse* ellipse = new RS_Ellipse{_container,
+                                         {pPoints->center,
 			pPoints->major*pPoints->d,
 			findRatio(),
 			0., 0.,false}
@@ -85,7 +85,7 @@ void RS_ActionDrawEllipseFociPoint::trigger() {
     ellipse->setLayerToActive();
     ellipse->setPenToActive();
 
-    container->addEntity(ellipse);
+    _container->addEntity(ellipse);
 
     // upd. undo list:
     if (_document) {
@@ -95,8 +95,8 @@ void RS_ActionDrawEllipseFociPoint::trigger() {
     }
 
 //    RS_Vector rz = graphicView->getRelativeZero();
-    graphicView->moveRelativeZero(ellipse->getCenter());
-    graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(ellipse->getCenter());
+    _graphicView->redraw(RS2::RedrawDrawing);
     drawSnapper();
 
     setStatus(SetFocus1);
@@ -164,7 +164,7 @@ void RS_ActionDrawEllipseFociPoint::coordinateEvent(RS_CoordinateEvent* e) {
 
     switch (getStatus()) {
     case SetFocus1:
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
 		pPoints->focus1=mouse;
         setStatus(SetFocus2);
         break;
@@ -172,7 +172,7 @@ void RS_ActionDrawEllipseFociPoint::coordinateEvent(RS_CoordinateEvent* e) {
     case SetFocus2:
 		pPoints->c = 0.5*pPoints->focus1.distanceTo(mouse);
 		if(pPoints->c > RS_TOLERANCE){
-            graphicView->moveRelativeZero(mouse);
+            _graphicView->moveRelativeZero(mouse);
 			pPoints->focus2=mouse;
 			pPoints->center=(pPoints->focus1+pPoints->focus2)*0.5;
 			pPoints->major=pPoints->focus1-pPoints->center;
@@ -184,7 +184,7 @@ void RS_ActionDrawEllipseFociPoint::coordinateEvent(RS_CoordinateEvent* e) {
 		pPoints->point=mouse;
 		pPoints->d=0.5*(pPoints->focus1.distanceTo(pPoints->point)+pPoints->focus2.distanceTo(pPoints->point));
 		if (pPoints->d > pPoints->c+ RS_TOLERANCE) {
-            graphicView->moveRelativeZero(mouse);
+            _graphicView->moveRelativeZero(mouse);
             trigger();
         }
         break;
@@ -255,7 +255,7 @@ void RS_ActionDrawEllipseFociPoint::updateMouseButtonHints() {
 }
 
 void RS_ActionDrawEllipseFociPoint::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

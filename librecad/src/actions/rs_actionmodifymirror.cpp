@@ -61,11 +61,11 @@ void RS_ActionModifyMirror::trigger() {
 
     RS_DEBUG->print("RS_ActionModifyMirror::trigger()");
 
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
     m.mirror(pPoints->data);
 
-    GetDialogFactory()->updateSelectionWidget( container->countSelected(true, {}),
-                                             container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}),
+                                              _container->totalSelectedLength());
 }
 
 void RS_ActionModifyMirror::mouseMoveEvent(QMouseEvent* e) {
@@ -88,7 +88,7 @@ void RS_ActionModifyMirror::mouseMoveEvent(QMouseEvent* e) {
                 pPoints->axisPoint2 = mouse;
 
                 deletePreview();
-                _preview->addSelectionFrom(*container);
+                _preview->addSelectionFrom(*_container);
                 _preview->mirror(pPoints->axisPoint1, pPoints->axisPoint2);
 
                 _preview->addEntity(new RS_Line{_preview.get(),
@@ -133,13 +133,13 @@ void RS_ActionModifyMirror::coordinateEvent(RS_CoordinateEvent* e) {
         case SetAxisPoint1:
             pPoints->axisPoint1 = mouse;
             setStatus(SetAxisPoint2);
-                graphicView->moveRelativeZero(mouse);
+                _graphicView->moveRelativeZero(mouse);
             break;
 
         case SetAxisPoint2:
             pPoints->axisPoint2 = mouse;
             setStatus(ShowDialog);
-                graphicView->moveRelativeZero(mouse);
+                _graphicView->moveRelativeZero(mouse);
                 if (GetDialogFactory()->requestMirrorDialog(pPoints->data)) {
                     pPoints->data.axisPoint1 = pPoints->axisPoint1;
                     pPoints->data.axisPoint2 = pPoints->axisPoint2;
@@ -173,7 +173,7 @@ void RS_ActionModifyMirror::updateMouseButtonHints() {
 }
 
 void RS_ActionModifyMirror::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

@@ -81,10 +81,10 @@ void RS_ActionDrawLineHorVert::init(int status) {
 void RS_ActionDrawLineHorVert::trigger() {
     RS_PreviewActionInterface::trigger();
 
-	RS_Line* line = new RS_Line(container, pPoints->data);
+	RS_Line* line = new RS_Line(_container, pPoints->data);
     line->setLayerToActive();
     line->setPenToActive();
-    container->addEntity(line);
+    _container->addEntity(line);
 
     // upd. undo list:
     if (_document) {
@@ -93,8 +93,8 @@ void RS_ActionDrawLineHorVert::trigger() {
         _document->endUndoCycle();
     }
 
-        graphicView->redraw(RS2::RedrawDrawing);
-    graphicView->moveRelativeZero(line->getMiddlePoint());
+        _graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(line->getMiddlePoint());
     RS_DEBUG->print("RS_ActionDrawLineHorVert::trigger():"
                     " line added: %d", line->getId());
 
@@ -169,7 +169,7 @@ void RS_ActionDrawLineHorVert::updateMouseButtonHints() {
 
 
 void RS_ActionDrawLineHorVert::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

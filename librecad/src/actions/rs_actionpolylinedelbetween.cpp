@@ -69,19 +69,19 @@ void RS_ActionPolylineDelBetween::trigger() {
 		if (delEntity && delSegment->isAtomic() && pPoints->nodePoint1.valid && pPoints->nodePoint2.valid) {
 
                 delEntity->setHighlighted(false);
-                graphicView->drawEntity(delEntity);
+                _graphicView->drawEntity(delEntity);
 
-                RS_Modification m(*container, graphicView);
+                RS_Modification m(*_container, _graphicView);
 				delEntity = m.deletePolylineNodesBetween((RS_Polyline&)*delEntity, (RS_AtomicEntity&)*delSegment, pPoints->nodePoint1, pPoints->nodePoint2 );
 
 				delEntity = delSegment = nullptr;
 				pPoints->nodePoint1 = pPoints->nodePoint2 = RS_Vector(false);
                 setStatus(SetNodePoint1);
 
-                GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw();
+                _graphicView->redraw();
 ////////////////////////////////////////
 }
 
@@ -124,16 +124,16 @@ void RS_ActionPolylineDelBetween::mouseReleaseEvent(QMouseEvent* e) {
                         } else {
 							snapPoint(e);
 								delSegment = nullptr;
-                                double dist = graphicView->toGraphDX(snapRange)*0.9;
-                                delSegment =  (RS_AtomicEntity*)((RS_Polyline*)delEntity)->getNearestEntity( RS_Vector(graphicView->toGraphX(e->x()),
-                                                                        graphicView->toGraphY(e->y())), &dist, RS2::ResolveNone);
+                                double dist = _graphicView->toGraphDX(_snapRange) * 0.9;
+                                delSegment =  (RS_AtomicEntity*)((RS_Polyline*)delEntity)->getNearestEntity(RS_Vector(_graphicView->toGraphX(e->x()),
+                                                                                                                      _graphicView->toGraphY(e->y())), &dist, RS2::ResolveNone);
 								if(delSegment == nullptr)
                                         break;
                                 delEntity->setHighlighted(true);
-                                graphicView->drawEntity(delEntity);
+                                _graphicView->drawEntity(delEntity);
                                 setStatus(SetNodePoint1);
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw();
+                _graphicView->redraw();
 ////////////////////////////////////////
                         }
                         break;
@@ -173,9 +173,9 @@ void RS_ActionPolylineDelBetween::mouseReleaseEvent(QMouseEvent* e) {
                 deleteSnapper();
                 if (delEntity) {
                         delEntity->setHighlighted(false);
-                        graphicView->drawEntity(delEntity);
+                        _graphicView->drawEntity(delEntity);
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw();
+                _graphicView->redraw();
 ////////////////////////////////////////
                 }
                 init(getStatus()-1);
@@ -206,7 +206,7 @@ void RS_ActionPolylineDelBetween::updateMouseButtonHints() {
 
 
 void RS_ActionPolylineDelBetween::updateMouseCursor() {
-        graphicView->setMouseCursor(RS2::SelectCursor);
+        _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

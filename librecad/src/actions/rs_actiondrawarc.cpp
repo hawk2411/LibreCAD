@@ -80,11 +80,11 @@ void RS_ActionDrawArc::init(int status) {
 void RS_ActionDrawArc::trigger() {
     RS_PreviewActionInterface::trigger();
 
-    RS_Arc* arc = new RS_Arc(container,
-							 *data);
+    RS_Arc* arc = new RS_Arc(_container,
+                             *data);
     arc->setLayerToActive();
     arc->setPenToActive();
-    container->addEntity(arc);
+    _container->addEntity(arc);
 
     // upd. undo list:
 	if (_document) {
@@ -93,8 +93,8 @@ void RS_ActionDrawArc::trigger() {
         _document->endUndoCycle();
     }
 
-        graphicView->redraw(RS2::RedrawDrawing);
-    graphicView->moveRelativeZero(arc->getCenter());
+        _graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(arc->getCenter());
 
     setStatus(SetCenter);
     reset();
@@ -195,7 +195,7 @@ void RS_ActionDrawArc::coordinateEvent(RS_CoordinateEvent* e) {
     switch (getStatus()) {
     case SetCenter:
 		data->center = mouse;
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         setStatus(SetRadius);
         break;
 
@@ -389,7 +389,7 @@ void RS_ActionDrawArc::hideOptions() {
 
 
 void RS_ActionDrawArc::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 

@@ -49,7 +49,7 @@ void RS_ActionBlocksExplode::init(int status) {
 
 
 void RS_ActionBlocksExplode::trigger() {
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
     m.explode();
 }
 

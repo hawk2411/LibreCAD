@@ -61,7 +61,7 @@ void RS_ActionLayersToggleView::trigger() {
             _graphic->getLayerList()->toggle(a_layer);
         }
         _graphic->updateInserts();
-        container->calculateBorders();
+        _container->calculateBorders();
     }
     finish(false);
 }

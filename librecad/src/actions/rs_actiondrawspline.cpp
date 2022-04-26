@@ -98,7 +98,7 @@ void RS_ActionDrawSpline::trigger() {
 	pPoints->spline->setLayerToActive();
 	pPoints->spline->setPenToActive();
 	pPoints->spline->update();
-	container->addEntity(pPoints->spline);
+	_container->addEntity(pPoints->spline);
 
     // upd. undo list:
     if (_document) {
@@ -108,9 +108,9 @@ void RS_ActionDrawSpline::trigger() {
     }
 
         // upd view
-        RS_Vector r = graphicView->getRelativeZero();
-        graphicView->redraw(RS2::RedrawDrawing);
-    graphicView->moveRelativeZero(r);
+        RS_Vector r = _graphicView->getRelativeZero();
+        _graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(r);
     RS_DEBUG->print("RS_ActionDrawSpline::trigger(): spline added: %d",
 					pPoints->spline->getId());
 
@@ -171,19 +171,19 @@ void RS_ActionDrawSpline::coordinateEvent(RS_CoordinateEvent* e) {
 		pPoints->history.clear();
 		pPoints->history.append(mouse);
 				if (!pPoints->spline) {
-						pPoints->spline = new RS_Spline(container, pPoints->data);
+						pPoints->spline = new RS_Spline(_container, pPoints->data);
 						pPoints->spline->addControlPoint(mouse);
                 }
         //bHistory.clear();
         //bHistory.append(new double(0.0));
         //start = mouse;
         setStatus(SetNextPoint);
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         updateMouseButtonHints();
         break;
 
     case SetNextPoint:
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         //point = mouse;
 		pPoints->history.append(mouse);
         //bHistory.append(new double(0.0));
@@ -316,7 +316,7 @@ void RS_ActionDrawSpline::hideOptions() {
 
 
 void RS_ActionDrawSpline::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 /*
@@ -353,9 +353,9 @@ void RS_ActionDrawSpline::undo() {
 						pPoints->spline->removeLastControlPoint();
 						if (!pPoints->history.isEmpty()) {
 							RS_Vector v = pPoints->history.last();
-                            graphicView->moveRelativeZero(v);
+                            _graphicView->moveRelativeZero(v);
                         }
-                        graphicView->redraw(RS2::RedrawDrawing);
+                        _graphicView->redraw(RS2::RedrawDrawing);
 
                 }
     } else {

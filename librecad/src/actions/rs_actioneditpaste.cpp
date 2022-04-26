@@ -62,11 +62,11 @@ void RS_ActionEditPaste::init(int status) {
 void RS_ActionEditPaste::trigger() {
     deletePreview();
 
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
 	m.paste(RS_PasteData(*targetPoint, 1.0, 0.0, false, ""));
     //std::cout << *RS_Clipboard::instance();
 
-	graphicView->redraw(RS2::RedrawDrawing); 
+	_graphicView->redraw(RS2::RedrawDrawing);
 
     finish(false);
 }
@@ -132,7 +132,7 @@ void RS_ActionEditPaste::updateMouseButtonHints() {
 
 
 void RS_ActionEditPaste::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

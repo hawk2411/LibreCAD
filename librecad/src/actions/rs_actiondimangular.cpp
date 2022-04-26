@@ -66,14 +66,14 @@ void RS_ActionDimAngular::trigger()
     RS_PreviewActionInterface::trigger();
 
     if (line1.getStartpoint().valid && line2.getStartpoint().valid) {
-        RS_DimAngular* newEntity {new RS_DimAngular( container,
-                                                     *data,
-                                                     *edata)};
+        RS_DimAngular* newEntity {new RS_DimAngular(_container,
+                                                    *data,
+                                                    *edata)};
 
         newEntity->setLayerToActive();
         newEntity->setPenToActive();
         newEntity->update();
-        container->addEntity(newEntity);
+        _container->addEntity(newEntity);
 
         // upd. undo list:
         if (_document) {
@@ -82,10 +82,10 @@ void RS_ActionDimAngular::trigger()
             _document->endUndoCycle();
         }
 
-        RS_Vector rz {graphicView->getRelativeZero()};
+        RS_Vector rz {_graphicView->getRelativeZero()};
         setStatus( SetLine1);
-        graphicView->redraw( RS2::RedrawDrawing);
-        graphicView->moveRelativeZero( rz);
+        _graphicView->redraw(RS2::RedrawDrawing);
+        _graphicView->moveRelativeZero(rz);
         RS_Snapper::finish();
     }
     else {
@@ -124,7 +124,7 @@ void RS_ActionDimAngular::mouseReleaseEvent(QMouseEvent* e)
             RS_Entity *en {catchEntity( e, RS2::ResolveAll)};
             if (en && RS2::EntityLine == en->rtti()) {
                 line1 = *dynamic_cast<RS_Line*>(en);
-                click1 = line1.getNearestPointOnEntity( graphicView->toGraph( e->x(), e->y()), true, nullptr, nullptr);
+                click1 = line1.getNearestPointOnEntity(_graphicView->toGraph(e->x(), e->y()), true, nullptr, nullptr);
                 setStatus(SetLine2);
             }
             break; }
@@ -133,9 +133,9 @@ void RS_ActionDimAngular::mouseReleaseEvent(QMouseEvent* e)
             RS_Entity *en{catchEntity(e, RS2::ResolveAll)};
             if (en && en->rtti()==RS2::EntityLine) {
                 line2 = *dynamic_cast<RS_Line*>(en);
-                click2 = line2.getNearestPointOnEntity( graphicView->toGraph( e->x(), e->y()), true, nullptr, nullptr);
+                click2 = line2.getNearestPointOnEntity(_graphicView->toGraph(e->x(), e->y()), true, nullptr, nullptr);
                 if( setData( click2, true)) {
-                    graphicView->moveRelativeZero( center);
+                    _graphicView->moveRelativeZero(center);
                     setStatus(SetPos);
                 }
             }
@@ -187,7 +187,7 @@ void RS_ActionDimAngular::commandEvent(RS_CommandEvent* e)
     if (SetText == getStatus()) {
         setText( c);
         GetDialogFactory()->requestOptions( this, true, true);
-        graphicView->enableCoordinateInput();
+        _graphicView->enableCoordinateInput();
         setStatus( lastStatus);
         return;
     }
@@ -195,7 +195,7 @@ void RS_ActionDimAngular::commandEvent(RS_CommandEvent* e)
     // command: text
     if (checkCommand( QStringLiteral( "text"), c)) {
         lastStatus = static_cast<Status>(getStatus());
-        graphicView->disableCoordinateInput();
+        _graphicView->disableCoordinateInput();
         setStatus( SetText);
     }
 }

@@ -59,7 +59,7 @@ void RS_ActionDrawEllipseInscribe::clearLines(bool checkStatus)
 		if(checkStatus && (int) pPoints->lines.size()<=getStatus() )
 			break;
 		pPoints->lines.back()->setHighlighted(false);
-		graphicView->drawEntity(pPoints->lines.back());
+		_graphicView->drawEntity(pPoints->lines.back());
 		pPoints->lines.pop_back();
 	}
 }
@@ -82,10 +82,10 @@ void RS_ActionDrawEllipseInscribe::trigger() {
     RS_PreviewActionInterface::trigger();
 
 
-	RS_Ellipse* ellipse=new RS_Ellipse(container, pPoints->eData);
+	RS_Ellipse* ellipse=new RS_Ellipse(_container, pPoints->eData);
 
     deletePreview();
-    container->addEntity(ellipse);
+    _container->addEntity(ellipse);
 
     // upd. undo list:
     if (_document) {
@@ -97,7 +97,7 @@ void RS_ActionDrawEllipseInscribe::trigger() {
 	for(RS_Line*const p: pPoints->lines) {
 		if(!p) continue;
 		p->setHighlighted(false);
-		graphicView->drawEntity(p);
+		_graphicView->drawEntity(p);
 
 	}
     drawSnapper();
@@ -132,7 +132,7 @@ void RS_ActionDrawEllipseInscribe::mouseMoveEvent(QMouseEvent* e) {
 		pPoints->lines.push_back(static_cast<RS_Line*>(en));
 		if(preparePreview()) {
 			pPoints->lines.back()->setHighlighted(true);
-			graphicView->drawEntity(pPoints->lines.back());
+			_graphicView->drawEntity(pPoints->lines.back());
 			RS_Ellipse* e=new RS_Ellipse(_preview.get(), pPoints->eData);
             _preview->addEntity(e);
             drawPreview();
@@ -178,7 +178,7 @@ void RS_ActionDrawEllipseInscribe::mouseReleaseEvent(QMouseEvent* e) {
         case SetLine2:
         case SetLine3:
             en->setHighlighted(true);
-			graphicView->drawEntity(en);
+			_graphicView->drawEntity(en);
 			setStatus(getStatus()+1);
             break;
         case SetLine4:
@@ -194,7 +194,7 @@ void RS_ActionDrawEllipseInscribe::mouseReleaseEvent(QMouseEvent* e) {
         if(getStatus()>0){
 			clearLines(true);
 			pPoints->lines.back()->setHighlighted(false);
-			graphicView->drawEntity(pPoints->lines.back());
+			_graphicView->drawEntity(pPoints->lines.back());
 			pPoints->lines.pop_back();
             deletePreview();
         }
@@ -300,7 +300,7 @@ void RS_ActionDrawEllipseInscribe::updateMouseButtonHints() {
 }
 
 void RS_ActionDrawEllipseInscribe::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

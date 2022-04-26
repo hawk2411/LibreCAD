@@ -104,10 +104,10 @@ void RS_ActionPolylineAppend::trigger() {
 
 	// upd view
 	deleteSnapper();
-	graphicView->moveRelativeZero(RS_Vector(0.0,0.0));
-	graphicView->deleteEntity(originalPolyline);
-	graphicView->drawEntity(pPoints->polyline);
-	graphicView->moveRelativeZero(pPoints->polyline->getEndpoint());
+	_graphicView->moveRelativeZero(RS_Vector(0.0, 0.0));
+	_graphicView->deleteEntity(originalPolyline);
+	_graphicView->drawEntity(pPoints->polyline);
+	_graphicView->moveRelativeZero(pPoints->polyline->getEndpoint());
 	drawSnapper();
 	RS_DEBUG->print("RS_ActionDrawPolyline::trigger(): polyline added: %d",
 					pPoints->polyline->getId());
@@ -136,11 +136,11 @@ void RS_ActionPolylineAppend::mouseReleaseEvent(QMouseEvent* e) {
 				RS_Polyline* op=static_cast<RS_Polyline*>(originalPolyline);
 				RS_Entity* entFirst = op->firstEntity(RS2::ResolveNone);
 				RS_Entity* entLast = op->lastEntity(RS2::ResolveNone);
-				double dist = graphicView->toGraphDX(snapRange)*0.9;
-				RS_Entity* nearestSegment = originalPolyline->getNearestEntity( RS_Vector(graphicView->toGraphX(e->x()),
-									graphicView->toGraphY(e->y())), &dist, RS2::ResolveNone);
+				double dist = _graphicView->toGraphDX(_snapRange) * 0.9;
+				RS_Entity* nearestSegment = originalPolyline->getNearestEntity(RS_Vector(_graphicView->toGraphX(e->x()),
+                                                                                         _graphicView->toGraphY(e->y())), &dist, RS2::ResolveNone);
 				pPoints->polyline = static_cast<RS_Polyline*>(originalPolyline->clone());
-				container->addEntity(pPoints->polyline);
+				_container->addEntity(pPoints->polyline);
 				prepend = false;
 				if (nearestSegment == entFirst){
 					prepend = true;
@@ -181,17 +181,17 @@ void RS_ActionPolylineAppend::coordinateEvent(RS_CoordinateEvent* e) {
 				pPoints->bHistory.append(0.0);
 		pPoints->start = pPoints->point;
 		setStatus(SetNextPoint);
-		graphicView->moveRelativeZero(pPoints->point);
+		_graphicView->moveRelativeZero(pPoints->point);
 		updateMouseButtonHints();
 		break;
 
 	case SetNextPoint:
-		graphicView->moveRelativeZero(mouse);
+		_graphicView->moveRelativeZero(mouse);
 		pPoints->point = mouse;
 				pPoints->history.append(mouse);
 				pPoints->bHistory.append(0.0);
 				if (!pPoints->polyline) {
-			pPoints->polyline = new RS_Polyline(container, pPoints->data);
+			pPoints->polyline = new RS_Polyline(_container, pPoints->data);
 			pPoints->polyline->addVertex(pPoints->start, 0.0, prepend);
 		}
 		if (pPoints->polyline) {
@@ -204,7 +204,7 @@ void RS_ActionPolylineAppend::coordinateEvent(RS_CoordinateEvent* e) {
                         // RVT_PORT (can be deleted) deletePreview();
 			//clearPreview();
 			deleteSnapper();
-			graphicView->drawEntity(pPoints->polyline);
+			_graphicView->drawEntity(pPoints->polyline);
 			drawSnapper();
 		}
 		//trigger();

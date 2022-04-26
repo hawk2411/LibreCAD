@@ -53,7 +53,7 @@ RS_ActionDrawLineTangent2::~RS_ActionDrawLineTangent2() = default;
 void RS_ActionDrawLineTangent2::finish(bool updateTB){
     if(circle1){
         circle1->setHighlighted(false);
-		graphicView->drawEntity(circle1);
+		_graphicView->drawEntity(circle1);
     }
     RS_PreviewActionInterface::finish(updateTB);
 }
@@ -61,12 +61,12 @@ void RS_ActionDrawLineTangent2::finish(bool updateTB){
 void RS_ActionDrawLineTangent2::trigger() {
     RS_PreviewActionInterface::trigger();
 
-	RS_Entity* newEntity = new RS_Line(container, *lineData);
+	RS_Entity* newEntity = new RS_Line(_container, *lineData);
 
     if (newEntity) {
         newEntity->setLayerToActive();
         newEntity->setPenToActive();
-        container->addEntity(newEntity);
+        _container->addEntity(newEntity);
 
         // upd. undo list:
         if (_document) {
@@ -86,7 +86,7 @@ void RS_ActionDrawLineTangent2::clearHighlighted()
 	for(RS_Entity** p: {&circle1, &circle2}){
 		if(*p){
 			(*p)->setHighlighted(false);
-			graphicView->drawEntity(*p);
+			_graphicView->drawEntity(*p);
 			*p=nullptr;
 		}
 	}
@@ -100,14 +100,14 @@ void RS_ActionDrawLineTangent2::mouseMoveEvent(QMouseEvent* e) {
 	if(!en || en==circle1) return;
 	if(circle2){
 		circle2->setHighlighted(false);
-		graphicView->drawEntity(circle2);
+		_graphicView->drawEntity(circle2);
 	}
 	circle2=en;
 	circle2->setHighlighted(true);
-	graphicView->drawEntity(circle2);
+	_graphicView->drawEntity(circle2);
 	RS_Creation creation(nullptr, nullptr);
-    RS_Vector mouse(graphicView->toGraphX(e->x()),
-                    graphicView->toGraphY(e->y()));
+    RS_Vector mouse(_graphicView->toGraphX(e->x()),
+                    _graphicView->toGraphY(e->y()));
     tangent.reset(creation.createTangent2(mouse,
                                           circle1,
                                           circle2));
@@ -139,7 +139,7 @@ void RS_ActionDrawLineTangent2::mouseReleaseEvent(QMouseEvent* e) {
         circle1 = catchEntity(e, circleType, RS2::ResolveAll);
 		if(!circle1) return;
         circle1->setHighlighted(true);
-		graphicView->drawEntity(circle1);
+		_graphicView->drawEntity(circle1);
         setStatus(getStatus()+1);
     }
         break;
@@ -167,7 +167,7 @@ void RS_ActionDrawLineTangent2::updateMouseButtonHints() {
 }
 
 void RS_ActionDrawLineTangent2::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

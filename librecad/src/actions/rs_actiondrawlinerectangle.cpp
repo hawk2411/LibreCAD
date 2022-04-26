@@ -64,7 +64,7 @@ RS_ActionDrawLineRectangle::~RS_ActionDrawLineRectangle() = default;
 void RS_ActionDrawLineRectangle::trigger() {
 	RS_PreviewActionInterface::trigger();
 
-	RS_Polyline* polyline = new RS_Polyline(container);
+	RS_Polyline* polyline = new RS_Polyline(_container);
 
 	// create and add rectangle:
 	polyline->addVertex(pPoints->corner1);
@@ -75,7 +75,7 @@ void RS_ActionDrawLineRectangle::trigger() {
 	polyline->addVertex({pPoints->corner1.x, pPoints->corner2.y});
     polyline->setClosedFlag(true);
 	polyline->endPolyline();
-	container->addEntity(polyline);
+	_container->addEntity(polyline);
 
     // upd. undo list:
     if (_document) {
@@ -85,8 +85,8 @@ void RS_ActionDrawLineRectangle::trigger() {
     }
 
     // upd. view
-	graphicView->redraw(RS2::RedrawDrawing);
-	graphicView->moveRelativeZero(pPoints->corner2);
+	_graphicView->redraw(RS2::RedrawDrawing);
+	_graphicView->moveRelativeZero(pPoints->corner2);
 }
 
 
@@ -124,7 +124,7 @@ void RS_ActionDrawLineRectangle::coordinateEvent(RS_CoordinateEvent* e) {
     switch (getStatus()) {
     case SetCorner1:
 		pPoints->corner1 = mouse;
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         setStatus(SetCorner2);
         break;
 
@@ -167,7 +167,7 @@ void RS_ActionDrawLineRectangle::updateMouseButtonHints() {
 
 
 void RS_ActionDrawLineRectangle::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

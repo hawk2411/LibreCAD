@@ -66,14 +66,14 @@ void RS_ActionModifyAttributes::trigger() {
     if (_graphic) {
         if (GetDialogFactory()->requestAttributesDialog(data,
                 *_graphic->getLayerList())) {
-            RS_Modification m(*container, graphicView);
+            RS_Modification m(*_container, _graphicView);
             m.changeAttributes(data);
         }
     }
 
-    graphicView->killSelectActions();
+    _graphicView->killSelectActions();
 
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
     finish(false);
 }
 
@@ -93,7 +93,7 @@ void RS_ActionModifyAttributes::updateMouseButtonHints() {
 
 
 void RS_ActionModifyAttributes::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::DelCursor);
+    _graphicView->setMouseCursor(RS2::DelCursor);
 }
 
 // EOF

@@ -47,10 +47,10 @@ void RS_ActionSelectAll::init(int status) {
 }
 
 void RS_ActionSelectAll::trigger() {
-    RS_Selection s(*container, graphicView);
+    RS_Selection s(*_container, _graphicView);
     s.selectAll(select);
 
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 }
 
 // EOF

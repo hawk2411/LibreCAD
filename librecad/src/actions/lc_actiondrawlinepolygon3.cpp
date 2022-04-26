@@ -63,7 +63,7 @@ void LC_ActionDrawLinePolygonCenTan::trigger() {
 
     deletePreview();
 
-    RS_Creation creation(container, graphicView);
+    RS_Creation creation(_container, _graphicView);
     bool ok = creation.createPolygon3(pPoints->center, pPoints->corner, number);
 
     if (!ok) {
@@ -120,7 +120,7 @@ void LC_ActionDrawLinePolygonCenTan::coordinateEvent(RS_CoordinateEvent* e) {
     case SetCenter:
         pPoints->center = mouse;
         setStatus(SetTangent);
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         break;
 
     case SetTangent:
@@ -229,5 +229,5 @@ QStringList LC_ActionDrawLinePolygonCenTan::getAvailableCommands() {
 
 
 void LC_ActionDrawLinePolygonCenTan::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }

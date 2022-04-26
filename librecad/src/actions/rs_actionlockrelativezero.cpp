@@ -52,7 +52,7 @@ void RS_ActionLockRelativeZero::init(int status) {
 }
 
 void RS_ActionLockRelativeZero::trigger() {
-    graphicView->lockRelativeZero(on);
+    _graphicView->lockRelativeZero(on);
 }
 
 // EOF

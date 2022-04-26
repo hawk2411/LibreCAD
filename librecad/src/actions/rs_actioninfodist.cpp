@@ -140,7 +140,7 @@ void RS_ActionInfoDist::coordinateEvent(RS_CoordinateEvent* e) {
     switch (getStatus()) {
     case SetPoint1:
 		pPoints->point1 = mouse;
-		graphicView->moveRelativeZero(pPoints->point1);
+		_graphicView->moveRelativeZero(pPoints->point1);
         setStatus(SetPoint2);
         break;
 
@@ -148,7 +148,7 @@ void RS_ActionInfoDist::coordinateEvent(RS_CoordinateEvent* e) {
 		if (pPoints->point1.valid) {
 			pPoints->point2 = mouse;
             deletePreview();
-				graphicView->moveRelativeZero(pPoints->point2);
+				_graphicView->moveRelativeZero(pPoints->point2);
             trigger();
             setStatus(SetPoint1);
         }
@@ -181,7 +181,7 @@ void RS_ActionInfoDist::updateMouseButtonHints() {
 
 
 void RS_ActionInfoDist::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

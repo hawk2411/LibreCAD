@@ -74,14 +74,14 @@ void RS_ActionDimRadial::trigger() {
     if (entity) {
 		RS_DimRadial* newEntity = nullptr;
 
-        newEntity = new RS_DimRadial(container,
-									 *data,
-									 *edata);
+        newEntity = new RS_DimRadial(_container,
+                                     *data,
+                                     *edata);
 
         newEntity->setLayerToActive();
         newEntity->setPenToActive();
         newEntity->update();
-        container->addEntity(newEntity);
+        _container->addEntity(newEntity);
 
         // upd. undo list:
         if (_document) {
@@ -89,9 +89,9 @@ void RS_ActionDimRadial::trigger() {
             _document->addUndoable(newEntity);
             _document->endUndoCycle();
         }
-        RS_Vector rz = graphicView->getRelativeZero();
-		graphicView->redraw(RS2::RedrawDrawing);
-        graphicView->moveRelativeZero(rz);
+        RS_Vector rz = _graphicView->getRelativeZero();
+		_graphicView->redraw(RS2::RedrawDrawing);
+        _graphicView->moveRelativeZero(rz);
 		RS_Snapper::finish();
 
     }
@@ -168,7 +168,7 @@ void RS_ActionDimRadial::mouseReleaseEvent(QMouseEvent* e) {
 							data->definitionPoint =
 								static_cast<RS_Circle*>(entity)->getCenter();
                         }
-						graphicView->moveRelativeZero(data->definitionPoint);
+						_graphicView->moveRelativeZero(data->definitionPoint);
                         setStatus(SetPos);
                     } else {
                         GetDialogFactory()->commandMessage(tr("Not a circle "
@@ -226,7 +226,7 @@ void RS_ActionDimRadial::commandEvent(RS_CommandEvent* e) {
     if (getStatus()==SetText) {
         setText(c);
         GetDialogFactory()->requestOptions(this, true, true);
-        graphicView->enableCoordinateInput();
+        _graphicView->enableCoordinateInput();
         setStatus(lastStatus);
         return;
     }
@@ -234,7 +234,7 @@ void RS_ActionDimRadial::commandEvent(RS_CommandEvent* e) {
     // command: text
     if (checkCommand("text", c)) {
         lastStatus = (Status)getStatus();
-        graphicView->disableCoordinateInput();
+        _graphicView->disableCoordinateInput();
         setStatus(SetText);
     }
 

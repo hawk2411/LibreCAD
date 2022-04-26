@@ -48,8 +48,8 @@ RS_ActionDrawPoint::~RS_ActionDrawPoint() = default;
 
 void RS_ActionDrawPoint::trigger() {
 	if (pt->valid) {
-		RS_Point* point = new RS_Point(container, RS_PointData(*pt));
-        container->addEntity(point);
+		RS_Point* point = new RS_Point(_container, RS_PointData(*pt));
+        _container->addEntity(point);
 
         if (_document) {
             _document->startUndoCycle();
@@ -57,8 +57,8 @@ void RS_ActionDrawPoint::trigger() {
             _document->endUndoCycle();
         }
 
-		graphicView->moveRelativeZero(*pt);
-		graphicView->redraw((RS2::RedrawMethod) (RS2::RedrawDrawing | RS2::RedrawOverlay));
+		_graphicView->moveRelativeZero(*pt);
+		_graphicView->redraw((RS2::RedrawMethod) (RS2::RedrawDrawing | RS2::RedrawOverlay));
     }
 }
 
@@ -125,7 +125,7 @@ void RS_ActionDrawPoint::updateMouseButtonHints() {
 
 
 void RS_ActionDrawPoint::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

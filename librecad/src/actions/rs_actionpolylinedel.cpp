@@ -62,17 +62,17 @@ void RS_ActionPolylineDel::trigger() {
 			delEntity->isPointOnEntity(*delPoint, RS_DEFAULT_TOLERANCE)) {
 
                 delEntity->setHighlighted(false);
-                graphicView->drawEntity(delEntity);
+                _graphicView->drawEntity(delEntity);
 
-                RS_Modification m(*container, graphicView);
+                RS_Modification m(*_container, _graphicView);
 				delEntity = m.deletePolylineNode((RS_Polyline&)*delEntity, *delPoint );
 
 				*delPoint = RS_Vector(false);
 
-            GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+            GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
     }
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw();
+                _graphicView->redraw();
 ////////////////////////////////////////
 }
 
@@ -113,10 +113,10 @@ void RS_ActionPolylineDel::mouseReleaseEvent(QMouseEvent* e) {
                     } else {
 							snapPoint(e);
                                 delEntity->setHighlighted(true);
-                                graphicView->drawEntity(delEntity);
+                                _graphicView->drawEntity(delEntity);
                                 setStatus(SetDelPoint);
 ////////////////////////////////////////2006/06/15
-                                graphicView->redraw();
+                                _graphicView->redraw();
 ////////////////////////////////////////
                     }
                     break;
@@ -143,9 +143,9 @@ void RS_ActionPolylineDel::mouseReleaseEvent(QMouseEvent* e) {
                 deleteSnapper();
                 if (delEntity) {
                 delEntity->setHighlighted(false);
-                graphicView->drawEntity(delEntity);
+                _graphicView->drawEntity(delEntity);
 ////////////////////////////////////////2006/06/15
-                        graphicView->redraw();
+                        _graphicView->redraw();
 ////////////////////////////////////////
                 }
                 init(getStatus()-1);
@@ -171,7 +171,7 @@ void RS_ActionPolylineDel::updateMouseButtonHints() {
 
 
 void RS_ActionPolylineDel::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

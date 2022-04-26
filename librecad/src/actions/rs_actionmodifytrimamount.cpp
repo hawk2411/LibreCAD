@@ -55,8 +55,8 @@ RS_ActionModifyTrimAmount::~RS_ActionModifyTrimAmount() = default;
 void RS_ActionModifyTrimAmount::init(int status) {
     RS_ActionInterface::init(status);
 
-    snapMode.clear();
-    snapMode.restriction = RS2::RestrictNothing;
+    _snapMode.clear();
+    _snapMode.restriction = RS2::RestrictNothing;
 }
 
 
@@ -67,7 +67,7 @@ void RS_ActionModifyTrimAmount::trigger() {
 
     if (trimEntity && trimEntity->isAtomic()) {
 
-        RS_Modification m(*container, graphicView);
+        RS_Modification m(*_container, _graphicView);
         double d;
         if(byTotal) {
             //the distance is taken as the new total length
@@ -81,13 +81,13 @@ void RS_ActionModifyTrimAmount::trigger() {
 		trimEntity = nullptr;
         setStatus(ChooseTrimEntity);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
     }
 }
 
 void RS_ActionModifyTrimAmount::mouseReleaseEvent(QMouseEvent* e) {
 
-	*trimCoord = graphicView->toGraph(e->x(), e->y());
+	*trimCoord = _graphicView->toGraph(e->x(), e->y());
     trimEntity = catchEntity(e);
 
     if (e->button()==Qt::LeftButton) {
@@ -195,7 +195,7 @@ void RS_ActionModifyTrimAmount::updateMouseButtonHints() {
 
 
 void RS_ActionModifyTrimAmount::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

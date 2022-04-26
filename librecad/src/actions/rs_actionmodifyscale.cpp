@@ -61,10 +61,10 @@ void RS_ActionModifyScale::trigger() {
 
     RS_DEBUG->print("RS_ActionModifyScale::trigger()");
 	if(pPoints->data.factor.valid){
-        RS_Modification m(*container, graphicView);
+        RS_Modification m(*_container, _graphicView);
 		m.scale(pPoints->data);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
     }
 }
 
@@ -137,7 +137,7 @@ void RS_ActionModifyScale::updateMouseButtonHints() {
 
 
 void RS_ActionModifyScale::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

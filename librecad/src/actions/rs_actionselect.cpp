@@ -50,8 +50,8 @@ RS_ActionSelect::RS_ActionSelect(QG_ActionHandler* a_handler,
 void RS_ActionSelect::init(int status) {
     RS_ActionInterface::init(status);
     if(status >= 0 ) {
-        graphicView->setCurrentAction(
-                    new RS_ActionSelectSingle(*container, *graphicView, this, entityTypeList));
+        _graphicView->setCurrentAction(
+                    new RS_ActionSelectSingle(*_container, *_graphicView, this, entityTypeList));
     }
     deleteSnapper();
 
@@ -70,7 +70,7 @@ void RS_ActionSelect::mouseReleaseEvent(QMouseEvent* e) {
 
 
 int RS_ActionSelect::countSelected() {
-        int ret=container->countSelected(true, {});
+        int ret=_container->countSelected(true, {});
 		if (ret==0) {
             GetDialogFactory()->commandMessage(tr("No entity selected!"));
         }
@@ -138,11 +138,11 @@ void RS_ActionSelect::updateMouseButtonHints() {
 
 
 void RS_ActionSelect::updateMouseCursor() {
-    if(graphicView){
+    if(_graphicView){
         if(isFinished()){
-            graphicView->setMouseCursor(RS2::ArrowCursor);
+            _graphicView->setMouseCursor(RS2::ArrowCursor);
         }else{
-            graphicView->setMouseCursor(RS2::SelectCursor);
+            _graphicView->setMouseCursor(RS2::SelectCursor);
         }
     }
 }

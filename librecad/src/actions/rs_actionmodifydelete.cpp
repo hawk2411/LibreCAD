@@ -54,13 +54,13 @@ void RS_ActionModifyDelete::trigger() {
 
     RS_DEBUG->print("RS_ActionModifyDelete::trigger()");
 
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
     m.remove();
 
     finish(false);
 
 	GetDialogFactory()->updateSelectionWidget(
-				container->countSelected(true, {}), container->totalSelectedLength());
+            _container->countSelected(true, {}), _container->totalSelectedLength());
 }
 
 
@@ -80,7 +80,7 @@ void RS_ActionModifyDelete::updateMouseButtonHints() {
 
 
 void RS_ActionModifyDelete::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::DelCursor);
+    _graphicView->setMouseCursor(RS2::DelCursor);
 }
 
 // EOF

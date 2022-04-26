@@ -62,9 +62,9 @@ void RS_ActionPolylineAdd::trigger() {
 				addSegment->isPointOnEntity(*addCoord, RS_DEFAULT_TOLERANCE)) {
 
                 addEntity->setHighlighted(false);
-                graphicView->drawEntity(addEntity);
+                _graphicView->drawEntity(addEntity);
 
-                RS_Modification m(*container, graphicView);
+                RS_Modification m(*_container, _graphicView);
 				addEntity = m.addPolylineNode(
 							*static_cast<RS_Polyline*>(addEntity),
 							(RS_AtomicEntity&) *addSegment,
@@ -72,10 +72,10 @@ void RS_ActionPolylineAdd::trigger() {
 
 				*addCoord = {};
 
-                GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw(RS2::RedrawDrawing);
+                _graphicView->redraw(RS2::RedrawDrawing);
 ////////////////////////////////////////
 }
 
@@ -112,10 +112,10 @@ void RS_ActionPolylineAdd::mouseReleaseEvent(QMouseEvent* e) {
                                 tr("Entity must be a polyline."));
                         } else {
                                 addEntity->setHighlighted(true);
-                                graphicView->drawEntity(addEntity);
+                                _graphicView->drawEntity(addEntity);
                                 setStatus(SetAddCoord);
 ////////////////////////////////////////2006/06/15
-                                graphicView->redraw(RS2::RedrawDrawing);
+                                _graphicView->redraw(RS2::RedrawDrawing);
 ////////////////////////////////////////
                         }
                         break;
@@ -129,7 +129,7 @@ void RS_ActionPolylineAdd::mouseReleaseEvent(QMouseEvent* e) {
                         } else {
                                 RS_Vector clickCoord = snapPoint(e);
 								addSegment = nullptr;
-                                double dist = graphicView->toGraphDX(snapRange)*0.9;
+                                double dist = _graphicView->toGraphDX(_snapRange) * 0.9;
                                 addSegment =  ((RS_Polyline*)addEntity)->getNearestEntity( clickCoord, &dist, RS2::ResolveNone);
 								if (!addSegment) {
                                         GetDialogFactory()->commandMessage(
@@ -148,9 +148,9 @@ void RS_ActionPolylineAdd::mouseReleaseEvent(QMouseEvent* e) {
                 deleteSnapper();
                 if (addEntity) {
                         addEntity->setHighlighted(false);
-                        graphicView->drawEntity(addEntity);
+                        _graphicView->drawEntity(addEntity);
 ////////////////////////////////////////2006/06/15
-                        graphicView->redraw(RS2::RedrawDrawing);
+                        _graphicView->redraw(RS2::RedrawDrawing);
 ////////////////////////////////////////
                 }
                 init(getStatus()-1);
@@ -177,7 +177,7 @@ void RS_ActionPolylineAdd::updateMouseButtonHints() {
 
 
 void RS_ActionPolylineAdd::updateMouseCursor() {
-        graphicView->setMouseCursor(RS2::SelectCursor);
+        _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

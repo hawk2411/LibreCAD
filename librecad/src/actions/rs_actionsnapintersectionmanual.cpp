@@ -63,7 +63,7 @@ QAction* RS_ActionSnapIntersectionManual::createGUIAction(RS2::ActionType /*type
 
 void RS_ActionSnapIntersectionManual::init(int status) {
     RS_ActionInterface::init(status);
-	snapMode.clear();
+	_snapMode.clear();
 }
 
 
@@ -98,7 +98,7 @@ void RS_ActionSnapIntersectionManual::mouseMoveEvent(QMouseEvent* e) {
     RS_DEBUG->print("RS_ActionSnapIntersectionManual::mouseMoveEvent begin");
 
     RS_Entity* se = catchEntity(e);
-    RS_Vector mouse = graphicView->toGraph(e->x(), e->y());
+    RS_Vector mouse = _graphicView->toGraph(e->x(), e->y());
 
     switch (getStatus()) {
     case ChooseEntity1:
@@ -123,11 +123,11 @@ void RS_ActionSnapIntersectionManual::mouseMoveEvent(QMouseEvent* e) {
                 deletePreview();
                 _preview->addEntity(
 					new RS_Circle(_preview.get(),
-                                  {ip, graphicView->toGraphDX(4)}));
+                                  {ip, _graphicView->toGraphDX(4)}));
                 drawPreview();
 
                 GetDialogFactory()->updateCoordinateWidget(ip,
-                        ip - graphicView->getRelativeZero());
+                                                           ip - _graphicView->getRelativeZero());
 
             }
         }
@@ -145,7 +145,7 @@ void RS_ActionSnapIntersectionManual::mouseMoveEvent(QMouseEvent* e) {
 void RS_ActionSnapIntersectionManual::mouseReleaseEvent(QMouseEvent* e) {
     if (e->button()==Qt::LeftButton) {
 
-        RS_Vector mouse = graphicView->toGraph(e->x(), e->y());
+        RS_Vector mouse = _graphicView->toGraph(e->x(), e->y());
         RS_Entity* se = catchEntity(e);
 
         switch (getStatus()) {
@@ -194,7 +194,7 @@ void RS_ActionSnapIntersectionManual::updateMouseButtonHints() {
 
 
 void RS_ActionSnapIntersectionManual::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

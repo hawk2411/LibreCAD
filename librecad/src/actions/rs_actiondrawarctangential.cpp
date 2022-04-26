@@ -84,10 +84,10 @@ void RS_ActionDrawArcTangential::trigger() {
     }
 
     preparePreview();
-	RS_Arc* arc = new RS_Arc(container, *data);
+	RS_Arc* arc = new RS_Arc(_container, *data);
     arc->setLayerToActive();
     arc->setPenToActive();
-    container->addEntity(arc);
+    _container->addEntity(arc);
 
     // upd. undo list:
     if (_document) {
@@ -96,8 +96,8 @@ void RS_ActionDrawArcTangential::trigger() {
         _document->endUndoCycle();
     }
 
-    graphicView->redraw(RS2::RedrawDrawing);
-    graphicView->moveRelativeZero(arc->getCenter());
+    _graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(arc->getCenter());
 
     setStatus(SetBaseEntity);
     reset();
@@ -156,7 +156,7 @@ void RS_ActionDrawArcTangential::mouseReleaseEvent(QMouseEvent* e) {
 
         // set base entity:
         case SetBaseEntity: {
-            RS_Vector coord = graphicView->toGraph(e->x(), e->y());
+            RS_Vector coord = _graphicView->toGraph(e->x(), e->y());
             RS_Entity* entity = catchEntity(coord, RS2::ResolveAll);
             if (entity) {
                 if (entity->isAtomic()) {
@@ -271,7 +271,7 @@ void RS_ActionDrawArcTangential::updateMouseButtonHints() {
 
 
 void RS_ActionDrawArcTangential::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 

@@ -80,7 +80,7 @@ void QC_ActionGetPoint::mouseMoveEvent(QMouseEvent* e) {
                 _preview->addEntity(line);
                 RS_DEBUG->print("QC_ActionGetPoint::mouseMoveEvent: draw preview");
                 drawPreview();
-                _preview->addSelectionFrom(*container);
+                _preview->addSelectionFrom(*_container);
             }
         } else {
 			pPoints->targetPoint = mouse;
@@ -109,7 +109,7 @@ void QC_ActionGetPoint::coordinateEvent(RS_CoordinateEvent* e) {
     RS_Vector pos = e->getCoordinate();
 
 		pPoints->targetPoint = pos;
-		graphicView->moveRelativeZero(pPoints->targetPoint);
+		_graphicView->moveRelativeZero(pPoints->targetPoint);
         trigger();
 }
 
@@ -123,7 +123,7 @@ void QC_ActionGetPoint::updateMouseButtonHints() {
 
 
 void QC_ActionGetPoint::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 

@@ -83,15 +83,15 @@ void LC_ActionLayersToggleConstruction::deselectEntities(RS_Layer* layer)
 {
     if (!layer) return;
 
-    for(auto e: *container){
+    for(auto e: *_container){
         if (e && e->isVisible() && e->getLayer() == layer) {
 
-            if (graphicView) {
-                graphicView->deleteEntity(e);
+            if (_graphicView) {
+                _graphicView->deleteEntity(e);
             }
 
-            if (graphicView) {
-                graphicView->drawEntity(e);
+            if (_graphicView) {
+                _graphicView->drawEntity(e);
             }
         }
     }

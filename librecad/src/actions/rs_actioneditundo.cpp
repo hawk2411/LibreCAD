@@ -71,9 +71,9 @@ void RS_ActionEditUndo::trigger()
     _graphic->getBlockList()->addNotification();
     _graphic->setModified(true);
     _document->updateInserts();
-    graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->redraw(RS2::RedrawDrawing);
     finish(false);
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),
-                                            container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}),
+                                              _container->totalSelectedLength());
 }
 // EOF

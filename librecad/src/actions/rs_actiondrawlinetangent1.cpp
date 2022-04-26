@@ -55,18 +55,18 @@ void RS_ActionDrawLineTangent1::trigger() {
 	if (tangent) {
 		RS_Entity* newEntity = nullptr;
 
-		newEntity = new RS_Line(container,
-								tangent->getData());
+		newEntity = new RS_Line(_container,
+                                tangent->getData());
 
 		if (newEntity) {
 			if(circle){
 				circle->setHighlighted(false);
-				graphicView->drawEntity(circle);
+				_graphicView->drawEntity(circle);
 			}
 
 			newEntity->setLayerToActive();
 			newEntity->setPenToActive();
-			container->addEntity(newEntity);
+			_container->addEntity(newEntity);
 
 			// upd. undo list:
 			if (_document) {
@@ -75,7 +75,7 @@ void RS_ActionDrawLineTangent1::trigger() {
 				_document->endUndoCycle();
 			}
 
-			graphicView->redraw(RS2::RedrawDrawing);
+			_graphicView->redraw(RS2::RedrawDrawing);
 
 			setStatus(SetPoint);
 		}
@@ -91,8 +91,8 @@ void RS_ActionDrawLineTangent1::trigger() {
 void RS_ActionDrawLineTangent1::mouseMoveEvent(QMouseEvent* e) {
 	RS_DEBUG->print("RS_ActionDrawLineTangent1::mouseMoveEvent begin");
 
-	RS_Vector mouse(graphicView->toGraphX(e->x()),
-					graphicView->toGraphY(e->y()));
+	RS_Vector mouse(_graphicView->toGraphX(e->x()),
+                    _graphicView->toGraphY(e->y()));
 
 	switch (getStatus()) {
 	case SetPoint:
@@ -105,11 +105,11 @@ void RS_ActionDrawLineTangent1::mouseMoveEvent(QMouseEvent* e) {
 				   en->rtti()==RS2::EntitySplinePoints)) {
 			if(circle){
 				circle->setHighlighted(false);
-				graphicView->drawEntity(en);
+				_graphicView->drawEntity(en);
 			}
 			circle = en;
 			circle->setHighlighted(true);
-			graphicView->drawEntity(en);
+			_graphicView->drawEntity(en);
 
 
 			RS_Creation creation(nullptr, nullptr);
@@ -141,7 +141,7 @@ void RS_ActionDrawLineTangent1::mouseReleaseEvent(QMouseEvent* e) {
 		deletePreview();
 		if(circle){
 			circle->setHighlighted(false);
-			graphicView->drawEntity(circle);
+			_graphicView->drawEntity(circle);
 		}
 		init(getStatus()-1);
 	} else {
@@ -166,7 +166,7 @@ void RS_ActionDrawLineTangent1::coordinateEvent(RS_CoordinateEvent* e) {
 	switch (getStatus()) {
 	case SetPoint:
 		*point = e->getCoordinate();
-		graphicView->moveRelativeZero(*point);
+		_graphicView->moveRelativeZero(*point);
 		setStatus(SetCircle);
 		break;
 
@@ -196,10 +196,10 @@ void RS_ActionDrawLineTangent1::updateMouseCursor()
     switch (getStatus())
     {
         case SetPoint:
-            graphicView->setMouseCursor(RS2::CadCursor);
+            _graphicView->setMouseCursor(RS2::CadCursor);
             break;
         case SetCircle:
-            graphicView->setMouseCursor(RS2::SelectCursor);
+            _graphicView->setMouseCursor(RS2::SelectCursor);
             break;
     }
 }

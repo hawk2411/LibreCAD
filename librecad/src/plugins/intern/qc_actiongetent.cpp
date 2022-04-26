@@ -53,7 +53,7 @@ void QC_ActionGetEnt::updateMouseButtonHints() {
 
 
 void QC_ActionGetEnt::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 void QC_ActionGetEnt::setMessage(QString msg){
@@ -62,7 +62,7 @@ void QC_ActionGetEnt::setMessage(QString msg){
 
 void QC_ActionGetEnt::trigger() {
     if (en) {
-        RS_Selection s(*container, graphicView);
+        RS_Selection s(*_container, _graphicView);
         s.selectSingle(en);
         completed = true;
         updateMouseButtonHints();

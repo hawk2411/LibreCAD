@@ -61,7 +61,7 @@ void RS_ActionDrawLinePolygonCenCor::trigger() {
 
     deletePreview();
 
-    RS_Creation creation(container, graphicView);
+    RS_Creation creation(_container, _graphicView);
 	bool ok = creation.createPolygon(pPoints->center, pPoints->corner, number);
 
     if (!ok) {
@@ -119,7 +119,7 @@ void RS_ActionDrawLinePolygonCenCor::coordinateEvent(RS_CoordinateEvent* e) {
     case SetCenter:
 		pPoints->center = mouse;
         setStatus(SetCorner);
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         break;
 
     case SetCorner:
@@ -228,7 +228,7 @@ QStringList RS_ActionDrawLinePolygonCenCor::getAvailableCommands() {
 
 
 void RS_ActionDrawLinePolygonCenCor::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

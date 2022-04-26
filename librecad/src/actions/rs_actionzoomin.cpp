@@ -60,25 +60,25 @@ void RS_ActionZoomIn::trigger() {
     switch (axis) {
     case RS2::OnlyX:
         if (direction==RS2::In) {
-            graphicView->zoomInX();
+            _graphicView->zoomInX();
         } else {
-            graphicView->zoomOutX();
+            _graphicView->zoomOutX();
         }
         break;
 
     case RS2::OnlyY:
         if (direction==RS2::In) {
-            graphicView->zoomInY();
+            _graphicView->zoomInY();
         } else {
-            graphicView->zoomOutY();
+            _graphicView->zoomOutY();
         }
         break;
 
     case RS2::Both:
         if (direction==RS2::In) {
-			graphicView->zoomIn(zoom_factor, *center);
+			_graphicView->zoomIn(zoom_factor, *center);
         } else {
-			graphicView->zoomOut(zoom_factor, *center);
+			_graphicView->zoomOut(zoom_factor, *center);
         }
         break;
     }

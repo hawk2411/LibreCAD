@@ -75,17 +75,17 @@ void RS_ActionLayersToggleLock::deselectEntitiesOnLockedLayer(RS_Layer* layer)
     if (!layer) return;
     if (!layer->isLocked()) return;
 
-    for(auto e: *container){
+    for(auto e: *_container){
         if (e && e->isVisible() && e->getLayer() == layer) {
 
-            if (graphicView) {
-                graphicView->deleteEntity(e);
+            if (_graphicView) {
+                _graphicView->deleteEntity(e);
             }
 
             e->setSelected(false);
 
-            if (graphicView) {
-                graphicView->drawEntity(e);
+            if (_graphicView) {
+                _graphicView->drawEntity(e);
             }
         }
     }

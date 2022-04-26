@@ -101,8 +101,8 @@ void RS_ActionInfoAngle::trigger() {
 void RS_ActionInfoAngle::mouseReleaseEvent(QMouseEvent* e) {
     if (e->button()==Qt::LeftButton) {
 
-		RS_Vector mouse{graphicView->toGraphX(e->x()),
-						graphicView->toGraphY(e->y())};
+		RS_Vector mouse{_graphicView->toGraphX(e->x()),
+                        _graphicView->toGraphY(e->y())};
 
         switch (getStatus()) {
         case SetEntity1:
@@ -152,7 +152,7 @@ void RS_ActionInfoAngle::updateMouseButtonHints() {
 }
 
 void RS_ActionInfoAngle::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

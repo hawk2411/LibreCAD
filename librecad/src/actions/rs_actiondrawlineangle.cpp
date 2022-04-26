@@ -109,10 +109,10 @@ void RS_ActionDrawLineAngle::trigger() {
     RS_PreviewActionInterface::trigger();
 
     preparePreview();
-	RS_Line* line = new RS_Line{container, pPoints->data};
+	RS_Line* line = new RS_Line{_container, pPoints->data};
     line->setLayerToActive();
     line->setPenToActive();
-    container->addEntity(line);
+    _container->addEntity(line);
 
     // upd. undo list:
     if (_document) {
@@ -121,8 +121,8 @@ void RS_ActionDrawLineAngle::trigger() {
         _document->endUndoCycle();
     }
 
-	graphicView->moveRelativeZero(pPoints->data._startpoint);
-        graphicView->redraw(RS2::RedrawDrawing);
+	_graphicView->moveRelativeZero(pPoints->data._startpoint);
+        _graphicView->redraw(RS2::RedrawDrawing);
     RS_DEBUG->print("RS_ActionDrawLineAngle::trigger(): line added: %d",
                     line->getId());
 }
@@ -327,7 +327,7 @@ void RS_ActionDrawLineAngle::hideOptions() {
 }
 
 void RS_ActionDrawLineAngle::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

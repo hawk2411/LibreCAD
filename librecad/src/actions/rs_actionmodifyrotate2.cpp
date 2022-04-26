@@ -55,12 +55,12 @@ void RS_ActionModifyRotate2::trigger() {
 
     RS_DEBUG->print("RS_ActionModifyRotate2::trigger()");
 
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
 	m.rotate2(*data);
 
     finish(false);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 }
 
 void RS_ActionModifyRotate2::mouseMoveEvent(QMouseEvent* e) {
@@ -159,7 +159,7 @@ void RS_ActionModifyRotate2::updateMouseButtonHints() {
 }
 
 void RS_ActionModifyRotate2::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

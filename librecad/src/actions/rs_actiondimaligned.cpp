@@ -66,15 +66,15 @@ void RS_ActionDimAligned::trigger() {
     RS_ActionDimension::trigger();
 
     preparePreview();
-    graphicView->moveRelativeZero(data->definitionPoint);
+    _graphicView->moveRelativeZero(data->definitionPoint);
 
 		//data->text = getText();
     RS_DimAligned* dim =
-		new RS_DimAligned(container, *data, *edata);
+		new RS_DimAligned(_container, *data, *edata);
     dim->setLayerToActive();
     dim->setPenToActive();
     dim->update();
-    container->addEntity(dim);
+    _container->addEntity(dim);
 
     // upd. undo list:
     if (_document) {
@@ -83,9 +83,9 @@ void RS_ActionDimAligned::trigger() {
         _document->endUndoCycle();
     }
 
-    RS_Vector rz = graphicView->getRelativeZero();
-        graphicView->redraw(RS2::RedrawDrawing);
-    graphicView->moveRelativeZero(rz);
+    RS_Vector rz = _graphicView->getRelativeZero();
+        _graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(rz);
 
     RS_DEBUG->print("RS_ActionDimAligned::trigger():"
                     " dim added: %d", dim->getId());
@@ -172,13 +172,13 @@ void RS_ActionDimAligned::coordinateEvent(RS_CoordinateEvent* e) {
     switch (getStatus()) {
     case SetExtPoint1:
 		edata->extensionPoint1 = pos;
-        graphicView->moveRelativeZero(pos);
+        _graphicView->moveRelativeZero(pos);
         setStatus(SetExtPoint2);
         break;
 
     case SetExtPoint2:
 		edata->extensionPoint2 = pos;
-        graphicView->moveRelativeZero(pos);
+        _graphicView->moveRelativeZero(pos);
         setStatus(SetDefPoint);
         break;
 
@@ -210,14 +210,14 @@ void RS_ActionDimAligned::commandEvent(RS_CommandEvent* e) {
             setText(c);
 			GetDialogFactory()->requestOptions(this, true, true);
             setStatus(lastStatus);
-            graphicView->enableCoordinateInput();
+            _graphicView->enableCoordinateInput();
         }
         break;
 
     default:
         if (checkCommand("text", c)) {
             lastStatus = (Status)getStatus();
-            graphicView->disableCoordinateInput();
+            _graphicView->disableCoordinateInput();
             setStatus(SetText);
         }
         break;

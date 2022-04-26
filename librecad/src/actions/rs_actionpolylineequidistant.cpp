@@ -122,7 +122,7 @@ RS_Vector RS_ActionPolylineEquidistant::calculateIntersection(RS_Entity* first,R
 }
 
 bool RS_ActionPolylineEquidistant::makeContour() {
-	if (!container) {
+	if (!_container) {
         RS_DEBUG->print(RS_Debug::D_WARNING,
                         "RS_ActionPolylineEquidistant::makeContour: no valid container");
         return false;
@@ -153,7 +153,7 @@ bool RS_ActionPolylineEquidistant::makeContour() {
 	RS_Arc arcFirst(nullptr, RS_ArcData(origin, 0,0,0,false));//previous arc
 
     for (int num=1; num<=number || (number==0 && num<=1); num++) {
-        RS_Polyline* newPolyline = new RS_Polyline(container);
+        RS_Polyline* newPolyline = new RS_Polyline(_container);
         newPolyline->setLayerToActive();
 
         bool first = true;
@@ -260,14 +260,14 @@ bool RS_ActionPolylineEquidistant::makeContour() {
             }
         }
         if (!newPolyline->isEmpty()) {
-            container->addEntity(newPolyline);
+            _container->addEntity(newPolyline);
 			if (_document) _document->addUndoable(newPolyline);
         }
     }
 	if (_document) _document->endUndoCycle();
 
-	if (graphicView) {
-        graphicView->redraw();
+	if (_graphicView) {
+        _graphicView->redraw();
     }
 
     return true;
@@ -280,7 +280,7 @@ void RS_ActionPolylineEquidistant::trigger() {
 		if (originalEntity && targetPoint->valid ) {
 
                 originalEntity->setHighlighted(false);
-                graphicView->drawEntity(originalEntity);
+                _graphicView->drawEntity(originalEntity);
 
                 makeContour();
 
@@ -289,10 +289,10 @@ void RS_ActionPolylineEquidistant::trigger() {
                 bRightSide = false;
                 setStatus(ChooseEntity);
 
-                GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+                GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
         }
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw();
+                _graphicView->redraw();
 ////////////////////////////////////////
 }
 
@@ -312,8 +312,8 @@ void RS_ActionPolylineEquidistant::mouseReleaseEvent(QMouseEvent* e) {
                         } else {
 								*targetPoint = snapFree(e);
                                 originalEntity->setHighlighted(true);
-                                graphicView->drawEntity(originalEntity);
-                                double d = graphicView->toGraphDX(snapRange)*0.9;
+                                _graphicView->drawEntity(originalEntity);
+                                double d = _graphicView->toGraphDX(_snapRange) * 0.9;
 								RS_Entity* Segment =  ((RS_Polyline*)originalEntity)->getNearestEntity( *targetPoint, &d, RS2::ResolveNone);
                                 if (Segment->rtti() == RS2::EntityLine) {
                                 double ang = ((RS_Line*)Segment)->getAngle1();
@@ -326,7 +326,7 @@ void RS_ActionPolylineEquidistant::mouseReleaseEvent(QMouseEvent* e) {
                                         bRightSide = true;
                                 }
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw();
+                _graphicView->redraw();
 ////////////////////////////////////////
                                 trigger();
                         }
@@ -338,9 +338,9 @@ void RS_ActionPolylineEquidistant::mouseReleaseEvent(QMouseEvent* e) {
                 deleteSnapper();
 				if (originalEntity) {
                         originalEntity->setHighlighted(false);
-                        graphicView->drawEntity(originalEntity);
+                        _graphicView->drawEntity(originalEntity);
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw();
+                _graphicView->redraw();
 ////////////////////////////////////////
                 }
                 init(getStatus()-1);
@@ -362,7 +362,7 @@ void RS_ActionPolylineEquidistant::hideOptions() {
 }
 
 void RS_ActionPolylineEquidistant::updateMouseCursor() {
-        graphicView->setMouseCursor(RS2::SelectCursor);
+        _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 void RS_ActionPolylineEquidistant::updateMouseButtonHints() {

@@ -82,11 +82,11 @@ void RS_ActionDimLinear::trigger() {
     RS_ActionDimension::trigger();
 
     preparePreview();
-	RS_DimLinear* dim = new RS_DimLinear(container, *data, *edata);
+	RS_DimLinear* dim = new RS_DimLinear(_container, *data, *edata);
     dim->setLayerToActive();
     dim->setPenToActive();
     dim->update();
-    container->addEntity(dim);
+    _container->addEntity(dim);
 
     // upd. undo list:
     if (_document) {
@@ -95,9 +95,9 @@ void RS_ActionDimLinear::trigger() {
         _document->endUndoCycle();
     }
 
-    RS_Vector rz = graphicView->getRelativeZero();
-	graphicView->redraw(RS2::RedrawDrawing);
-    graphicView->moveRelativeZero(rz);
+    RS_Vector rz = _graphicView->getRelativeZero();
+	_graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->moveRelativeZero(rz);
 
     RS_DEBUG->print("RS_ActionDimLinear::trigger():"
                     " dim added: %d", dim->getId());
@@ -180,13 +180,13 @@ void RS_ActionDimLinear::coordinateEvent(RS_CoordinateEvent* e) {
     switch (getStatus()) {
     case SetExtPoint1:
 		edata->_extensionPoint1 = pos;
-        graphicView->moveRelativeZero(pos);
+        _graphicView->moveRelativeZero(pos);
         setStatus(SetExtPoint2);
         break;
 
     case SetExtPoint2:
 		edata->_extensionPoint2 = pos;
-        graphicView->moveRelativeZero(pos);
+        _graphicView->moveRelativeZero(pos);
         setStatus(SetDefPoint);
         break;
 
@@ -227,7 +227,7 @@ void RS_ActionDimLinear::commandEvent(RS_CommandEvent* e) {
     case SetText:
         setText(c);
 		GetDialogFactory()->requestOptions(this, true, true);
-        graphicView->enableCoordinateInput();
+        _graphicView->enableCoordinateInput();
         setStatus(lastStatus);
         break;
 
@@ -248,7 +248,7 @@ void RS_ActionDimLinear::commandEvent(RS_CommandEvent* e) {
         lastStatus = (Status)getStatus();
         deletePreview();
         if (checkCommand("text", c)) {
-            graphicView->disableCoordinateInput();
+            _graphicView->disableCoordinateInput();
             setStatus(SetText);
             return;
         } else if (!fixedAngle && (checkCommand("angle", c))) {

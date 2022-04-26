@@ -60,14 +60,14 @@ void RS_ActionEditCopy::init(int status) {
 
 void RS_ActionEditCopy::trigger() {
 
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
 	m.copy(*referencePoint, !copy);
 
     //graphicView->redraw();
     finish(false);
-    graphicView->killSelectActions();
+    _graphicView->killSelectActions();
     //init(getStatus()-1);
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 }
 
 void RS_ActionEditCopy::mouseMoveEvent(QMouseEvent* e) {
@@ -113,7 +113,7 @@ void RS_ActionEditCopy::updateMouseButtonHints() {
 
 
 void RS_ActionEditCopy::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

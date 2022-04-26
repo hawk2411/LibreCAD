@@ -62,8 +62,8 @@ RS_ActionSelectIntersected::~RS_ActionSelectIntersected() = default;
 void RS_ActionSelectIntersected::init(int status) {
     RS_PreviewActionInterface::init(status);
 	pPoints.reset(new Points{});
-    snapMode.clear();
-    snapMode.restriction = RS2::RestrictNothing;
+    _snapMode.clear();
+    _snapMode.restriction = RS2::RestrictNothing;
 }
 
 
@@ -72,12 +72,12 @@ void RS_ActionSelectIntersected::trigger() {
     RS_PreviewActionInterface::trigger();
 
 	if (pPoints->v1.valid && pPoints->v2.valid) {
-		if (graphicView->toGuiDX(pPoints->v1.distanceTo(pPoints->v2))>10) {
+		if (_graphicView->toGuiDX(pPoints->v1.distanceTo(pPoints->v2)) > 10) {
 
-            RS_Selection s(*container, graphicView);
+            RS_Selection s(*_container, _graphicView);
 			s.selectIntersected(pPoints->v1, pPoints->v2, select);
 
-			GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+			GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 
             init();
         }
@@ -148,7 +148,7 @@ void RS_ActionSelectIntersected::updateMouseButtonHints() {
 }
 
 void RS_ActionSelectIntersected::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

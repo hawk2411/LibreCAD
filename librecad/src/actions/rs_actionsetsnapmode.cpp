@@ -45,7 +45,7 @@ RS_ActionSetSnapMode::RS_ActionSetSnapMode(RS_EntityContainer& container,
 
 
 void RS_ActionSetSnapMode::trigger() {
-    RS_SnapMode s = graphicView->getDefaultSnapMode();
+    RS_SnapMode s = _graphicView->getDefaultSnapMode();
 
     switch (snapMode) {
 
@@ -85,7 +85,7 @@ void RS_ActionSetSnapMode::trigger() {
             break;
     }
 
-    graphicView->setDefaultSnapMode(s);
+    _graphicView->setDefaultSnapMode(s);
 
     finish(false);
 }

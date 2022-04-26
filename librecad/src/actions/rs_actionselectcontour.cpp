@@ -48,10 +48,10 @@ RS_ActionSelectContour::RS_ActionSelectContour(RS_EntityContainer& container,
 void RS_ActionSelectContour::trigger() {
     if (en) {
         if (en->isAtomic()) {
-            RS_Selection s(*container, graphicView);
+            RS_Selection s(*_container, _graphicView);
             s.selectContour(en);
 
-			GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+			GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 		} else
 			GetDialogFactory()->commandMessage(
 						tr("Entity must be an Atomic Entity."));
@@ -73,7 +73,7 @@ void RS_ActionSelectContour::mouseReleaseEvent(QMouseEvent* e) {
 
 
 void RS_ActionSelectContour::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

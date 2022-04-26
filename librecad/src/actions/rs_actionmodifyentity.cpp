@@ -46,13 +46,13 @@ void RS_ActionModifyEntity::trigger() {
     if (en) {
         RS_Entity* clone = en->clone();
         if (GetDialogFactory()->requestModifyEntityDialog(clone)) {
-            container->addEntity(clone);
+            _container->addEntity(clone);
 
-            graphicView->deleteEntity(en);
+            _graphicView->deleteEntity(en);
                         en->setSelected(false);
 
                         clone->setSelected(false);
-            graphicView->drawEntity(clone);
+            _graphicView->drawEntity(clone);
 
             if (_document) {
                 _document->startUndoCycle();
@@ -63,7 +63,7 @@ void RS_ActionModifyEntity::trigger() {
 
                 _document->endUndoCycle();
             }
-            GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+            GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
         } else {
             delete clone;
         }
@@ -87,7 +87,7 @@ void RS_ActionModifyEntity::mouseReleaseEvent(QMouseEvent* e) {
 
 
 void RS_ActionModifyEntity::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 void RS_ActionModifyEntity::updateMouseButtonHints() {

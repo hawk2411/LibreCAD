@@ -48,9 +48,9 @@ RS_ActionZoomScroll::RS_ActionZoomScroll(int offsetX, int offsetY,
 
 void RS_ActionZoomScroll::trigger() {
     if (hasOffset) {
-        graphicView->zoomPan(offsetX, offsetY);
+        _graphicView->zoomPan(offsetX, offsetY);
     } else {
-        graphicView->zoomScroll(direction);
+        _graphicView->zoomScroll(direction);
     }
     finish(false);
 }

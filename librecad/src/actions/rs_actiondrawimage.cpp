@@ -102,12 +102,12 @@ void RS_ActionDrawImage::trigger() {
     deletePreview();
 
 	if (!pImg->data.file.isEmpty()) {
-        RS_Creation creation(container, graphicView);
+        RS_Creation creation(_container, _graphicView);
 		creation.createImage(& pImg->data);
     }
 
-    graphicView->redraw(RS2::RedrawDrawing);
-    graphicView->zoomAuto();
+    _graphicView->redraw(RS2::RedrawDrawing);
+    _graphicView->zoomAuto();
     finish(false);
 }
 
@@ -267,7 +267,7 @@ double RS_ActionDrawImage::scaleToDpi(double scale) const {
 
 
 void RS_ActionDrawImage::updateMouseCursor() {
-	graphicView->setMouseCursor(RS2::CadCursor);
+	_graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 QStringList RS_ActionDrawImage::getAvailableCommands() {

@@ -138,7 +138,7 @@ void RS_ActionInfoArea::coordinateEvent(RS_CoordinateEvent* e) {
         trigger();
         return;
     }
-    graphicView->moveRelativeZero(mouse);
+    _graphicView->moveRelativeZero(mouse);
 
 	ia->push_back(mouse);
     GetDialogFactory()->commandMessage(tr("Point: %1/%2")
@@ -178,7 +178,7 @@ void RS_ActionInfoArea::updateMouseButtonHints() {
 
 
 void RS_ActionInfoArea::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

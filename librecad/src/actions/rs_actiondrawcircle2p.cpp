@@ -80,11 +80,11 @@ void RS_ActionDrawCircle2P::trigger() {
 
     preparePreview();
 	if (data->isValid()) {
-        RS_Circle* circle = new RS_Circle(container,
-										  *data);
+        RS_Circle* circle = new RS_Circle(_container,
+                                          *data);
         circle->setLayerToActive();
         circle->setPenToActive();
-        container->addEntity(circle);
+        _container->addEntity(circle);
 
         // upd. undo list:
         if (_document) {
@@ -93,9 +93,9 @@ void RS_ActionDrawCircle2P::trigger() {
             _document->endUndoCycle();
         }
 
-        RS_Vector rz = graphicView->getRelativeZero();
-                graphicView->redraw(RS2::RedrawDrawing);
-        graphicView->moveRelativeZero(rz);
+        RS_Vector rz = _graphicView->getRelativeZero();
+                _graphicView->redraw(RS2::RedrawDrawing);
+        _graphicView->moveRelativeZero(rz);
 
         setStatus(SetPoint1);
         reset();
@@ -164,13 +164,13 @@ void RS_ActionDrawCircle2P::coordinateEvent(RS_CoordinateEvent* e) {
     switch (getStatus()) {
     case SetPoint1:
 		pPoints->point1 = mouse;
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         setStatus(SetPoint2);
         break;
 
     case SetPoint2:
 		pPoints->point2 = mouse;
-        graphicView->moveRelativeZero(mouse);
+        _graphicView->moveRelativeZero(mouse);
         trigger();
         break;
 
@@ -220,7 +220,7 @@ void RS_ActionDrawCircle2P::updateMouseButtonHints() {
 
 
 void RS_ActionDrawCircle2P::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

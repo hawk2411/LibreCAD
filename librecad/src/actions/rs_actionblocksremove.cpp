@@ -105,11 +105,11 @@ void RS_ActionBlocksRemove::trigger() {
 
     _graphic->getBlockList()->addNotification();
 	_graphic->updateInserts();
-	graphicView->redraw(RS2::RedrawDrawing);
+	_graphicView->redraw(RS2::RedrawDrawing);
     bl->activate(nullptr);
 
 	finish(false);
-	GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+	GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 }
 
 

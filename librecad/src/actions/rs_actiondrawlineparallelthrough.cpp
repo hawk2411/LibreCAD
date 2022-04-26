@@ -44,7 +44,7 @@ RS_ActionDrawLineParallelThrough::RS_ActionDrawLineParallelThrough(
 		,lastStatus(SetEntity)
 {
     _actionType=RS2::ActionDrawLineParallelThrough;
-	m_SnapDistance=1.;
+    _m_SnapDistance=1.;
 }
 
 RS_ActionDrawLineParallelThrough::~RS_ActionDrawLineParallelThrough() = default;
@@ -52,7 +52,7 @@ RS_ActionDrawLineParallelThrough::~RS_ActionDrawLineParallelThrough() = default;
 void RS_ActionDrawLineParallelThrough::finish(bool updateTB){
 	if(entity){
 		entity->setHighlighted(false);
-		graphicView->drawEntity(entity);
+		_graphicView->drawEntity(entity);
 		entity=nullptr;
 	}
 	RS_PreviewActionInterface::finish(updateTB);
@@ -62,7 +62,7 @@ void RS_ActionDrawLineParallelThrough::trigger() {
     RS_PreviewActionInterface::trigger();
 
     if (entity) {
-        RS_Creation creation(container, graphicView);
+        RS_Creation creation(_container, _graphicView);
 		RS_Entity* e = creation.createParallelThrough(*coord,
                        number,
                        entity);
@@ -125,7 +125,7 @@ void RS_ActionDrawLineParallelThrough::mouseReleaseEvent(QMouseEvent* e) {
             entity = catchEntity(e, RS2::ResolveAll);
             if (entity) {
                 entity->setHighlighted(true);
-                graphicView->drawEntity(entity);
+                _graphicView->drawEntity(entity);
                 setStatus(SetPos);
             }
             break;
@@ -141,7 +141,7 @@ void RS_ActionDrawLineParallelThrough::mouseReleaseEvent(QMouseEvent* e) {
         deletePreview();
         if (entity) {
             entity->setHighlighted(false);
-            graphicView->drawEntity(entity);
+            _graphicView->drawEntity(entity);
 			entity=nullptr;
         }
         init(getStatus()-1);
@@ -277,11 +277,11 @@ void RS_ActionDrawLineParallelThrough::updateMouseCursor()
     switch (getStatus())
     {
         case SetEntity:
-            graphicView->setMouseCursor(RS2::SelectCursor);
+            _graphicView->setMouseCursor(RS2::SelectCursor);
             break;
         case SetNumber:
         case SetPos:
-            graphicView->setMouseCursor(RS2::CadCursor);
+            _graphicView->setMouseCursor(RS2::CadCursor);
             break;
     }
 }

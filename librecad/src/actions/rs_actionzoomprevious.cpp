@@ -48,7 +48,7 @@ void RS_ActionZoomPrevious::init(int status) {
 
 
 void RS_ActionZoomPrevious::trigger() {
-    graphicView->zoomPrevious();
+    _graphicView->zoomPrevious();
     finish(false);
 }
 

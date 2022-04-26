@@ -83,7 +83,7 @@ public:
      * method will return NULL.
      */
     RS_Entity *getKeyEntity() const {
-        return keyEntity;
+        return _keyEntity;
     }
 
     /** Sets a new snap mode. */
@@ -104,7 +104,7 @@ public:
      * @see catchEntity()
      */
     void setSnapRange(int r) {
-        snapRange = r;
+        _snapRange = r;
     }
 
     /**manually set snapPoint*/
@@ -199,30 +199,30 @@ protected:
 
     double getSnapRange() const;
 
-    RS_EntityContainer *container;
-    RS_GraphicView *graphicView;
-    RS_Entity *keyEntity{};
-    RS_SnapMode snapMode;
+    RS_EntityContainer *_container;
+    RS_GraphicView *_graphicView;
+    RS_Entity *_keyEntity{};
+    RS_SnapMode _snapMode;
     //RS2::SnapRestriction snapRes;
     /**
      * Snap distance for snapping to points with a
      * given distance from endpoints.
      */
-    double m_SnapDistance{};
+    double _m_SnapDistance{};
     /**
      * Snap to equidistant middle points
      * default to 1, i.e., equidistant to start/end points
      */
-    int middlePoints{};
+    int _middlePoints{};
     /**
      * Snap range for catching entities.
      */
-    int snapRange{};
-    bool finished{false};
+    int _snapRange{};
+    bool _finished{false};
 
 private:
-    std::unique_ptr<ImpData> pImpData;
-    std::unique_ptr<Indicator> snap_indicator;
+    std::unique_ptr<ImpData> _pImpData;
+    std::unique_ptr<Indicator> _snap_indicator;
 };
 
 #endif

@@ -61,7 +61,7 @@ void RS_ActionDrawCircleInscribe::clearLines(bool checkStatus)
 		if(checkStatus && (int) pPoints->lines.size()<=getStatus() )
 			break;
 		pPoints->lines.back()->setHighlighted(false);
-		graphicView->drawEntity(pPoints->lines.back());
+		_graphicView->drawEntity(pPoints->lines.back());
 		pPoints->lines.pop_back();
 	}
 }
@@ -85,10 +85,10 @@ void RS_ActionDrawCircleInscribe::trigger() {
     RS_PreviewActionInterface::trigger();
 
 
-	RS_Circle* circle=new RS_Circle(container, pPoints->cData);
+	RS_Circle* circle=new RS_Circle(_container, pPoints->cData);
 
     deletePreview();
-    container->addEntity(circle);
+    _container->addEntity(circle);
 
     // upd. undo list:
 	if (_document) {
@@ -119,16 +119,16 @@ void RS_ActionDrawCircleInscribe::mouseMoveEvent(QMouseEvent* e) {
         }
 		if(en->getParent() && en->getParent()->ignoredOnModification())
 			return;
-		pPoints->coord= graphicView->toGraph(e->x(), e->y());
+		pPoints->coord= _graphicView->toGraph(e->x(), e->y());
 		deletePreview();
 		while(pPoints->lines.size()==3){
 			pPoints->lines.back()->setHighlighted(false);
-			graphicView->drawEntity(pPoints->lines.back());
+			_graphicView->drawEntity(pPoints->lines.back());
 			pPoints->lines.pop_back();
 		}
 		en->setHighlighted(true);
 		pPoints->lines.push_back(static_cast<RS_Line*>(en));
-		graphicView->drawEntity(pPoints->lines.back());
+		_graphicView->drawEntity(pPoints->lines.back());
         if(preparePreview()) {
 			RS_Circle* e=new RS_Circle(_preview.get(), pPoints->cData);
             _preview->addEntity(e);
@@ -169,17 +169,17 @@ void RS_ActionDrawCircleInscribe::mouseReleaseEvent(QMouseEvent* e) {
         }
 		while((int) pPoints->lines.size()>getStatus()){
 			pPoints->lines.back()->setHighlighted(false);
-			graphicView->drawEntity(pPoints->lines.back());
+			_graphicView->drawEntity(pPoints->lines.back());
 			pPoints->lines.pop_back();
 		}
 		pPoints->lines.push_back(static_cast<RS_Line*>(en));
-		pPoints->coord= graphicView->toGraph(e->x(), e->y());
+		pPoints->coord= _graphicView->toGraph(e->x(), e->y());
         switch (getStatus()) {
         case SetLine1:
         case SetLine2:
 			en->setHighlighted(true);
 			setStatus(getStatus()+1);
-			graphicView->redraw(RS2::RedrawDrawing);
+			_graphicView->redraw(RS2::RedrawDrawing);
 			break;
         case SetLine3:
             if( preparePreview()) {
@@ -195,7 +195,7 @@ void RS_ActionDrawCircleInscribe::mouseReleaseEvent(QMouseEvent* e) {
 			clearLines(true);
 			pPoints->lines.back()->setHighlighted(false);
 			pPoints->lines.pop_back();
-            graphicView->redraw(RS2::RedrawDrawing);
+            _graphicView->redraw(RS2::RedrawDrawing);
             deletePreview();
         }
         init(getStatus()-1);
@@ -297,7 +297,7 @@ void RS_ActionDrawCircleInscribe::updateMouseButtonHints() {
 
 
 void RS_ActionDrawCircleInscribe::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

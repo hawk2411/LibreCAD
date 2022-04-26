@@ -62,7 +62,7 @@ void QC_ActionGetSelect::updateMouseButtonHints() {
 
 
 void QC_ActionGetSelect::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 void QC_ActionGetSelect::setMessage(QString msg){
@@ -71,8 +71,8 @@ void QC_ActionGetSelect::setMessage(QString msg){
 
 void QC_ActionGetSelect::init(int status) {
         RS_ActionInterface::init(status);
-        graphicView->setCurrentAction(
-                new RS_ActionSelectSingle(*container, *graphicView, this));
+        _graphicView->setCurrentAction(
+                new RS_ActionSelectSingle(*_container, *_graphicView, this));
 }
 
 void QC_ActionGetSelect::mouseReleaseEvent(QMouseEvent* e) {
@@ -98,7 +98,7 @@ void QC_ActionGetSelect::keyPressEvent(QKeyEvent* e)
  */
 void QC_ActionGetSelect::getSelected(QList<Plug_Entity *> *se, DocumentPluginImplementation* d) const
 {
-	for(auto e: *container){
+	for(auto e: *_container){
 
         if (e->isSelected()) {
             PluginEntity *pe = new PluginEntity(e, d);

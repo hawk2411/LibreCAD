@@ -56,7 +56,7 @@ void RS_ActionModifyDeleteQuick::trigger() {
         RS_EntityContainer* parent = en->getParent();
         if (parent) {
             en->setSelected(false);
-            graphicView->deleteEntity(en);
+            _graphicView->deleteEntity(en);
             en->changeUndoState();
 
             if (_document) {
@@ -66,7 +66,7 @@ void RS_ActionModifyDeleteQuick::trigger() {
             }
         }
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
     } else {
         RS_DEBUG->print("RS_ActionModifyDeleteQuick::mousePressEvent:"
                         " Entity is NULL\n");
@@ -101,7 +101,7 @@ void RS_ActionModifyDeleteQuick::updateMouseButtonHints() {
 
 
 void RS_ActionModifyDeleteQuick::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::DelCursor);
+    _graphicView->setMouseCursor(RS2::DelCursor);
 }
 
 // EOF

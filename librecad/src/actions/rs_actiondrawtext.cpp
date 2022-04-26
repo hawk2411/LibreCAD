@@ -110,9 +110,9 @@ void RS_ActionDrawText::trigger() {
 	if (pPoints->pos.valid) {
         deletePreview();
 
-		RS_Text* text = new RS_Text(container, *data);
+		RS_Text* text = new RS_Text(_container, *data);
         text->update();
-        container->addEntity(text);
+        _container->addEntity(text);
 
         if (_document) {
             _document->startUndoCycle();
@@ -120,7 +120,7 @@ void RS_ActionDrawText::trigger() {
             _document->endUndoCycle();
         }
 
-                graphicView->redraw(RS2::RedrawDrawing);
+                _graphicView->redraw(RS2::RedrawDrawing);
 
         textChanged = true;
 		pPoints->secPos = {};
@@ -229,7 +229,7 @@ void RS_ActionDrawText::commandEvent(RS_CommandEvent* e) {
     case SetPos:
         if (checkCommand("text", c)) {
             deletePreview();
-            graphicView->disableCoordinateInput();
+            _graphicView->disableCoordinateInput();
             setStatus(SetText);
         }
         break;
@@ -237,7 +237,7 @@ void RS_ActionDrawText::commandEvent(RS_CommandEvent* e) {
     case SetText: {
             setText(e->getCommand());
 			GetDialogFactory()->requestOptions(this, true, true);
-            graphicView->enableCoordinateInput();
+            _graphicView->enableCoordinateInput();
             setStatus(SetPos);
         }
         break;
@@ -299,7 +299,7 @@ void RS_ActionDrawText::updateMouseButtonHints() {
 
 
 void RS_ActionDrawText::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 void RS_ActionDrawText::setText(const QString& t) {

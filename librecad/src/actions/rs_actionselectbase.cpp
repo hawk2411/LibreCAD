@@ -51,7 +51,7 @@ void RS_ActionSelectBase::keyReleaseEvent(QKeyEvent* e) {
 
 
 void RS_ActionSelectBase::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 

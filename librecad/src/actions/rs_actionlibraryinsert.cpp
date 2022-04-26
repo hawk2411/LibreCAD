@@ -91,10 +91,10 @@ void RS_ActionLibraryInsert::reset() {
 void RS_ActionLibraryInsert::trigger() {
     deletePreview();
 
-    RS_Creation creation(container, graphicView);
+    RS_Creation creation(_container, _graphicView);
 	creation.createLibraryInsert(pPoints->data);
 
-	graphicView->redraw(RS2::RedrawDrawing); 
+	_graphicView->redraw(RS2::RedrawDrawing);
 
 }
 
@@ -278,7 +278,7 @@ void RS_ActionLibraryInsert::setFactor(double f) {
 }
 
 void RS_ActionLibraryInsert::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

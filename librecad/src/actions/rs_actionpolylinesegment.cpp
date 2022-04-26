@@ -51,10 +51,10 @@ void RS_ActionPolylineSegment::init(int status) {
     RS_ActionInterface::init(status);
 	targetEntity = nullptr;
 	//Experimental feature: trigger action, if already has selected entities
-	if (container->countSelected(true, entityType)) {
+	if (_container->countSelected(true, entityType)) {
 		//find a selected entity
 		//TODO, find a better starting point
-		for (RS_Entity* e : *container) {
+		for (RS_Entity* e : *_container) {
 			if (e->isSelected() &&
 					std::count(entityType.begin(), entityType.end(), e->rtti())) {
 				targetEntity = e;
@@ -64,8 +64,8 @@ void RS_ActionPolylineSegment::init(int status) {
 		if (targetEntity) {
 			convertPolyline(targetEntity, true);
 			GetDialogFactory()->commandMessage(tr("Polyline created"));
-			graphicView->redraw();
-			GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+			_graphicView->redraw();
+			GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 			finish(false);
 			return;
 		}
@@ -148,7 +148,7 @@ bool RS_ActionPolylineSegment::convertPolyline(RS_Entity* selectedEntity, bool u
 		completed.append(selectedEntity);
 //get list with useful entities
 
-	for (RS_Entity* e1 : *container) {
+	for (RS_Entity* e1 : *_container) {
 		if (useSelected && !e1->isSelected()) continue;
         if (e1->isLocked() || !e1->isVisible() || e1 == selectedEntity) continue;
         if (e1->rtti()==RS2::EntityLine || e1->rtti()==RS2::EntityArc
@@ -203,7 +203,7 @@ bool RS_ActionPolylineSegment::convertPolyline(RS_Entity* selectedEntity, bool u
         if (end.distanceTo(start) < 1.0e-4)
             closed = true;
 
-        RS_Polyline* newPolyline = new RS_Polyline(container, RS_PolylineData(RS_Vector(false), RS_Vector(false), closed));
+        RS_Polyline* newPolyline = new RS_Polyline(_container, RS_PolylineData(RS_Vector(false), RS_Vector(false), closed));
         newPolyline->setLayerToActive();
         newPolyline->setPenToActive();
 
@@ -241,10 +241,10 @@ bool RS_ActionPolylineSegment::convertPolyline(RS_Entity* selectedEntity, bool u
         else
             newPolyline->addVertex(end, bulge);
         newPolyline->endPolyline();
-        container->addEntity(newPolyline);
+        _container->addEntity(newPolyline);
 
-        if (graphicView) {
-                graphicView->drawEntity(newPolyline);
+        if (_graphicView) {
+                _graphicView->drawEntity(newPolyline);
         }
 
         _document->addUndoable(newPolyline);
@@ -260,7 +260,7 @@ void RS_ActionPolylineSegment::trigger() {
 
         if (targetEntity /*&& selectedSegment && targetPoint.valid */) {
         targetEntity->setHighlighted(false);
-        graphicView->drawEntity(targetEntity);
+        _graphicView->drawEntity(targetEntity);
 //RLZ: do not use container->optimizeContours(); because it invalidate targetEntity
 //        container->optimizeContours();
         convertPolyline(targetEntity);
@@ -268,10 +268,10 @@ void RS_ActionPolylineSegment::trigger() {
 		targetEntity = nullptr;
         setStatus(ChooseEntity);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
     }
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw();
+                _graphicView->redraw();
 ////////////////////////////////////////
 }
 
@@ -289,11 +289,11 @@ void RS_ActionPolylineSegment::mouseReleaseEvent(QMouseEvent* e) {
             } else {
 				//TODO, verify topology of selected
                 targetEntity->setHighlighted(true);
-                graphicView->drawEntity(targetEntity);
+                _graphicView->drawEntity(targetEntity);
 
 //                setStatus(SetReferencePoint);
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw();
+                _graphicView->redraw();
 ////////////////////////////////////////
                 trigger();
             }
@@ -305,9 +305,9 @@ void RS_ActionPolylineSegment::mouseReleaseEvent(QMouseEvent* e) {
         deleteSnapper();
         if (targetEntity) {
             targetEntity->setHighlighted(false);
-            graphicView->drawEntity(targetEntity);
+            _graphicView->drawEntity(targetEntity);
 ////////////////////////////////////////2006/06/15
-                graphicView->redraw();
+                _graphicView->redraw();
 ////////////////////////////////////////
         }
         init(getStatus()-1);
@@ -337,7 +337,7 @@ void RS_ActionPolylineSegment::updateMouseButtonHints() {
 
 
 void RS_ActionPolylineSegment::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::SelectCursor);
+    _graphicView->setMouseCursor(RS2::SelectCursor);
 }
 
 // EOF

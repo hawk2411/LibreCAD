@@ -55,10 +55,10 @@ void RS_ActionModifyRotate::trigger() {
 
     RS_DEBUG->print("RS_ActionModifyRotate::trigger()");
 
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
 	m.rotate(*data);
 
-    GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+    GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
 }
 
 void RS_ActionModifyRotate::mouseMoveEvent(QMouseEvent* e) {
@@ -72,7 +72,7 @@ void RS_ActionModifyRotate::mouseMoveEvent(QMouseEvent* e) {
     case setTargetPoint:
         if( ! mouse.valid ) return;
         deletePreview();
-        _preview->addSelectionFrom(*container);
+        _preview->addSelectionFrom(*_container);
 		_preview->rotate(data->center, RS_Math::correctAngle((mouse - data->center).angle() - data->angle));
         drawPreview();
     }
@@ -102,7 +102,7 @@ void RS_ActionModifyRotate::coordinateEvent(RS_CoordinateEvent* e) {
     switch (getStatus()) {
     case setCenterPoint:
 		data->center = pos;
-		graphicView->moveRelativeZero(data->center);
+		_graphicView->moveRelativeZero(data->center);
         setStatus(setReferencePoint);
         break;
     case setReferencePoint:
@@ -160,7 +160,7 @@ void RS_ActionModifyRotate::updateMouseButtonHints() {
 }
 
 void RS_ActionModifyRotate::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

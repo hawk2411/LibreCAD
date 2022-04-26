@@ -53,15 +53,15 @@ RS_ActionModifyOffset::~RS_ActionModifyOffset() = default;
 void RS_ActionModifyOffset::init(int status) {
     RS_ActionInterface::init(status);
     //finish, if nothing selected
-    if(container->countSelected(true, {})==0) finish(true);
+    if(_container->countSelected(true, {}) == 0) finish(true);
 
 }
 
 void RS_ActionModifyOffset::trigger() {
-    RS_Modification m(*container, graphicView);
+    RS_Modification m(*_container, _graphicView);
 	m.offset(*data);
-	GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),
-											container->totalSelectedLength());
+	GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}),
+                                              _container->totalSelectedLength());
 	finish(false);
 }
 
@@ -73,7 +73,7 @@ void RS_ActionModifyOffset::mouseMoveEvent(QMouseEvent* e) {
 
 
 	RS_EntityContainer ec(nullptr,true);
-	for(auto en: *container){
+	for(auto en: *_container){
         if(en->isSelected()) ec.addEntity(en->clone());
     }
     if(ec.isEmpty()) return;
@@ -119,7 +119,7 @@ void RS_ActionModifyOffset::hideOptions() {
 }
 
 void RS_ActionModifyOffset::updateMouseCursor() {
-    graphicView->setMouseCursor(RS2::CadCursor);
+    _graphicView->setMouseCursor(RS2::CadCursor);
 }
 
 // EOF

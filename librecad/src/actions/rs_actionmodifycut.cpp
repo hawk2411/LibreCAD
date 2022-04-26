@@ -58,16 +58,16 @@ void RS_ActionModifyCut::trigger() {
 			cutEntity->isPointOnEntity(*cutCoord, RS_DEFAULT_TOLERANCE)) {
 
         cutEntity->setHighlighted(false);
-        graphicView->drawEntity(cutEntity);
+        _graphicView->drawEntity(cutEntity);
 
-        RS_Modification m(*container, graphicView);
+        RS_Modification m(*_container, _graphicView);
 		m.cut(*cutCoord, (RS_AtomicEntity*)cutEntity);
 
 		cutEntity = nullptr;
 		*cutCoord = RS_Vector(false);
         setStatus(ChooseCutEntity);
 
-        GetDialogFactory()->updateSelectionWidget(container->countSelected(true, {}),container->totalSelectedLength());
+        GetDialogFactory()->updateSelectionWidget(_container->countSelected(true, {}), _container->totalSelectedLength());
     }
 }
 
@@ -102,7 +102,7 @@ void RS_ActionModifyCut::mouseReleaseEvent(QMouseEvent* e) {
                 GetDialogFactory()->commandMessage(tr("No Entity found."));
             } else if(cutEntity->trimmable()){
                 cutEntity->setHighlighted(true);
-                graphicView->drawEntity(cutEntity);
+                _graphicView->drawEntity(cutEntity);
                 setStatus(SetCutCoord);
             }else
                 GetDialogFactory()->commandMessage(
@@ -130,7 +130,7 @@ void RS_ActionModifyCut::mouseReleaseEvent(QMouseEvent* e) {
     } else if (e->button()==Qt::RightButton) {
         if (cutEntity) {
             cutEntity->setHighlighted(false);
-            graphicView->drawEntity(cutEntity);
+            _graphicView->drawEntity(cutEntity);
         }
         init(getStatus()-1);
     }
@@ -160,10 +160,10 @@ void RS_ActionModifyCut::updateMouseCursor()
 {
     switch (getStatus()) {
     case ChooseCutEntity:
-        graphicView->setMouseCursor(RS2::SelectCursor);
+        _graphicView->setMouseCursor(RS2::SelectCursor);
         break;
     case SetCutCoord:
-        graphicView->setMouseCursor(RS2::CadCursor);
+        _graphicView->setMouseCursor(RS2::CadCursor);
         break;
     default:
         break;
