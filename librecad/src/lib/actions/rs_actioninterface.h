@@ -113,12 +113,12 @@ public:
 
     virtual void setActionType(RS2::ActionType actionType);
 
-    bool checkCommand(const QString &cmd, const QString &str,
+    static bool checkCommand(const QString &cmd, const QString &str,
                       RS2::ActionType action = RS2::ActionNone);
 
-    QString command(const QString &cmd);
+    static QString command(const QString &cmd);
 
-    QString msgAvailableCommands();
+    static QString msgAvailableCommands();
 
 private:
     /**

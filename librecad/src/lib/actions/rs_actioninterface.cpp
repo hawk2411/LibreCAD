@@ -51,27 +51,16 @@
 RS_ActionInterface::RS_ActionInterface(const char *name,
                                        RS_EntityContainer &container,
                                        RS_GraphicView &graphicView) :
-        RS_Snapper(container, graphicView) {
+        RS_Snapper(container, graphicView),
+            _status{0},
+            _name{name},
+            _finished{false},
+            _graphic{container.getGraphic()},
+            _document{container.getDocument()},
+            _predecessor{nullptr},
+            _actionType{RS2::ActionNone} {
 
     RS_DEBUG->print("RS_ActionInterface::RS_ActionInterface: Setting up action: \"%s\"", name);
-
-    this->_name = name;
-    _status = 0;
-    _finished = false;
-    //triggerOnResume = false;
-
-    // graphic provides a pointer to the graphic if the
-    // entity container is a graphic (i.e. can also hold
-    // layers).
-    _graphic = container.getGraphic();
-
-    // document pointer will be used for undo / redo
-    _document = container.getDocument();
-
-    //this->cursor = cursor;
-    //setSnapMode(graphicView.getDefaultSnapMode());
-    _actionType = RS2::ActionNone;
-
     RS_DEBUG->print("RS_ActionInterface::RS_ActionInterface: Setting up action: \"%s\": OK", name);
 
 }
@@ -92,8 +81,8 @@ QString RS_ActionInterface::getName() {
     return _name;
 }
 
-void RS_ActionInterface::setName(const char *_name) {
-    this->_name = _name;
+void RS_ActionInterface::setName(const char *name) {
+    this->_name = name;
 }
 
 /**
