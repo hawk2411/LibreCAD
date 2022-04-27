@@ -40,26 +40,27 @@
 class RS_FilterCXF : public RS_FilterInterface {
 public:
     RS_FilterCXF();
+
     ~RS_FilterCXF() {}
-	
-	/**
-	 * @return RS2::FormatCXF.
-	 */
-    virtual bool canImport(const QString& /*fileName*/, RS2::FormatType t) const {
-		return (t==RS2::FormatCXF);
-	}
-	
-    virtual bool canExport(const QString& /*fileName*/, RS2::FormatType t) const {
-		return (t==RS2::FormatCXF);
+
+    /**
+     * @return RS2::FormatCXF.
+     */
+    virtual bool canImport(const QString & /*fileName*/, RS2::FormatType t) const {
+        return (t == RS2::FormatCXF);
     }
 
-    virtual bool fileImport(RS_Graphic& g, const QString& file, RS2::FormatType /*type*/);
+    virtual bool canExport(const QString & /*fileName*/, RS2::FormatType t) const {
+        return (t == RS2::FormatCXF);
+    }
 
-    virtual bool fileExport(RS_Graphic& g, const QString& file, RS2::FormatType /*type*/);
+    virtual bool fileImport(RS_Graphic &g, const QString &file, RS2::FormatType /*type*/);
 
-    void stream(std::ofstream& fs, double value);
+    virtual bool fileExport(RS_Graphic &g, const QString &file, RS2::FormatType /*type*/);
 
-    static RS_FilterInterface* createFilter(){return new RS_FilterCXF();}
+    void stream(std::ofstream &fs, double value);
+
+    static RS_FilterInterface *createFilter() { return new RS_FilterCXF(); }
 };
 
 #endif

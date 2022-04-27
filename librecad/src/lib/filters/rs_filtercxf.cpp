@@ -26,17 +26,14 @@
 
 
 #include <QStringList>
-#include "rs_filtercxf.h"
-
 #include <iostream>
-#include <fstream>
 
+#include "rs_filtercxf.h"
 #include "rs_arc.h"
 #include "rs_line.h"
 #include "rs_font.h"
 #include "rs_utility.h"
 #include "rs_system.h"
-#include "rs_block.h"
 #include "rs_math.h"
 #include "rs_debug.h"
 
@@ -57,7 +54,7 @@ RS_FilterCXF::RS_FilterCXF() : RS_FilterInterface() {
  * will be created or the graphics from which the entities are
  * taken to be stored in a file.
  */
-bool RS_FilterCXF::fileImport(RS_Graphic& g, const QString& file, RS2::FormatType /*type*/) {
+bool RS_FilterCXF::fileImport(RS_Graphic &g, const QString &file, RS2::FormatType /*type*/) {
     RS_DEBUG->print("CXF Filter: importing file '%s'...", file.toLatin1().data());
 
     //this->graphic = &g;
@@ -68,14 +65,14 @@ bool RS_FilterCXF::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
     RS_Font font(file, false);
     success = font.loadFont();
 
-    if (success==false) {
+    if (success == false) {
         RS_DEBUG->print(RS_Debug::D_WARNING,
                         "Cannot open CXF file '%s'.", file.toLatin1().data());
-		return false;
+        return false;
     }
 
     g.addVariable("Names",
-                         font.getNames().join(","), 0);
+                  font.getNames().join(","), 0);
     g.addVariable("LetterSpacing", font.getLetterSpacing(), 0);
     g.addVariable("WordSpacing", font.getWordSpacing(), 0);
     g.addVariable("LineSpacingFactor", font.getLineSpacingFactor(), 0);
@@ -84,12 +81,12 @@ bool RS_FilterCXF::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         g.addVariable("Encoding", font.getEncoding(), 0);
     }
 
-    RS_BlockList* letterList = font.getLetterList();
-    for (auto & ch : *font.getLetterList()) {
+    RS_BlockList *letterList = font.getLetterList();
+    for (auto &ch: *font.getLetterList()) {
         QString uCode;
         uCode.setNum(ch->getName().at(0).unicode(), 16);
-        while (uCode.length()<4) {
-            uCode="0"+uCode;
+        while (uCode.length() < 4) {
+            uCode = "0" + uCode;
         }
         //ch->setName("[" + uCode + "] " + ch->getName());
         //letterList->rename(ch, QString("[%1]").arg(ch->getName()));
@@ -102,9 +99,8 @@ bool RS_FilterCXF::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
     g.getBlockList()->addNotification();
 
-	return true;
+    return true;
 }
-
 
 
 /**
@@ -113,7 +109,7 @@ bool RS_FilterCXF::fileImport(RS_Graphic& g, const QString& file, RS2::FormatTyp
  *
  * @param file Full path to the CXF file that will be written.
  */
-bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatType /*type*/) {
+bool RS_FilterCXF::fileExport(RS_Graphic &g, const QString &file, RS2::FormatType /*type*/) {
 
     RS_DEBUG->print("CXF Filter: exporting file '%s'...", file.toLatin1().data());
 
@@ -122,7 +118,7 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
     RS_DEBUG->print("RS_FilterCXF::fileExport: open");
     //fout.open((const char*)file.toLocal8Bit());
-    FILE* fp;
+    FILE *fp;
 
     if ((fp = fopen(file.toLocal8Bit(), "wt")) != NULL) {
 
@@ -134,9 +130,9 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         fprintf(fp, "# Format:            QCad II Font\n");
 
         fprintf(fp, "# Creator:           %s\n",
-                (const char*)RS_SYSTEM->getAppName().toLocal8Bit());
+                (const char *) RS_SYSTEM->getAppName().toLocal8Bit());
         fprintf(fp, "# Version:           %s\n",
-                (const char*)RS_SYSTEM->getAppVersion().toLocal8Bit());
+                (const char *) RS_SYSTEM->getAppVersion().toLocal8Bit());
 
         RS_DEBUG->print("001");
         QString ns = g.getVariableString("Names", "");
@@ -145,8 +141,8 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
             RS_DEBUG->print("002");
             for (int i = 0; i < names.size(); ++i) {
                 fprintf(fp, "# Name:              %s\n",
-                        names.at(i).toLocal8Bit().data() );
-             }
+                        names.at(i).toLocal8Bit().data());
+            }
         }
 
         RS_DEBUG->print("003");
@@ -175,7 +171,7 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
             QString a;
             for (QStringList::Iterator it2 = authors.begin();
-                    it2!=authors.end(); ++it2) {
+                 it2 != authors.end(); ++it2) {
 
                 RS_DEBUG->print("006a");
                 a = QString(*it2);
@@ -195,7 +191,7 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         RS_DEBUG->print("008");
         // iterate through blocks (=letters of font)
         int i = -1;
-        for (auto & blk : *g.getBlockList()) {
+        for (auto &blk: *g.getBlockList()) {
             i++;
             RS_DEBUG->print("block: %d", i);
             RS_DEBUG->print("001");
@@ -210,17 +206,17 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
 
 
                 // iterate through entities of this letter:
-                for (RS_Entity* e=blk->firstEntity(RS2::ResolveAll);
-                        e;
-                        e=blk->nextEntity(RS2::ResolveAll)) {
+                for (RS_Entity *e = blk->firstEntity(RS2::ResolveAll);
+                     e;
+                     e = blk->nextEntity(RS2::ResolveAll)) {
 
                     if (!e->isUndone()) {
 
                         RS_DEBUG->print("004");
 
                         // lines:
-                        if (e->rtti()==RS2::EntityLine) {
-                            RS_Line* l = (RS_Line*)e;
+                        if (e->rtti() == RS2::EntityLine) {
+                            RS_Line *l = (RS_Line *) e;
 
                             fprintf(fp, "L %f,%f,%f,%f\n",
                                     l->getStartpoint().x,
@@ -229,9 +225,9 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
                                     l->getEndpoint().y);
                         }
 
-                        // arcs:
-                        else if (e->rtti()==RS2::EntityArc) {
-                            RS_Arc* a = (RS_Arc*)e;
+                            // arcs:
+                        else if (e->rtti() == RS2::EntityArc) {
+                            RS_Arc *a = (RS_Arc *) e;
 
                             if (!a->isReversed()) {
                                 fprintf(fp, "A ");
@@ -243,11 +239,11 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
                                     a->getCenter().x,
                                     a->getCenter().y,
                                     a->getRadius(),
-									RS_Math::rad2deg(a->getAngle1()),
-									RS_Math::rad2deg(a->getAngle2())
-													 );
+                                    RS_Math::rad2deg(a->getAngle1()),
+                                    RS_Math::rad2deg(a->getAngle2())
+                            );
                         }
-                        // Ignore entities other than arcs / lines
+                            // Ignore entities other than arcs / lines
                         else {}
                     }
 
@@ -259,16 +255,14 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
         }
         //fout.close();
         fclose(fp);
-    	RS_DEBUG->print("CXF Filter: exporting file: OK");
-		return true;
+        RS_DEBUG->print("CXF Filter: exporting file: OK");
+        return true;
+    } else {
+        RS_DEBUG->print("CXF Filter: exporting file failed");
     }
-	else {
-    	RS_DEBUG->print("CXF Filter: exporting file failed");
-	}
 
-	return false;
+    return false;
 }
-
 
 
 /**
@@ -276,7 +270,7 @@ bool RS_FilterCXF::fileExport(RS_Graphic& g, const QString& file, RS2::FormatTyp
  *
  * @param value A double value. e.g. 2.700000
  */
-void RS_FilterCXF::stream(std::ofstream& fs, double value) {
+void RS_FilterCXF::stream(std::ofstream &fs, double value) {
     fs << RS_Utility::doubleToString(value).toLatin1().data();
 }
 
