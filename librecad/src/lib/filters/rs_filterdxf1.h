@@ -44,18 +44,18 @@ class RS_FilterDXF1 : public RS_FilterInterface {
 public:
     RS_FilterDXF1();
 
-    virtual bool canImport(const QString & /*fileName*/, RS2::FormatType t) const {
+    bool canImport(const QString & /*fileName*/, RS2::FormatType t) const override {
         return (t == RS2::FormatDXF1);
     }
 
-    virtual bool canExport(const QString & /*fileName*/, RS2::FormatType /*t*/) const {
+    bool canExport(const QString & /*fileName*/, RS2::FormatType /*t*/) const override {
         return false;
     }
 
-    virtual bool fileImport(RS_Graphic &g, const QString &file, RS2::FormatType /*type*/);
+    bool fileImport(RS_Graphic &g, const QString &file, RS2::FormatType /*type*/) override;
 
-    virtual bool fileExport(RS_Graphic & /*g*/, const QString & /*file*/,
-                            RS2::FormatType /*type*/);
+    bool fileExport(RS_Graphic & /*g*/, const QString & /*file*/,
+                            RS2::FormatType /*type*/) override;
 
     bool readFromBuffer();
 
@@ -63,73 +63,34 @@ public:
 
     void resetBufP();
 
-    void setBufP(int _fBufP);
-
-    int getBufP() {
-        return fBufP;
-    }
-
     void delBuffer();
 
     void dos2unix();
 
     QString getBufLine();
 
-    char *getBufLineCh();
-
-    char *getBuf() {
-        return fBuf;
-    }
-
-    void setBuf(char *_buf) {
-        fBuf = _buf;
-    }
-
-    void setFSize(unsigned _s) {
-        fSize = _s;
-    }
-
-    void copyBufFrom(const char *_buf);
-
-    bool gotoBufLine(char *_lstr);
-
-    bool gotoBufLineString(char *_lstr);
-
-    void replaceBinaryBytesBy(char _c);
-
     void separateBuf(char _c1 = 13,
                      char _c2 = 10,
                      char _c3 = 0,
                      char _c4 = 0);
 
-    void removeComment(char _fc = '(',
-                       char _lc = ')');
+    bool readFileInBuffer(std::size_t _bNum = 0);
 
-    bool readFileInBuffer(char *_name, int _bNum = -1);
-
-    bool readFileInBuffer(int _bNum = -1);
-
-    void strDecodeDxfString(QString &str);
-
-    bool mtCompFloat(double _v1, double _v2, double _tol = 1.0e-6);
+    static void strDecodeDxfString(QString &str);
 
     static RS_FilterInterface *createFilter() { return new RS_FilterDXF1(); }
 
     static RS2::LineWidth numberToWidth(int num);
 
-    static int widthToNumber(RS2::LineWidth width);
-
-protected:
+private:
     /** Pointer to the graphic we currently operate on. */
-    RS_Graphic *graphic;
-    FILE *fPointer;         // File pointer
-    char *fBuf;             // Filebuffer
-    int fBufP;            // Filebuffer-Pointer (walks through 'fBuf')
-    unsigned fSize;            // Filesize
-    bool dosFile;          // File is in DOS-format
-    int numElements;
-    QString name;
-    QFile file;
+    RS_Graphic *_graphic;
+    FILE *_fPointer;         // File pointer
+    char *_fBuf;             // Filebuffer
+    int _fBufP;            // Filebuffer-Pointer (walks through 'fBuf')
+    unsigned _fSize;            // Filesize
+    QString _name;
+    QFile _file;
 };
 
 #endif

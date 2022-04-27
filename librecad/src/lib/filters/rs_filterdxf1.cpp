@@ -34,12 +34,10 @@
 #include "rs_line.h"
 #include "rs_font.h"
 #include "rs_information.h"
-#include "rs_utility.h"
 #include "rs_system.h"
 #include "rs_dimlinear.h"
 #include "rs_dimaligned.h"
 #include "rs_dimangular.h"
-#include "rs_dimdiametric.h"
 #include "rs_dimradial.h"
 #include "rs_layer.h"
 #include "rs_leader.h"
@@ -52,7 +50,7 @@
  * Default constructor.
  */
 RS_FilterDXF1::RS_FilterDXF1()
-        : RS_FilterInterface(), graphic(nullptr) {
+        : RS_FilterInterface(), _graphic(nullptr), _fPointer{nullptr}, _fBuf{nullptr}, _fBufP{0}, _fSize{0} {
     RS_DEBUG->print("Setting up DXF 1 filter...");
 }
 
@@ -67,14 +65,13 @@ RS_FilterDXF1::RS_FilterDXF1()
 bool RS_FilterDXF1::fileImport(RS_Graphic &g, const QString &file, RS2::FormatType /*type*/) {
     RS_DEBUG->print("DXF1 Filter: importing file '%s'...", file.toLatin1().data());
 
-    this->graphic = &g;
+    this->_graphic = &g;
 
-    fPointer = 0;
-    fBuf = 0;
-    fBufP = 0;
-    fSize = 0;
-    dosFile = false;
-    name = file;
+    _fPointer = nullptr;
+    _fBuf = nullptr;
+    _fBufP = 0;
+    _fSize = 0;
+    _name = file;
 
     if (readFileInBuffer()) {
         separateBuf();
@@ -106,37 +103,19 @@ bool RS_FilterDXF1::readFromBuffer() {
     double vcx = 0.0, vcy = 0.0;       // Centre
     double vcr = 0.0;                // Radius
     double va1 = 0.0, va2 = 0.0;       // Start / End Angle
-    //double    vab=0.0,                // Bulge
-    //           vpx=0.0, vpy=0.0;       // First Polyline point
-    //double    ax=0.0, ay=0.0;         // Current coordinate
-    //bool      plClose=false;          // Polyline closed-flag
     QString lastLayer;              // Last used layer name (test adding only
-    //   if the new layer!=lastLayer)
-    //int       currentLayerNum=0;      // Current layer number
-    RS_Layer *currentLayer = 0;         // Pointer to current layer
-    //QList<RGraphic> blockList;        // List of blocks
-    //blockList.setAutoDelete( true );
-    //bool      oldColorNumbers=false;  // use old color numbers (qcad<1.5.3)
+    RS_Layer *currentLayer = nullptr;         // Pointer to current layer
     RS_Pen pen;
-
-    ///if(!add) graphic->clearLayers();
-
-    //graphic->addLayer(DEF_DEFAULTLAYER);
-
-    //RS_DEBUG->print( "\nDefault layer added" );
-
-    // Loaded graphics without unit information: load as unit less:
-    //graphic->setUnit( None );
 
     RS_DEBUG->print("\nUnit set");
 
     resetBufP();
 
-    if (fBuf) {
+    if (_fBuf) {
 
         RS_DEBUG->print("\nBuffer OK");
         RS_DEBUG->print("\nBuffer: ");
-        RS_DEBUG->print(fBuf);
+        RS_DEBUG->print(_fBuf);
 
         do {
             dxfLine = getBufLine();
@@ -159,7 +138,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if (dxfCode.toInt() == 70) {
                             dxfLine = getBufLine();
                             if (dxfLine.size()) {
-                                graphic->addVariable("$INSUNITS", dxfLine, 70);
+                                _graphic->addVariable("$INSUNITS", dxfLine, 70);
                                 /*
                                             switch( dxfLine.toInt() ) {
                                               case  0: graphic->setUnit( RS2::None );       break;
@@ -201,7 +180,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if (dxfCode.toInt() == 70) {
                             dxfLine = getBufLine();
                             if (dxfLine.size()) {
-                                graphic->addVariable("$DIMALT", dxfLine, 70);
+                                _graphic->addVariable("$DIMALT", dxfLine, 70);
                                 /*
                                             switch( dxfLine.toInt() ) {
                                               case  0: graphic->setDimensionUnit( RS2::None );       break;
@@ -259,7 +238,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if (dxfCode.toInt() == 40) {
                             dxfLine = getBufLine();
                             if (dxfLine.size()) {
-                                graphic->addVariable("$DIMASZ", dxfLine, 40);
+                                _graphic->addVariable("$DIMASZ", dxfLine, 40);
                                 //graphic->setDimensionArrowSize( dxfLine.toDouble() );
                             }
                         }
@@ -295,7 +274,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if (dxfCode.toInt() == 40) {
                             dxfLine = getBufLine();
                             if (dxfLine.size()) {
-                                graphic->addVariable("$DIMTXT", dxfLine, 40);
+                                _graphic->addVariable("$DIMTXT", dxfLine, 40);
                                 //graphic->setDimensionTextHeight( dxfLine.toDouble() );
                             }
                         }
@@ -317,7 +296,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if (dxfCode.toInt() == 40) {
                             dxfLine = getBufLine();
                             if (dxfLine.size()) {
-                                graphic->addVariable("$DIMRND", dxfLine, 40);
+                                _graphic->addVariable("$DIMRND", dxfLine, 40);
                                 //if( dxfLine.toDouble()>0.000001 ) {
                                 //graphic->setDimensionExactness( dxfLine.toDouble() );
                             }
@@ -341,7 +320,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if (dxfCode.toInt() == 40) {
                             dxfLine = getBufLine();
                             if (dxfLine.size()) {
-                                graphic->addVariable("$DIMEXE", dxfLine, 40);
+                                _graphic->addVariable("$DIMEXE", dxfLine, 40);
                                 //graphic->setDimensionOverLength( dxfLine.toDouble() );
                             }
                         }
@@ -363,7 +342,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if (dxfCode.toInt() == 40) {
                             dxfLine = getBufLine();
                             if (dxfLine.size()) {
-                                graphic->addVariable("$DIMEXO", dxfLine, 40);
+                                _graphic->addVariable("$DIMEXO", dxfLine, 40);
                                 //graphic->setDimensionUnderLength( dxfLine.toDouble() );
                             }
                         }
@@ -386,7 +365,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if (dxfCode.toInt() == 70) {
                             dxfLine = getBufLine();
                             if (dxfLine.size()) {
-                                graphic->addVariable("$DIMAUNIT", dxfLine, 70);
+                                _graphic->addVariable("$DIMAUNIT", dxfLine, 70);
                                 /*
                                             switch( dxfLine.toInt() ) {
                                               case 0: graphic->setAngleDimensionFormat( DecimalDegrees ); break;
@@ -410,7 +389,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if (dxfCode.toInt() == 70) {
                             dxfLine = getBufLine();
                             if (dxfLine.size()) {
-                                graphic->addVariable("$DIMADEC", dxfLine, 70);
+                                _graphic->addVariable("$DIMADEC", dxfLine, 70);
                                 //graphic->setAngleDimensionExactness( RS_Math::pow(0.1, dxfLine.toInt()) );
                             }
                         }
@@ -425,99 +404,17 @@ bool RS_FilterDXF1::readFromBuffer() {
                         if (dxfCode.toInt() == 10) {
                             dxfLine = getBufLine();
                             if (dxfLine.size()) {
-                                double x = atof(dxfLine.toLatin1().data());
+                                double x = strtod(dxfLine.toLatin1().data(), nullptr);
                                 dxfLine = getBufLine();
                                 if (dxfLine.size()) {
-                                    double y = atof(dxfLine.toLatin1().data());
+                                    double y = strtod(dxfLine.toLatin1().data(), nullptr);
 
-                                    graphic->addVariable("$GRIDUNIT", RS_Vector(x, y), 10);
+                                    _graphic->addVariable("$GRIDUNIT", RS_Vector(x, y), 10);
                                 }
                             }
                         }
                     }
                 }
-                /*
-                            double gx=dxfLine.toDouble();
-                            if (gx<0.0001) gx=0.0001;
-                            graphic->setMinGridX(gx);
-                            graphic->setGridFormat( Fractional );
-
-                            for( double q=0.00000001; q<=100000.0; q*=10.0 ) {
-                              if( mtCompFloat(gx, q, q/1000.0) ) {
-                                graphic->setGridFormat( Decimal );
-                                break;
-                              }
-                            }
-
-                          }
-                        }
-                      }
-                      if(dxfCode=getBufLine()) {
-                        if( dxfCode.toInt()==20 ) {
-                          if( dxfLine=getBufLine() ) {
-                            double gy=dxfLine.toDouble();
-                            if (gy<0.0001) gy=0.0001;
-                            graphic->setMinGridY(gy);
-                          }
-                        }
-                      }
-                */
-
-                // Page limits min x/y:
-                //
-                /*else if( dxfLine=="$PLIMMIN" ) {
-                  if(dxfCode=getBufLine()) {
-                    if( dxfCode.toInt()==10 ) {
-                      if( dxfLine=getBufLine() ) {
-                        graphic->setPageOriginX( dxfLine.toDouble() );
-                      }
-                    }
-                  }
-                  if(dxfCode=getBufLine()) {
-                    if( dxfCode.toInt()==20 ) {
-                      if( dxfLine=getBufLine() ) {
-                        graphic->setPageOriginY( dxfLine.toDouble() );
-                      }
-                    }
-                  }
-            }
-                */
-
-                // Page limits min x/y:
-                //
-                /*
-                      else if( dxfLine=="$PLIMMAX" ) {
-                        if(dxfCode=getBufLine()) {
-                          if( dxfCode.toInt()==10 ) {
-                            if( dxfLine=getBufLine() ) {
-                              graphic->setPageSizeX( dxfLine.toDouble() - graphic->getPageOriginX() );
-                            }
-                          }
-                        }
-                        if(dxfCode=getBufLine()) {
-                          if( dxfCode.toInt()==20 ) {
-                            if( dxfLine=getBufLine() ) {
-                              graphic->setPageSizeY( dxfLine.toDouble() - graphic->getPageOriginY() );
-                            }
-                          }
-                        }
-                      }
-                */
-
-                // Paper space scale:
-                //
-                /*
-                      else if( dxfLine=="$PSVPSCALE" ) {
-                        if(dxfCode=getBufLine()) {
-                          if( dxfCode.toInt()==40 ) {
-                            if( dxfLine=getBufLine() ) {
-                              graphic->setPaperSpace( dxfLine.toDouble() );
-                            }
-                          }
-                        }
-                      }
-                */
-
             }
 
                 // Entity
@@ -534,7 +431,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                     // Layer:
                     // ------
                 else if (dxfLine == "LAYER") {
-                    currentLayer = 0;
+                    currentLayer = nullptr;
                     do {
                         dxfCode = getBufLine();
                         if (dxfCode.size())
@@ -547,9 +444,9 @@ bool RS_FilterDXF1::readFromBuffer() {
                                         if (dxfLine == "(null)" || dxfLine == "default") {
                                             dxfLine = "0";
                                         }
-                                        graphic->getLayerList()->add(new RS_Layer(dxfLine));
-                                        graphic->getLayerList()->activate(dxfLine);
-                                        currentLayer = graphic->getLayerList()->getActive();
+                                        _graphic->getLayerList()->add(new RS_Layer(dxfLine));
+                                        _graphic->getLayerList()->activate(dxfLine);
+                                        currentLayer = _graphic->getLayerList()->getActive();
                                         lastLayer = dxfLine;
                                         break;
                                     case 70:  // Visibility
@@ -610,7 +507,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                                         if (dxfLine == "(null)" || dxfLine == "default") {
                                             dxfLine = "0";
                                         }
-                                        graphic->getLayerList()->activate(dxfLine);
+                                        _graphic->getLayerList()->activate(dxfLine);
                                         //lastLayer=dxfLine;
                                         //}
                                         break;
@@ -634,9 +531,9 @@ bool RS_FilterDXF1::readFromBuffer() {
                             }
                         }
                     } while (dxfCode.size() && code != 0);
-                    graphic->setActivePen(pen);
-                    graphic->addEntity(new RS_Point(graphic,
-                                                    RS_PointData(RS_Vector(vx1, vy1))));
+                    _graphic->setActivePen(pen);
+                    _graphic->addEntity(new RS_Point(_graphic,
+                                                     RS_PointData(RS_Vector(vx1, vy1))));
                 }
 
                     // -----
@@ -662,7 +559,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                                         if (dxfLine == "(null)" || dxfLine == "default") {
                                             dxfLine = "0";
                                         }
-                                        graphic->getLayerList()->activate(dxfLine);
+                                        _graphic->getLayerList()->activate(dxfLine);
                                         //lastLayer=dxfLine;
                                         //}
                                         break;
@@ -695,11 +592,9 @@ bool RS_FilterDXF1::readFromBuffer() {
                         }
                     } while (dxfCode.size() && code != 0);
 
-                    //if(!mtCompFloat(vx1, vx2) || !mtCompFloat(vy1, vy2)) {
-                    //graphic->addLine(vx1, vy1, vx2, vy2, currentLayerNum, add);
-                    graphic->setActivePen(pen);
-                    graphic->addEntity(new RS_Line{graphic,
-                                                   {vx1, vy1}, {vx2, vy2}});
+                    _graphic->setActivePen(pen);
+                    _graphic->addEntity(new RS_Line{_graphic,
+                                                    {vx1, vy1}, {vx2, vy2}});
                     //}
                 }
 
@@ -724,7 +619,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                                         if (dxfLine == "(null)" || dxfLine == "default") {
                                             dxfLine = "0";
                                         }
-                                        graphic->getLayerList()->activate(dxfLine);
+                                        _graphic->getLayerList()->activate(dxfLine);
                                         //lastLayer=dxfLine;
                                         //}
                                         break;
@@ -760,13 +655,10 @@ bool RS_FilterDXF1::readFromBuffer() {
                             }
                         }
                     } while (dxfCode.size() && code != 0);
-                    //if(vcr>0.0 && !mtCompFloat(va1, va2)) {
-                    //  graphic->addArc(vcx, vcy, vcr, va1, va2, false, currentLayerNum, add);
-                    //}
-                    graphic->setActivePen(pen);
-                    graphic->addEntity(new RS_Arc(graphic,
-                                                  RS_ArcData(RS_Vector(vcx, vcy),
-                                                             vcr, va1, va2, false)));
+                    _graphic->setActivePen(pen);
+                    _graphic->addEntity(new RS_Arc(_graphic,
+                                                   RS_ArcData(RS_Vector(vcx, vcy),
+                                                              vcr, va1, va2, false)));
                 }
 
                     // -------
@@ -789,7 +681,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                                         if (dxfLine == "(null)" || dxfLine == "default") {
                                             dxfLine = "0";
                                         }
-                                        graphic->getLayerList()->activate(dxfLine);
+                                        _graphic->getLayerList()->activate(dxfLine);
                                         //lastLayer=dxfLine;
                                         //}
                                         break;
@@ -817,70 +709,11 @@ bool RS_FilterDXF1::readFromBuffer() {
                             }
                         }
                     } while (dxfCode.size() && code != 0);
-                    /*if(vcr>0.0) {
-                      graphic->addCircle(vcx, vcy, vcr, 0.0, 360.0, false, currentLayerNum, add);
-                }*/
-                    graphic->setActivePen(pen);
-                    graphic->addEntity(new RS_Circle(graphic,
-                                                     {{vcx, vcy}, vcr}));
+                    _graphic->setActivePen(pen);
+                    _graphic->addEntity(new RS_Circle(_graphic,
+                                                      {{vcx, vcy}, vcr}));
                 }
 
-
-                    // ------
-                    // Hatch:
-                    // ------
-                    /*
-                    if(dxfLine=="HATCH") {
-                      do {
-                        dxfCode=getBufLine();
-                        if(dxfCode) code=dxfCode.toInt();
-                        if(dxfCode && code!=0) {
-                          dxfLine=getBufLine();
-                          if(dxfLine) {
-                            switch(code) {
-                              case  8:  // Layer
-                              //  if(dxfLine!=lastLayer) {
-                                        if (dxfLine=="(null)" || dxfLine=="default") {
-                                            dxfLine = "0";
-                                        }
-                                  graphic->activateLayer(dxfLine);
-                                  //lastLayer=dxfLine;
-                                //}
-                                break;
-                              case 10:  // X1
-                                vx1 = dxfLine.toDouble();
-                                break;
-                              case 20:  // Y1
-                                vy1 = dxfLine.toDouble();
-                                //graphic->Vec[vc].CreatePoint(vy1, vx1, currentLayerNum);
-                                //if(vc<vElements-1) ++vc;
-                                break;
-                              case 11:  // X2
-                                vx2 = dxfLine.toDouble();
-                                break;
-                              case 21:  // Y2
-                                vy2 = dxfLine.toDouble();
-                                //graphic->Vec[vc].CreatePoint(vy2, vx2, currentLayerNum);
-                                //if(vc<vElements-1) ++vc;
-                                break;
-                              default:
-                                break;
-                            }
-                          }
-                        }
-                      }while(dxfCode && code!=0);
-                      / *
-                      if(!mt.CompFloat(vx1, vx2) || !mt.CompFloat(vy1, vy2)) {
-                        graphic->Vec[vc].CreateLine(vx1, vy1, vx2, vy2, currentLayerNum);
-                        if(vc<vElements-1) ++vc;
-                      }
-                      if(++updProgress==1000) {
-                        np->getStateWin()->UpdateProgressBar((int)(pcFact*vc)+25);
-                        updProgress=0;
-                      }
-                      * /
-                }
-                    */
 
 
                     // -----
@@ -892,15 +725,8 @@ bool RS_FilterDXF1::readFromBuffer() {
                     char vtextStyle[256];  // text style (normal_ro, cursive_ri, normal_st, ...)
                     double vheight = 10.0;     // text height
                     double vtextAng = 0.0;     // text angle
-                    //double vradius=0.0;      // text radius
-                    //double vletterspace=2.0; // Text letter space
-                    //double vwordspace=6.0;   // Text wordspace
                     QString vfont;         // font "normal", "cursive", ...
                     RS_MTextData::HAlign vhalign = RS_MTextData::HALeft;
-                    // alignment (0=left, 1=center, 2=right)
-                    //int   vattachement=7;   // 1=top left, 2, 3, 4, 5, 6, 7, 8, 9=bottom right
-                    //unsigned  vfl=0;            // special flags
-//RLZ: unused                    bool  codeSeven=false;  // Have we found a code seven?
 
                     vtextStyle[0] = '\0';
                     vfont = "normal";
@@ -942,63 +768,21 @@ bool RS_FilterDXF1::readFromBuffer() {
                                             vfont = dummy;
                                         }
 
-                                        // get text style:
-                                        //
-                                        /*
-                                                                   if(strstr(vtextStyle, "_ro"))
-                                                                       vfl=vfl|E_ROUNDOUT;
-                                                                   else if(strstr(vtextStyle, "_ri"))
-                                                                       vfl=vfl|E_ROUNDIN;
-                                                                   else
-                                                                       vfl=vfl|E_STRAIGHT;
-                                        */
-
-
-                                        /*if(strstr(vtextStyle, "_fix")) {
-                                            vfl=vfl|E_FIXEDWIDTH;
-                                    }*/
-
                                         // get radius, letterspace, wordspace:
                                         //
                                         {
                                             char *ptr;  // pointer to value
                                             ptr = strchr(vtextStyle, '#');
                                             if (ptr) {
-                                                // Parse radius
-                                                /*if(vfl&E_ROUNDOUT || vfl&E_ROUNDIN) {
-                                                    ++ptr;
-                                                    if(ptr[0]) {
-                                                        sscanf(ptr, "%lf", &vradius);
-                                                    }
-                                                    ptr = strchr(ptr, '#');
-                                            }*/
-                                                /*if(ptr) {
-                                                    // Parse letter space:
-                                                    ++ptr;
-                                                    if(ptr[0]) {
-                                                        sscanf(ptr, "%lf", &vletterspace);
-                                                    }
-                                                    // Parse word space:
-                                                    ptr = strchr(ptr, '#');
-                                                    if(ptr) {
-                                                        ++ptr;
-                                                        if(ptr[0]) {
-                                                            sscanf(ptr, "%lf", &vwordspace);
-                                                        }
-                                                    }
-                                            }*/
                                             }
                                         }
-//RLZ: unused                                    codeSeven=true;
                                         break;
 
                                     case 8:  // Layer
-                                        //if(dxfLine!=lastLayer) {
                                         if (dxfLine == "(null)" || dxfLine == "default") {
                                             dxfLine = "0";
                                         }
-                                        graphic->getLayerList()->activate(dxfLine);
-                                        //lastLayer=dxfLine;
+                                        _graphic->getLayerList()->activate(dxfLine);
                                         //}
                                         break;
 
@@ -1013,10 +797,6 @@ bool RS_FilterDXF1::readFromBuffer() {
                                     case 40:  // height
                                         dxfLine.replace(QRegExp(","), ".");
                                         vheight = dxfLine.toDouble();
-                                        /*if(!codeSeven) {
-                                            vletterspace = vheight*0.2;
-                                            vwordspace = vheight*0.6;
-                                    }*/
                                         break;
                                     case 50:  // angle
                                         dxfLine.replace(QRegExp(","), ".");
@@ -1050,8 +830,8 @@ bool RS_FilterDXF1::readFromBuffer() {
                     if (i) {
                         i[0] = '\0';
                     }
-                    graphic->addEntity(
-                            new RS_MText(graphic,
+                    _graphic->addEntity(
+                            new RS_MText(_graphic,
                                          RS_MTextData(
                                                  RS_Vector(vx1, vy1),
                                                  vheight,
@@ -1109,7 +889,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                                         if (dxfLine == "(null)" || dxfLine == "default") {
                                             dxfLine = "0";
                                         }
-                                        graphic->getLayerList()->activate(dxfLine);
+                                        _graphic->getLayerList()->activate(dxfLine);
                                         //lastLayer=dxfLine;
                                         //}
                                         break;
@@ -1191,9 +971,8 @@ bool RS_FilterDXF1::readFromBuffer() {
                     switch (typ) {
                         // Horiz. / vert.:
                         case 0: {
-                            RS_DimLinear *d =
-                                    new RS_DimLinear(
-                                            graphic,
+                            auto *d = new RS_DimLinear(
+                                            _graphic,
                                             RS_DimensionData(
                                                     RS_Vector(v10, v20),
                                                     RS_Vector(0.0, 0.0),
@@ -1213,7 +992,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                                             )
                                     );
                             d->update();
-                            graphic->addEntity(d);
+                            _graphic->addEntity(d);
                         }
                             break;
 
@@ -1227,9 +1006,8 @@ bool RS_FilterDXF1::readFromBuffer() {
                             RS_Vector defP = RS_Vector::polar(dist, angle);
                             defP += RS_Vector(v14, v24);
 
-                            RS_DimAligned *d =
-                                    new RS_DimAligned(
-                                            graphic,
+                            auto *d = new RS_DimAligned(
+                                            _graphic,
                                             RS_DimensionData(
                                                     defP,
                                                     RS_Vector(0.0, 0.0),
@@ -1247,7 +1025,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                                             )
                                     );
                             d->update();
-                            graphic->addEntity(d);
+                            _graphic->addEntity(d);
                         }
                             break;
 
@@ -1258,43 +1036,14 @@ bool RS_FilterDXF1::readFromBuffer() {
                             RS_Line tl2{{v10, v20},
                                         {v15, v25}};
 
-                            //bool inters=false;
-                            //tmpEl1.getIntersection(&tmpEl2,
-                            //                       &inters, &vcx, &vcy, 0,0,0,0, false);
                             RS_VectorSolutions const &s = RS_Information::getIntersection(
                                     &tl1, &tl2, false);
 
                             if (s.get(0).valid) {
                                 vcx = s.get(0).x;
                                 vcy = s.get(0).y;
-                                //vcr = RS_Vector(vcx, vcy).distanceTo(v16, v26);
-
-                                /*if(RS_Vector(vcx,vcy).distanceTo(v13,v23)<vcr) {
-                                    va1 = tl1.getAngle1();
-                            } else {
-                                    va1 = tl2.getAngle2();
-                            }
-
-                                if(RS_Vector(vcx,vcy).distanceTo(v10,v20)<vcr) {
-                                    va2 = tl2.getAngle1();
-                            } else {
-                                    va2 = tl2.getAngle2();
-                            }
-                                */
-                                /*
-                                graphic->addDimension(vcx, vcy, va1, va2,
-                                               mtGetDistance(vcx, vcy, v13, v23),
-                                               mtGetDistance(vcx, vcy, v10, v20),
-                                                      vcr,
-                                                      E_ROUNDOUT,
-                                                      currentLayerNum,
-                                                      add);
-                                */
-                                //RS_Vector dp4;
-                                //dp4.setPolar();
-                                RS_DimAngular *d =
-                                        new RS_DimAngular(
-                                                graphic,
+                                auto *d = new RS_DimAngular(
+                                                _graphic,
                                                 RS_DimensionData(
                                                         RS_Vector(v10, v20),
                                                         RS_Vector(0.0, 0.0),
@@ -1314,29 +1063,19 @@ bool RS_FilterDXF1::readFromBuffer() {
                                                 )
                                         );
                                 d->update();
-                                graphic->addEntity(d);
+                                _graphic->addEntity(d);
                             }
                         }
                             break;
 
                             // Radius:
                         case 4: {
-                            /*
-                                                graphic->addDimension(v10, v20, v15, v25,
-                                                                    0.0, 0.0,
-                                                                                      v40,
-                                                                                      E_STRAIGHT|E_RADIUS,
-                                                                                      currentLayerNum,
-                                                                                      add);
-                            									*/
-
                             double ang =
                                     RS_Vector(v10, v20)
                                             .angleTo(RS_Vector(v15, v25));
                             RS_Vector v2 = RS_Vector::polar(v40, ang);
-                            RS_DimRadial *d =
-                                    new RS_DimRadial(
-                                            graphic,
+                            auto *d = new RS_DimRadial(
+                                            _graphic,
                                             RS_DimensionData(
                                                     RS_Vector(v10, v20),
                                                     RS_Vector(0.0, 0.0),
@@ -1354,201 +1093,26 @@ bool RS_FilterDXF1::readFromBuffer() {
                                             )
                                     );
                             d->update();
-                            graphic->addEntity(d);
+                            _graphic->addEntity(d);
                         }
                             break;
 
                             // Arrow:
                         case 7: {
-                            /*
-                                           graphic->addDimension(v13, v23, v14, v24,
-                                                                 0.0, 0.0, 0.0,
-                                                                 E_STRAIGHT|E_ARROW,
-                                                                 currentLayerNum,
-                                                                 add);
-                            */
-                            /*
-                            double ang =
-                                RS_Vector(v10, v20)
-                                .angleTo(RS_Vector(v15, v25));
-                            RS_Vector v2;
-                            v2.setPolar(v40, ang);
-                            RS_DimDiametric* d =
-                                new RS_DimDiametric(
-                                    graphic,
-                                    RS_DimensionData(
-                                        RS_Vector(v10, v20),
-                                        RS_Vector(0.0, 0.0),
-                                        RS2::VAlignBottom,
-                                        RS2::HAlignCenter,
-                                        RS2::Exact,
-                                        1.0,
-                                        dimText,
-                                        "ISO-25",
-                                        0.0
-                                    ),
-                                    RS_DimDiametricData(
-                                        RS_Vector(v10, v20) + v2,
-                                        0.0
-                                    )
-                                );
-                            d->update();
-                            graphic->addEntity(d);
-                            */
                             RS_LeaderData data(true);
-                            RS_Leader *d =
-                                    new RS_Leader(graphic, data);
+                            auto *d = new RS_Leader(_graphic, data);
                             d->addVertex(RS_Vector(v14, v24));
                             d->addVertex(RS_Vector(v10, v20));
                             d->update();
-                            graphic->addEntity(d);
+                            _graphic->addEntity(d);
                         }
                             break;
+                        default:
+                            break;
                     }
-                    //graphic->elementCurrent()->setText(dimText);
                 }
-
-
-
-                // ---------
-                // Hatching:
-                // ---------
-                /*
-                      else if(dxfLine=="HATCH") {
-                        QString patternName="45";
-                        double patternScale=1.0;
-                        //int numPaths=1;
-                        //int numEdges=1;
-                        int nextObjectTyp=T_LINE;
-                        double v10=0.0, v20=0.0,
-                              v11=0.0, v21=0.0,
-                              v40=0.0, v50=0.0,
-                              v51=0.0;
-                        do {
-                          dxfCode=getBufLine();
-                          if(dxfCode) code=dxfCode.toInt();
-                          if(dxfCode && code!=0) {
-                            dxfLine=getBufLine();
-                            if(dxfLine) {
-                              switch(code) {
-                                case  2:
-                                  patternName = dxfLine;
-                                  break;
-                                case  6:  // style
-                                  pen.setLineType(RS_FilterDXF::nameToLineType(dxfLine));
-                                  break;
-                                case  8:  // Layer
-                                //  if(dxfLine!=lastLayer) {
-									if (dxfLine=="(null)" || dxfLine=="default") {
-										dxfLine = "0";
-									}
-                                    graphic->activateLayer(dxfLine);
-                                    //lastLayer=dxfLine;
-                                  //}
-                                  break;
-                                case 10:  // Start point/center of boundary line/arc
-                                  dxfLine.replace( QRegExp(","), "." );
-                                  v10=dxfLine.toDouble();
-                                  break;
-                                case 20:  // Start point/center of boundary line/arc
-                                  dxfLine.replace( QRegExp(","), "." );
-                                  v20=dxfLine.toDouble();
-                                  break;
-                                case 11:  // End point of boundary line
-                                  dxfLine.replace( QRegExp(","), "." );
-                                  v11=dxfLine.toDouble();
-                                  break;
-                                case 21:  // End point of boundary line
-                                  dxfLine.replace( QRegExp(","), "." );
-                                  v21=dxfLine.toDouble();
-                                  if(nextObjectTyp==T_LINE) {
-                                    int elnu=graphic->addLine(v10, v20, v11, v21, currentLayerNum, add);
-                                    graphic->elementAt(elnu)->setFlag(E_TAGGED);
-                                  }
-                                  break;
-                                case 40:  // Radius of boundary entity
-                                  dxfLine.replace( QRegExp(","), "." );
-                                  v40=dxfLine.toDouble();
-                                  break;
-                                case 50:  // Start angle
-                                  dxfLine.replace( QRegExp(","), "." );
-                                  v50=dxfLine.toDouble();
-                                  break;
-                                case 51:  // End angle
-                                  dxfLine.replace( QRegExp(","), "." );
-                                  v51=dxfLine.toDouble();
-                                  break;
-                                case 73:  // Counterclockwise?
-                                  if(nextObjectTyp==T_ARC) {
-                                    int elnu;
-                                    if( mtCompFloat( v50, 0.0 ) && mtCompFloat( v51, 0.0 ) ) {
-                                      elnu=graphic->addCircle(v10, v20, v40, 0.0, 360.0, (bool)dxfLine.toInt(), currentLayerNum, add);
-                                    }
-                                    else {
-                                      elnu=graphic->addArc(v10, v20, v40, v50, v51, (bool)dxfLine.toInt(), currentLayerNum, add);
-                                    }
-                                    graphic->elementAt(elnu)->setFlag(E_TAGGED);
-                                    //newEl = new RElement( graphic );
-                                    //newEl->createArc(v10, v20, v40, v50, v51, (bool)dxfLine.toInt());
-                                    //boundaryList.append(newEl);
-                                  }
-                                  break;
-                                case 41:  // Scale
-                                  dxfLine.replace( QRegExp(","), "." );
-                                  patternScale=dxfLine.toDouble();
-                                  break;
-                                case 52:  // Angle
-
-                                  break;
-                                case 70:  // Solid (=1) or pattern (=0)
-
-                                  break;
-                                case 39:  // Thickness
-                                  pen.setWidth(RS_FilterDXF::numberToWidth(dxfLine.toInt()));
-                                  break;
-                                case 62:  // Color
-                                  pen.setColor(RS_FilterDXF::numberToColor(dxfLine.toInt()));
-                                  break;
-                                case 91:  // Number of boundary paths (loops)
-                                  //numPaths=dxfLine.toInt();
-                                  break;
-                                case 92:  // Typ of boundary
-
-                                  break;
-                                case 93:  // Number of edges in this boundary
-                                  //numEdges=dxfLine.toInt();
-                                  break;
-                                case 72:  // Edge typ
-                                  switch(dxfLine.toInt()) {
-                                    case 1: nextObjectTyp=T_LINE; break;
-                                    case 2: nextObjectTyp=T_ARC;  break;
-                                    default: break;
-                                  }
-                                  break;
-
-                                default:
-                                  break;
-                              }
-                            }
-                          }
-                        }while(dxfCode && code!=0);
-
-                        graphic->addHatching(patternScale,
-                                             patternName,
-                                             currentLayerNum,
-                                             add);
-
-                        graphic->editDelete(false);
-
-                      }
-                */
-
             }
         } while (dxfLine.size() && dxfLine != "EOF");
-
-        //graphic->terminateAction();
-
-        //graphic->debugElements();
 
         ret = true;
     } else {
@@ -1564,14 +1128,14 @@ bool RS_FilterDXF1::readFromBuffer() {
  *   (base class too)
  */
 void RS_FilterDXF1::reset() {
-    file.reset();
+    _file.reset();
 
     delBuffer();
-    fBufP = 0;
-    fSize = 0;
-    if (fPointer) {
-        fclose(fPointer);
-        fPointer = 0;
+    _fBufP = 0;
+    _fSize = 0;
+    if (_fPointer) {
+        fclose(_fPointer);
+        _fPointer = nullptr;
     }
 }
 
@@ -1580,17 +1144,7 @@ void RS_FilterDXF1::reset() {
  * Reset buffer pointer to the beginning of the buffer:
  */
 void RS_FilterDXF1::resetBufP() {
-    fBufP = 0;
-}
-
-
-/**
- * Set buffer pointer to the given index:
- */
-void RS_FilterDXF1::setBufP(int _fBufP) {
-    if (_fBufP < (int) fSize) {
-        fBufP = _fBufP;
-    }
+    _fBufP = 0;
 }
 
 
@@ -1598,9 +1152,9 @@ void RS_FilterDXF1::setBufP(int _fBufP) {
  * delete buffer:
  */
 void RS_FilterDXF1::delBuffer() {
-    if (fBuf) {
-        delete[] fBuf;
-        fBuf = 0;
+    if (_fBuf) {
+        delete[] _fBuf;
+        _fBuf = nullptr;
     }
 }
 
@@ -1609,15 +1163,13 @@ void RS_FilterDXF1::delBuffer() {
  * Remove any 13-characters in the buffer:
  */
 void RS_FilterDXF1::dos2unix() {
-    char *src = fBuf, *dst = fBuf;
+    char *src = _fBuf, *dst = _fBuf;
 
-    if (!fBuf)
+    if (!_fBuf)
         return;
 
     while (*src != '\0') {
-        if (*src == '\r') {
-            dosFile = true;
-        } else {
+        if (*src != '\r') {
             *dst++ = *src;
         }
         src++;
@@ -1635,120 +1187,19 @@ void RS_FilterDXF1::dos2unix() {
 //
 QString RS_FilterDXF1::getBufLine() {
     char *ret;
-    QString str;
 
-    if (fBufP >= (int) fSize)
-        return QString();
 
-    ret = &fBuf[fBufP];
+    if (_fBufP >= (int) _fSize)
+        return {};
 
-    // Skip empty lines
-    /*if (*ret == '\0' && noEmptyLines) {
-        while (++fBufP < (int)fSize && fBuf[fBufP] == '\0')
-            ;
-        if (fBufP >= (int)fSize)
-            return QString();
-        ret = &fBuf[fBufP];
-}*/
+    ret = &_fBuf[_fBufP];
 
     // Move fBufP pointer to the next line
-    while (fBufP < (int) fSize && fBuf[fBufP++] != '\0');
+    while (_fBufP < (int) _fSize && _fBuf[_fBufP++] != '\0');
 
-    str = QString::fromLocal8Bit(ret).simplified();
+    auto str = QString::fromLocal8Bit(ret).simplified();
 
-    if (str.isNull()) {
-        return "";
-    } else {
-        return str;
-    }
-}
-
-
-// Get next line in the buffer:
-//   and overread ALL separators
-//
-// return:  -Null-string: end of buffer
-//          -String which is the next line in buffer
-//
-char *RS_FilterDXF1::getBufLineCh() {
-    char *ret;
-
-    if (fBufP >= (int) fSize)
-        return 0;
-
-    ret = &fBuf[fBufP];
-
-    // Skip empty lines
-    /*if (*ret == '\0' && noEmptyLines) {
-        while (++fBufP < (int)fSize && fBuf[fBufP] == '\0')
-            ;
-        if (fBufP >= (int)fSize)
-            return 0;
-        ret = &fBuf[fBufP];
-}*/
-
-    // Move fBufP pointer to the next line
-    while (fBufP < (int) fSize && fBuf[fBufP++] != '\0');
-
-    return ret;
-}
-
-
-// Copy buffer from a given string:
-//
-void RS_FilterDXF1::copyBufFrom(const char *_buf) {
-    if (_buf) {
-        fBuf = new char[strlen(_buf) + 16];
-        strcpy(fBuf, _buf);
-    }
-}
-
-
-// Go to the next '_lstr'-line in buffer:
-//
-// return: true:  line found
-//         false: end of buffer
-//
-bool RS_FilterDXF1::gotoBufLine(char *_lstr) {
-    QString l;
-    do {
-        l = getBufLine();
-    } while (!l.isNull() && l != _lstr);
-
-    if (!l.isNull())
-        return true;
-    return false;
-}
-
-
-// Goto next line where the string _lstr appears:
-//
-// return: true:  string in line found
-//         false: end of buffer
-//
-//
-bool RS_FilterDXF1::gotoBufLineString(char *_lstr) {
-    QString l;
-    do {
-        l = getBufLine();
-    } while (!l.isNull() && l.contains(_lstr));
-
-    if (!l.isNull())
-        return true;
-    return false;
-}
-
-
-// Replace bynary Bytes (<32) by an other (given) byte:
-//
-void RS_FilterDXF1::replaceBinaryBytesBy(char _c) {
-    int bc;
-
-    for (bc = 0; bc < (int) fSize; ++bc) {
-        if (fBuf[bc] < 32 && fBuf[bc] >= 0) {
-            fBuf[bc] = _c;
-        }
-    }
+    return (str.isNull()) ? "" : str;
 }
 
 
@@ -1760,74 +1211,41 @@ void RS_FilterDXF1::separateBuf(char _c1,
                                 char _c4) {
     int bc;
 
-    for (bc = 0; bc < (int) fSize; ++bc) {
-        if (fBuf[bc] == _c1 || fBuf[bc] == _c2 ||
-            fBuf[bc] == _c3 || fBuf[bc] == _c4) {
-            fBuf[bc] = '\0';
+    for (bc = 0; bc < (int) _fSize; ++bc) {
+        if (_fBuf[bc] == _c1 || _fBuf[bc] == _c2 ||
+            _fBuf[bc] == _c3 || _fBuf[bc] == _c4) {
+            _fBuf[bc] = '\0';
         }
     }
-}
-
-
-// remove comment between '_fc' and '_lc'
-//   comments get replaced by '\0'
-//
-void RS_FilterDXF1::removeComment(char _fc, char _lc) {
-    bool rem = false;   // Are we removing currently?
-    int bc;           // counter
-
-    for (bc = 0; bc < (int) fSize; ++bc) {
-        if (fBuf[bc] == _fc)
-            rem = true;
-        if (fBuf[bc] == _lc) {
-            fBuf[bc] = '\0';
-            rem = false;
-        }
-        if (rem)
-            fBuf[bc] = '\0';
-    }
-}
-
-
-// Read file '_name' in buffer (buf)
-//
-// '_bNum' : Max number of Bytes
-//         : -1: All
-// return: true: successful
-//         false: file not found
-//
-bool RS_FilterDXF1::readFileInBuffer(char *_name, int _bNum) {
-    file.setFileName(_name);
-    return readFileInBuffer(_bNum);
 }
 
 
 // Read file in buffer (buf)
 //
 // 'bNum' : Max number of Bytes
-//        : -1: All
+//        : 0: All
 // return: true: successful
 //         false: file not found
 //
-bool RS_FilterDXF1::readFileInBuffer(int _bNum) {
-    fPointer = fopen(name.toLatin1().data(), "rb");//RLZ verify with locales
-    if (fPointer) {
-        if (file.open(fPointer, QIODevice::ReadOnly)) {
-            fSize = file.size();
-            if (_bNum == -1)
-                _bNum = fSize;
+bool RS_FilterDXF1::readFileInBuffer(std::size_t _bNum) {
+    _fPointer = fopen(_name.toLatin1().data(), "rb");//RLZ verify with locales
+    if (_fPointer) {
+        if (_file.open(_fPointer, QIODevice::ReadOnly)) {
+            _fSize = _file.size();
+            if (_bNum == 0)
+                _bNum = _fSize;
 
-            fBuf = new char[_bNum + 16];
+            _fBuf = new char[_bNum + 16];
 
-            file.read(fBuf, _bNum);
-            fBuf[_bNum] = '\0';
-            file.close();
+            _file.read(_fBuf, static_cast<qint64>(_bNum));
+            _fBuf[_bNum] = '\0';
+            _file.close();
         }
-        fclose(fPointer);
+        fclose(_fPointer);
 
         // Convert 13/10 to 10
         dos2unix();
-        fPointer = nullptr;
+        _fPointer = nullptr;
 
         return true;
     }
@@ -1846,20 +1264,6 @@ void RS_FilterDXF1::strDecodeDxfString(QString &str) {
     str.replace(QRegExp("\\\\[pP]"), QChar('\n'));
 }
 
-
-// Compare two double values:
-//
-// return: true: values are equal
-//         false: values are not equal
-//
-bool RS_FilterDXF1::mtCompFloat(double _v1, double _v2, double _tol) {
-    double delta = _v2 - _v1;
-
-    if (delta > -_tol && delta < _tol)
-        return true;
-    else
-        return false;
-}
 
 /**
  * Converts a line width number (e.g. 1) into a RS2::LineWidth.
@@ -1928,28 +1332,6 @@ RS2::LineWidth RS_FilterDXF1::numberToWidth(int num) {
             break;
     }
     return (RS2::LineWidth) num;
-}
-
-
-/**
- * Converts a RS2::LineWidth into an int width.
- */
-int RS_FilterDXF1::widthToNumber(RS2::LineWidth width) {
-    switch (width) {
-        case RS2::WidthByLayer:
-            return -1;
-            break;
-        case RS2::WidthByBlock:
-            return -2;
-            break;
-        case RS2::WidthDefault:
-            return -3;
-            break;
-        default:
-            return (int) width;
-            break;
-    }
-    return (int) width;
 }
 
 
