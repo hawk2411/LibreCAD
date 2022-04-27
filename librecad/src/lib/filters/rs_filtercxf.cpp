@@ -57,18 +57,15 @@ RS_FilterCXF::RS_FilterCXF() : RS_FilterInterface() {
 bool RS_FilterCXF::fileImport(RS_Graphic &g, const QString &file, RS2::FormatType /*type*/) {
     RS_DEBUG->print("CXF Filter: importing file '%s'...", file.toLatin1().data());
 
-    //this->graphic = &g;
-    bool success = false;
-
     // Load font file as we normally do, but the font doesn't own the
     //  letters (we'll add them to the graphic instead. Hence 'false').
     RS_Font font(file, false);
-    success = font.loadFont();
+    auto success = font.loadFont();
 
-    if (success == false) {
+    if (!success) {
         RS_DEBUG->print(RS_Debug::D_WARNING,
                         "Cannot open CXF file '%s'.", file.toLatin1().data());
-        return false;
+        return success;
     }
 
     g.addVariable("Names",
@@ -120,7 +117,7 @@ bool RS_FilterCXF::fileExport(RS_Graphic &g, const QString &file, RS2::FormatTyp
     //fout.open((const char*)file.toLocal8Bit());
     FILE *fp;
 
-    if ((fp = fopen(file.toLocal8Bit(), "wt")) != NULL) {
+    if ((fp = fopen(file.toLocal8Bit(), "wt")) != nullptr) {
 
         RS_DEBUG->print("RS_FilterCXF::fileExport: open: OK");
 
@@ -170,11 +167,9 @@ bool RS_FilterCXF::fileExport(RS_Graphic &g, const QString &file, RS2::FormatTyp
             RS_DEBUG->print("count: %d", authors.count());
 
             QString a;
-            for (QStringList::Iterator it2 = authors.begin();
-                 it2 != authors.end(); ++it2) {
-
+            for (auto & author : authors) {
                 RS_DEBUG->print("006a");
-                a = QString(*it2);
+                a = QString(author);
                 RS_DEBUG->print("006b");
                 RS_DEBUG->print("string is: %s", a.toLatin1().data());
                 RS_DEBUG->print("006b0");
@@ -216,7 +211,7 @@ bool RS_FilterCXF::fileExport(RS_Graphic &g, const QString &file, RS2::FormatTyp
 
                         // lines:
                         if (e->rtti() == RS2::EntityLine) {
-                            RS_Line *l = (RS_Line *) e;
+                            auto *l = (RS_Line *) e;
 
                             fprintf(fp, "L %f,%f,%f,%f\n",
                                     l->getStartpoint().x,
@@ -227,7 +222,7 @@ bool RS_FilterCXF::fileExport(RS_Graphic &g, const QString &file, RS2::FormatTyp
 
                             // arcs:
                         else if (e->rtti() == RS2::EntityArc) {
-                            RS_Arc *a = (RS_Arc *) e;
+                            auto *a = (RS_Arc *) e;
 
                             if (!a->isReversed()) {
                                 fprintf(fp, "A ");
