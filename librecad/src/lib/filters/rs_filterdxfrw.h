@@ -35,21 +35,37 @@
 #include "libdxfrw.h"
 
 class RS_Point;
+
 class RS_Line;
+
 class RS_Circle;
+
 class RS_Arc;
+
 class RS_Ellipse;
+
 class RS_Solid;
+
 class RS_Polyline;
+
 class RS_Spline;
+
 class LC_SplinePoints;
+
 class RS_Insert;
+
 class RS_MText;
+
 class RS_Text;
+
 class RS_Hatch;
+
 class RS_Image;
+
 class RS_Leader;
+
 class RS_Polyline;
+
 class DL_WriterA;
 
 /**
@@ -61,180 +77,258 @@ class DL_WriterA;
 class RS_FilterDXFRW : public RS_FilterInterface, DRW_Interface {
 public:
     RS_FilterDXFRW();
+
     ~RS_FilterDXFRW() override;
-        
+
     bool canImport(const QString &/*fileName*/, RS2::FormatType t) const override {
 #ifdef DWGSUPPORT
-        return (t==RS2::FormatDXFRW || t==RS2::FormatDWG);
+        return (t == RS2::FormatDXFRW || t == RS2::FormatDWG);
 #else
         return (t==RS2::FormatDXFRW);
 #endif
-        }
-        
+    }
+
     bool canExport(const QString &/*fileName*/, RS2::FormatType t) const override {
-        return (t==RS2::FormatDXFRW || t==RS2::FormatDXFRW2004 || t==RS2::FormatDXFRW2000
-                || t==RS2::FormatDXFRW14 || t==RS2::FormatDXFRW12);
+        return (t == RS2::FormatDXFRW || t == RS2::FormatDXFRW2004 || t == RS2::FormatDXFRW2000
+                || t == RS2::FormatDXFRW14 || t == RS2::FormatDXFRW12);
     }
 
     // Error messages
     QString lastError() const override;
 
     // Import:
-    bool fileImport(RS_Graphic& g, const QString& file, RS2::FormatType type) override;
+    bool fileImport(RS_Graphic &g, const QString &file, RS2::FormatType type) override;
 
     // Methods from DRW_CreationInterface:
-     void addHeader(const DRW_Header* data) override;
-     void addLType(const DRW_LType& /*data*/) override{}
-     void addLayer(const DRW_Layer& data) override;
-     void addDimStyle(const DRW_Dimstyle& data) override;
-     void addVport(const DRW_Vport& data) override;
-     void addTextStyle(const DRW_Textstyle& /*data*/) override{}
-     void addAppId(const DRW_AppId& /*data*/) override{}
-     void addBlock(const DRW_Block& data) override;
-     void setBlock(int handle) override;
-     void endBlock() override;
-     void addPoint(const DRW_Point& data) override;
-     void addLine(const DRW_Line& data) override;
-     void addRay(const DRW_Ray& data) override;
-     void addXline(const DRW_Xline& data) override;
-     void addCircle(const DRW_Circle& data) override;
-     void addArc(const DRW_Arc& data) override;
-     void addEllipse(const DRW_Ellipse& data) override;
-     void addLWPolyline(const DRW_LWPolyline& data) override;
-     void addText(const DRW_Text& data) override;
-     void addPolyline(const DRW_Polyline& data) override;
-     void addSpline(const DRW_Spline* data) override;
-     void addKnot(const DRW_Entity&) override{}
-     void addInsert(const DRW_Insert& data) override;
-     void addTrace(const DRW_Trace& data) override;
-     void addSolid(const DRW_Solid& data) override;
-     void addMText(const DRW_MText& data) override;
-    RS_DimensionData convDimensionData(const DRW_Dimension* data);
-     void addDimAlign(const DRW_DimAligned *data) override;
-     void addDimLinear(const DRW_DimLinear *data) override;
-     void addDimRadial(const DRW_DimRadial *data) override;
-     void addDimDiametric(const DRW_DimDiametric *data) override;
-     void addDimAngular(const DRW_DimAngular *data) override;
-     void addDimAngular3P(const DRW_DimAngular3p *data) override;
-     void addDimOrdinate(const DRW_DimOrdinate *data) override;
-     void addLeader(const DRW_Leader *data) override;
-     void addHatch(const DRW_Hatch* data) override;
-     void addViewport(const DRW_Viewport& /*data*/) override{}
-     void addImage(const DRW_Image* data) override;
-     void linkImage(const DRW_ImageDef* data) override;
+    void addHeader(const DRW_Header *data) override;
 
-     void add3dFace(const DRW_3Dface& data) override;
-     void addComment(const char*) override;
+    void addLType(const DRW_LType & /*data*/) override {}
 
-     void addPlotSettings(const DRW_PlotSettings* data) override;
+    void addLayer(const DRW_Layer &data) override;
+
+    void addDimStyle(const DRW_Dimstyle &data) override;
+
+    void addVport(const DRW_Vport &data) override;
+
+    void addTextStyle(const DRW_Textstyle & /*data*/) override {}
+
+    void addAppId(const DRW_AppId & /*data*/) override {}
+
+    void addBlock(const DRW_Block &data) override;
+
+    void setBlock(int handle) override;
+
+    void endBlock() override;
+
+    void addPoint(const DRW_Point &data) override;
+
+    void addLine(const DRW_Line &data) override;
+
+    void addRay(const DRW_Ray &data) override;
+
+    void addXline(const DRW_Xline &data) override;
+
+    void addCircle(const DRW_Circle &data) override;
+
+    void addArc(const DRW_Arc &data) override;
+
+    void addEllipse(const DRW_Ellipse &data) override;
+
+    void addLWPolyline(const DRW_LWPolyline &data) override;
+
+    void addText(const DRW_Text &data) override;
+
+    void addPolyline(const DRW_Polyline &data) override;
+
+    void addSpline(const DRW_Spline *data) override;
+
+    void addKnot(const DRW_Entity &) override {}
+
+    void addInsert(const DRW_Insert &data) override;
+
+    void addTrace(const DRW_Trace &data) override;
+
+    void addSolid(const DRW_Solid &data) override;
+
+    void addMText(const DRW_MText &data) override;
+
+    RS_DimensionData convDimensionData(const DRW_Dimension *data);
+
+    void addDimAlign(const DRW_DimAligned *data) override;
+
+    void addDimLinear(const DRW_DimLinear *data) override;
+
+    void addDimRadial(const DRW_DimRadial *data) override;
+
+    void addDimDiametric(const DRW_DimDiametric *data) override;
+
+    void addDimAngular(const DRW_DimAngular *data) override;
+
+    void addDimAngular3P(const DRW_DimAngular3p *data) override;
+
+    void addDimOrdinate(const DRW_DimOrdinate *data) override;
+
+    void addLeader(const DRW_Leader *data) override;
+
+    void addHatch(const DRW_Hatch *data) override;
+
+    void addViewport(const DRW_Viewport & /*data*/) override {}
+
+    void addImage(const DRW_Image *data) override;
+
+    void linkImage(const DRW_ImageDef *data) override;
+
+    void add3dFace(const DRW_3Dface &data) override;
+
+    void addComment(const char *) override;
+
+    void addPlotSettings(const DRW_PlotSettings *data) override;
 
     // Export:
-     bool fileExport(RS_Graphic& g, const QString& file, RS2::FormatType type) override;
+    bool fileExport(RS_Graphic &g, const QString &file, RS2::FormatType type) override;
 
-     void writeHeader(DRW_Header& data, dxfWriter* writer) override;
-     void writeEntities(dxfWriter* writer) override;
-     void writeLTypes(dxfWriter* writer) override;
-     void writeLayers(dxfWriter* writer) override;
-     void writeTextstyles(dxfWriter* writer) override;
-     void writeVports(dxfWriter* writer) override;
-     void writeBlockRecords(dxfWriter* writer) override;
-     void writeBlocks(dxfWriter* writer) override;
-     void writeDimstyles(dxfWriter* writer) override;
-     void writeObjects(dxfWriter* writer) override;
-     void writeAppId(dxfWriter* writer) override;
+    void writeHeader(DRW_Header &data, dxfWriter *writer) override;
 
-    void writePoint(RS_Point* p, dxfWriter* writer);
-    void writeLine(RS_Line* l, dxfWriter* writer);
-    void writeCircle(RS_Circle* c, dxfWriter* writer);
-    void writeArc(RS_Arc* a, dxfWriter* writer);
-    void writeEllipse(RS_Ellipse* s, dxfWriter* writer);
-    void writeSolid(RS_Solid* s, dxfWriter* writer);
-    void writeLWPolyline(RS_Polyline* l, dxfWriter* writer);
-    void writeSpline(RS_Spline* s, dxfWriter* writer);
-	void writeSplinePoints(LC_SplinePoints *s, dxfWriter* writer);
-    void writeInsert(RS_Insert* i, dxfWriter* writer);
-    void writeMText(RS_MText* t, dxfWriter* writer);
-    void writeText(RS_Text* t, dxfWriter* writer);
-    void writeHatch(RS_Hatch* h, dxfWriter* writer);
-    void writeImage(RS_Image* i, dxfWriter* writer);
-    void writeLeader(RS_Leader* l, dxfWriter* writer);
-    void writeDimension(RS_Dimension* d, dxfWriter* writer);
-    void writePolyline(RS_Polyline* p, dxfWriter* writer);
+    void writeEntities(dxfWriter *writer) override;
+
+    void writeLTypes(dxfWriter *writer) override;
+
+    void writeLayers(dxfWriter *writer) override;
+
+    void writeTextstyles(dxfWriter *writer) override;
+
+    void writeVports(dxfWriter *writer) override;
+
+    void writeBlockRecords(dxfWriter *writer) override;
+
+    void writeBlocks(dxfWriter *writer) override;
+
+    void writeDimstyles(dxfWriter *writer) override;
+
+    void writeObjects(dxfWriter *writer) override;
+
+    void writeAppId(dxfWriter *writer) override;
+
+    void writePoint(RS_Point *p, dxfWriter *writer);
+
+    void writeLine(RS_Line *l, dxfWriter *writer);
+
+    void writeCircle(RS_Circle *c, dxfWriter *writer);
+
+    void writeArc(RS_Arc *a, dxfWriter *writer);
+
+    void writeEllipse(RS_Ellipse *s, dxfWriter *writer);
+
+    void writeSolid(RS_Solid *s, dxfWriter *writer);
+
+    void writeLWPolyline(RS_Polyline *l, dxfWriter *writer);
+
+    void writeSpline(RS_Spline *s, dxfWriter *writer);
+
+    void writeSplinePoints(LC_SplinePoints *s, dxfWriter *writer);
+
+    void writeInsert(RS_Insert *i, dxfWriter *writer);
+
+    void writeMText(RS_MText *t, dxfWriter *writer);
+
+    void writeText(RS_Text *t, dxfWriter *writer);
+
+    void writeHatch(RS_Hatch *h, dxfWriter *writer);
+
+    void writeImage(RS_Image *i, dxfWriter *writer);
+
+    void writeLeader(RS_Leader *l, dxfWriter *writer);
+
+    void writeDimension(RS_Dimension *d, dxfWriter *writer);
+
+    void writePolyline(RS_Polyline *p, dxfWriter *writer);
 
 /*	void writeEntityContainer(DL_WriterA& dw, RS_EntityContainer* con,
                 const DRW_Entity& attrib);
 	void writeAtomicEntities(DL_WriterA& dw, RS_EntityContainer* c, 
                 const DRW_Entity& attrib, RS2::ResolveLevel level);*/
-	
 
-    void setEntityAttributes(RS_Entity* entity, const DRW_Entity* attrib);
-    void getEntityAttributes(DRW_Entity* ent, const RS_Entity* entity);
 
-    static QString toDxfString(const QString& str);
-    static QString toNativeString(const QString& data);
+    void setEntityAttributes(RS_Entity *entity, const DRW_Entity *attrib);
+
+    void getEntityAttributes(DRW_Entity *ent, const RS_Entity *entity);
+
+    static QString toDxfString(const QString &str);
+
+    static QString toNativeString(const QString &data);
 
 public:
-    RS_Pen attributesToPen(const DRW_Layer* att) const;
+    RS_Pen attributesToPen(const DRW_Layer *att) const;
 
     static RS_Color numberToColor(int num);
-    static int colorToNumber(const RS_Color& col, int *rgb);
 
-    static RS2::LineType nameToLineType(const QString& name);
+    static int colorToNumber(const RS_Color &col, int *rgb);
+
+    static RS2::LineType nameToLineType(const QString &name);
+
     static QString lineTypeToName(RS2::LineType lineType);
     //static QString lineTypeToDescription(RS2::LineType lineType);
 
     static RS2::LineWidth numberToWidth(DRW_LW_Conv::lineWidth lw);
+
     static DRW_LW_Conv::lineWidth widthToNumber(RS2::LineWidth width);
 
-        static RS2::AngleFormat numberToAngleFormat(int num);
-        static int angleFormatToNumber(RS2::AngleFormat af);
+    static RS2::AngleFormat numberToAngleFormat(int num);
 
-	static RS2::Unit numberToUnit(int num);
-	static int unitToNumber(RS2::Unit unit);
-	
-        static bool isVariableTwoDimensional(const QString& var);
+    static int angleFormatToNumber(RS2::AngleFormat af);
 
-    static RS_FilterInterface* createFilter(){return new RS_FilterDXFRW();}
+    static RS2::Unit numberToUnit(int num);
+
+    static int unitToNumber(RS2::Unit unit);
+
+    static bool isVariableTwoDimensional(const QString &var);
+
+    static RS_FilterInterface *createFilter() { return new RS_FilterDXFRW(); }
 
 private:
     void prepareBlocks();
-    void writeEntity(RS_Entity* e, dxfWriter* writer);
+
+    void writeEntity(RS_Entity *e, dxfWriter *writer);
+
 #ifdef DWGSUPPORT
+
     void printDwgError(int le);
-    QString printDwgVersion(int v);
+
+    static QString printDwgVersion(int v);
+
 #endif
 
 private:
     /** Pointer to the graphic we currently operate on. */
-    RS_Graphic* graphic;
+    RS_Graphic *graphic;
     /** File name. Used to find out the full path of images. */
     QString file;
     /** Pointer to current entity container (either block or graphic) */
-    RS_EntityContainer* currentContainer;
+    RS_EntityContainer *currentContainer;
     /** File codePage. Used to find the text coder. */
     QString codePage;
     /** File version. */
     QString versionStr;
     int version;
     /** Library File version. */
-#define LIBDXFRW_VERSION(version,release,patch) (((version) << 16) | ((release) << 8) | (patch))
-    bool isLibDxfRw {false};
+#define LIBDXFRW_VERSION(version, release, patch) (((version) << 16) | ((release) << 8) | (patch))
+    bool isLibDxfRw{false};
     uint libDxfRwVersion;
     /** dimension style. */
     QString dimStyle;
     /** text style. */
     QString textStyle;
     /** Temporary list to handle unnamed blocks to write R12 dxf. */
-    QHash <RS_Entity*, QString> noNameBlock;
-    QHash <QString, QString> fontList;
+    QHash<RS_Entity *, QString> noNameBlock;
+    QHash<QString, QString> fontList;
     bool oldMText;
     dxfRW *dxfW;
     /** If saved version are 2004 or above can save color in RGB value. */
     bool exactColor;
     /** hash of block containers and handleBlock numbers to read dwg files */
-    QHash<int, RS_EntityContainer*> blockHash;
+    QHash<int, RS_EntityContainer *> blockHash;
     /** Pointer to entity container to store possible orphan entities like paper space */
-    RS_EntityContainer* dummyContainer;
+    RS_EntityContainer *dummyContainer;
 };
 
 #endif
