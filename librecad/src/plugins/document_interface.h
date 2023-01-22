@@ -208,7 +208,7 @@ public:
 class Plug_Entity
 {
 public:
-    virtual ~Plug_Entity() {}
+    virtual ~Plug_Entity() = default;
 
     //! Obtain the entity data.
     /*!
@@ -341,20 +341,20 @@ public:
     *  \param points of line segments
     *  \param closed whether line is closed
     */
-    virtual void addLines(std::vector<QPointF> const& points, bool closed=false) = 0;
+    virtual void addLines(std::vector<QPointF> const& points, bool closed) = 0;
 
     //! Add polyline entity to current document.
     /*! Add polyline entity to current document with current attributes.
     *  \param points polyline points
     *  \param closed whether polyline is closed
     */
-    virtual void addPolyline(std::vector<Plug_VertexData> const& points, bool closed=false) = 0;
+    virtual void addPolyline(std::vector<Plug_VertexData> const& points, bool closed) = 0;
     //! Add LC_SplinePoints entity to current document.
     /*! Add splinepoints entity to current document with current attributes.
     *  \param points interpolation points
     *  \param closed whether splinepoints is closed
     */
-    virtual void addSplinePoints(std::vector<QPointF> const& points, bool closed=false) = 0;
+    virtual void addSplinePoints(std::vector<QPointF> const& points, bool closed) = 0;
 
     //! Add image entity to current document.
     /*! Add image entity to current document with current attributes.
@@ -446,7 +446,7 @@ public:
     * \return true if success.
     * \return false if fail, i.e. user cancel.
     */
-    virtual bool getPoint(QPointF *point, const QString& message = "", QPointF *base = 0) = 0;
+    virtual bool getPoint(QPointF *point, const QString& message, QPointF *base) = 0;
 
     //! Select a entity.
     /*! Prompt message or a default message to the user asking for a single selection.
@@ -454,7 +454,7 @@ public:
     * \param message an optional QString with prompt message.
     * \return a Plug_Entity handle the selected entity or NULL.
     */
-    virtual Plug_Entity *getEnt(const QString& message = "") = 0;
+    virtual Plug_Entity *getEnt(const QString& message) = 0;
 
     //! Gets a entities selection.
     /*! Prompt message or an default message to the user asking for a selection.
@@ -464,7 +464,7 @@ public:
     * \return true if success.
     * \return false if fail, i.e. user cancel.
     */
-    virtual bool getSelect(QList<Plug_Entity *> *sel, const QString& message = "") = 0;
+    virtual bool getSelect(QList<Plug_Entity *> *sel, const QString& message) = 0;
 
     //! Gets all entities in document.
     /*! You can delete all, the Plug_Entity and the returned QList wen no more needed.
@@ -473,16 +473,16 @@ public:
     * \return true if success.
     * \return false if fail, i.e. user cancel.
     */
-    virtual bool getAllEntities(QList<Plug_Entity *> *sel, bool visible = false) = 0;
+    virtual bool getAllEntities(QList<Plug_Entity *> *sel, bool visible) = 0;
 
     virtual bool getVariableInt(const QString& key, int *num) = 0;
     virtual bool getVariableDouble(const QString& key, double *num) = 0;
-    virtual bool addVariable(const QString& key, int value, int code=70) = 0;
-    virtual bool addVariable(const QString& key, double value, int code=40) = 0;
+    virtual bool addVariable(const QString& key, int value, int code) = 0;
+    virtual bool addVariable(const QString& key, double value, int code) = 0;
 
-    virtual bool getInt(int *num, const QString& message = "", const QString& title = "") = 0;
-    virtual bool getReal(qreal *num, const QString& message = "", const QString& title = "") = 0;
-    virtual bool getString(QString *txt, const QString& message = "", const QString& title = "") = 0;
+    virtual bool getInt(int *num, const QString& message, const QString& title) = 0;
+    virtual bool getReal(qreal *num, const QString& message, const QString& title) = 0;
+    virtual bool getString(QString *txt, const QString& message, const QString& title) = 0;
 
     //! Convert real to string.
     /*! Convert a real number to string using indicated units format & precision. If omitted
@@ -494,7 +494,7 @@ public:
     * \param prec number of decimals added in the string.
     * \return a string with the converted number.
     */
-    virtual QString realToStr(const qreal num, const int units = 0, const int prec = 0) = 0;
+    virtual QString realToStr(qreal num, int units, int prec) = 0;
 };
 
 
