@@ -598,7 +598,7 @@ public:
      * @param gc Group code.
      * @param value The string.
      */
-    virtual void dxfString(int gc, const string& value) const = 0;
+    virtual void dxfString(int gc, const std::string& value) const = 0;
 
 protected:
     mutable unsigned long m_handle;

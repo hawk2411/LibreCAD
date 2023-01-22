@@ -28,7 +28,7 @@
 #define DL_ATTRIBUTES_H
 
 #include <string>
-using std::string;
+#include <utility>
 
 #include "dl_codes.h"
 
@@ -45,13 +45,8 @@ public:
     /**
      * Default constructor.
      */
-    DL_Attributes() {
-        setLayer("");
-        setColor(0);
-        setWidth(0);
-        setLineType("BYLAYER");
+    DL_Attributes() : _color(0), _width(0), _lineType("BYLAYER") {
     }
-
 
 
     /**
@@ -65,34 +60,28 @@ public:
      * @param lineType Line type name or "BYLAYER" or "BYBLOCK". Defaults
      *              to "BYLAYER"
      */
-    DL_Attributes(const string& layer,
-                  int color, int width,
-                  const string& lineType) {
-        setLayer(layer);
-        setColor(color);
-        setWidth(width);
-        setLineType(lineType);
-    }
-
+    DL_Attributes(std::string layer, int color, int width, std::string lineType) :
+            _layer(std::move(layer)),
+            _color(color),
+            _width(width),
+            _lineType(std::move(lineType)) {}
 
 
     /**
      * Sets the layer. If the given pointer points to NULL, the
      *  new layer name will be an empty but valid string.
      */
-    void setLayer(const string& layer) {
-        this->layer = layer;
+    void setLayer(const std::string &layer) {
+        this->_layer = layer;
     }
-
 
 
     /**
      * @return Layer name.
      */
-    string getLayer() const {
-        return layer;
+    [[nodiscard]] auto getLayer() const {
+        return _layer;
     }
-
 
 
     /**
@@ -101,9 +90,8 @@ public:
      * @see DL_Codes, dxfColors
      */
     void setColor(int color) {
-        this->color = color;
+        this->_color = color;
     }
-
 
 
     /**
@@ -111,56 +99,51 @@ public:
      *
      * @see DL_Codes, dxfColors
      */
-    int getColor() const {
-        return color;
+    [[nodiscard]] auto getColor() const {
+        return _color;
     }
-
 
 
     /**
      * Sets the width.
      */
     void setWidth(int width) {
-        this->width = width;
+        this->_width = width;
     }
-
 
 
     /**
      * @return Width.
      */
-    int getWidth() const {
-        return width;
+    [[nodiscard]] int getWidth() const {
+        return _width;
     }
-
 
 
     /**
      * Sets the line type. This can be any string and is not
      *  checked to be a valid line type. 
      */
-    void setLineType(const string& lineType) {
-        this->lineType = lineType;
+    void setLineType(const std::string &lineType) {
+        this->_lineType = lineType;
     }
-
 
 
     /**
      * @return Line type.
      */
-    string getLineType() const {
-        if (lineType.length()==0) {
+    [[nodiscard]] std::string getLineType() const {
+        if (_lineType.length() == 0) {
             return "BYLAYER";
-        } else {
-            return lineType;
         }
+        return _lineType;
     }
 
 private:
-    string layer;
-    int color;
-    int width;
-    string lineType;
+    std::string _layer;
+    int _color;
+    int _width;
+    std::string _lineType;
 };
 
 #endif
