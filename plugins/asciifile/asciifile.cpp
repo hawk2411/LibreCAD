@@ -48,7 +48,7 @@ void AsciiFile::execComm(Document_Interface *doc,
     dibPunto pdt(parent);
     int result = pdt.exec();
     if (result == QDialog::Accepted)
-        pdt.procesFile(doc);
+        pdt.processFile(doc);
 }
 
 #define POINT 12
@@ -334,21 +334,21 @@ bool dibPunto::failGUI(QString *msg)
     return false;
 }
 
-void dibPunto::procesFile(Document_Interface *doc)
+void dibPunto::processFile(Document_Interface *doc)
 {
     QString sep;
-    QMessageBox::information(this, "Info", "dibpunto procesFile");
+    QMessageBox::information(this, "Info", "dibpunto processFile");
     currDoc = doc;
 
 //Warning, can change adding or reordering "formatedit"
-    QString::SplitBehavior skip = QString::KeepEmptyParts;
+    Qt::SplitBehavior skip {Qt::KeepEmptyParts};
     switch (formatedit->currentIndex()) {
     case 0:
         sep = " ";
         break;
     case 3:
         sep = " ";
-        skip = QString::SkipEmptyParts;
+        skip = Qt::SkipEmptyParts;
         break;
     case 2:
         sep = ",";
@@ -368,9 +368,9 @@ void dibPunto::procesFile(Document_Interface *doc)
 
 //Warning, can change adding or reordering "formatedit"
     if (formatedit->currentIndex() == 4)
-        procesfileODB(&infile, sep);
+        processFileODB(&infile, sep);
     else
-        procesfileNormal(&infile, sep, skip);
+        processFileNormal(&infile, sep, skip);
     infile.close ();
     QString currlay = currDoc->getCurrentLayer();
 
@@ -565,7 +565,7 @@ void dibPunto::drawCode()
     }
 }
 
-void dibPunto::procesfileODB(QFile* file, QString sep)
+void dibPunto::processFileODB(QFile* file, QString sep)
 {
     QStringList data;
     pointData *pd;
@@ -593,7 +593,7 @@ void dibPunto::procesfileODB(QFile* file, QString sep)
     }
 
 }
-void dibPunto::procesfileNormal(QFile* file, QString sep, QString::SplitBehavior skip)
+void dibPunto::processFileNormal(QFile *file, QString sep, Qt::SplitBehavior skip)
 {
     //    QString outname, sep;
     QStringList data;

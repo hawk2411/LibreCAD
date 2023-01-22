@@ -52,19 +52,19 @@ class dibPunto : public QDialog
 
 public:
     explicit dibPunto(QWidget *parent = 0);
-    ~dibPunto();
+    ~dibPunto() override;
     void SetupUI(QWidget *parent);
 
 public slots:
     void dptFile();
-    void procesFile(Document_Interface *doc);
+    void processFile(Document_Interface *doc);
     void checkAccept();
 
 private:
     void readSettings();
     void writeSettings();
-    void procesfileODB(QFile* file, QString sep);
-    void procesfileNormal(QFile* file, QString sep, QString::SplitBehavior skip = QString::KeepEmptyParts);
+    void processFileODB(QFile* file, QString sep);
+    void processFileNormal(QFile *file, QString sep, Qt::SplitBehavior skip = Qt::KeepEmptyParts);
     void drawLine();
     void draw2D();
     void draw3D();
