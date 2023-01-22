@@ -82,7 +82,7 @@ void LC_DlgSplinePoints::updateSpline()
 	bezier->setLayer(ui->cbLayer->currentText());
 	//update Spline Points
 	auto model = static_cast<QStandardItemModel*>(ui->tvPoints->model());
-	size_t const n = model->rowCount();
+	size_t const n = model->rowCount(QModelIndex());
 	auto& d = bezier->getData();
 
 	//update points
