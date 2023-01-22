@@ -35,39 +35,54 @@
 #include "rs_blocklistlistener.h"
 
 class QG_ActionHandler;
+
 class QTableView;
+
 class QLineEdit;
 
 
 /**
  * Implementation of a model to use in QG_BlockWidget
  */
-class QG_BlockModel: public QAbstractTableModel {
+class QG_BlockModel : public QAbstractTableModel {
 public:
     enum {
         VISIBLE,
         NAME,
         LAST
     };
-    explicit QG_BlockModel(QObject * parent = nullptr);
-	~QG_BlockModel() override = default;
-    [[nodiscard]] Qt::ItemFlags flags ( const QModelIndex & /*index*/ ) const override {
-            return Qt::ItemIsSelectable|Qt::ItemIsEnabled;}
-    [[nodiscard]] int columnCount(const QModelIndex &/*parent*/) const override {return LAST;}
-    [[nodiscard]] int rowCount ( const QModelIndex & parent ) const override;
-    [[nodiscard]] QVariant data ( const QModelIndex & index, int role ) const override;
-    [[nodiscard]] QModelIndex parent ( const QModelIndex & index ) const override;
-    [[nodiscard]] QModelIndex index ( int row, int column, const QModelIndex & parent ) const override;
-    void setBlockList(RS_BlockList* bl);
-    RS_Block *getBlock( int row );
-    QModelIndex getIndex (RS_Block * blk);
-    void setActiveBlock(RS_Block* b) { activeBlock = b; };
+
+    explicit QG_BlockModel(QObject *parent = nullptr);
+
+    ~QG_BlockModel() override = default;
+
+    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex & /*index*/ ) const override {
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    }
+
+    [[nodiscard]] int columnCount(const QModelIndex &/*parent*/) const override { return LAST; }
+
+    [[nodiscard]] int rowCount(const QModelIndex &parent) const override;
+
+    [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
+
+    [[nodiscard]] QModelIndex parent(const QModelIndex &index) const override;
+
+    [[nodiscard]] QModelIndex index(int row, int column, const QModelIndex &parent) const override;
+
+    void setBlockList(RS_BlockList *bl);
+
+    RS_Block *getBlock(int row);
+
+    QModelIndex getIndex(RS_Block *blk);
+
+    void setActiveBlock(RS_Block *b) { _activeBlock = b; };
 
 private:
-    QList<RS_Block*> listBlock;
-    QIcon blockVisible;
-    QIcon blockHidden;
-    RS_Block* activeBlock {nullptr};
+    QList<RS_Block *> _listBlock;
+    QIcon _blockVisible;
+    QIcon _blockHidden;
+    RS_Block *_activeBlock{nullptr};
 };
 
 
@@ -75,60 +90,69 @@ private:
  * This is the Qt implementation of a widget which can view a 
  * block list.
  */
-class QG_BlockWidget: public QWidget, public RS_BlockListListener {
-    Q_OBJECT
+class QG_BlockWidget : public QWidget, public RS_BlockListListener {
+Q_OBJECT
 
 public:
-    QG_BlockWidget(QG_ActionHandler* ah, QWidget* parent,
-                   const char* name=nullptr);
+    QG_BlockWidget(QG_ActionHandler *ah, QWidget *parent,
+                   const char *name = nullptr);
+
     ~QG_BlockWidget() override;
 
-    void setBlockList(RS_BlockList* blockList) {
+    void setBlockList(RS_BlockList *blockList) {
         this->_blockList = blockList;
         updateBlock();
     }
 
-    RS_BlockList* getBlockList() {
+    RS_BlockList *getBlockList() {
         return _blockList;
     }
 
     void updateBlock();
-    void activateBlock(RS_Block* block);
 
-    void blockAdded(RS_Block*) override;
+    void activateBlock(RS_Block *block);
 
-    void blockEdited(RS_Block*) override {
+    void blockAdded(RS_Block *) override;
+
+    void blockEdited(RS_Block *) override {
         updateBlock();
     }
-    void blockRemoved(RS_Block*) override {
+
+    void blockRemoved(RS_Block *) override {
         updateBlock();
     }
-    void blockToggled(RS_Block*) override {
+
+    void blockToggled(RS_Block *) override {
         updateBlock();
-	}
+    }
 
 signals:
-	void escape();
+
+    void escape();
 
 public slots:
+
     void slotActivated(QModelIndex blockIdx);
+
     void slotSelectionChanged(
-        const QItemSelection &selected,
-        const QItemSelection &deselected);
+            const QItemSelection &selected,
+            const QItemSelection &deselected);
+
     void slotUpdateBlockList();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *e) override;
-	void keyPressEvent(QKeyEvent* e) override;
+
+    void keyPressEvent(QKeyEvent *e) override;
 
 private:
-    RS_BlockList* _blockList;
-    QLineEdit* _matchBlockName;
-    QTableView* _blockView;
+    RS_BlockList *_blockList;
+    QLineEdit *_matchBlockName;
+    QTableView *_blockView;
     std::unique_ptr<QG_BlockModel> _blockModel;
-    RS_Block* _lastBlock;
+    RS_Block *_lastBlock;
 
-    QG_ActionHandler* _actionHandler;
+    QG_ActionHandler *_actionHandler;
 
     void restoreSelections();
 };
