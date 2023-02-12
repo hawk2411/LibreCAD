@@ -58,8 +58,8 @@
 /**
  * Constructor.
  */
-RS_GraphicView::RS_GraphicView(QWidget* parent, Qt::WindowFlags f)
-    :QWidget(parent, f)
+RS_GraphicView::RS_GraphicView(QWidget* parent)
+    :QWidget(parent)
 	,eventHandler{new RS_EventHandler{this}}
 	,gridColor(Qt::gray)
 	,metaGridColor{64, 64, 64}

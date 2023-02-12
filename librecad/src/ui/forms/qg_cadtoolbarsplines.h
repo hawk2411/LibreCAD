@@ -32,7 +32,7 @@ class QG_CadToolBarSplines : public LC_CadToolBarInterface
     Q_OBJECT
 
 public:
-	QG_CadToolBarSplines(QG_CadToolBar* parent = 0, Qt::WindowFlags fl = 0);
+	QG_CadToolBarSplines(QG_CadToolBar* parent = 0, Qt::WindowFlags fl = Qt::WindowFlags());
 	~QG_CadToolBarSplines() = default;
     //restore action from checked button
 	virtual void restoreAction();

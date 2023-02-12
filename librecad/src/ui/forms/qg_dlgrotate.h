@@ -35,8 +35,8 @@ class QG_DlgRotate : public QDialog, public Ui::QG_DlgRotate
     Q_OBJECT
 
 public:
-    QG_DlgRotate(QWidget* parent = 0, bool modal = false, Qt::WindowFlags fl = 0);
-    ~QG_DlgRotate();
+    explicit QG_DlgRotate(QWidget* parent = nullptr, bool modal = false, Qt::WindowFlags fl = Qt::WindowFlags());
+    ~QG_DlgRotate() override;
 
 public slots:
     virtual void setData(RS_RotateData* d );

@@ -34,7 +34,7 @@ class QG_DlgDimLinear : public QDialog, public Ui::QG_DlgDimLinear
     Q_OBJECT
 
 public:
-    QG_DlgDimLinear(QWidget* parent = 0, bool modal = false, Qt::WindowFlags fl = 0);
+    QG_DlgDimLinear(QWidget* parent = 0, bool modal = false, Qt::WindowFlags fl = Qt::WindowFlags());
     ~QG_DlgDimLinear();
 
 public slots:

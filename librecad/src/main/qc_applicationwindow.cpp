@@ -643,7 +643,7 @@ void QC_ApplicationWindow::loadPlugins() {
                         if (atMenu) {
                             atMenu->addAction(actpl);
                         } else {
-                            QStringList treemenu = loc.menuEntryPoint.split('/', QString::SkipEmptyParts);
+                            QStringList treemenu = loc.menuEntryPoint.split('/', Qt::SkipEmptyParts, Qt::CaseSensitivity::CaseSensitive);
                             QString currentLevel = "";
                             QMenu *parentMenu = nullptr;
                             do {
@@ -1331,7 +1331,7 @@ QC_MDIWindow *QC_ApplicationWindow::slotFileNew(RS_Document *doc) {
 
     RS_DEBUG->print("  creating MDI window");
 
-    auto *w = new QC_MDIWindow(doc, mdiAreaCAD, nullptr);
+    auto *w = new QC_MDIWindow(doc, mdiAreaCAD);
 
     window_list << w;
 
@@ -2146,25 +2146,27 @@ void QC_ApplicationWindow::slotFilePrint(bool printPDF) {
 
     bool landscape = false;
     RS2::PaperFormat pf = graphic->getPaperFormat(&landscape);
-    QPrinter::PageSize paperSizeName = LC_Printing::rsToQtPaperFormat(pf);
+    auto pageSizeId = LC_Printing::rsToQtPageSizeId(pf);
     RS_Vector paperSize = graphic->getPaperSize();
-    if (paperSizeName == QPrinter::Custom) {
+    if (pageSizeId == QPageSize::Custom) {
         RS_Vector &&s = RS_Units::convert(paperSize, graphic->getUnit(), RS2::Millimeter);
-        if (landscape) s = s.flipXY();
-        printer.setPaperSize(QSizeF(s.x, s.y), QPrinter::Millimeter);
+        if (landscape) {
+            s = s.flipXY();
+        }
+        printer.setPageSize(QPageSize(QSizeF(s.x, s.y), QPageSize::Millimeter));
     } else {
-        printer.setPaperSize(paperSizeName);
+        printer.setPageSize(QPageSize(pageSizeId));
     }
-    if (landscape) {
-        printer.setOrientation(QPrinter::Landscape);
-    } else {
-        printer.setOrientation(QPrinter::Portrait);
-    }
-    QPagedPaintDevice::Margins paperMargins{graphic->getMarginLeft(),
+
+    printer.setPageOrientation((landscape)
+        ? QPageLayout::Orientation::Landscape
+        : QPageLayout::Orientation::Portrait);
+
+    QMarginsF paperMargins(graphic->getMarginLeft(),
                                             graphic->getMarginRight(),
                                             graphic->getMarginTop(),
-                                            graphic->getMarginBottom()};
-    printer.setMargins(paperMargins);
+                                            graphic->getMarginBottom());
+    printer.setPageMargins(paperMargins);
 
     QString strDefaultFile("");
     RS_SETTINGS->beginGroup("/Print");
@@ -2218,14 +2220,14 @@ void QC_ApplicationWindow::slotFilePrint(bool printPDF) {
         // fullPage must be set to true to get full width and height
         // (without counting margins).
         printer.setFullPage(true);
-        QPagedPaintDevice::Margins printerMargins = printer.margins();
+        QMarginsF printerMargins = printer.pageLayout().margins();
         RS_Vector printerSize(printer.widthMM(), printer.heightMM());
         if (bStartPrinting
             && (paperSize != printerSize
-                || paperMargins.left != printerMargins.left
-                || paperMargins.top != printerMargins.top
-                || paperMargins.right != printerMargins.right
-                || paperMargins.bottom != printerMargins.bottom)) {
+                || paperMargins.left() != printerMargins.left()
+                || paperMargins.top() != printerMargins.top()
+                || paperMargins.right() != printerMargins.right()
+                || paperMargins.bottom() != printerMargins.bottom())) {
             QMessageBox msgBox(this);
             msgBox.setWindowTitle("Paper settings");
             msgBox.setText("Paper size and/or margins have been changed!");
@@ -2242,24 +2244,24 @@ void QC_ApplicationWindow::slotFilePrint(bool printPDF) {
                     .arg(paperSize.x)
                     .arg(paperSize.y)
                     .arg(RS_Units::paperFormatToString(pf))
-                    .arg(RS_Units::convert(paperMargins.left, RS2::Millimeter, graphic->getUnit()))
-                    .arg(RS_Units::convert(paperMargins.top, RS2::Millimeter, graphic->getUnit()))
-                    .arg(RS_Units::convert(paperMargins.right, RS2::Millimeter, graphic->getUnit()))
-                    .arg(RS_Units::convert(paperMargins.bottom, RS2::Millimeter, graphic->getUnit()))
+                    .arg(RS_Units::convert(paperMargins.left(), RS2::Millimeter, graphic->getUnit()))
+                    .arg(RS_Units::convert(paperMargins.top(), RS2::Millimeter, graphic->getUnit()))
+                    .arg(RS_Units::convert(paperMargins.right(), RS2::Millimeter, graphic->getUnit()))
+                    .arg(RS_Units::convert(paperMargins.bottom(), RS2::Millimeter, graphic->getUnit()))
                     .arg(RS_Units::convert(printerSize.x, RS2::Millimeter, graphic->getUnit()))
                     .arg(RS_Units::convert(printerSize.y, RS2::Millimeter, graphic->getUnit()))
-                    .arg(printer.paperName())
-                    .arg(RS_Units::convert(printerMargins.left, RS2::Millimeter, graphic->getUnit()))
-                    .arg(RS_Units::convert(printerMargins.top, RS2::Millimeter, graphic->getUnit()))
-                    .arg(RS_Units::convert(printerMargins.right, RS2::Millimeter, graphic->getUnit()))
-                    .arg(RS_Units::convert(printerMargins.bottom, RS2::Millimeter, graphic->getUnit()));
+                    .arg(printer.pageLayout().pageSize().name())
+                    .arg(RS_Units::convert(printerMargins.left(), RS2::Millimeter, graphic->getUnit()))
+                    .arg(RS_Units::convert(printerMargins.top(), RS2::Millimeter, graphic->getUnit()))
+                    .arg(RS_Units::convert(printerMargins.right(), RS2::Millimeter, graphic->getUnit()))
+                    .arg(RS_Units::convert(printerMargins.bottom(), RS2::Millimeter, graphic->getUnit()));
             msgBox.setDetailedText(detailedText);
             int answer = msgBox.exec();
             switch (answer) {
                 case QMessageBox::Yes:
                     graphic->setPaperSize(RS_Units::convert(printerSize, RS2::Millimeter, graphic->getUnit()));
-                    graphic->setMargins(printerMargins.left, printerMargins.top,
-                                        printerMargins.right, printerMargins.bottom);
+                    graphic->setMargins(printerMargins.left(), printerMargins.top(),
+                                        printerMargins.right(), printerMargins.bottom());
                     break;
                 case QMessageBox::No:
                     break;
@@ -2300,14 +2302,14 @@ void QC_ApplicationWindow::slotFilePrint(bool printPDF) {
         RS_PainterQt painter(&printer);
         painter.setDrawingMode(current_window->getGraphicView()->getDrawingMode());
 
-        QPagedPaintDevice::Margins margins = printer.margins();
+        auto margins = printer.pageLayout().margins();
 
         double printerFx = (double) printer.width() / printer.widthMM();
         double printerFy = (double) printer.height() / printer.heightMM();
 
-        painter.setClipRect(static_cast<int>(margins.left * printerFx), static_cast<int>(margins.top * printerFy),
-                            printer.width() - static_cast<int>((margins.left + margins.right) * printerFx),
-                            printer.height() - static_cast<int>((margins.top + margins.bottom) * printerFy));
+        painter.setClipRect(static_cast<int>(margins.left() * printerFx), static_cast<int>(margins.top() * printerFy),
+                            printer.width() - static_cast<int>((margins.left() + margins.right()) * printerFx),
+                            printer.height() - static_cast<int>((margins.top() + margins.bottom()) * printerFy));
 
         RS_StaticGraphicView gv(printer.width(), printer.height(), &painter);
         gv.setPrinting(true);
@@ -2424,7 +2426,7 @@ void QC_ApplicationWindow::slotFilePrintPreview(bool on) {
                 //generate a new print preview
                 RS_DEBUG->print("QC_ApplicationWindow::slotFilePrintPreview(): create");
 
-                auto *w = new QC_MDIWindow(parent->getDocument(), mdiAreaCAD, nullptr);
+                auto *w = new QC_MDIWindow(parent->getDocument(), mdiAreaCAD);
                 mdiAreaCAD->addSubWindow(w);
                 parent->addChildWindow(w);
                 connect(w, &QC_MDIWindow::signalClosing, this, &QC_ApplicationWindow::slotFileClosing);

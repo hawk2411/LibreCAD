@@ -34,7 +34,7 @@ class QG_DlgImage : public QDialog, public Ui::QG_DlgImage
     Q_OBJECT
 
 public:
-    QG_DlgImage(QWidget* parent = 0, bool modal = false, Qt::WindowFlags fl = 0);
+    QG_DlgImage(QWidget* parent = 0, bool modal = false, Qt::WindowFlags fl = Qt::WindowFlags());
     ~QG_DlgImage();
 
 public slots:

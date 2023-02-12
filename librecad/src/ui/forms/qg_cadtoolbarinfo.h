@@ -36,7 +36,7 @@ class QG_CadToolBarInfo : public LC_CadToolBarInterface
     Q_OBJECT
 
 public:
-	QG_CadToolBarInfo(QG_CadToolBar* parent = 0, Qt::WindowFlags fl = 0);
+	QG_CadToolBarInfo(QG_CadToolBar* parent = 0, Qt::WindowFlags fl = Qt::WindowFlags());
 	~QG_CadToolBarInfo() = default;
     //restore action from checked button
 	virtual void restoreAction();

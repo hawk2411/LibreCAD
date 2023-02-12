@@ -57,3 +57,37 @@ QPrinter::PageSize LC_Printing::rsToQtPaperFormat(RS2::PaperFormat f)
 
     return QPrinter::Custom;
 }
+
+QPageSize::PageSizeId LC_Printing::rsToQtPageSizeId(RS2::PaperFormat f)
+{
+    switch (f) {
+        case RS2::A0: return QPageSize::PageSizeId::A0;
+        case RS2::A1: return QPageSize::PageSizeId::A1;
+        case RS2::A2: return QPageSize::PageSizeId::A2;
+        case RS2::A3: return QPageSize::PageSizeId::A3;
+        case RS2::A4: return QPageSize::PageSizeId::A4;
+
+            /* Removed ISO "B" and "C" series, C5E, Comm10E, DLE, (envelope sizes) */
+
+        case RS2::Letter: return QPageSize::PageSizeId::Letter;
+        case RS2::Legal:  return QPageSize::PageSizeId::Legal;
+        case RS2::Tabloid: return QPageSize::PageSizeId::Tabloid;
+
+            //case RS2::Ansi_A: return QPageSize::PageSizeId::AnsiA;
+            //case RS2::Ansi_B: return QPageSize::PageSizeId::AnsiB;
+        case RS2::Ansi_C: return QPageSize::PageSizeId::AnsiC;
+        case RS2::Ansi_D: return QPageSize::PageSizeId::AnsiD;
+        case RS2::Ansi_E: return QPageSize::PageSizeId::AnsiE;
+
+        case RS2::Arch_A: return QPageSize::PageSizeId::ArchA;
+        case RS2::Arch_B: return QPageSize::PageSizeId::ArchB;
+        case RS2::Arch_C: return QPageSize::PageSizeId::ArchC;
+        case RS2::Arch_D: return QPageSize::PageSizeId::ArchD;
+        case RS2::Arch_E: return QPageSize::PageSizeId::ArchE;
+
+        default:
+            break;
+    }
+
+    return QPageSize::PageSizeId::Custom;
+}

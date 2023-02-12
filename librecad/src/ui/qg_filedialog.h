@@ -43,8 +43,8 @@ public:
     /**
 *@ FileType, used to set dialog window title, currently, should be either "drawing" or "block"
 **/
-    QG_FileDialog(QWidget* parent=0, Qt::WindowFlags f=0, FileType type = DrawingFile);
-    virtual ~QG_FileDialog();
+    explicit QG_FileDialog(QWidget* parent= nullptr, Qt::WindowFlags f=Qt::WindowFlags(), FileType type = DrawingFile);
+    ~QG_FileDialog() override;
 
     QString getOpenFile(RS2::FormatType* type=nullptr);
     QString getSaveFile(RS2::FormatType* type=nullptr);

@@ -37,10 +37,10 @@ RS2::LineWidth RS2::intToLineWidth(int w) {
 
     //binary search
     //assume table size is at least 2
-    size_t low = -1;
-    size_t high = table.size() - 1;
+    std::size_t low = -1;
+    std::size_t high = table.size() - 1;
     while (low + 1 < high) {
-        size_t const mid = low + (high - low) / 2;
+        std::size_t const mid = low + (high - low) / 2;
         if (w >= table.at(mid).first)
             low = mid;
         else

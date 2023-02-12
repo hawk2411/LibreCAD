@@ -35,8 +35,9 @@
  *  Constructs a QG_CircleOptions as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-QG_CircleOptions::QG_CircleOptions(QWidget* parent, Qt::WindowFlags fl)
-    : QWidget(parent, fl)
+QG_CircleOptions::QG_CircleOptions(QWidget *parent)
+    : QWidget(parent)
+    , action(nullptr)
 	, ui(new Ui::Ui_CircleOptions{})
 {
 	ui->setupUi(this);

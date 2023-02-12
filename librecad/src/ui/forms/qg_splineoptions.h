@@ -40,7 +40,7 @@ class QG_SplineOptions : public QWidget
     Q_OBJECT
 
 public:
-    QG_SplineOptions(QWidget* parent = 0, Qt::WindowFlags fl = 0);
+    QG_SplineOptions(QWidget* parent = 0, Qt::WindowFlags fl = Qt::WindowFlags());
     ~QG_SplineOptions();
 
 public slots:

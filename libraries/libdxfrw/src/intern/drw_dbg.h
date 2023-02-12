@@ -59,14 +59,14 @@ private:
  */
 void setCustomDebugPrinter(DRW::IDebugPrinter* printer );
 
-auto drw_dbgsl = [](DRW::DebugLevel level) {
+inline auto drw_dbgsl = [](DRW::DebugLevel level) {
     DRW_dbg::getInstance()->setLevel(level);
 };
 
-auto drw_dbggl = [] () -> DRW::DebugLevel { return DRW_dbg::getInstance()->getLevel(); };
-auto drw_dbg = [](const auto & value) {DRW_dbg::getInstance()->print(value);};
-auto drw_dbgh = [](const auto & value) { DRW_dbg::getInstance()->printH(value); };
-auto drw_dbgb = [](const auto& value) { DRW_dbg::getInstance()->printB(value); };
-auto drw_dbghl = [](const auto& a, const auto& b, const auto& c) { DRW_dbg::getInstance()->printHL(a, b, c); };
-auto drw_dbgpt = [](const auto& a, const auto &b, const auto& c) { DRW_dbg::getInstance()->printPT(a, b, c); };
+inline auto drw_dbggl = [] () -> DRW::DebugLevel { return DRW_dbg::getInstance()->getLevel(); };
+inline auto drw_dbg = [](const auto & value) {DRW_dbg::getInstance()->print(value);};
+inline auto drw_dbgh = [](const auto & value) { DRW_dbg::getInstance()->printH(value); };
+inline auto drw_dbgb = [](const auto& value) { DRW_dbg::getInstance()->printB(value); };
+inline auto drw_dbghl = [](const auto& a, const auto& b, const auto& c) { DRW_dbg::getInstance()->printHL(a, b, c); };
+inline auto drw_dbgpt = [](const auto& a, const auto &b, const auto& c) { DRW_dbg::getInstance()->printPT(a, b, c); };
 #endif // DRW_DBG_H

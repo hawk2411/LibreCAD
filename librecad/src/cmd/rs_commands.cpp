@@ -715,7 +715,7 @@ void RS_Commands::updateAlias(){
                 line=ts.readLine().trimmed();
                 if (line.isEmpty() || line.at(0)=='#' ) continue;
                 // Read alias
-                QStringList txtList = line.split(QRegExp(R"(\s)"),QString::SkipEmptyParts);
+                QStringList txtList = line.split(QRegExp(R"(\s)"),Qt::SkipEmptyParts);
                 if (txtList.size()> 1) {
 //                    qDebug()<<"reading: "<<txtList.at(0)<<"\t"<< txtList.at(1);
                     aliasList[txtList.at(0)]=txtList.at(1);
@@ -726,17 +726,17 @@ void RS_Commands::updateAlias(){
     //alias file do no exist, create one with translated shortCommands
         if (f.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QTextStream ts(&f);
-            ts << "#LibreCAD alias v1" << endl << endl;
-            ts << "# lines starting with # are comments" << endl;
-            ts << "# format are:" << endl;
-            ts << R"(# <alias>\t<command-untranslated>)" << endl;
-            ts << "# example"<<endl;
-            ts << "# l\tline"<<endl<<endl;
+            ts << "#LibreCAD alias v1" << Qt::endl << Qt::endl;
+            ts << "# lines starting with # are comments" << Qt::endl;
+            ts << "# format are:" << Qt::endl;
+            ts << R"(# <alias>\t<command-untranslated>)" << Qt::endl;
+            ts << "# example"<<Qt::endl;
+            ts << "# l\tline"<<Qt::endl<<Qt::endl;
             for(auto const& p: shortCommands){
                 auto const act=p.second;
                 for(auto const& pCmd: mainCommands){
                     if(pCmd.second==act){
-                        ts<<p.first<<'\t'<<pCmd.first<<endl;
+                        ts<<p.first<<'\t'<<pCmd.first<<Qt::endl;
                         break;
                     }
                 }

@@ -85,7 +85,7 @@ void RS_ActionBlocksSave::trigger() {
 
             RS2::FormatType t = RS2::FormatDXFRW;
 
-            QG_FileDialog dlg(appWindow->getMDIWindow(),0, QG_FileDialog::BlockFile);
+            QG_FileDialog dlg(appWindow->getMDIWindow(),Qt::WindowFlags(), QG_FileDialog::BlockFile);
 			QString const& fn = dlg.getSaveFile(&t);
             QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 //            g.setModified(true);

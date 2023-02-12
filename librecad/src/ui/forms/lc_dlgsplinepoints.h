@@ -14,7 +14,7 @@ class LC_DlgSplinePoints : public QDialog
 {
 	Q_OBJECT
 public:
-	explicit LC_DlgSplinePoints(QWidget* parent = 0, bool modal = false, Qt::WindowFlags fl = 0);
+	explicit LC_DlgSplinePoints(QWidget* parent = 0, bool modal = false, Qt::WindowFlags fl = Qt::WindowFlags());
 	LC_DlgSplinePoints(LC_DlgSplinePoints const&) = delete;
 	LC_DlgSplinePoints(LC_DlgSplinePoints &&) = delete;
 	~LC_DlgSplinePoints() override;

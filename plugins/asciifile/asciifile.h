@@ -52,8 +52,8 @@ class dibPunto : public QDialog
 
 public:
     explicit dibPunto(QWidget *parent = 0);
-    ~dibPunto();
-    void SetupUI(QWidget *parent);
+    ~dibPunto() override;
+    //void SetupUI(QWidget *parent);
 
 public slots:
     void dptFile();
@@ -64,7 +64,7 @@ private:
     void readSettings();
     void writeSettings();
     void procesfileODB(QFile* file, QString sep);
-    void procesfileNormal(QFile* file, QString sep, QString::SplitBehavior skip = QString::KeepEmptyParts);
+    void procesfileNormal(QFile* file, QString sep, Qt::SplitBehavior skip = Qt::KeepEmptyParts);
     void drawLine();
     void draw2D();
     void draw3D();
@@ -97,14 +97,14 @@ class imgLabel : public QLabel
     Q_OBJECT
 
 public:
-    imgLabel(QWidget * parent = 0, Qt::WindowFlags f = 0 );
-    ~imgLabel(){}
+    explicit imgLabel(QWidget * parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    ~imgLabel() override = default;
 
     void setPos(DPT::txtposition pos = DPT::N);
     DPT::txtposition getPos() { return currPos;}
 
 protected:
-    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     void drawImage();

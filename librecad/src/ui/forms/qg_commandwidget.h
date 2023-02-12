@@ -34,7 +34,7 @@ class QG_CommandWidget : public QWidget, public Ui::QG_CommandWidget
     Q_OBJECT
 
 public:
-    explicit QG_CommandWidget(QWidget* parent = nullptr, const char* name = nullptr, Qt::WindowFlags fl = nullptr);
+    explicit QG_CommandWidget(QWidget* parent = nullptr, const char* name = nullptr, Qt::WindowFlags fl = Qt::WindowFlags());
     ~QG_CommandWidget() override;
 
     bool eventFilter(QObject *obj, QEvent *event) override;

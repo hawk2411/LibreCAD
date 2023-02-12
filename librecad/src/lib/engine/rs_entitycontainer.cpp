@@ -1626,7 +1626,7 @@ void RS_EntityContainer::moveSelectedRef(const RS_Vector &ref,
 
 void RS_EntityContainer::revertDirection() {
     for (int k = 0; k < _entities.size() / 2; ++k) {
-        _entities.swap(k, _entities.size() - 1 - k);
+        _entities.swapItemsAt(k, _entities.size() - 1 - k);
     }
 
     for (RS_Entity *const entity: _entities) {

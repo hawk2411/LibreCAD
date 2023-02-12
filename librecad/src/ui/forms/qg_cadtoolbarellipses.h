@@ -36,7 +36,7 @@ class QG_CadToolBarEllipses : public LC_CadToolBarInterface
     Q_OBJECT
 
 public:
-	QG_CadToolBarEllipses(QG_CadToolBar* parent = 0, Qt::WindowFlags fl = 0);
+	QG_CadToolBarEllipses(QG_CadToolBar* parent = 0, Qt::WindowFlags fl = Qt::WindowFlags());
 	~QG_CadToolBarEllipses() = default;
     //restore action from checked button
 	virtual void restoreAction();

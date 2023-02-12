@@ -7,6 +7,7 @@
 namespace LC_Printing
 {
     QPrinter::PageSize rsToQtPaperFormat(RS2::PaperFormat f);
+    QPageSize::PageSizeId rsToQtPageSizeId(RS2::PaperFormat f);
 }
 
 #endif // LC_PRINTING_H

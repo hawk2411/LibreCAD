@@ -55,7 +55,7 @@ class QC_MDIWindow: public QMdiSubWindow,
 public:
     QC_MDIWindow(RS_Document* doc,
                  QWidget* parent,
-                 Qt::WindowFlags wflags=0);
+                 Qt::WindowFlags wflags = Qt::WindowFlags());
     ~QC_MDIWindow() override;
 
     bool fileNewTemplate(const QString& fileName, RS2::FormatType type);

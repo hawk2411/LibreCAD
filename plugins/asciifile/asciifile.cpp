@@ -203,13 +203,13 @@ textBox::textBox(const QString & title, const QString & label, QWidget * parent)
     sepedit = new QLineEdit();
     sepedit->setValidator(val);
 
-    QFormLayout *flo = new QFormLayout;
+    auto *flo = new QFormLayout;
     flo->addRow( tr("Style:"), combostyle);
     flo->addRow( tr("Height:"), heightedit);
     flo->addRow( tr("Separation"), sepedit);
 //    posimage.fill(Qt::black);
     img = new imgLabel();
-    QHBoxLayout *loimage = new QHBoxLayout;
+    auto *loimage = new QHBoxLayout;
     loimage->addLayout(flo);
     loimage->addWidget(img);
 
@@ -341,14 +341,14 @@ void dibPunto::procesFile(IDocumentPlugin *doc)
     currDoc = doc;
 
 //Warning, can change adding or reordering "formatedit"
-    QString::SplitBehavior skip = QString::KeepEmptyParts;
+    auto skip = Qt::KeepEmptyParts;
     switch (formatedit->currentIndex()) {
     case 0:
         sep = " ";
         break;
     case 3:
         sep = " ";
-        skip = QString::SkipEmptyParts;
+        skip = Qt::SkipEmptyParts;
         break;
     case 2:
         sep = ",";
@@ -593,7 +593,7 @@ void dibPunto::procesfileODB(QFile* file, QString sep)
     }
 
 }
-void dibPunto::procesfileNormal(QFile* file, QString sep, QString::SplitBehavior skip)
+void dibPunto::procesfileNormal(QFile* file, QString sep, Qt::SplitBehavior skip)
 {
     //    QString outname, sep;
     QStringList data;

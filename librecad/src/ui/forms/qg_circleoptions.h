@@ -40,8 +40,8 @@ class QG_CircleOptions : public QWidget
     Q_OBJECT
 
 public:
-    QG_CircleOptions(QWidget* parent = 0, Qt::WindowFlags fl = 0);
-    ~QG_CircleOptions();
+    explicit QG_CircleOptions(QWidget *parent);
+    ~QG_CircleOptions() override;
 
 public slots:
 	virtual void setAction(RS_ActionInterface * a, bool update );

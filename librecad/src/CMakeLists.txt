@@ -2,7 +2,7 @@
 # (c) Ries van Twisk (librecad@rvt.dds.nl)
 include(boost.cmake)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(DISABLE_POSTSCRIPT "" false)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fext-numeric-literals")

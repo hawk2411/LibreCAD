@@ -156,7 +156,7 @@ void RS_Font::readCXF(const QString &path) {
         // Read font settings:
         if (line.at(0) == '#') {
             QStringList lst =
-                    (line.right(line.length() - 1)).split(':', QString::SkipEmptyParts);
+                    (line.right(line.length() - 1)).split(':', Qt::SkipEmptyParts);
             QStringList::Iterator it3 = lst.begin();
 
             // RVT_PORT sometimes it happens that the size is < 2
@@ -227,7 +227,7 @@ void RS_Font::readCXF(const QString &path) {
 
                 coordsStr = line.right(line.length() - 2);
                 //                coords = QStringList::split(',', coordsStr);
-                coords = coordsStr.split(',', QString::SkipEmptyParts);
+                coords = coordsStr.split(',', Qt::SkipEmptyParts);
                 it2 = coords.begin();
 
                 // Line:
@@ -289,7 +289,7 @@ void RS_Font::readLFF(const QString &path) {
 
         // Read font settings:
         if (line.at(0) == '#') {
-            QStringList lst = line.remove(0, 1).split(':', QString::SkipEmptyParts);
+            QStringList lst = line.remove(0, 1).split(':', Qt::SkipEmptyParts);
             //if size is < 2 it is a commentary not parameter
             if (lst.size() < 2) {
                 continue;
@@ -386,7 +386,7 @@ RS_Block *RS_Font::generateLffFont(const QString &ch) {
             handleChar(letter, line);
         } else {
             //sequence:
-            QStringList vertex = line.split(';', QString::SkipEmptyParts);
+            QStringList vertex = line.split(';', Qt::SkipEmptyParts);
             //at least is required two vertex
             if (vertex.size() < 2) {
                 continue;
@@ -395,7 +395,7 @@ RS_Block *RS_Font::generateLffFont(const QString &ch) {
             pline->setPen(RS_Pen(RS2::FlagInvalid));
             pline->setLayer(nullptr);
             for (int i = 0; i < vertex.size(); ++i) {
-                QStringList coords = vertex.at(i).split(',', QString::SkipEmptyParts);
+                QStringList coords = vertex.at(i).split(',', Qt::SkipEmptyParts);
                 //at least X,Y is required
                 if (coords.size() < 2) {
                     continue;

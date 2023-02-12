@@ -161,7 +161,7 @@ QVariant QG_LayerModel::data ( const QModelIndex & index, int role ) const {
         }
         break;
 
-    case Qt::BackgroundColorRole:
+    case Qt::BackgroundRole:
         if( COLOR_SAMPLE == col) {
             return layer->getPen().getColor().toQColor();
         }
@@ -178,7 +178,7 @@ QVariant QG_LayerModel::data ( const QModelIndex & index, int role ) const {
         break;
     }
 
-    return QVariant();
+    return {};
 }
 
 

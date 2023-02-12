@@ -72,7 +72,7 @@ QC_MDIWindow::QC_MDIWindow(RS_Document *doc, QWidget *parent, Qt::WindowFlags wf
         owner = false;
     }
 
-    graphicView = new QG_GraphicView(this, 0, document);
+    graphicView = new QG_GraphicView(this, document);
     graphicView->setObjectName("graphicview");
 
     connect(graphicView, &RS_GraphicView::previous_zoom_state,

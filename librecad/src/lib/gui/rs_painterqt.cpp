@@ -414,11 +414,11 @@ void RS_PainterQt::drawImg(QImage& img, const RS_Vector& pos,
       RS_PainterQt::setRenderHint(SmoothPixmapTransform);
     }
 
-    QMatrix wm;
+    QTransform wm;
     wm.translate(pos.x, pos.y);
     wm.rotate(RS_Math::rad2deg(-angle));
     wm.scale(factor.x, factor.y);
-    setWorldMatrix(wm);
+    setWorldTransform(wm);
 
 
     drawImage(0,-img.height(), img);
@@ -442,9 +442,9 @@ void RS_PainterQt::drawTextV(int x1, int y1,
                              int x2, int y2,
                              const QString& text) {
     save();
-    QMatrix wm = worldMatrix();
+    auto wm = worldTransform();
     wm.rotate(-90.0);
-    setWorldMatrix(wm);
+    setWorldTransform(wm);
     //rotate(-90.0);
 
     drawText(x1, y1, x2, y2,

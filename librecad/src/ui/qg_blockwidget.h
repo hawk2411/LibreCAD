@@ -82,8 +82,8 @@ class QG_BlockWidget: public QWidget, public RS_BlockListListener {
 
 public:
     QG_BlockWidget(QG_ActionHandler* ah, QWidget* parent,
-                   const char* name=0, Qt::WindowFlags f = 0);
-    ~QG_BlockWidget();
+                   const char* name=nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    ~QG_BlockWidget() override;
 
     void setBlockList(RS_BlockList* blockList) {
         this->blockList = blockList;

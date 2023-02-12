@@ -78,7 +78,7 @@ void RS_System::initLanguageList() {
     QStringList fileList = getFileList("qm", "qm");
 
     RS_SETTINGS->beginGroup("/Paths");
-    fileList += (RS_SETTINGS->readEntry("/Translations", "")).split(";", QString::SkipEmptyParts);
+    fileList += (RS_SETTINGS->readEntry("/Translations", "")).split(";", Qt::SkipEmptyParts);
     RS_SETTINGS->endGroup();
 
     for (auto &file: fileList) {
@@ -375,7 +375,7 @@ void RS_System::loadTranslation(const QString &lang, const QString & /*langCmd*/
     QStringList lst = getDirectoryList("qm");
 
     RS_SETTINGS->beginGroup("/Paths");
-    lst += (RS_SETTINGS->readEntry("/Translations", "")).split(";", QString::SkipEmptyParts);
+    lst += (RS_SETTINGS->readEntry("/Translations", "")).split(";", Qt::SkipEmptyParts);
     RS_SETTINGS->endGroup();
 
     if (tLibreCAD != nullptr) {
@@ -594,19 +594,19 @@ QStringList RS_System::getDirectoryList(const QString &_subDirectory) {
     RS_SETTINGS->beginGroup("/Paths");
     if (subDirectory == "fonts") {
         dirList += (RS_SETTINGS->readEntry("/Fonts", "")).split(QRegExp("[;]"),
-                                                                QString::SkipEmptyParts);
+                                                                Qt::SkipEmptyParts);
     } else if (subDirectory == "patterns") {
         dirList += (RS_SETTINGS->readEntry("/Patterns", "")).split(QRegExp("[;]"),
-                                                                   QString::SkipEmptyParts);
+                                                                   Qt::SkipEmptyParts);
     } else if (subDirectory.startsWith("scripts")) {
         dirList += (RS_SETTINGS->readEntry("/Scripts", "")).split(QRegExp("[;]"),
-                                                                  QString::SkipEmptyParts);
+                                                                  Qt::SkipEmptyParts);
     } else if (subDirectory.startsWith("library")) {
         dirList += (RS_SETTINGS->readEntry("/Library", "")).split(QRegExp("[;]"),
-                                                                  QString::SkipEmptyParts);
+                                                                  Qt::SkipEmptyParts);
     } else if (subDirectory.startsWith("po")) {
         dirList += (RS_SETTINGS->readEntry("/Translations", "")).split(QRegExp("[;]"),
-                                                                       QString::SkipEmptyParts);
+                                                                       Qt::SkipEmptyParts);
     }
     RS_SETTINGS->endGroup();
 

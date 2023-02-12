@@ -36,7 +36,7 @@ class QG_CadToolBarCircles : public LC_CadToolBarInterface
     Q_OBJECT
 
 public:
-	QG_CadToolBarCircles(QG_CadToolBar* parent = 0, Qt::WindowFlags fl = 0);
+	QG_CadToolBarCircles(QG_CadToolBar* parent = 0, Qt::WindowFlags fl = Qt::WindowFlags());
 	~QG_CadToolBarCircles() = default;
     //restore action from checked button
 	virtual void restoreAction();

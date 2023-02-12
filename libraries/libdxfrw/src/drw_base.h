@@ -25,6 +25,7 @@
 #include <iomanip>
 #include <iostream>
 #include <utility>
+#include <limits>
 
 const double M_PIx2 = 6.283185307179586; // 2*PI
 const double ARAD = 57.29577951308232;

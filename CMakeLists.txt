@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(librecad)
 include(settings.cmake)
-set(CMAKE_CXX_STANDARD 14)      #for using std::filesystem::temp_directory_path
+set(CMAKE_CXX_STANDARD 17)      #for using std::filesystem::temp_directory_path
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 SET(CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)

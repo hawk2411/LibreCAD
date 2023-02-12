@@ -55,6 +55,6 @@ private:
 	RS_DialogFactoryAdapter factoryAdapter;
 };
 
-auto GetDialogFactory = []() { return RS_DialogFactory::instance()->getFactoryObject(); };
+inline auto GetDialogFactory = []() { return RS_DialogFactory::instance()->getFactoryObject(); };
 
 #endif

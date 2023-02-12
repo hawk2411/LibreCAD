@@ -77,12 +77,12 @@ WidgetCreator::WidgetCreator(QWidget* parent,
     connect(ui->chosen_actions, &ActionList::itemDoubleClicked,
             this, static_cast<void (WidgetCreator::*)(QListWidgetItem*)>(&WidgetCreator::removeChosenAction));
 
-    connect(ui->combo, static_cast<void (QComboBox::*)(const QString&)>(&QComboBox::activated), this, &WidgetCreator::setLists);
+    connect(ui->combo, static_cast<void (QComboBox::*)(const QString&)>(&QComboBox::textActivated), this, &WidgetCreator::setLists);
 
     connect(ui->create_button, &QPushButton::released, this, &WidgetCreator::createWidget);
     connect(ui->destroy_button, &QPushButton::released, this, &WidgetCreator::destroyWidget);
 
-    connect(ui->categories_combobox, static_cast<void(QComboBox::*)(const QString&)>(&QComboBox::activated), this, &WidgetCreator::setCategory);
+    connect(ui->categories_combobox, static_cast<void(QComboBox::*)(const QString&)>(&QComboBox::textActivated), this, &WidgetCreator::setCategory);
 }
 
 WidgetCreator::~WidgetCreator()

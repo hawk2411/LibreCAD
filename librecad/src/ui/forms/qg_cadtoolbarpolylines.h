@@ -36,7 +36,7 @@ class QG_CadToolBarPolylines : public LC_CadToolBarInterface
     Q_OBJECT
 
 public:
-	QG_CadToolBarPolylines(QG_CadToolBar* parent = 0, Qt::WindowFlags fl = 0);
+	QG_CadToolBarPolylines(QG_CadToolBar* parent = 0, Qt::WindowFlags fl = Qt::WindowFlags());
 	~QG_CadToolBarPolylines() = default;
     //restore action from checked button
 	virtual void restoreAction();
