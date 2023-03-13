@@ -24,7 +24,6 @@
 **
 **********************************************************************/
 
-#include <QAction>
 #include <QMouseEvent>
 #include "rs_actiondrawcirclecr.h"
 
@@ -57,7 +56,7 @@ RS_ActionDrawCircleCR::~RS_ActionDrawCircleCR() = default;
 
 
 void RS_ActionDrawCircleCR::reset() {
-	data.reset(new RS_CircleData{RS_Vector{false}, 0.0});
+	data = std::make_unique<RS_CircleData>(RS_Vector{false}, 0.0);
 }
 
 
@@ -71,7 +70,7 @@ void RS_ActionDrawCircleCR::init(int status) {
 void RS_ActionDrawCircleCR::trigger() {
     RS_PreviewActionInterface::trigger();
 
-    RS_Circle* circle = new RS_Circle(_container,
+    auto* circle = new RS_Circle(_container,
                                       *data);
     circle->setLayerToActive();
     circle->setPenToActive();
@@ -141,7 +140,7 @@ void RS_ActionDrawCircleCR::mouseReleaseEvent(QMouseEvent* e) {
 
 
 void RS_ActionDrawCircleCR::coordinateEvent(RS_CoordinateEvent* e) {
-    if (e==NULL) {
+    if (e==nullptr) {
         return;
     }
 
