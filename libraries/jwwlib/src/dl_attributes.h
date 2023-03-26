@@ -28,6 +28,7 @@
 #define DL_ATTRIBUTES_H
 
 #include <string>
+#include <utility>
 using std::string;
 
 #include "dl_codes.h"
@@ -45,11 +46,7 @@ public:
     /**
      * Default constructor.
      */
-    DL_Attributes() {
-        setLayer("");
-        setColor(0);
-        setWidth(0);
-        setLineType("BYLAYER");
+    DL_Attributes() : m_color(0), m_width(0), m_lineType("BYLAYER") {
     }
 
 
@@ -65,14 +62,8 @@ public:
      * @param lineType Line type name or "BYLAYER" or "BYBLOCK". Defaults
      *              to "BYLAYER"
      */
-    DL_Attributes(const string& layer,
-                  int color, int width,
-                  const string& lineType) {
-        setLayer(layer);
-        setColor(color);
-        setWidth(width);
-        setLineType(lineType);
-    }
+    DL_Attributes(string  layer, int color, int width, string  lineType)
+    : m_layer(std::move(layer)), m_color(color), m_width(width), m_lineType(std::move(lineType)) {}
 
 
 
@@ -81,7 +72,7 @@ public:
      *  new layer name will be an empty but valid string.
      */
     void setLayer(const string& layer) {
-        this->layer = layer;
+        this->m_layer = layer;
     }
 
 
@@ -90,7 +81,7 @@ public:
      * @return Layer name.
      */
     string getLayer() const {
-        return layer;
+        return m_layer;
     }
 
 
@@ -101,7 +92,7 @@ public:
      * @see DL_Codes, dxfColors
      */
     void setColor(int color) {
-        this->color = color;
+        this->m_color = color;
     }
 
 
@@ -112,7 +103,7 @@ public:
      * @see DL_Codes, dxfColors
      */
     int getColor() const {
-        return color;
+        return m_color;
     }
 
 
@@ -121,7 +112,7 @@ public:
      * Sets the width.
      */
     void setWidth(int width) {
-        this->width = width;
+        this->m_width = width;
     }
 
 
@@ -130,7 +121,7 @@ public:
      * @return Width.
      */
     int getWidth() const {
-        return width;
+        return m_width;
     }
 
 
@@ -140,7 +131,7 @@ public:
      *  checked to be a valid line type. 
      */
     void setLineType(const string& lineType) {
-        this->lineType = lineType;
+        this->m_lineType = lineType;
     }
 
 
@@ -149,18 +140,18 @@ public:
      * @return Line type.
      */
     string getLineType() const {
-        if (lineType.length()==0) {
+        if (m_lineType.length() == 0) {
             return "BYLAYER";
         } else {
-            return lineType;
+            return m_lineType;
         }
     }
 
 private:
-    string layer;
-    int color;
-    int width;
-    string lineType;
+    string m_layer;
+    int m_color;
+    int m_width;
+    string m_lineType;
 };
 
 #endif
