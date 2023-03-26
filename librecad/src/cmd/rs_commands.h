@@ -45,6 +45,10 @@
 class RS_Commands {
 
 public:
+    ~RS_Commands()=delete;
+    RS_Commands(RS_Commands& ) = delete;
+    RS_Commands& operator = ( RS_Commands& ) = delete;
+
     /**
      * @return Instance to the unique commands object.
      */
@@ -77,10 +81,8 @@ protected:
     static RS_Commands* uniqueInstance;
 
 private:
-    RS_Commands() ;
-    ~RS_Commands()=delete;
-    RS_Commands(RS_Commands& ) = delete;
-    RS_Commands& operator = ( RS_Commands& ) = delete;
+    RS_Commands();
+
 
     std::map<QString, RS2::ActionType> mainCommands;
     std::map<QString, RS2::ActionType> shortCommands;
