@@ -27,8 +27,8 @@
 #include <utility>
 #include <limits>
 
-const double M_PIx2 = 6.283185307179586; // 2*PI
-const double ARAD = 57.29577951308232;
+constexpr double M_PIx2 = 6.283185307179586; // 2*PI
+constexpr double ARAD = 57.29577951308232;
 
 namespace DRW {
 /** utility function
@@ -198,33 +198,33 @@ public:
     };
 
 //TODO: add INT64 support
-    DRW_Variant() : sdata(std::string()), vdata(), content(0), vType(INVALID), vCode(0) {}
+    DRW_Variant() : m_sdata(std::string()), m_vdata(), content(0), vType(INVALID), vCode(0) {}
 
-    DRW_Variant(int c, int32_t i) : sdata(std::string()), vdata(), content(i), vType(INTEGER), vCode(c) {}
+    DRW_Variant(int c, int32_t i) : m_sdata(std::string()), m_vdata(), content(i), vType(INTEGER), vCode(c) {}
 
-    DRW_Variant(int c, uint32_t i) : sdata(std::string()), vdata(), content(static_cast<int32_t>(i)), vType(INTEGER),
+    DRW_Variant(int c, uint32_t i) : m_sdata(std::string()), m_vdata(), content(static_cast<int32_t>(i)), vType(INTEGER),
                                      vCode(c) {}
 
-    DRW_Variant(int c, double d) : sdata(std::string()), vdata(), content(d), vType(DOUBLE), vCode(c) {}
+    DRW_Variant(int c, double d) : m_sdata(std::string()), m_vdata(), content(d), vType(DOUBLE), vCode(c) {}
 
-    DRW_Variant(int c, std::string s) : sdata(std::move(s)), vdata(), content(&sdata), vType(STRING), vCode(c) {}
+    DRW_Variant(int c, std::string s) : m_sdata(std::move(s)), m_vdata(), content(&m_sdata), vType(STRING), vCode(c) {}
 
-    DRW_Variant(int c, DRW_Coord crd) : sdata(std::string()), vdata(crd), content(&vdata), vType(COORD), vCode(c) {}
+    DRW_Variant(int c, DRW_Coord crd) : m_sdata(std::string()), m_vdata(crd), content(&m_vdata), vType(COORD), vCode(c) {}
 
-    DRW_Variant(const DRW_Variant &d) : sdata(d.sdata), vdata(d.vdata), content(d.content), vType(d.vType),
+    DRW_Variant(const DRW_Variant &d) : m_sdata(d.m_sdata), m_vdata(d.m_vdata), content(d.content), vType(d.vType),
                                         vCode(d.vCode) {
         if (d.vType == COORD)
-            content.v = &vdata;
+            content.v = &m_vdata;
         if (d.vType == STRING)
-            content.s = &sdata;
+            content.s = &m_sdata;
     }
 
     ~DRW_Variant() = default;
 
     void addString(int c, const std::string &s) {
         vType = STRING;
-        sdata = s;
-        content.s = &sdata;
+        m_sdata = s;
+        content.s = &m_sdata;
         vCode = c;
     }
 
@@ -242,24 +242,24 @@ public:
 
     void addCoord(int c, DRW_Coord v) {
         vType = COORD;
-        vdata = v;
-        content.v = &vdata;
+        m_vdata = v;
+        content.v = &m_vdata;
         vCode = c;
     }
 
-    void setCoordX(double d) { if (vType == COORD) vdata.x = d; }
+    void setCoordX(double d) { if (vType == COORD) m_vdata.x = d; }
 
-    void setCoordY(double d) { if (vType == COORD) vdata.y = d; }
+    void setCoordY(double d) { if (vType == COORD) m_vdata.y = d; }
 
-    void setCoordZ(double d) { if (vType == COORD) vdata.z = d; }
+    void setCoordZ(double d) { if (vType == COORD) m_vdata.z = d; }
 
     enum TYPE type() const { return vType; }
 
     int code() const { return vCode; }            /*!< returns dxf code of this value*/
 
 private:
-    std::string sdata;
-    DRW_Coord vdata;
+    std::string m_sdata;
+    DRW_Coord m_vdata;
 
 private:
     union DRW_VarContent {
@@ -268,13 +268,13 @@ private:
         double d;
         DRW_Coord *v;
 
-        DRW_VarContent(std::string *sd) : s(sd) {}
+        explicit DRW_VarContent(std::string *sd) : s(sd) {}
 
-        DRW_VarContent(int32_t id) : i(id) {}
+        explicit DRW_VarContent(int32_t id) : i(id) {}
 
-        DRW_VarContent(double dd) : d(dd) {}
+        explicit DRW_VarContent(double dd) : d(dd) {}
 
-        DRW_VarContent(DRW_Coord *vd) : v(vd) {}
+        explicit DRW_VarContent(DRW_Coord *vd) : v(vd) {}
     };
 
 public:
