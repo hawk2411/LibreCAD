@@ -1039,7 +1039,7 @@ bool RS_FilterDXF1::readFromBuffer() {
                             RS_VectorSolutions const &s = RS_Information::getIntersection(
                                     &tl1, &tl2, false);
 
-                            if (s.get(0).valid) {
+                            if (s.get(0)._valid) {
                                 vcx = s.get(0).x;
                                 vcy = s.get(0).y;
                                 auto *d = new RS_DimAngular(

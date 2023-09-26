@@ -183,7 +183,7 @@ bool RS_ActionPolylineEquidistant::makeContour() {
                     }
                     v = calculateIntersection(prevEntity, currEntity);
                 }
-                if (!v.valid) {
+                if (!v._valid) {
                     v = currEntity->getStartpoint();
                     closed = false;
                 } else if (currEntity->rtti()==RS2::EntityArc) {
@@ -196,7 +196,7 @@ bool RS_ActionPolylineEquidistant::makeContour() {
                 if (!prevEntity) break; //prevent crash if not exist offset for prevEntity
             }else{
                 v = calculateIntersection(prevEntity, currEntity);
-                if (!v.valid) {
+                if (!v._valid) {
                     v= prevEntity->getEndpoint();
                     double dess = currEntity->getStartpoint().distanceTo(prevEntity->getEndpoint());
                     if (dess > 1.0e-12) {
@@ -277,7 +277,7 @@ void RS_ActionPolylineEquidistant::trigger() {
 
         RS_DEBUG->print("RS_ActionPolylineEquidistant::trigger()");
 
-		if (originalEntity && targetPoint->valid ) {
+		if (originalEntity && targetPoint->_valid ) {
 
                 originalEntity->setHighlighted(false);
                 _graphicView->drawEntity(originalEntity);

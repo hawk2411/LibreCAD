@@ -1018,7 +1018,7 @@ RS_Vector RS_EntityContainer::getNearestEndpoint(const RS_Vector &coord,
             && !en->getParent()->ignoredOnModification()
                 ) {//no end point for Insert, text, Dim
             point = en->getNearestEndpoint(coord, &curDist);
-            if (point.valid && curDist < minDist) {
+            if (point._valid && curDist < minDist) {
                 closestPoint = point;
                 minDist = curDist;
                 if (dist) {
@@ -1054,7 +1054,7 @@ RS_Vector RS_EntityContainer::getNearestEndpoint(const RS_Vector &coord,
         if (!en->getParent()->ignoredOnModification()) {//no end point for Insert, text, Dim
 //            std::cout<<"find nearest for entity "<<i0<<std::endl;
             point = en->getNearestEndpoint(coord, &curDist);
-            if (point.valid && curDist < minDist) {
+            if (point._valid && curDist < minDist) {
                 closestPoint = point;
                 minDist = curDist;
                 if (dist) {
@@ -1104,7 +1104,7 @@ RS_Vector RS_EntityContainer::getNearestCenter(const RS_Vector &coord,
             && !en->getParent()->ignoredSnap()
                 ) {//no center point for spline, text, Dim
             point = en->getNearestCenter(coord, &curDist);
-            if (point.valid && curDist < minDist) {
+            if (point._valid && curDist < minDist) {
                 closestPoint = point;
                 minDist = curDist;
             }
@@ -1134,7 +1134,7 @@ RS_Vector RS_EntityContainer::getNearestMiddle(const RS_Vector &coord,
             && !en->getParent()->ignoredSnap()
                 ) {//no midle point for spline, text, Dim
             point = en->getNearestMiddle(coord, &curDist, middlePoints);
-            if (point.valid && curDist < minDist) {
+            if (point._valid && curDist < minDist) {
                 closestPoint = point;
                 minDist = curDist;
             }
@@ -1203,7 +1203,7 @@ RS_Vector RS_EntityContainer::getNearestIntersection(const RS_Vector &coord,
 
         }
     }
-    if (dist && closestPoint.valid) {
+    if (dist && closestPoint._valid) {
         *dist = minDist;
     }
 
@@ -1253,7 +1253,7 @@ RS_Vector RS_EntityContainer::getNearestRef(const RS_Vector &coord,
 
         if (en->isVisible()) {
             point = en->getNearestRef(coord, &curDist);
-            if (point.valid && curDist < minDist) {
+            if (point._valid && curDist < minDist) {
                 closestPoint = point;
                 minDist = curDist;
                 if (dist) {
@@ -1279,7 +1279,7 @@ RS_Vector RS_EntityContainer::getNearestSelectedRef(const RS_Vector &coord,
 
         if (en->isVisible() && en->isSelected() && !en->isParentSelected()) {
             point = en->getNearestSelectedRef(coord, &curDist);
-            if (point.valid && curDist < minDist) {
+            if (point._valid && curDist < minDist) {
                 closestPoint = point;
                 minDist = curDist;
                 if (dist) {

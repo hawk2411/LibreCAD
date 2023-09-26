@@ -479,7 +479,7 @@ RS_Vector RS_Ellipse::getNearestPointOnEntity(const RS_Vector& coord,
     RS_DEBUG->print("RS_Ellipse::getNearestPointOnEntity");
     RS_Vector ret(false);
 
-    if( ! coord.valid ) {
+    if( ! coord._valid ) {
 		if ( dist ) *dist=RS_MAXDOUBLE;
         return ret;
 
@@ -540,12 +540,12 @@ RS_Vector RS_Ellipse::getNearestPointOnEntity(const RS_Vector& coord,
         vp3.set(a*roots[i],b*s);
         d=(vp3-ret).squared();
 //        std::cout<<i<<" Checking: cos= "<<roots[i]<<" sin= "<<s<<" angle= "<<atan2(roots[i],s)<<" ds2= "<<d<<" d="<<d2<<std::endl;
-        if( ret.valid && d>dDistance) continue;
+        if(ret._valid && d > dDistance) continue;
         ret=vp3;
         dDistance=d;
 //			ea=atan2(roots[i],s);
     }
-    if( ! ret.valid ) {
+    if( ! ret._valid ) {
         //this should not happen
 //        std::cout<<ce[0]<<' '<<ce[1]<<' '<<ce[2]<<' '<<ce[3]<<std::endl;
 //        std::cout<<"(x,y)=( "<<x<<" , "<<y<<" ) a= "<<a<<" b= "<<b<<" sine= "<<s<<" d2= "<<d2<<" dist= "<<d<<std::endl;
@@ -1003,7 +1003,7 @@ bool	RS_Ellipse::createInscribeQuadrilateral(const std::vector<RS_Line*>& lines)
 	if(! createFromQuadratic(dn)) return false;
 	setCenter(ellipseCenter);
 
-	if(angleVector.valid) {//need to rotate back, for the parallelogram case
+	if(angleVector._valid) {//need to rotate back, for the parallelogram case
 		angleVector.y *= -1.;
 		rotate(ellipseCenter,angleVector);
 	}
@@ -1089,7 +1089,7 @@ RS_Vector RS_Ellipse::getNearestOrthTan(const RS_Vector& coord,
                                         const RS_Line& normal,
 										bool onEntity ) const
 {
-    if ( !coord.valid ) {
+    if ( !coord._valid ) {
         return RS_Vector(false);
     }
     RS_Vector direction=normal.getEndpoint() - normal.getStartpoint();

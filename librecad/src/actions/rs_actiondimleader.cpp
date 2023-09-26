@@ -113,7 +113,7 @@ void RS_ActionDimLeader::mouseMoveEvent(QMouseEvent* e) {
 		// fill in lines that were already set:
 		RS_Vector last(false);
 		for(const auto& v: pPoints->points){
-			if (last.valid) {
+			if (last._valid) {
 				_preview->addEntity(new RS_Line{_preview.get(), last, v});
 			}
 			last = v;

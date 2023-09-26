@@ -215,7 +215,7 @@ void RS_DimRadial::updateDim(bool autoText) {
     // move text label:
     RS_Vector textPos;
 
-    if (_data.middleOfText.valid && !autoText) {
+    if (_data.middleOfText._valid && !autoText) {
         textPos = _data.middleOfText;
     } else {
         if (outsideArrow) {

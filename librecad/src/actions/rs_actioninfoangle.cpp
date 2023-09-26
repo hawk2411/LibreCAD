@@ -75,9 +75,9 @@ void RS_ActionInfoAngle::trigger() {
         if (sol.hasValid()) {
 			pPoints->intersection = sol.get(0);
 
-			if (pPoints->intersection.valid &&
-					pPoints->point1.valid &&
-					pPoints->point2.valid) {
+			if (pPoints->intersection._valid &&
+                pPoints->point1._valid &&
+                pPoints->point2._valid) {
 				double angle1 = pPoints->intersection.angleTo(pPoints->point1);
 				double angle2 = pPoints->intersection.angleTo(pPoints->point2);
 				double angle = remainder(angle2 - angle1, 2.*M_PI);

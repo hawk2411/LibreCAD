@@ -94,7 +94,7 @@ public:
 
     /** @return true if this is a triangle. */
     bool isTriangle() const {
-        return !_data.corner[3].valid;
+        return !_data.corner[3]._valid;
     }
 
     RS_Vector getCorner(int num) const;

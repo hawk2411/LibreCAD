@@ -140,7 +140,7 @@ void RS_ActionDrawEllipseAxis::mouseMoveEvent(QMouseEvent* e) {
 //        break;
 
     case SetMajor:
-		if (pPoints->center.valid) {
+		if (pPoints->center._valid) {
             deletePreview();
 			_preview->addEntity(new RS_Ellipse{_preview.get(),
                                                {pPoints->center, mouse-pPoints->center, 0.5, 0.0,
@@ -151,7 +151,7 @@ void RS_ActionDrawEllipseAxis::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetMinor:
-		if (pPoints->center.valid && pPoints->m_vMajorP.valid) {
+		if (pPoints->center._valid && pPoints->m_vMajorP._valid) {
             deletePreview();
 			RS_Line line{pPoints->center-pPoints->m_vMajorP, pPoints->center+pPoints->m_vMajorP};
             double d = line.getDistanceToPoint(mouse, nullptr, RS2::ResolveNone, RS_MAXDOUBLE);
@@ -164,7 +164,7 @@ void RS_ActionDrawEllipseAxis::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetAngle1:
-		if (pPoints->center.valid && pPoints->m_vMajorP.valid) {
+		if (pPoints->center._valid && pPoints->m_vMajorP._valid) {
             deletePreview();
 
             //angle1 = center.angleTo(mouse);
@@ -185,7 +185,7 @@ void RS_ActionDrawEllipseAxis::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetAngle2:
-		if (pPoints->center.valid && pPoints->m_vMajorP.valid) {
+		if (pPoints->center._valid && pPoints->m_vMajorP._valid) {
             deletePreview();
             //angle2 = center.angleTo(mouse);
 

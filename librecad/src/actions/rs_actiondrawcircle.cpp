@@ -102,7 +102,7 @@ void RS_ActionDrawCircle::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetRadius:
-		if (data->center.valid) {
+		if (data->center._valid) {
 			data->radius = data->center.distanceTo(mouse);
             deletePreview();
 			_preview->addEntity(new RS_Circle(_preview.get(),
@@ -144,7 +144,7 @@ void RS_ActionDrawCircle::coordinateEvent(RS_CoordinateEvent* e) {
         break;
 
     case SetRadius:
-		if (data->center.valid) {
+		if (data->center._valid) {
             _graphicView->moveRelativeZero(mouse);
 			data->radius = data->center.distanceTo(mouse);
             trigger();

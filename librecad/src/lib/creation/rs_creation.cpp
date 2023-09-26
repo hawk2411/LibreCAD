@@ -405,7 +405,7 @@ RS_Line *RS_Creation::createBisector(const RS_Vector &coord1,
     RS_VectorSolutions const &sol =
             RS_Information::getIntersection(l1, l2, false);
     RS_Vector inters = sol.get(0);
-    if (!inters.valid) {
+    if (!inters._valid) {
         return nullptr;
     }
 
@@ -453,7 +453,7 @@ RS_Line *RS_Creation::createLineOrthTan(const RS_Vector &coord,
         return ret;
     //if( normal->getLength()<RS_TOLERANCE) return ret;//line too short
     RS_Vector const &t0 = circle->getNearestOrthTan(coord, *normal, false);
-    if (!t0.valid) return ret;
+    if (!t0._valid) return ret;
     RS_Vector const &vp = normal->getNearestPointOnEntity(t0, false, nullptr, nullptr);
     LC_UndoSection undo(_document, _handleUndo);
     ret = new RS_Line{_container, vp, t0};
@@ -476,7 +476,7 @@ RS_Line *RS_Creation::createTangent1(const RS_Vector &coord,
                                      const RS_Vector &point,
                                      RS_Entity *circle) {
     // check given entities:
-    if (!(circle && point.valid)) return nullptr;
+    if (!(circle && point._valid)) return nullptr;
     if (!(circle->isArc() || circle->rtti() == RS2::EntitySplinePoints)) {
         return nullptr;
     }
@@ -766,7 +766,7 @@ RS_Line *RS_Creation::createPolygon(const RS_Vector &center,
                                     const RS_Vector &corner,
                                     int number) {
     // check given coords / number:
-    if (!center.valid || !corner.valid || number < 3) {
+    if (!center._valid || !corner._valid || number < 3) {
         return nullptr;
     }
 
@@ -812,7 +812,7 @@ RS_Line *RS_Creation::createPolygon2(const RS_Vector &corner1,
                                      const RS_Vector &corner2,
                                      int number) {
     // check given coords / number:
-    if (!corner1.valid || !corner2.valid || number < 3) {
+    if (!corner1._valid || !corner2._valid || number < 3) {
         return nullptr;
     }
 
@@ -867,7 +867,7 @@ RS_Line *RS_Creation::createPolygon3(const RS_Vector &center,    //added by txmy
                                      const RS_Vector &tangent,
                                      int number) {
     // check given coords / number:
-    if (!center.valid || !tangent.valid || number < 3) {
+    if (!center._valid || !tangent._valid || number < 3) {
         return nullptr;
     }
 

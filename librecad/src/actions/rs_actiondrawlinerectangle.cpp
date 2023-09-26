@@ -95,7 +95,7 @@ void RS_ActionDrawLineRectangle::mouseMoveEvent(QMouseEvent* e) {
     RS_DEBUG->print("RS_ActionDrawLineRectangle::mouseMoveEvent begin");
 
     RS_Vector mouse = snapPoint(e);
-	if (getStatus()==SetCorner2 && pPoints->corner1.valid) {
+	if (getStatus()==SetCorner2 && pPoints->corner1._valid) {
 		pPoints->corner2 = mouse;
         deletePreview();
 		_preview->addRectangle(pPoints->corner1, pPoints->corner2);

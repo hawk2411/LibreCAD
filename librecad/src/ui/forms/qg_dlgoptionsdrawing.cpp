@@ -75,7 +75,7 @@ QG_DlgOptionsDrawing::~QG_DlgOptionsDrawing()
         chType=RS2::RightCrosshair;
     }
     RS_SETTINGS->writeEntry("/CrosshairType", QString::number(static_cast<int>(chType)));
-	if(spacing->valid){
+	if(spacing->_valid){
 		RS_SETTINGS->writeEntry("/GridSpacingX", spacing->x);
 		RS_SETTINGS->writeEntry("/GridSpacingY", spacing->y);
     }

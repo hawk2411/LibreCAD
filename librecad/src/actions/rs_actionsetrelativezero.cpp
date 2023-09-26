@@ -55,7 +55,7 @@ QAction* RS_ActionSetRelativeZero::createGUIAction(RS2::ActionType /*type*/, QOb
 
 void RS_ActionSetRelativeZero::trigger() {
     bool wasLocked = _graphicView->isRelativeZeroLocked();
-	if (pt->valid) {
+	if (pt->_valid) {
         _graphicView->lockRelativeZero(false);
 		_graphicView->moveRelativeZero(*pt);
         _graphicView->lockRelativeZero(wasLocked);

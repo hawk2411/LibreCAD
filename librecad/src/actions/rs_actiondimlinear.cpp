@@ -130,7 +130,7 @@ void RS_ActionDimLinear::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetExtPoint2:
-		if (edata->_extensionPoint1.valid) {
+		if (edata->_extensionPoint1._valid) {
             deletePreview();
 			_preview->addEntity(new RS_Line{_preview.get(),
                                             edata->_extensionPoint1, mouse});
@@ -139,7 +139,7 @@ void RS_ActionDimLinear::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetDefPoint:
-		if (edata->_extensionPoint1.valid && edata->_extensionPoint2.valid) {
+		if (edata->_extensionPoint1._valid && edata->_extensionPoint2._valid) {
             deletePreview();
 			data->definitionPoint = mouse;
 

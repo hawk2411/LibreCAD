@@ -47,7 +47,7 @@ RS_ActionDrawPoint::~RS_ActionDrawPoint() = default;
 
 
 void RS_ActionDrawPoint::trigger() {
-	if (pt->valid) {
+	if (pt->_valid) {
 		RS_Point* point = new RS_Point(_container, RS_PointData(*pt));
         _container->addEntity(point);
 

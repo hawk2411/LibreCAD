@@ -122,7 +122,7 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                         cPoint = snapPoint(e);
                         if (delEntity==NULL) {
                                 GetDialogFactory()->commandMessage(tr("No Entity found."));
-                        } else if (!cPoint.valid) {
+                        } else if (!cPoint._valid) {
                                 GetDialogFactory()->commandMessage(tr("Specifying point is invalid."));
                         } else if (!delEntity->isPointOnEntity(cPoint, RS_DEFAULT_TOLERANCE)) {
                                 GetDialogFactory()->commandMessage(
@@ -141,7 +141,7 @@ void RS_ActionPolylineTrim::mouseReleaseEvent(QMouseEvent* e) {
                         cPoint = snapPoint(e);
                         if (delEntity==NULL) {
                                 GetDialogFactory()->commandMessage(tr("No Entity found."));
-                        } else if (!cPoint.valid) {
+                        } else if (!cPoint._valid) {
                                 GetDialogFactory()->commandMessage(tr("Specifying point is invalid."));
                         } else if (!delEntity->isPointOnEntity(cPoint, RS_DEFAULT_TOLERANCE)) {
                                 GetDialogFactory()->commandMessage(

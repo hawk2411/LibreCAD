@@ -63,7 +63,7 @@ void RS_ActionInfoDist::trigger() {
 
     RS_DEBUG->print("RS_ActionInfoDist::trigger()");
 
-	if (pPoints->point1.valid && pPoints->point2.valid) {
+	if (pPoints->point1._valid && pPoints->point2._valid) {
 		auto dV = pPoints->point2 - pPoints->point1;
 		QStringList dists;
 		for(double a: {dV.magnitude(), dV.x, dV.y}){
@@ -97,7 +97,7 @@ void RS_ActionInfoDist::mouseMoveEvent(QMouseEvent* e) {
             break;
 
         case SetPoint2:
-			if (pPoints->point1.valid) {
+			if (pPoints->point1._valid) {
 				pPoints->point2 = mouse;
 
                 deletePreview();
@@ -145,7 +145,7 @@ void RS_ActionInfoDist::coordinateEvent(RS_CoordinateEvent* e) {
         break;
 
     case SetPoint2:
-		if (pPoints->point1.valid) {
+		if (pPoints->point1._valid) {
 			pPoints->point2 = mouse;
             deletePreview();
 				_graphicView->moveRelativeZero(pPoints->point2);

@@ -77,7 +77,7 @@ void RS_ActionZoomWindow::trigger() {
 
     RS_PreviewActionInterface::trigger();
 
-	if (pPoints->v1.valid && pPoints->v2.valid) {
+	if (pPoints->v1._valid && pPoints->v2._valid) {
         deletePreview();
         //deleteSnapper();
 		if (_graphicView->toGuiDX(pPoints->v1.distanceTo(pPoints->v2)) > 5) {
@@ -92,7 +92,7 @@ void RS_ActionZoomWindow::trigger() {
 void RS_ActionZoomWindow::mouseMoveEvent(QMouseEvent* e) {
     snapFree(e);
     drawSnapper();
-	if (getStatus()==SetSecondCorner && pPoints->v1.valid) {
+	if (getStatus()==SetSecondCorner && pPoints->v1._valid) {
 		pPoints->v2 = snapFree(e);
         deletePreview();
 		_preview->addRectangle(pPoints->v1, pPoints->v2);

@@ -47,11 +47,11 @@ RS_CircleData::RS_CircleData(RS_Vector const &center, double radius) :
 }
 
 bool RS_CircleData::isValid() const {
-    return (center.valid && radius > RS_TOLERANCE);
+    return (center._valid && radius > RS_TOLERANCE);
 }
 
 bool RS_CircleData::operator==(RS_CircleData const &rhs) const {
-    if (!(center.valid && rhs.center.valid)) return false;
+    if (!(center._valid && rhs.center._valid)) return false;
     if (center.squaredTo(rhs.center) > RS_TOLERANCE2) return false;
     return fabs(radius - rhs.radius) < RS_TOLERANCE;
 }
@@ -137,7 +137,7 @@ bool RS_Circle::isTangent(const RS_CircleData &circleData) const {
  * @param radius Radius
  */
 std::unique_ptr<RS_Circle> RS_Circle::createFromCenterPointAndRadius(const RS_Vector &center_point, double radius) {
-    if (fabs(radius) <= RS_TOLERANCE || !center_point.valid) {
+    if (fabs(radius) <= RS_TOLERANCE || !center_point._valid) {
         RS_DEBUG->print(RS_Debug::D_WARNING, "RS_Circle::createFromCenterPointAndRadius(): "
                                             "Cannot create a circle with radius 0.0.");
 
@@ -394,7 +394,7 @@ RS_Circle::solveApolloniusSingle(const std::vector<std::unique_ptr<RS_Circle>> &
     std::vector<double> radii;
 
     for (const auto &c: circles) {
-        if (!c->getCenter().valid) { return ret; }
+        if (!c->getCenter()._valid) { return ret; }
         centers.push_back(c->getCenter());
         radii.push_back(c->getRadius());
     }
@@ -619,7 +619,7 @@ RS_Vector RS_Circle::getNearestDist(double /*distance*/,
 RS_Vector RS_Circle::getNearestOrthTan(const RS_Vector &coord,
                                        const RS_Line &normal,
                                        bool /*onEntity = false*/) const {
-    if (!coord.valid) {
+    if (!coord._valid) {
         return RS_Vector(false);
     }
     RS_Vector vp0(coord - getCenter());

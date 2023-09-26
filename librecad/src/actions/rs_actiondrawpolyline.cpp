@@ -148,7 +148,7 @@ void RS_ActionDrawPolyline::mouseMoveEvent(QMouseEvent* e) {
 
     RS_Vector mouse = snapPoint(e);
     double bulge=solveBulge(mouse);
-	if (getStatus()==SetNextPoint && pPoints->point.valid) {
+	if (getStatus()==SetNextPoint && pPoints->point._valid) {
         deletePreview();
         // clearPreview();
 
@@ -482,7 +482,7 @@ void RS_ActionDrawPolyline::updateMouseCursor() {
 }
 
 void RS_ActionDrawPolyline::close() {
-	if (pPoints->history.size()>2 && pPoints->start.valid) {
+	if (pPoints->history.size()>2 && pPoints->start._valid) {
 		//data.endpoint = start;
 		//trigger();
 		if (pPoints->polyline) {

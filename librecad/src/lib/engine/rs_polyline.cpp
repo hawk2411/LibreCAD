@@ -121,7 +121,7 @@ RS_Entity *RS_Polyline::addVertex(const RS_Vector &v, double bulge, bool prepend
 
     RS_Entity *entity = nullptr;
     // very first vertex:
-    if (!_data.startpoint.valid) {
+    if (!_data.startpoint._valid) {
         _data.startpoint = _data.endpoint = v;
         _nextBulge = bulge;
     } else {
@@ -159,7 +159,7 @@ void RS_Polyline::appendVertexs(const std::vector<std::pair<RS_Vector, double> >
     }
     size_t idx = 0;
     // very first vertex:
-    if (!_data.startpoint.valid) {
+    if (!_data.startpoint._valid) {
         _data.startpoint = _data.endpoint = vl.at(idx).first;
         _nextBulge = vl.at(idx++).second;
     }
@@ -307,7 +307,7 @@ void RS_Polyline::setClosedFlag(bool cl) {
 /** sets a new start point of the polyline */
 void RS_Polyline::setStartpoint(RS_Vector const &v) {
     _data.startpoint = v;
-    if (!_data.endpoint.valid) {
+    if (!_data.endpoint._valid) {
         _data.endpoint = v;
     }
 }
@@ -535,7 +535,7 @@ void RS_Polyline::setOffsets(RS_Polyline *polyline, double distance, int current
         }
     }
     RS_Vector position;
-    if (trimP.valid) {
+    if (trimP._valid) {
         dynamic_cast<RS_AtomicEntity *>(polyline->entityAt(previousEntityIndex))->trimStartpoint(trimP);
         dynamic_cast<RS_AtomicEntity *>(polyline->entityAt(currentEntityIndex))->trimEndpoint(trimP);
         position = polyline->entityAt(previousEntityIndex)->getMiddlePoint();

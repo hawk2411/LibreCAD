@@ -107,7 +107,7 @@ void RS_ActionDrawCircle2P::trigger() {
 
 void RS_ActionDrawCircle2P::preparePreview() {
 	data = std::make_unique<RS_CircleData>();
-	if (pPoints->point1.valid && pPoints->point2.valid) {
+	if (pPoints->point1._valid && pPoints->point2._valid) {
         auto circle = RS_Circle::createFrom2P(pPoints->point1, pPoints->point2);
 		bool suc = (circle != nullptr);
         if (suc) {

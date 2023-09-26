@@ -40,14 +40,14 @@
  * Constructor for a point with given coordinates.
  */
 RS_Vector::RS_Vector(double vx, double vy, double vz) :
-        x(vx), y(vy), z(vz), valid(true) {
+        x(vx), y(vy), z(vz), _valid(true) {
 }
 
 /**
  * Constructor for a unit vector with given angle
  */
 RS_Vector::RS_Vector(double angle) :
-        x(cos(angle)), y(sin(angle)), valid(true) {
+        x(cos(angle)), y(sin(angle)), _valid(true) {
 }
 
 /**
@@ -57,11 +57,11 @@ RS_Vector::RS_Vector(double angle) :
  *              false: an invalid vector is created
  */
 RS_Vector::RS_Vector(bool valid) :
-        valid(valid) {
+        _valid(valid) {
 }
 
 RS_Vector::operator bool() const {
-    return valid;
+    return _valid;
 }
 
 /**
@@ -71,7 +71,7 @@ void RS_Vector::set(double angle) {
     x = cos(angle);
     y = sin(angle);
     z = 0.;
-    valid = true;
+    _valid = true;
 }
 
 /**
@@ -81,7 +81,7 @@ void RS_Vector::set(double vx, double vy, double vz) {
     x = vx;
     y = vy;
     z = vz;
-    valid = true;
+    _valid = true;
 }
 
 /**
@@ -91,7 +91,7 @@ void RS_Vector::setPolar(double radius, double angle) {
     x = radius * cos(angle);
     y = radius * sin(angle);
     z = 0.0;
-    valid = true;
+    _valid = true;
 }
 
 RS_Vector RS_Vector::polar(double rho, double theta) {
@@ -109,7 +109,7 @@ double RS_Vector::angle() const {
  * @return The angle from this and the given coordinate (in rad).
  */
 double RS_Vector::angleTo(const RS_Vector &v) const {
-    if (!valid || !v.valid) return 0.0;
+    if (!_valid || !v._valid) return 0.0;
     return (v - (*this)).angle();
 }
 
@@ -120,7 +120,7 @@ double RS_Vector::magnitude() const {
     double ret(0.0);
     // Note that the z coordinate is also needed for 2d
     //   (due to definition of crossP())
-    if (valid)
+    if (_valid)
         ret = hypot(hypot(x, y), z);
 
     return ret;
@@ -132,7 +132,7 @@ double RS_Vector::magnitude() const {
 double RS_Vector::squared() const {
     // Note that the z coordinate is also needed for 2d
     //   (due to definition of crossP())
-    if (!valid) { return RS_MAXDOUBLE; }
+    if (!_valid) { return RS_MAXDOUBLE; }
 
     return x * x + y * y + z * z;
 }
@@ -141,7 +141,7 @@ double RS_Vector::squared() const {
   * @return square of vector length
   */
 double RS_Vector::squaredTo(const RS_Vector &v1) const {
-    if (valid && v1.valid) {
+    if (_valid && v1._valid) {
         return (*this - v1).squared();
     }
     return RS_MAXDOUBLE;
@@ -158,7 +158,7 @@ RS_Vector RS_Vector::lerp(const RS_Vector &v, double t) const {
  * @return The distance between this and the given coordinate.
  */
 double RS_Vector::distanceTo(const RS_Vector &v) const {
-    if (!valid || !v.valid) {
+    if (!_valid || !v._valid) {
         return RS_MAXDOUBLE;
     } else {
         return (*this - v).magnitude();
@@ -170,7 +170,7 @@ double RS_Vector::distanceTo(const RS_Vector &v) const {
  */
 bool RS_Vector::isInWindow(const RS_Vector &firstCorner,
                            const RS_Vector &secondCorner) const {
-    if (!valid) return false;
+    if (!_valid) return false;
     return LC_Rect{firstCorner, secondCorner}.inArea(*this);
 }
 
@@ -180,7 +180,7 @@ bool RS_Vector::isInWindow(const RS_Vector &firstCorner,
  */
 bool RS_Vector::isInWindowOrdered(const RS_Vector &vLow,
                                   const RS_Vector &vHigh) const {
-    if (!valid) return false;
+    if (!_valid) return false;
     return (x >= vLow.x && x <= vHigh.x && y >= vLow.y && y <= vHigh.y);
 }
 
@@ -278,7 +278,7 @@ RS_Vector RS_Vector::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPo
  * Streams the vector components to stdout. e.g.: "1/4/0"
  */
 std::ostream &operator<<(std::ostream &os, const RS_Vector &v) {
-    if (v.valid) {
+    if (v._valid) {
         os << v.x << "/" << v.y << "/" << v.z;
     } else {
         os << "invalid vector";
@@ -564,7 +564,7 @@ size_t RS_VectorSolutions::getNumber() const {
  * @retval false There's no valid solution.
  */
 bool RS_VectorSolutions::hasValid() const {
-    return std::any_of(_vector.begin(), _vector.end(), [](const RS_Vector& v){return v.valid;});
+    return std::any_of(_vector.begin(), _vector.end(), [](const RS_Vector& v){return v._valid;});
 }
 
 void RS_VectorSolutions::resize(size_t n) {
@@ -642,7 +642,7 @@ bool RS_VectorSolutions::isTangent() const {
 void RS_VectorSolutions::rotate(double ang) {
     RS_Vector angleVector(ang);
     for (auto &vp: _vector) {
-        if (vp.valid) {
+        if (vp._valid) {
             vp.rotate(angleVector);
         }
     }
@@ -653,7 +653,7 @@ void RS_VectorSolutions::rotate(double ang) {
  */
 void RS_VectorSolutions::rotate(const RS_Vector &angleVector) {
     for (auto &vp: _vector) {
-        if (vp.valid) {
+        if (vp._valid) {
             vp.rotate(angleVector);
         }
     }
@@ -665,7 +665,7 @@ void RS_VectorSolutions::rotate(const RS_Vector &angleVector) {
 void RS_VectorSolutions::rotate(const RS_Vector &center, double ang) {
     const RS_Vector angleVector(ang);
     for (auto &vp: _vector) {
-        if (vp.valid) {
+        if (vp._valid) {
             vp.rotate(center, angleVector);
         }
     }
@@ -673,7 +673,7 @@ void RS_VectorSolutions::rotate(const RS_Vector &center, double ang) {
 
 void RS_VectorSolutions::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
     for (auto &vp: _vector) {
-        if (vp.valid) {
+        if (vp._valid) {
             vp.rotate(center, angleVector);
         }
     }
@@ -684,7 +684,7 @@ void RS_VectorSolutions::rotate(const RS_Vector &center, const RS_Vector &angleV
  */
 void RS_VectorSolutions::move(const RS_Vector &vp) {
     for (RS_Vector &v: _vector) {
-        if (v.valid) {
+        if (v._valid) {
             v.move(vp);
         }
     }
@@ -695,7 +695,7 @@ void RS_VectorSolutions::move(const RS_Vector &vp) {
  */
 void RS_VectorSolutions::scale(const RS_Vector &center, const RS_Vector &factor) {
     for (auto &vp: _vector) {
-        if (vp.valid) {
+        if (vp._valid) {
             vp.scale(center, factor);
         }
     }
@@ -703,7 +703,7 @@ void RS_VectorSolutions::scale(const RS_Vector &center, const RS_Vector &factor)
 
 void RS_VectorSolutions::scale(const RS_Vector &factor) {
     for (auto &vp: _vector) {
-        if (vp.valid) {
+        if (vp._valid) {
             vp.scale(factor);
         }
     }
@@ -721,7 +721,7 @@ RS_Vector RS_VectorSolutions::getClosest(const RS_Vector &coord,
     size_t pos = 0;
 
     for (size_t i = 0; i < _vector.size(); i++) {
-        if (_vector[i].valid) {
+        if (_vector[i]._valid) {
             double curDist = (coord - _vector[i]).squared();
 
             if (curDist < minDist) {
@@ -752,7 +752,7 @@ double RS_VectorSolutions::getClosestDistance(const RS_Vector &coord,
     if (counts < i && counts >= 0) i = counts;
     std::for_each(_vector.begin(), _vector.begin() + i,
                   [&ret, &coord](RS_Vector const &vp) {
-                      if (vp.valid) {
+                      if (vp._valid) {
                           double d = (coord - vp).squared();
                           if (d < ret) ret = d;
                       }

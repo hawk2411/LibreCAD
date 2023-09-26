@@ -119,7 +119,7 @@ void RS_ActionDimAligned::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetExtPoint2:
-		if (edata->extensionPoint1.valid) {
+		if (edata->extensionPoint1._valid) {
             deletePreview();
             _preview->addEntity(
 				new RS_Line{_preview.get(), edata->extensionPoint1, mouse}
@@ -129,7 +129,7 @@ void RS_ActionDimAligned::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetDefPoint:
-		if (edata->extensionPoint1.valid && edata->extensionPoint2.valid) {
+		if (edata->extensionPoint1._valid && edata->extensionPoint2._valid) {
             deletePreview();
 			data->definitionPoint = mouse;
 

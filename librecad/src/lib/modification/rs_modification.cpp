@@ -990,7 +990,7 @@ RS_Polyline* RS_Modification::deletePolylineNode(RS_Polyline& polyline,
 		return nullptr;
     }
 
-	if (!node.valid) {
+	if (!node._valid) {
         RS_DEBUG->print(RS_Debug::D_WARNING,
                         "RS_Modification::deletePolylineNode: node not valid");
 		return nullptr;
@@ -1130,7 +1130,7 @@ RS_Polyline* RS_Modification::deletePolylineNodesBetween(RS_Polyline& polyline,
 		return nullptr;
     }
 
-    if (node1.valid==false || node2.valid==false) {
+    if (node1._valid == false || node2._valid == false) {
         RS_DEBUG->print(RS_Debug::D_WARNING,
                         "RS_Modification::deletePolylineNodesBetween: node not valid");
 		return nullptr;
@@ -2088,7 +2088,7 @@ bool RS_Modification::trim(const RS_Vector& trimCoord,
 
                 if (s2.hasValid()) {
 					for (const RS_Vector& vp: s2){
-						if (vp.valid) {
+						if (vp._valid) {
 							if (e->isPointOnEntity(vp, 1.0e-4)) {
 								sol.push_back(vp);
                             }
@@ -2333,7 +2333,7 @@ bool RS_Modification::cut(const RS_Vector& cutCoord,
     }
     if(cutEntity->isLocked() || ! cutEntity->isVisible()) return false;
 
-    if (!cutCoord.valid) {
+    if (!cutCoord._valid) {
         RS_DEBUG->print(RS_Debug::D_WARNING,
                         "RS_Modification::cut: Point invalid.");
         return false;
@@ -2457,7 +2457,7 @@ bool RS_Modification::stretch(const RS_Vector& firstCorner,
                               const RS_Vector& secondCorner,
                               const RS_Vector& offset) {
 
-    if (!offset.valid) {
+    if (!offset._valid) {
         RS_DEBUG->print(RS_Debug::D_WARNING,
                         "RS_Modification::stretch: Offset invalid");
         return false;

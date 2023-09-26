@@ -424,7 +424,7 @@ std::vector<double>  LC_Quadratic::getCoefficients() const
 
 LC_Quadratic LC_Quadratic::move(const RS_Vector& v)
 {
-    if(m_bValid==false || v.valid == false) return *this;
+    if(m_bValid==false || v._valid == false) return *this;
 
     m_dConst -= m_vLinear(0) * v.x + m_vLinear(1)*v.y;
 

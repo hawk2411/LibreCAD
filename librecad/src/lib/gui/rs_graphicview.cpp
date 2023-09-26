@@ -345,7 +345,7 @@ void RS_GraphicView::zoomIn(double f, const RS_Vector& center) {
 	}
 
     RS_Vector c = center;
-    if (!c.valid) {
+    if (!c._valid) {
         //find mouse position
         c= getMousePosition();
     }
@@ -1355,7 +1355,7 @@ void RS_GraphicView::drawAbsoluteZero(RS_Painter *painter) {
  */
 void RS_GraphicView::drawRelativeZero(RS_Painter *painter) {
 
-    if (!relativeZero.valid) {
+    if (!relativeZero._valid) {
 		return;
 	}
 

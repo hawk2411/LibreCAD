@@ -107,7 +107,7 @@ void RS_ActionDrawText::trigger() {
 
     RS_DEBUG->print("RS_ActionDrawText::trigger()");
 
-	if (pPoints->pos.valid) {
+	if (pPoints->pos._valid) {
         deletePreview();
 
 		RS_Text* text = new RS_Text(_container, *data);
@@ -131,7 +131,7 @@ void RS_ActionDrawText::trigger() {
 
 void RS_ActionDrawText::preparePreview() {
 	if (data->halign == RS_TextData::HAFit || data->halign == RS_TextData::HAAligned) {
-		if (pPoints->secPos.valid) {
+		if (pPoints->secPos._valid) {
 			RS_Line* text = new RS_Line(pPoints->pos, pPoints->secPos);
             _preview->addEntity(text);
         }
@@ -152,7 +152,7 @@ void RS_ActionDrawText::mouseMoveEvent(QMouseEvent* e) {
         RS_Vector mouse = snapPoint(e);
 		RS_Vector mov = mouse - pPoints->pos;
 		pPoints->pos = mouse;
-		if (textChanged || pPoints->pos.valid == false || _preview->isEmpty()) {
+		if (textChanged || pPoints->pos._valid == false || _preview->isEmpty()) {
             deletePreview();
             preparePreview();
         } else {

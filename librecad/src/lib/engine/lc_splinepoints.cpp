@@ -890,13 +890,13 @@ RS_Vector LC_SplinePoints::getNearestMiddle(const RS_Vector &coord,
 
     int iNext{0};
     vRes = GetSplinePointAtDist(dDist, 1, 0.0, &iNext, &dt);
-    if (vRes.valid) dMinDist = (vRes - coord).magnitude();
+    if (vRes._valid) dMinDist = (vRes - coord).magnitude();
     i = 2;
-    while (vRes.valid && i < middlePoints) {
+    while (vRes._valid && i < middlePoints) {
         vNext = GetSplinePointAtDist(dDist, iNext, dt, &iNext, &dt);
         dCurDist = (vNext - coord).magnitude();
 
-        if (vNext.valid && dCurDist < dMinDist) {
+        if (vNext._valid && dCurDist < dMinDist) {
             dMinDist = dCurDist;
             vRes = vNext;
         }
@@ -1013,7 +1013,7 @@ std::vector<RS_Vector> LC_SplinePoints::getStrokePoints() const {
         else if (iPts > 1) ret.push_back(vStart);
     }
 
-    if (!data.closed && vEnd.valid) ret.push_back(vEnd);
+    if (!data.closed && vEnd._valid) ret.push_back(vEnd);
     return ret;
 }
 
@@ -1163,7 +1163,7 @@ void LC_SplinePoints::UpdateControlPoints() {
         if (n > 2) {
             RS_Vector vControl = GetThreePointsControl(data.splinePoints.at(0),
                                                        data.splinePoints.at(1), data.splinePoints.at(2));
-            if (vControl.valid) data.controlPoints.push_back(vControl);
+            if (vControl._valid) data.controlPoints.push_back(vControl);
         }
         if (n > 1) data.controlPoints.push_back(data.splinePoints.at(n - 1));
         return;
@@ -1902,7 +1902,7 @@ bool LC_SplinePoints::offsetCut(const RS_Vector &coord, const double &distance) 
 
         vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                  vPoint.y + dDist * vTan.x);
         }
@@ -1914,7 +1914,7 @@ bool LC_SplinePoints::offsetCut(const RS_Vector &coord, const double &distance) 
 
             vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
             vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                      vPoint.y + dDist * vTan.x);
             }
@@ -1922,7 +1922,7 @@ bool LC_SplinePoints::offsetCut(const RS_Vector &coord, const double &distance) 
 
         vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                  vPoint.y + dDist * vTan.x);
         }
@@ -1945,20 +1945,20 @@ bool LC_SplinePoints::offsetCut(const RS_Vector &coord, const double &distance) 
         vEnd = data.controlPoints.at(2);
         if (n < 4) {
             vTan = GetQuadDir(vStart, vControl, vEnd, 0.0);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 spd.splinePoints.emplace_back(vStart.x - dDist * vTan.y,
                                                      vStart.y + dDist * vTan.x);
             }
 
             vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
             vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                      vPoint.y + dDist * vTan.x);
             }
 
             vTan = GetQuadDir(vStart, vControl, vEnd, 1.0);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 spd.splinePoints.emplace_back(vEnd.x - dDist * vTan.y,
                                                      vEnd.y + dDist * vTan.x);
             }
@@ -1972,14 +1972,14 @@ bool LC_SplinePoints::offsetCut(const RS_Vector &coord, const double &distance) 
         vEnd = (data.controlPoints.at(1) + data.controlPoints.at(2)) / 2.0;
 
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.0);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vStart.x - dDist * vTan.y,
                                                  vStart.y + dDist * vTan.x);
         }
 
         vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                  vPoint.y + dDist * vTan.x);
         }
@@ -1991,7 +1991,7 @@ bool LC_SplinePoints::offsetCut(const RS_Vector &coord, const double &distance) 
 
             vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
             vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                      vPoint.y + dDist * vTan.x);
             }
@@ -2003,13 +2003,13 @@ bool LC_SplinePoints::offsetCut(const RS_Vector &coord, const double &distance) 
 
         vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                  vPoint.y + dDist * vTan.x);
         }
 
         vTan = GetQuadDir(vStart, vControl, vEnd, 1.0);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vEnd.x - dDist * vTan.y,
                                                  vEnd.y + dDist * vTan.x);
         }
@@ -2065,7 +2065,7 @@ bool LC_SplinePoints::offsetSpline(const RS_Vector &coord, const double &distanc
         vEnd = (data.controlPoints.at(0) + data.controlPoints.at(1)) / 2.0;
 
         vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                  vPoint.y + dDist * vTan.x);
         }
@@ -2083,7 +2083,7 @@ bool LC_SplinePoints::offsetSpline(const RS_Vector &coord, const double &distanc
 
             vTan = GetQuadDir(vStart, vControl, vEnd, dt);
 
-            if (vTan.valid) {
+            if (vTan._valid) {
                 spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                      vPoint.y + dDist * vTan.x);
             }
@@ -2095,7 +2095,7 @@ bool LC_SplinePoints::offsetSpline(const RS_Vector &coord, const double &distanc
         dt = dl1 / (dl1 + dl2);
 
         vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                  vPoint.y + dDist * vTan.x);
         }
@@ -2120,19 +2120,19 @@ bool LC_SplinePoints::offsetSpline(const RS_Vector &coord, const double &distanc
             dt = dl1 / (dl1 + dl2);
 
             vTan = GetQuadDir(vStart, vControl, vEnd, 0.0);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 spd.splinePoints.emplace_back(vStart.x - dDist * vTan.y,
                                                      vStart.y + dDist * vTan.x);
             }
 
             vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                      vPoint.y + dDist * vTan.x);
             }
 
             vTan = GetQuadDir(vStart, vControl, vEnd, 1.0);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 spd.splinePoints.emplace_back(vEnd.x - dDist * vTan.y,
                                                      vEnd.y + dDist * vTan.x);
             }
@@ -2144,7 +2144,7 @@ bool LC_SplinePoints::offsetSpline(const RS_Vector &coord, const double &distanc
         vEnd = (data.controlPoints.at(1) + data.controlPoints.at(2)) / 2.0;
 
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.0);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vStart.x - dDist * vTan.y,
                                                  vStart.y + dDist * vTan.x);
         }
@@ -2154,7 +2154,7 @@ bool LC_SplinePoints::offsetSpline(const RS_Vector &coord, const double &distanc
         dt = dl1 / (dl1 + dl2 / 2.0);
 
         vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                  vPoint.y + dDist * vTan.x);
         }
@@ -2171,7 +2171,7 @@ bool LC_SplinePoints::offsetSpline(const RS_Vector &coord, const double &distanc
             vEnd = (data.controlPoints.at(i) + data.controlPoints.at(i + 1)) / 2.0;
 
             vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                      vPoint.y + dDist * vTan.x);
             }
@@ -2188,13 +2188,13 @@ bool LC_SplinePoints::offsetSpline(const RS_Vector &coord, const double &distanc
         vEnd = data.controlPoints.at(n - 1);
 
         vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vPoint.x - dDist * vTan.y,
                                                  vPoint.y + dDist * vTan.x);
         }
 
         vTan = GetQuadDir(vStart, vControl, vEnd, 1.0);
-        if (vTan.valid) {
+        if (vTan._valid) {
             spd.splinePoints.emplace_back(vEnd.x - dDist * vTan.y,
                                                  vEnd.y + dDist * vTan.x);
         }
@@ -2274,7 +2274,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
         vEnd = (data.controlPoints.at(0) + data.controlPoints.at(1)) / 2.0;
 
         vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                     vPoint.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2294,7 +2294,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
 
             vTan = GetQuadDir(vStart, vControl, vEnd, dt);
 
-            if (vTan.valid) {
+            if (vTan._valid) {
                 sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                         vPoint.y + distance * vTan.x));
                 sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2308,7 +2308,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
         dt = dl1 / (dl1 + dl2);
 
         vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                     vPoint.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2340,7 +2340,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
             sp2 = new LC_SplinePoints(nullptr, spd2);
 
             vTan = GetQuadDir(vStart, vControl, vEnd, 0.0);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 sp1->addPoint(RS_Vector(vStart.x - distance * vTan.y,
                                         vStart.y + distance * vTan.x));
                 sp2->addPoint(RS_Vector(vStart.x + distance * vTan.y,
@@ -2348,7 +2348,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
             }
 
             vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                         vPoint.y + distance * vTan.x));
                 sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2356,7 +2356,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
             }
 
             vTan = GetQuadDir(vStart, vControl, vEnd, 1.0);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 sp1->addPoint(RS_Vector(vEnd.x - distance * vTan.y,
                                         vEnd.y + distance * vTan.x));
                 sp2->addPoint(RS_Vector(vEnd.x + distance * vTan.y,
@@ -2374,7 +2374,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
         vEnd = (data.controlPoints.at(1) + data.controlPoints.at(2)) / 2.0;
 
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.0);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vStart.x - distance * vTan.y,
                                     vStart.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vStart.x + distance * vTan.y,
@@ -2386,7 +2386,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
         dt = dl1 / (dl1 + dl2 / 2.0);
 
         vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                     vPoint.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2405,7 +2405,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
             vEnd = (data.controlPoints.at(i) + data.controlPoints.at(i + 1)) / 2.0;
 
             vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                         vPoint.y + distance * vTan.x));
                 sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2424,7 +2424,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
         vEnd = data.controlPoints.at(n - 1);
 
         vTan = GetQuadDir(vStart, vControl, vEnd, dt);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                     vPoint.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2432,7 +2432,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesSpline(const double &dis
         }
 
         vTan = GetQuadDir(vStart, vControl, vEnd, 1.0);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vEnd.x - distance * vTan.y,
                                     vEnd.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vEnd.x + distance * vTan.y,
@@ -2472,7 +2472,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
 
         vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                     vPoint.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2486,7 +2486,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
 
             vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
             vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                         vPoint.y + distance * vTan.x));
                 sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2496,7 +2496,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
 
         vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                     vPoint.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2529,7 +2529,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
             sp2 = new LC_SplinePoints(nullptr, spd2);
 
             vTan = GetQuadDir(vStart, vControl, vEnd, 0.0);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 sp1->addPoint(RS_Vector(vStart.x - distance * vTan.y,
                                         vStart.y + distance * vTan.x));
                 sp2->addPoint(RS_Vector(vStart.x + distance * vTan.y,
@@ -2538,7 +2538,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
 
             vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
             vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                         vPoint.y + distance * vTan.x));
                 sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2546,7 +2546,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
             }
 
             vTan = GetQuadDir(vStart, vControl, vEnd, 1.0);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 sp1->addPoint(RS_Vector(vEnd.x - distance * vTan.y,
                                         vEnd.y + distance * vTan.x));
                 sp2->addPoint(RS_Vector(vEnd.x + distance * vTan.y,
@@ -2569,7 +2569,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
         vEnd = (data.controlPoints.at(1) + data.controlPoints.at(2)) / 2.0;
 
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.0);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vStart.x - distance * vTan.y,
                                     vStart.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vStart.x + distance * vTan.y,
@@ -2578,7 +2578,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
 
         vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                     vPoint.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2592,7 +2592,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
 
             vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
             vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-            if (vTan.valid) {
+            if (vTan._valid) {
                 sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                         vPoint.y + distance * vTan.x));
                 sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2606,7 +2606,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
 
         vPoint = GetQuadAtPoint(vStart, vControl, vEnd, 0.5);
         vTan = GetQuadDir(vStart, vControl, vEnd, 0.5);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vPoint.x - distance * vTan.y,
                                     vPoint.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vPoint.x + distance * vTan.y,
@@ -2614,7 +2614,7 @@ std::vector<RS_Entity *> LC_SplinePoints::offsetTwoSidesCut(const double &distan
         }
 
         vTan = GetQuadDir(vStart, vControl, vEnd, 1.0);
-        if (vTan.valid) {
+        if (vTan._valid) {
             sp1->addPoint(RS_Vector(vEnd.x - distance * vTan.y,
                                     vEnd.y + distance * vTan.x));
             sp2->addPoint(RS_Vector(vEnd.x + distance * vTan.y,

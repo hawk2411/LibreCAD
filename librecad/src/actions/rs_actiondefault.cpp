@@ -128,7 +128,7 @@ void RS_ActionDefault::mouseMoveEvent(QMouseEvent* e) {
             // look for reference points to drag:
             double dist;
 			RS_Vector ref = _container->getNearestSelectedRef(pPoints->v1, &dist);
-            if (ref.valid==true && _graphicView->toGuiDX(dist) < 8) {
+            if (ref._valid == true && _graphicView->toGuiDX(dist) < 8) {
                 RS_DEBUG->print("RS_ActionDefault::mouseMoveEvent: "
                                 "moving reference point");
                 setStatus(MovingRef);
@@ -143,7 +143,7 @@ void RS_ActionDefault::mouseMoveEvent(QMouseEvent* e) {
                                     "moving entity");
                     setStatus(Moving);
 					RS_Vector vp= en->getNearestRef(pPoints->v1, nullptr);
-					if(vp.valid) pPoints->v1=vp;
+					if(vp._valid) pPoints->v1=vp;
 
                     //graphicView->moveRelativeZero(v1);
                 }
@@ -201,7 +201,7 @@ void RS_ActionDefault::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetCorner2:
-		if (pPoints->v1.valid) {
+		if (pPoints->v1._valid) {
 			pPoints->v2 = mouse;
 
             deletePreview();

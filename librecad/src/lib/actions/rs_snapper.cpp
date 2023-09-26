@@ -195,7 +195,7 @@ RS_Vector RS_Snapper::snapPoint(QMouseEvent *e) {
         }
     }
 
-    if (!_pImpData->snapSpot.valid) {
+    if (!_pImpData->snapSpot._valid) {
         _pImpData->snapSpot = mouseCoord; //default to snapFree
     } else {
 //        std::cout<<"mouseCoord.distanceTo(snapSpot)="<<mouseCoord.distanceTo(snapSpot)<<std::endl;
@@ -246,7 +246,7 @@ RS_Vector RS_Snapper::snapPoint(QMouseEvent *e) {
 
 /**manually set snapPoint*/
 RS_Vector RS_Snapper::snapPoint(const RS_Vector &coord, bool setSpot) {
-    if (!coord.valid) {
+    if (!coord._valid) {
         return coord;
     }
 
@@ -619,7 +619,7 @@ void RS_Snapper::drawSnapper() {
     // this will avoid creating/deletion of the lines
 
     _graphicView->getOverlayContainer(RS2::Snapper)->clear();
-    if (!_finished && _pImpData->snapSpot.valid) {
+    if (!_finished && _pImpData->snapSpot._valid) {
         RS_EntityContainer *container = _graphicView->getOverlayContainer(RS2::Snapper);
 
         if (_snap_indicator->lines_state) {

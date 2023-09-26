@@ -10,12 +10,12 @@
 #include <iterator>
 
 #ifdef _WINDOWS
-#include <windows.h>
+//#include <windows.h>
 typedef double jwDOUBLE;
-typedef DWORD jwDWORD;
-typedef WORD jwWORD;
-typedef BYTE jwBYTE;
-typedef BOOL jwBOOL;
+typedef unsigned long jwDWORD;
+typedef unsigned short jwWORD;
+typedef unsigned char jwBYTE;
+typedef int jwBOOL;
 #else
 typedef double jwDOUBLE;
 typedef unsigned int jwDWORD;

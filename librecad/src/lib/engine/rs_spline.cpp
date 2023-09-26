@@ -183,7 +183,7 @@ void RS_Spline::update() {
 
     RS_Vector prev{};
     for (auto const &vp: p) {
-        if (prev.valid) {
+        if (prev._valid) {
             auto *line = new RS_Line{this, prev, vp};
             line->setLayer(nullptr);
             line->setPen(RS_Pen(RS2::FlagInvalid));

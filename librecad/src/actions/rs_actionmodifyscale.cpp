@@ -60,7 +60,7 @@ void RS_ActionModifyScale::init(int status) {
 void RS_ActionModifyScale::trigger() {
 
     RS_DEBUG->print("RS_ActionModifyScale::trigger()");
-	if(pPoints->data.factor.valid){
+	if(pPoints->data.factor._valid){
         RS_Modification m(*_container, _graphicView);
 		m.scale(pPoints->data);
 

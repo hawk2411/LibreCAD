@@ -65,7 +65,7 @@ void RS_ActionDimAngular::trigger()
 {
     RS_PreviewActionInterface::trigger();
 
-    if (line1.getStartpoint().valid && line2.getStartpoint().valid) {
+    if (line1.getStartpoint()._valid && line2.getStartpoint()._valid) {
         RS_DimAngular* newEntity {new RS_DimAngular(_container,
                                                     *data,
                                                     *edata)};
@@ -291,7 +291,7 @@ void RS_ActionDimAngular::justify(RS_Line &line, const RS_Vector &click)
  */
 void RS_ActionDimAngular::lineOrder(const RS_Vector &dimPos)
 {
-    if( ! center.valid) {
+    if( ! center._valid) {
         return;
     }
 
@@ -375,15 +375,15 @@ int RS_ActionDimAngular::quadrant(const double angle)
  */
 bool RS_ActionDimAngular::setData(const RS_Vector &dimPos, const bool calcCenter /*= false*/)
 {
-    if( ! line1.getStartpoint().valid || ! line2.getStartpoint().valid) {
+    if(! line1.getStartpoint()._valid || ! line2.getStartpoint()._valid) {
         return false;
     }
 
-    if ( ! center.valid || calcCenter) {
+    if (! center._valid || calcCenter) {
         RS_VectorSolutions sol = RS_Information::getIntersectionLineLine( &line1, &line2);
         center = sol.get(0);
     }
-    if ( ! center.valid) {
+    if ( ! center._valid) {
         return false;
     }
 

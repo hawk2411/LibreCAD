@@ -114,7 +114,7 @@ void RS_ActionDrawArc3P::trigger() {
 
 void RS_ActionDrawArc3P::preparePreview() {
 	pPoints->data = {};
-	if (pPoints->point1.valid && pPoints->point2.valid && pPoints->point3.valid) {
+	if (pPoints->point1._valid && pPoints->point2._valid && pPoints->point3._valid) {
 		RS_Arc arc(NULL, pPoints->data);
 		bool suc = arc.createFrom3P(pPoints->point1, pPoints->point2, pPoints->point3);
         if (suc) {
@@ -134,7 +134,7 @@ void RS_ActionDrawArc3P::mouseMoveEvent(QMouseEvent* e) {
 
     case SetPoint2:
 		pPoints->point2 = mouse;
-		if (pPoints->point1.valid) {
+		if (pPoints->point1._valid) {
 			RS_Line* line = new RS_Line{_preview.get(), pPoints->point1, pPoints->point2};
 
             deletePreview();

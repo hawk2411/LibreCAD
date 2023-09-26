@@ -77,7 +77,7 @@ void RS_ActionDrawArcTangential::init(int status) {
 void RS_ActionDrawArcTangential::trigger() {
     RS_PreviewActionInterface::trigger();
 
-	if (!(point->valid && baseEntity)) {
+	if (!(point->_valid && baseEntity)) {
         RS_DEBUG->print("RS_ActionDrawArcTangential::trigger: "
                         "conditions not met");
         return;
@@ -106,7 +106,7 @@ void RS_ActionDrawArcTangential::trigger() {
 
 
 void RS_ActionDrawArcTangential::preparePreview() {
-	if (baseEntity && point->valid) {
+	if (baseEntity && point->_valid) {
         RS_Vector startPoint;
         double direction;
         if (isStartPoint) {

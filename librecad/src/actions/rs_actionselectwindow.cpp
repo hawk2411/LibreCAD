@@ -72,7 +72,7 @@ void RS_ActionSelectWindow::init(int status) {
 void RS_ActionSelectWindow::trigger() {
     RS_PreviewActionInterface::trigger();
 
-	if (pPoints->v1.valid && pPoints->v2.valid) {
+	if (pPoints->v1._valid && pPoints->v2._valid) {
 		if (_graphicView->toGuiDX(pPoints->v1.distanceTo(pPoints->v2)) > 10) {
 
 			bool cross = (pPoints->v1.x>pPoints->v2.x);
@@ -92,7 +92,7 @@ void RS_ActionSelectWindow::trigger() {
 void RS_ActionSelectWindow::mouseMoveEvent(QMouseEvent* e) {
     snapFree(e);
     drawSnapper();
-	if (getStatus()==SetCorner2 && pPoints->v1.valid) {
+	if (getStatus()==SetCorner2 && pPoints->v1._valid) {
 		pPoints->v2 = snapFree(e);
         deletePreview();
 		RS_OverlayBox* ob=new RS_OverlayBox(_preview.get(), RS_OverlayBoxData(pPoints->v1, pPoints->v2));

@@ -79,7 +79,7 @@ void RS_ActionModifyMove::mouseMoveEvent(QMouseEvent* e) {
             break;
 
         case SetTargetPoint:
-            if (pPoints->referencePoint.valid) {
+            if (pPoints->referencePoint._valid) {
                 if (e->modifiers() & Qt::ShiftModifier) {
                     mouse = snapToAngle(mouse, pPoints->referencePoint, 15.);
                 }

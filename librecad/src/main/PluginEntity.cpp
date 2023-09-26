@@ -552,7 +552,7 @@ void PluginEntity::updatePolylineData(QList<Plug_VertexData> *data) {
     pl->clear();
     pl->setEndpoint(vec);
     pl->setStartpoint(vec);
-    vec.valid = true;
+    vec._valid = true;
     for (int i = 0; i < data->size(); ++i) {
         vec.x = data->at(i).point.x();
         vec.y = data->at(i).point.y();

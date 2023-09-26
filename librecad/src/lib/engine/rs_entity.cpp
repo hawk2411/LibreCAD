@@ -295,7 +295,7 @@ double RS_Entity::getDistanceToPoint(const RS_Vector &coord,
     (void) getNearestPointOnEntity(coord, true, &dToEntity, entity);
 
     // RVT 6 Jan 2011 : Add selection by center point
-    if (getCenter().valid) {
+    if (getCenter()._valid) {
         double dToCenter = getCenter().distanceTo(coord);
         return std::min(dToEntity, dToCenter);
     } else

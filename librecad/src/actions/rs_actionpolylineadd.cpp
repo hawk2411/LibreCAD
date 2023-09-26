@@ -58,8 +58,8 @@ void RS_ActionPolylineAdd::trigger() {
         RS_PreviewActionInterface::trigger();
         RS_DEBUG->print("RS_ActionPolylineAdd::trigger()");
 
-		if (addEntity && addSegment->isAtomic() && addCoord->valid &&
-				addSegment->isPointOnEntity(*addCoord, RS_DEFAULT_TOLERANCE)) {
+		if (addEntity && addSegment->isAtomic() && addCoord->_valid &&
+            addSegment->isPointOnEntity(*addCoord, RS_DEFAULT_TOLERANCE)) {
 
                 addEntity->setHighlighted(false);
                 _graphicView->drawEntity(addEntity);
@@ -124,7 +124,7 @@ void RS_ActionPolylineAdd::mouseReleaseEvent(QMouseEvent* e) {
 						*addCoord = snapPoint(e);
 						if (!addEntity) {
                                 GetDialogFactory()->commandMessage(tr("No Entity found."));
-						} else if (!addCoord->valid) {
+						} else if (!addCoord->_valid) {
                                 GetDialogFactory()->commandMessage(tr("Adding point is invalid."));
                         } else {
                                 RS_Vector clickCoord = snapPoint(e);

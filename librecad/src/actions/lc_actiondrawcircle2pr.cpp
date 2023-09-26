@@ -112,7 +112,7 @@ bool LC_ActionDrawCircle2PR::preparePreview(const RS_Vector& mouse) {
 		data->center=center2;
 		return true;
 	}
-	data->center.valid=false;
+	data->center._valid=false;
 	return false;
 
 }

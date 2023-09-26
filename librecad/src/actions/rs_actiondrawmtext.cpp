@@ -103,7 +103,7 @@ void RS_ActionDrawMText::trigger() {
 
     RS_DEBUG->print("RS_ActionDrawText::trigger()");
 
-	if (pos->valid) {
+	if (pos->_valid) {
         deletePreview();
 
 		RS_MText* text = new RS_MText(_container, *data);
@@ -140,7 +140,7 @@ void RS_ActionDrawMText::mouseMoveEvent(QMouseEvent* e) {
         RS_Vector mouse = snapPoint(e);
 		RS_Vector mov = mouse-*pos;
 		*pos = mouse;
-		if (textChanged || pos->valid == false || _preview->isEmpty()) {
+		if (textChanged || pos->_valid == false || _preview->isEmpty()) {
             deletePreview();
             preparePreview();
         } else {

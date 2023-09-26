@@ -246,9 +246,9 @@ void RS_Hatch::addSmallCutLinesToHatch(const RS_EntityContainer &smallCutLines, 
             }
                 break;
             default:
-                middlePoint.valid = middlePoint2.valid = false;
+                middlePoint._valid = middlePoint2._valid = false;
         }
-        if (!middlePoint.valid) {
+        if (!middlePoint._valid) {
             continue;
         }
         bool onContour = false;
@@ -348,13 +348,13 @@ RS_Hatch::sortIntersections(const std::unique_ptr<RS_Hatch::EntityInfo> &info, Q
 
             // copy to sorted list, removing double points
             if (!done && av) {
-                if (!last.valid || last.distanceTo(av) > RS_TOLERANCE) {
+                if (!last._valid || last.distanceTo(av) > RS_TOLERANCE) {
                     sortedIntersections.append(av);
                     last = av;
                 }
                 intersections.removeOne(av);
 
-                av.valid = false;
+                av._valid = false;
             }
         } while (!done);
     }
@@ -376,7 +376,7 @@ QList<RS_Vector> RS_Hatch::calcIntersections(const RS_Entity *patternEntity) {
                     RS_Information::getIntersection(patternEntity, entityContainer, true);
 
             for (const RS_Vector &vp: sol) {
-                if (vp.valid) {
+                if (vp._valid) {
                     intersections.append(vp);
                     RS_DEBUG->print(RS_Debug::D_DEBUGGING, "  pattern line intersection: %f/%f", vp.x, vp.y);
                 }

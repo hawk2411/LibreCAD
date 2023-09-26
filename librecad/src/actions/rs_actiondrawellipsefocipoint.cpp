@@ -63,7 +63,7 @@ void RS_ActionDrawEllipseFociPoint::init(int status) {
     RS_PreviewActionInterface::init(status);
 
     if (status==SetFocus1) {
-		pPoints->focus1.valid=false;
+		pPoints->focus1._valid=false;
     }
 }
 

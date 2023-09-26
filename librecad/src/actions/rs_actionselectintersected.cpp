@@ -71,7 +71,7 @@ void RS_ActionSelectIntersected::init(int status) {
 void RS_ActionSelectIntersected::trigger() {
     RS_PreviewActionInterface::trigger();
 
-	if (pPoints->v1.valid && pPoints->v2.valid) {
+	if (pPoints->v1._valid && pPoints->v2._valid) {
 		if (_graphicView->toGuiDX(pPoints->v1.distanceTo(pPoints->v2)) > 10) {
 
             RS_Selection s(*_container, _graphicView);
@@ -87,7 +87,7 @@ void RS_ActionSelectIntersected::trigger() {
 
 
 void RS_ActionSelectIntersected::mouseMoveEvent(QMouseEvent* e) {
-	if (getStatus()==SetPoint2 && pPoints->v1.valid) {
+	if (getStatus()==SetPoint2 && pPoints->v1._valid) {
 		pPoints->v2 = snapPoint(e);
         deletePreview();
 		_preview->addEntity(new RS_Line{_preview.get(), pPoints->v1, pPoints->v2});

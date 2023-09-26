@@ -242,7 +242,7 @@ void RS_Dimension::updateCreateHorizontalTextDimensionLine(const std::array<RS_V
     RS_MTextData textData;
     RS_Vector textPos;
 
-    const bool autoText = !_data.middleOfText.valid || forceAutoText;
+    const bool autoText = !_data.middleOfText._valid || forceAutoText;
 
     if (autoText) {
         textPos = dimensionLine->getMiddlePoint();
@@ -411,7 +411,7 @@ void RS_Dimension::updateCreateAlignedTextDimensionLine(const std::array<RS_Vect
     bool corrected;
     const double textAngle = RS_Math::makeAngleReadable(dimAngle1, true, corrected);
 
-    if (_data.middleOfText.valid && !forceAutoText) {
+    if (_data.middleOfText._valid && !forceAutoText) {
         textPos = _data.middleOfText;
     } else {
         textPos = dimensionLine->getMiddlePoint();

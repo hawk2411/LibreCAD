@@ -82,7 +82,7 @@ void RS_ActionDrawLinePolygonCorCor::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetCorner2:
-		if (pPoints->corner1.valid) {
+		if (pPoints->corner1._valid) {
 			pPoints->corner2 = mouse;
             deletePreview();
 

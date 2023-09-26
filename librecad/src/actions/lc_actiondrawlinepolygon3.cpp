@@ -83,7 +83,7 @@ void LC_ActionDrawLinePolygonCenTan::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetTangent:
-        if (pPoints->center.valid) {
+        if (pPoints->center._valid) {
             pPoints->corner = mouse;
             deletePreview();
 

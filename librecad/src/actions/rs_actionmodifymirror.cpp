@@ -81,7 +81,7 @@ void RS_ActionModifyMirror::mouseMoveEvent(QMouseEvent* e) {
             break;
 
         case SetAxisPoint2:
-            if (pPoints->axisPoint1.valid) {
+            if (pPoints->axisPoint1._valid) {
                 if(e->modifiers() & Qt::ShiftModifier)
                     mouse = snapToAngle(mouse, pPoints->axisPoint1, 15.);
 

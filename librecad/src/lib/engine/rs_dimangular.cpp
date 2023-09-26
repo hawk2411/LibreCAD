@@ -255,7 +255,7 @@ void RS_DimAngular::updateDim(bool autoText /*= false*/) {
         return;
     }
 
-    if (!_dimCenter.valid) {
+    if (!_dimCenter._valid) {
         return;
     }
 

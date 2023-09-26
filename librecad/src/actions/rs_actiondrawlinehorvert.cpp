@@ -106,7 +106,7 @@ void RS_ActionDrawLineHorVert::mouseMoveEvent(QMouseEvent* e) {
     RS_DEBUG->print("RS_ActionDrawLineHorVert::mouseMoveEvent begin");
 
     RS_Vector mouse = snapPoint(e);
-	if (getStatus()==SetEndpoint && pPoints->p1.valid) {
+	if (getStatus()==SetEndpoint && pPoints->p1._valid) {
 		RS_Vector p2x = RS_Vector(mouse.x, pPoints->p1.y);
 		RS_Vector p2y = RS_Vector(pPoints->p1.x, mouse.y);
         if (mouse.distanceTo(p2y) > mouse.distanceTo(p2x))

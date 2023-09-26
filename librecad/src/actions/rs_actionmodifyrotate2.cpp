@@ -76,7 +76,7 @@ void RS_ActionModifyRotate2::mouseMoveEvent(QMouseEvent* e) {
             break;
 
         case SetReferencePoint2:
-			if (data->center1.valid) {
+			if (data->center1._valid) {
 				data->center2 = mouse;
 				//data->offset = data->center2-data->center1;
 

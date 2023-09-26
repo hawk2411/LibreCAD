@@ -86,7 +86,7 @@ void RS_ActionModifyStretch::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetSecondCorner:
-		if (pPoints->firstCorner.valid) {
+		if (pPoints->firstCorner._valid) {
 			pPoints->secondCorner = snapPoint(e);
 			deletePreview();
 			_preview->addRectangle(pPoints->firstCorner, pPoints->secondCorner);
@@ -98,7 +98,7 @@ void RS_ActionModifyStretch::mouseMoveEvent(QMouseEvent* e) {
         break;
 
     case SetTargetPoint:
-		if (pPoints->referencePoint.valid) {
+		if (pPoints->referencePoint._valid) {
 			pPoints->targetPoint = mouse;
 
             deletePreview();

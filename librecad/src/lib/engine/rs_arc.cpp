@@ -58,7 +58,7 @@ void RS_ArcData::reset() {
 }
 
 bool RS_ArcData::isValid() const {
-    return (center.valid && radius > RS_TOLERANCE &&
+    return (center._valid && radius > RS_TOLERANCE &&
             fabs(remainder(angle1 - angle2, 2. * M_PI)) > RS_TOLERANCE_ANGLE);
 }
 
@@ -491,7 +491,7 @@ RS_Vector RS_Arc::getNearestDist(double distance,
 RS_Vector RS_Arc::getNearestOrthTan(const RS_Vector &coord,
                                     const RS_Line &normal,
                                     bool onEntity) const {
-    if (!coord.valid) {
+    if (!coord._valid) {
         return RS_Vector(false);
     }
     double angle = normal.getAngle1();

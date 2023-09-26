@@ -284,7 +284,7 @@ RS_VectorSolutions RS_Information::getIntersection(RS_Entity const* e1,
 	}
     RS_VectorSolutions ret2;
 	for(const RS_Vector& vp: ret){
-		if (!vp.valid) continue;
+		if (!vp._valid) continue;
 		if (onEntities) {
             //ignore intersections not on entity
             if (!(
@@ -301,7 +301,7 @@ RS_VectorSolutions RS_Information::getIntersection(RS_Entity const* e1,
         // need to test whether the intersection is tangential
 		RS_Vector direction1=e1->getTangentDirection(vp);
 		RS_Vector direction2=e2->getTangentDirection(vp);
-        if( direction1.valid && direction2.valid && fabs(fabs(direction1.dotP(direction2)) - sqrt(direction1.squared()*direction2.squared())) < sqrt(tol)*tol )
+        if(direction1._valid && direction2._valid && fabs(fabs(direction1.dotP(direction2)) - sqrt(direction1.squared() * direction2.squared())) < sqrt(tol) * tol )
             ret2.setTangent(true);
         //TODO, make the following tangential test, nearest test work for all entity types
 
@@ -385,7 +385,7 @@ RS_VectorSolutions RS_Information::getIntersectionLineArc(RS_Line* line,
     nearest = line->getNearestPointOnEntity(arc->getCenter(), false, &dist, nullptr);
 
     // special case: arc touches line (tangent):
-    if (nearest.valid && fabs(dist - arc->getRadius()) < 1.0e-4) {
+    if (nearest._valid && fabs(dist - arc->getRadius()) < 1.0e-4) {
 		ret = RS_VectorSolutions({nearest});
         ret.setTangent(true);
         return ret;
@@ -791,7 +791,7 @@ bool RS_Information::isPointInsideContour(const RS_Vector& point,
             for (int i=0; i<=1; ++i) {
                 RS_Vector p = sol.get(i);
 
-                if (p.valid) {
+                if (p._valid) {
                     // point is on the contour itself
                     if (p.distanceTo(point)<1.0e-5) {
 						if (onContour) {
@@ -844,13 +844,13 @@ bool RS_Information::isPointInsideContour(const RS_Vector& point,
                             }
                         } else if (e->rtti()==RS2::EntityCircle) {
                             // tangent:
-                            if (i==0 && sol.get(1).valid==false) {
+                            if (i==0 && sol.get(1)._valid == false) {
                                 if (!sol.isTangent()) {
                                     counter++;
                                 } else {
                                     sure = false;
                                 }
-                            } else if (i==1 || sol.get(1).valid==true) {
+                            } else if (i==1 || sol.get(1)._valid == true) {
                                 counter++;
                             }
                         } else if (e->rtti()==RS2::EntityEllipse) {
@@ -878,13 +878,13 @@ bool RS_Information::isPointInsideContour(const RS_Vector& point,
                                 }
                             }else{
                                 // tangent:
-                                if (i==0 && sol.get(1).valid==false) {
+                                if (i==0 && sol.get(1)._valid == false) {
                                     if (!sol.isTangent()) {
                                         counter++;
                                     } else {
                                         sure = false;
                                     }
-                                } else if (i==1 || sol.get(1).valid==true) {
+                                } else if (i==1 || sol.get(1)._valid == true) {
                                     counter++;
                                 }
                             }

@@ -85,7 +85,7 @@ void RS_ActionModifyMoveRotate::mouseMoveEvent(QMouseEvent* e) {
             break;
 
         case SetTargetPoint:
-			if (pPoints->data.referencePoint.valid) {
+			if (pPoints->data.referencePoint._valid) {
 				pPoints->targetPoint = mouse;
 				pPoints->data.offset = pPoints->targetPoint-pPoints->data.referencePoint;
 

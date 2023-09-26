@@ -83,7 +83,7 @@ void RS_ActionSnapIntersectionManual::trigger() {
         if (_predecessor) {
 			RS_Vector ip = sol.getClosest(*coord);
 
-            if (ip.valid) {
+            if (ip._valid) {
                 RS_CoordinateEvent e(ip);
                 _predecessor->coordinateEvent(&e);
             }
@@ -119,7 +119,7 @@ void RS_ActionSnapIntersectionManual::mouseMoveEvent(QMouseEvent* e) {
 
 			RS_Vector ip = sol.getClosest(*coord);
 
-            if (ip.valid) {
+            if (ip._valid) {
                 deletePreview();
                 _preview->addEntity(
 					new RS_Circle(_preview.get(),
@@ -159,7 +159,7 @@ void RS_ActionSnapIntersectionManual::mouseReleaseEvent(QMouseEvent* e) {
         case ChooseEntity2:
             entity2 = se;
 			*coord = mouse;
-			if (entity2 && entity2->isAtomic() && coord->valid) {
+			if (entity2 && entity2->isAtomic() && coord->_valid) {
                 trigger();
             }
             break;

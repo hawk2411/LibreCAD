@@ -146,7 +146,7 @@ void RS_ActionDrawLine::trigger()
 void RS_ActionDrawLine::mouseMoveEvent(QMouseEvent* e)
 {
     RS_Vector mouse = snapPoint(e);
-    if (getStatus() == SetEndpoint && pPoints->data._startpoint.valid) {
+    if (getStatus() == SetEndpoint && pPoints->data._startpoint._valid) {
         // Snapping to angle(15*) if shift key is pressed
         if (e->modifiers() & Qt::ShiftModifier) {
             mouse = snapToAngle(mouse, pPoints->data._startpoint, 15.);
@@ -200,7 +200,7 @@ void RS_ActionDrawLine::coordinateEvent(RS_CoordinateEvent* e)
     }
 
     RS_Vector mouse = e->getCoordinate();
-    if (pPoints->data._startpoint.valid == false
+    if (pPoints->data._startpoint._valid == false
         && getStatus() == SetEndpoint) {
         setStatus(SetStartpoint);
         pPoints->startOffset = 0;

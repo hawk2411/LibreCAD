@@ -38,7 +38,7 @@ RS_BlockData::RS_BlockData(QString _name,
 }
 
 bool RS_BlockData::isValid() const {
-    return (!name.isEmpty() && basePoint.valid);
+    return (!name.isEmpty() && basePoint._valid);
 }
 
 /**

@@ -71,7 +71,7 @@ void QC_ActionGetPoint::mouseMoveEvent(QMouseEvent* e) {
 
         RS_Vector mouse = snapPoint(e);
         if(setTargetPoint){
-			if (pPoints->referencePoint.valid) {
+			if (pPoints->referencePoint._valid) {
 				pPoints->targetPoint = mouse;
                 deletePreview();
 				RS_Line *line =new RS_Line{_preview.get(),

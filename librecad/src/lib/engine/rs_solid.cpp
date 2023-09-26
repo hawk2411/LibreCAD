@@ -131,7 +131,7 @@ void RS_Solid::calculateBordersLocal() {
     resetBorders();
 
     for (int i = RS_SolidData::FirstCorner; i < RS_SolidData::MaxCorners; ++i) {
-        if (_data.corner[i].valid) {
+        if (_data.corner[i]._valid) {
             _minV = RS_Vector::minimum(_minV, _data.corner[i]);
             _maxV = RS_Vector::maximum(_maxV, _data.corner[i]);
         }
@@ -144,7 +144,7 @@ RS_Vector RS_Solid::getNearestEndpoint(const RS_Vector &coord, double *dist /*= 
     RS_Vector ret;
 
     for (int i = RS_SolidData::FirstCorner; i < RS_SolidData::MaxCorners; ++i) {
-        if (_data.corner[i].valid) {
+        if (_data.corner[i]._valid) {
             double curDist = _data.corner[i].distanceTo(coord);
             if (curDist < minDist) {
                 ret = _data.corner[i];
@@ -378,7 +378,7 @@ double RS_Solid::getDistanceToPoint(const RS_Vector &coord,
 
 void RS_Solid::move(const RS_Vector &offset) {
     for (int i = RS_SolidData::FirstCorner; i < RS_SolidData::MaxCorners; ++i) {
-        if (_data.corner[i].valid) {
+        if (_data.corner[i]._valid) {
             _data.corner[i].move(offset);
         }
     }
@@ -388,7 +388,7 @@ void RS_Solid::move(const RS_Vector &offset) {
 void RS_Solid::rotate(const RS_Vector &center, const double &angle) {
     RS_Vector angleVector(angle);
     for (int i = RS_SolidData::FirstCorner; i < RS_SolidData::MaxCorners; ++i) {
-        if (_data.corner[i].valid) {
+        if (_data.corner[i]._valid) {
             _data.corner[i].rotate(center, angleVector);
         }
     }
@@ -397,7 +397,7 @@ void RS_Solid::rotate(const RS_Vector &center, const double &angle) {
 
 void RS_Solid::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
     for (int i = RS_SolidData::FirstCorner; i < RS_SolidData::MaxCorners; ++i) {
-        if (_data.corner[i].valid) {
+        if (_data.corner[i]._valid) {
             _data.corner[i].rotate(center, angleVector);
         }
     }
@@ -406,7 +406,7 @@ void RS_Solid::rotate(const RS_Vector &center, const RS_Vector &angleVector) {
 
 void RS_Solid::scale(const RS_Vector &center, const RS_Vector &factor) {
     for (int i = RS_SolidData::FirstCorner; i < RS_SolidData::MaxCorners; ++i) {
-        if (_data.corner[i].valid) {
+        if (_data.corner[i]._valid) {
             _data.corner[i].scale(center, factor);
         }
     }
@@ -415,7 +415,7 @@ void RS_Solid::scale(const RS_Vector &center, const RS_Vector &factor) {
 
 void RS_Solid::mirror(const RS_Vector &axisPoint1, const RS_Vector &axisPoint2) {
     for (int i = RS_SolidData::FirstCorner; i < RS_SolidData::MaxCorners; ++i) {
-        if (_data.corner[i].valid) {
+        if (_data.corner[i]._valid) {
             _data.corner[i].mirror(axisPoint1, axisPoint2);
         }
     }

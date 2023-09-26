@@ -66,7 +66,7 @@ void RS_ActionPolylineDelBetween::trigger() {
 
         RS_DEBUG->print("RS_ActionPolylineDelBetween::trigger()");
 
-		if (delEntity && delSegment->isAtomic() && pPoints->nodePoint1.valid && pPoints->nodePoint2.valid) {
+		if (delEntity && delSegment->isAtomic() && pPoints->nodePoint1._valid && pPoints->nodePoint2._valid) {
 
                 delEntity->setHighlighted(false);
                 _graphicView->drawEntity(delEntity);
@@ -142,7 +142,7 @@ void RS_ActionPolylineDelBetween::mouseReleaseEvent(QMouseEvent* e) {
 						pPoints->nodePoint1 = snapPoint(e);
 						if (delEntity==nullptr) {
                                 GetDialogFactory()->commandMessage(tr("No Entity found."));
-						} else if (!pPoints->nodePoint1.valid) {
+						} else if (!pPoints->nodePoint1._valid) {
                                 GetDialogFactory()->commandMessage(tr("Deleting point is invalid."));
 						} else if (!delEntity->isPointOnEntity(pPoints->nodePoint1, RS_DEFAULT_TOLERANCE)) {
                                 GetDialogFactory()->commandMessage(
@@ -155,7 +155,7 @@ void RS_ActionPolylineDelBetween::mouseReleaseEvent(QMouseEvent* e) {
 						pPoints->nodePoint2 = snapPoint(e);
 						if (delEntity==nullptr) {
                                 GetDialogFactory()->commandMessage(tr("No Entity found."));
-						} else if (!pPoints->nodePoint2.valid) {
+						} else if (!pPoints->nodePoint2._valid) {
                                 GetDialogFactory()->commandMessage(tr("Deleting point is invalid."));
 						} else if (!delEntity->isPointOnEntity(pPoints->nodePoint2, RS_DEFAULT_TOLERANCE)) {
                                 GetDialogFactory()->commandMessage(
