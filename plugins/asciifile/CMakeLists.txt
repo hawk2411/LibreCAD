@@ -12,7 +12,7 @@ include_directories(../../librecad/src/plugins)
 
 add_library(asciifile SHARED
         asciifile.cpp
-        )
+        dibPunto.h dibPunto.cpp dpt.h imgLabel.cpp imgLabel.h pointBox.cpp pointBox.h textBox.cpp textBox.h pointData.cpp pointData.h)
 
 target_link_libraries(asciifile
         PRIVATE

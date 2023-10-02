@@ -430,8 +430,8 @@ void dibSHP::readAttributes(DBFHandle dh, int i){
 
 dibSHP::~dibSHP()
 {
-/*    while (!dataList.isEmpty())
-         delete dataList.takeFirst();*/
+/*    while (!_dataList.isEmpty())
+         delete _dataList.takeFirst();*/
 }
 
 void dibSHP::readSettings()
