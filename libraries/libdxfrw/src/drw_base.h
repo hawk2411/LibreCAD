@@ -22,6 +22,7 @@
 #include <cassert>
 #include <sstream>
 #include <algorithm>
+#include <cstdint>
 #include <iomanip>
 #include <iostream>
 #include <utility>
